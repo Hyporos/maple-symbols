@@ -1,10 +1,15 @@
-function App() {
+import Calculator from "./components/Calculator/Calculator";
+import Footer from "./components/Footer/Footer";
+import Header from "./components/Header/Header";
 
+function App() {
   return (
     <>
-      <p>hi</p>
+      <Header></Header>
+      <Calculator></Calculator>
+      <Footer></Footer>
     </>
-  )
+  );
 }
 
 export default App
