@@ -12,6 +12,8 @@ export default {
       'primary' : '#b18bd0',
       'secondary' : '#404040',
       'tertiary' : 'transparent',
+      'unchecked' : '#db302a',
+      'checked' : '#20d63e',
     },
     fontFamily: {
       'maven-pro' : ['Maven Pro','sans-serif'],

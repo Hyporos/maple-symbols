@@ -7,7 +7,7 @@ interface Props {
 
 const Button = ({ name, variant }: Props) => {
   return (
-    <button className={"bg-" + variant + " p-4 rounded text-text"}>
+    <button className={`bg-${variant} p-4 rounded text-text`}>
       {name}
     </button>
   );
