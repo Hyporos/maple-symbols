@@ -21,6 +21,8 @@ const Calculator = () => {
   const [vjDaysRemaining, setVjDaysRemaining] = useState(0);
   const [vjCompletionDate, setVjCompletionDate] = useState("");
 
+  const [vjUpgradeReady, setVjUpgradeReady] = useState(false);
+
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
     { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -96,11 +98,32 @@ const Calculator = () => {
     let currentDay = String(date.getDate()).padStart(2, "0");
     let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
     let currentYear = date.getFullYear();
-
     let currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
-
     setVjCompletionDate(currentDate);
   }, [vjDaysRemaining]);
+
+  useEffect(() => {
+    const result = vjSymbolData.find(
+      required => required.level === vjLevel + 1
+    );
+    if (vjExperience >= result?.symbolsRequired) {
+      setVjUpgradeReady(false);
+    } else {
+      setVjUpgradeReady(true);
+    }
+    console.log(vjExperience, result?.symbolsRequired)
+  }, [vjRemainingSymbols]);
+
+  const handleVjUpgrade = () => {
+    const result = vjSymbolData.find(
+      required => required.level === vjLevel + 1
+    );
+    if (vjExperience >= result?.symbolsRequired) {
+      setVjExperience(vjExperience - result?.symbolsRequired);
+      setVjLevel(vjLevel + 1);
+      setVjUpgradeReady(true);
+    }
+  };
 
   return (
     <section>
@@ -127,6 +150,7 @@ const Calculator = () => {
                 type="number"
                 id="vj-level"
                 placeholder="Experience"
+                defaultValue={"1"}
                 onChange={(event) =>
                   setVjExperience(parseInt(event.target.value))
                 }
@@ -168,22 +192,22 @@ const Calculator = () => {
 
             <div className="flex justify-between items-center text-text text-opacity-70 pt-4">
               <HiChevronUp
-                onClick={() => console.log("clicked")}
+                onClick={() => setVjExperience(vjExperience + vjDailySymbols)}
                 size={30}
                 color={"#b18bd0"}
+                cursor="pointer"
               />
-              <p>{vjDailySymbols} symbols / day</p>
+              <p className="select-none">{vjDailySymbols} symbols / day</p>
               <HiChevronDoubleUp
-                onClick={() => console.log("clicked")}
+                onClick={() => handleVjUpgrade()}
                 size={30}
-                color={"#919191"}
+                color={!vjUpgradeReady ? "green" : "#919191"}
+                cursor="pointer"
               />
             </div>
           </div>
 
-          <div className="flex flex-1">
-            <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-secondary to-transparent opacity-30"></div>
-          </div>
+          <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-secondary to-transparent opacity-30"></div>
 
           <div className="flex flex-col space-y-12 justify-center px-10">
             <div className="symbol-stats">
