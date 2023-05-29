@@ -1,0 +1,7 @@
+.span {
+    @apply text-primary;
+}
+
+.card-icon:hover {
+    color:black
+}

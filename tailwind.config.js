@@ -8,7 +8,10 @@ export default {
       boxShadow: {
         'card' : '0 0 50px -12px rgb(0 0 0 / 0.25)',
         'input' : '0 0 5px 0px rgb(0 0 0 / 0.25)'
-      }
+      },
+      maxWidth: {
+        'card' : '350px',
+      },
     },
     colors: {
       'transparent' : 'transparent',
@@ -17,7 +20,6 @@ export default {
       'primary' : '#b18bd0',
       'secondary' : '#404040',
       'tertiary' : 'transparent',
-      'unchecked' : '#db302a',
       'checked' : '#20d63e',
     },
     fontFamily: {

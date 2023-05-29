@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { HiChevronUp, HiChevronDoubleUp } from "react-icons/hi";
 import "./Calculator.css";
+
 
 const Calculator = () => {
   const [vjKillQuest, setVjKillQuest] = useState(false);
   const [vjPartyQuest, setVjPartyQuest] = useState(false);
   const [vjExpansion, setVjExpansion] = useState(false);
 
+  const [vjDailySymbols, setVjDailySymbols] = useState(0);
+
   const [vjLevel, setVjLevel] = useState(0);
   const [vjExperience, setVjExperience] = useState(0);
-
-  const [vjDailySymbols, setVjDailySymbols] = useState(0);
 
   const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
   const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
@@ -69,11 +71,11 @@ const Calculator = () => {
       ) + vjExperience
     );
     setVjSpentMesos(
-        splicedSymbols.reduce(
-          (total, currentSymbol) => total + currentSymbol.mesosRequired,
-          totalSymbols
-        )
-      );
+      splicedSymbols.reduce(
+        (total, currentSymbol) => total + currentSymbol.mesosRequired,
+        totalSymbols
+      )
+    );
   }, [vjLevel, vjExperience]);
 
   useEffect(() => {
@@ -86,107 +88,132 @@ const Calculator = () => {
       ) - vjExperience
     );
     setVjRemainingMesos(
-        splicedSymbols.reduce(
-          (total, currentSymbol) => total + currentSymbol.mesosRequired,
-          remainingSymbols
-        )
-      );
+      splicedSymbols.reduce(
+        (total, currentSymbol) => total + currentSymbol.mesosRequired,
+        remainingSymbols
+      )
+    );
   }, [vjTotalSymbols]);
 
+  useEffect(() => {
+    setVjDaysRemaining(~~(vjRemainingSymbols / vjDailySymbols));
+  }, [vjRemainingSymbols, vjDailySymbols]);
 
   useEffect(() => {
     const date = new Date();
     date.setDate(date.getDate() + ~~(vjRemainingSymbols / vjDailySymbols));
-    let currentDay = String(date.getDate() + 1).padStart(2, "0");
+    let currentDay = String(date.getDate()).padStart(2, "0");
     let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
     let currentYear = date.getFullYear();
 
     let currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
 
-
     setVjCompletionDate(currentDate);
-  }, [vjLevel, vjExperience, vjDailySymbols])
+  }, [vjDaysRemaining]);
 
   return (
     <section>
-      <div className="h-screen flex justify-center items-center flex-row">
-        <div className="bg-transparent px-6 py-6 space-y-4 w-1/6 shadow-card">
-          <div className="flex flex-row justify-center items-center space-x-4">
-            <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
-            <p className="text-xl text-text font-semibold font-maven-pro uppercase">
-              Vanishing Journey
-            </p>
+      <div className="h-screen flex justify-center items-center">
+        <div className="flex flex-row space-x-20">
+
+          <div className="px-10 py-10 space-y-5 shadow-card max-w-card">
+
+            <div className="flex justify-center items-center space-x-4 pb-4">
+              <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
+              <p className="text-xl text-text font-semibold font-maven-pro uppercase">
+                Vanishing Journey
+              </p>
+            </div>
+
+            <div className="flex space-x-4 justify-center">
+              <input
+                type="number"
+                id="vj-level"
+                placeholder="Level"
+                onChange={onChangeLevel}
+                value={vjLevel}
+                className="bg-secondary text-text text-center text-sm shadow-input rounded-lg p-2.5 w-1/2"
+              ></input>
+              <input
+                type="number"
+                id="vj-level"
+                placeholder="Experience"
+                onChange={onChangeExperience}
+                value={vjExperience}
+                className="bg-secondary text-text text-center text-sm shadow-input rounded-lg p-2.5 w-1/2"
+              ></input>
+            </div>
+
+            <div className="flex space-x-4">
+              <button
+                onClick={() => {
+                  setVjKillQuest(!vjKillQuest);
+                }}
+                className={` bg-secondary rounded shadow-input ${
+                  vjKillQuest && "shadow-primary"
+                } py-1.5 w-full`}
+              >
+                <p className="font-semibold text-text">Kill Quest</p>
+              </button>
+
+              <button
+                onClick={() => {
+                  setVjPartyQuest(!vjPartyQuest);
+                }}
+                className={` bg-secondary rounded shadow-input ${
+                  vjPartyQuest && "shadow-primary"
+                } py-1.5 w-full`}
+              >
+                <p className="font-semibold text-text">Party Quest</p>
+              </button>
+            </div>
+
+            <div>
+              <button
+                onClick={() => {
+                  setVjExpansion(!vjExpansion);
+                }}
+                className={` bg-secondary rounded shadow-input ${
+                  vjExpansion && "shadow-primary"
+                } py-1.5 w-full`}
+              >
+                <p className="font-semibold text-text">Reverse City</p>
+              </button>
+            </div>
+
+            <div className="flex justify-between items-center text-text text-opacity-70 pt-4">
+                <HiChevronUp onClick={() => console.log('clicked')} size={30} color={'#b18bd0'} className="card-icon"/>
+              <p>{vjDailySymbols} symbols / day</p>
+              <HiChevronDoubleUp onClick={() => console.log('clicked')} size={30} color={'#919191'} className="card-icon"/>
+            </div>
+          </div>
+          
+          <div className="flex shadow-card flex-col space-y-12 justify-center items-center px-10">
+
+            <div className="flex">
+            <div className="flex text-text text-opacity-70 flex-col space-y-2 text-center">
+            <p><span className="text-primary">{vjDaysRemaining}</span> days to go</p>
+            <p>Complete on <span className="text-primary">{vjCompletionDate}</span></p>
+            </div>
+            </div>
+
+            <div className="flex">
+            <div className="flex text-text text-opacity-70 flex-col space-y-2 text-center">
+            <p><span className="text-primary">{vjTotalSymbols}</span> total symbols</p>
+            <p><span className="text-primary">{vjRemainingSymbols}</span> symbols remaining</p>
+            </div>
+            </div>
+
+            <div className="flex">
+            <div className="flex text-text text-opacity-70 flex-col space-y-2 text-center">
+            
+            <p><span className="text-primary">{vjSpentMesos.toLocaleString()}</span> total mesos spent</p>
+            <p><span className="text-primary">{vjRemainingMesos.toLocaleString()}</span> mesos needed</p>
+            </div>
+            </div>
+
           </div>
 
-          <div className="flex justify-center align-center space-x-3">
-            <input
-              type="number"
-              id="vj-level"
-              placeholder="Level"
-              onChange={onChangeLevel}
-              value={vjLevel}
-              className="bg-secondary text-text text-center text-sm rounded-lg block w-full p-2.5"
-            ></input>
-            <input
-              type="number"
-              id="vj-level"
-              placeholder="Experience"
-              onChange={onChangeExperience}
-              value={vjExperience}
-              className="bg-secondary text-text text-center text-sm rounded-lg block w-full p-2.5"
-            ></input>
-          </div>
-
-          <div className="flex space-x-3">
-            <button
-              onClick={() => {
-                setVjKillQuest(!vjKillQuest);
-              }}
-              className={`flex flex-row justify-center bg-secondary rounded border-2 shadow-input ${
-                vjKillQuest ? "shadow-checked" : "shadow-unchecked"
-              } py-1.5 w-full`}
-            >
-              <p className="font-semibold text-text">Kill Quest</p>
-            </button>
-
-            <button
-              onClick={() => {
-                setVjPartyQuest(!vjPartyQuest);
-              }}
-              className={`flex flex-row justify-center bg-secondary rounded border-2 shadow-input ${
-                vjPartyQuest ? "shadow-checked" : "shadow-unchecked"
-              } py-1.5 w-full`}
-            >
-              <p className="font-semibold text-text">Party Quest</p>
-            </button>
-          </div>
-
-          <div>
-            <button
-              onClick={() => {
-                setVjExpansion(!vjExpansion);
-              }}
-              className={`flex flex-row justify-center bg-secondary rounded border-2 shadow-input ${
-                vjExpansion ? "shadow-checked" : "shadow-unchecked"
-              } py-1.5 w-full`}
-            >
-              <p className="font-semibold text-text">Reverse City</p>
-            </button>
-          </div>
-
-          <div className="flex justify-center text-text text-opacity-70">
-            <p>{vjDailySymbols} symbols / day</p>
-          </div>
-        </div>
-        <div className="pl-10 flex justify-center text-text text-opacity-70 flex-col">
-          <p>{vjRemainingSymbols} symbols remaining</p>
-          <p>{~~(vjRemainingSymbols / vjDailySymbols)} days to go</p>
-          <p>{vjSpentMesos} mesos spent</p>
-          <p>{vjRemainingMesos} mesos remaining</p>
-          <p>Complete on {vjCompletionDate}</p>
-          <p>{vjLevel} Level</p>
-          <p>{vjExperience} Experience</p>
-          <p>{vjTotalSymbols} Total Symbols</p>
         </div>
       </div>
     </section>
