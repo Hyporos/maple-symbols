@@ -18,4 +18,10 @@ input[type="number"] {
     section {
         @apply bg-dark
     }
+    h1, p, button {
+        @apply font-maven-pro
+    }
+    button, input {
+        @apply rounded-lg
+    }
 }

@@ -1,7 +1,15 @@
-.span {
-    @apply text-primary;
+span {
+    @apply text-primary
 }
 
-.card-icon:hover {
-    color:black
+.symbol-stats {
+    @apply flex text-text text-opacity-70 flex-col space-y-2 text-center font-maven-pro
+}
+
+.daily-box {
+    @apply bg-secondary font-semibold text-text shadow-input py-1.5 w-full
+}
+
+.symbol-input {
+    @apply bg-secondary text-text text-center text-sm shadow-input p-2.5 w-1/2
 }
