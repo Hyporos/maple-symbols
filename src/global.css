@@ -18,7 +18,7 @@ input[type="number"] {
     section {
         @apply bg-dark
     }
-    h1, p, button {
+    h1, p, button, div {
         @apply font-maven-pro
     }
     button, input {

@@ -7,9 +7,9 @@ span {
 }
 
 .daily-box {
-    @apply bg-secondary font-semibold text-text shadow-input py-1.5 w-full
+    @apply bg-secondary font-semibold text-text shadow-input py-1.5 w-full border-b-4 border-secondary-border focus:outline-primary
 }
 
 .symbol-input {
-    @apply bg-secondary text-text text-center text-sm shadow-input p-2.5 w-1/2
+    @apply bg-secondary text-text text-center text-sm shadow-input p-2.5 w-1/2 focus:outline-none focus:border-primary border-secondary border 
 }

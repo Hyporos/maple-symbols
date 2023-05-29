@@ -44,14 +44,6 @@ const Calculator = () => {
     { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
   ];
 
-  const onChangeLevel = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setVjLevel(parseInt(event.target.value));
-  };
-
-  const onChangeExperience = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setVjExperience(parseInt(event.target.value));
-  };
-
   useEffect(() => {
     let dailySymbols = 0;
     if (vjKillQuest) dailySymbols += 8;
@@ -113,8 +105,8 @@ const Calculator = () => {
   return (
     <section>
       <div className="h-screen flex justify-center items-center">
-        <div className="flex space-x-20">
-          <div className="px-10 py-10 space-y-5 shadow-card max-w-card">
+        <div className="flex flex-row shadow-card items-center">
+          <div className="px-10 py-10 space-y-5 max-w-card">
             <div className="flex justify-center items-center space-x-4 pb-4">
               <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
               <p className="text-xl text-text font-semibold uppercase">
@@ -127,7 +119,7 @@ const Calculator = () => {
                 type="number"
                 id="vj-level"
                 placeholder="Level"
-                onChange={onChangeLevel}
+                onChange={(event) => setVjLevel(parseInt(event.target.value))}
                 value={vjLevel}
                 className="symbol-input"
               ></input>
@@ -135,7 +127,9 @@ const Calculator = () => {
                 type="number"
                 id="vj-level"
                 placeholder="Experience"
-                onChange={onChangeExperience}
+                onChange={(event) =>
+                  setVjExperience(parseInt(event.target.value))
+                }
                 value={vjExperience}
                 className="symbol-input"
               ></input>
@@ -146,7 +140,7 @@ const Calculator = () => {
                 onClick={() => {
                   setVjKillQuest(!vjKillQuest);
                 }}
-                className={`daily-box ${vjKillQuest && "shadow-primary"}`}
+                className={`daily-box ${vjKillQuest && "border-primary"}`}
               >
                 Kill Quest
               </button>
@@ -155,7 +149,7 @@ const Calculator = () => {
                 onClick={() => {
                   setVjPartyQuest(!vjPartyQuest);
                 }}
-                className={`daily-box ${vjPartyQuest && "shadow-primary"}`}
+                className={`daily-box ${vjPartyQuest && "border-primary"}`}
               >
                 Party Quest
               </button>
@@ -166,7 +160,7 @@ const Calculator = () => {
                 onClick={() => {
                   setVjExpansion(!vjExpansion);
                 }}
-                className={`daily-box ${vjExpansion && "shadow-primary"}`}
+                className={`daily-box ${vjExpansion && "border-primary"}`}
               >
                 Reverse City
               </button>
@@ -177,19 +171,21 @@ const Calculator = () => {
                 onClick={() => console.log("clicked")}
                 size={30}
                 color={"#b18bd0"}
-                className="card-icon"
               />
               <p>{vjDailySymbols} symbols / day</p>
               <HiChevronDoubleUp
                 onClick={() => console.log("clicked")}
                 size={30}
                 color={"#919191"}
-                className="card-icon"
               />
             </div>
           </div>
 
-          <div className="flex shadow-card flex-col space-y-12 justify-center px-10">
+          <div className="flex flex-1">
+            <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-secondary to-transparent opacity-30"></div>
+          </div>
+
+          <div className="flex flex-col space-y-12 justify-center px-10">
             <div className="symbol-stats">
               <p>
                 <span>{vjDaysRemaining}</span> days to go

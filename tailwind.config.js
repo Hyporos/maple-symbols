@@ -12,15 +12,15 @@ export default {
       maxWidth: {
         'card' : '350px',
       },
-    },
-    colors: {
-      'transparent' : 'transparent',
-      'dark' : '#212121',
-      'text' : '#dedede',
-      'primary' : '#b18bd0',
-      'secondary' : '#404040',
-      'tertiary' : 'transparent',
-      'checked' : '#20d63e',
+      colors: {
+        'dark' : '#212121',
+        'text' : '#dedede',
+        'primary' : '#b18bd0',
+        'secondary' : '#606060',
+        'secondary-border' : '#8b6aa6',
+        'tertiary' : 'transparent',
+        'checked' : '#20d63e',
+      },
     },
     fontFamily: {
       'maven-pro' : ['Maven Pro','sans-serif'],
