@@ -4,7 +4,12 @@ export default {
     "./src/**/*.{ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      boxShadow: {
+        'card' : '0 0 50px -12px rgb(0 0 0 / 0.25)',
+        'input' : '0 0 5px 0px rgb(0 0 0 / 0.25)'
+      }
+    },
     colors: {
       'dark' : '#212121',
       'transparent' : 'transparent',
