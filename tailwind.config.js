@@ -11,8 +11,8 @@ export default {
       }
     },
     colors: {
-      'dark' : '#212121',
       'transparent' : 'transparent',
+      'dark' : '#212121',
       'text' : '#dedede',
       'primary' : '#b18bd0',
       'secondary' : '#404040',
