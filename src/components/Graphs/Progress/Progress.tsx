@@ -1,7 +1,11 @@
 const Progress = () => {
   return (
-    <div>Progress</div>
-  )
-}
+    <section>
+      <div className="flex justify-center items-center">
+        <div className="text-primary">Progress</div>
+      </div>
+    </section>
+  );
+};
 
-export default Progress
+export default Progress;
