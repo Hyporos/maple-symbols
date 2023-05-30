@@ -19,7 +19,7 @@ input[type="number"] {
         @apply overflow-hidden
     }
     section {
-        @apply bg-dark font-maven-pro
+        @apply bg-dark font-maven-pro tracking-wide
         
     }
     button, input {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { HiChevronUp, HiChevronDoubleUp } from "react-icons/hi";
+import { HiChevronUp, HiChevronDoubleUp, HiArrowSmRight } from "react-icons/hi";
 import { z } from "zod";
 import "./Calculator.css";
 
@@ -141,9 +141,9 @@ const Calculator = () => {
   return (
     <section>
       <div className="h-screen flex justify-center items-center">
-        <div className="flex shadow-card items-center bg-card rounded-lg h-[350px]">
+        <div className="flex shadow-card items-center bg-card rounded-lg h-[350px] x-5">
           <div className="px-10 space-y-6 w-[350px]">
-            <div className="flex justify-center items-center space-x-4 pb-4">
+            <div className="flex justify-center items-center space-x-4 pb-6">
               <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
               <p className="text-xl text-primary font-semibold tracking-wider uppercase">
                 Vanishing Journey
@@ -199,7 +199,7 @@ const Calculator = () => {
               </button>
             </div>
 
-            <div className="flex justify-between items-center text-primary text-opacity-70 pt-4">
+            <div className="flex justify-between items-center text-primary text-opacity-70 pt-6">
               <HiChevronUp
                 onClick={() => setVjExperience(vjExperience + vjDailySymbols)}
                 size={30}
@@ -210,7 +210,7 @@ const Calculator = () => {
               <HiChevronDoubleUp
                 onClick={() => handleVjUpgrade()}
                 size={30}
-                color={!vjUpgradeReady ? "#b18bd0" : "#919191"}
+                color={!vjUpgradeReady ? "#b18bd0" : "#333333"}
                 cursor={!vjUpgradeReady ? "pointer" : "default"}
               />
             </div>
@@ -218,12 +218,17 @@ const Calculator = () => {
 
           <div className="h-[350px] w-px bg-gradient-to-t from-transparent via-white to-transparent opacity-10"></div>
 
-          <div className="space-y-9 w-[350px]">
+          <div className="space-y-8 w-[350px]">
             <div className="symbol-stats">
-              <h1 className="text-primary text-xl font-semibold tracking-wider">
-                Level <span>{vjLevel}</span> &gt; Level{" "}
-                <span>{vjLevel + 1}</span>
-              </h1>
+              <div className="flex flex-row items-center justify-center text-primary text-xl font-semibold tracking-wider space-x-2">
+                <h1>
+                  Level <span>{vjLevel}</span>
+                </h1>
+                <HiArrowSmRight size={25} color={"#B2B2B2"}/>
+                <h1>
+                  Level <span>{vjLevel + 1}</span>
+                </h1>
+              </div>
             </div>
 
             <div className="symbol-stats">
@@ -246,6 +251,8 @@ const Calculator = () => {
                 </span>{" "}
                 symbols remaining
               </p>
+            </div>
+            <div className="symbol-stats">
               <p>
                 <span>
                   {vjLevel >= 0 &&
