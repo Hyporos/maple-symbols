@@ -73,7 +73,7 @@ const Calculator = () => {
 
   useEffect(() => {
     vjLevel > 20 && setVjLevel(20);
-    vjLevel < 1 && setVjLevel(1);
+    vjLevel === undefined && setVjLevel(1);
 
     let totalSymbols = 0;
     let splicedSymbols = vjSymbolData.splice(0, vjLevel);
@@ -137,10 +137,20 @@ const Calculator = () => {
     }
   };
 
+  const handleLevelInput = (e) => {
+    e.target.value.length === 0 || e.target.value < 1 ? e.target.value = '1' : e.target.value = e.target.value;
+    setVjLevel(e.target.value);
+  }
+
+  const handleExperienceInput = (e) => {
+    e.target.value.length === 0 ? e.target.value = '0' : e.target.value = e.target.value;
+    setVjExperience(e.target.value);
+  }
+
   return (
     <section>
       <div className="h-screen flex justify-center items-center">
-        <div className="flex shadow-card items-center bg-card rounded-lg h-[350px] x-5">
+        <div className="flex shadow-card items-center bg-card rounded-lg h-[350px]">
           <div className="px-10 space-y-6 w-[350px]">
             <div className="flex justify-center items-center space-x-4 pb-6">
               <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
@@ -152,16 +162,16 @@ const Calculator = () => {
             <div className="flex justify-center items-center space-x-2">
               <input
                 type="number"
-                placeholder="Level"
                 className="symbol-input"
-                onChange={(e) => setVjLevel(parseInt(e.target.value))}
+                defaultValue={1}
+                onBlur={(e) => handleLevelInput(e)}
               ></input>
               <TbSlash size={30} color="#B2B2B2" />
               <input
                 type="number"
-                placeholder="Experience"
                 className="symbol-input"
-                onBlur={(e) => setVjExperience(parseInt(e.target.value))}
+                defaultValue={0}
+                onBlur={(e) => handleExperienceInput(e)}
               ></input>
             </div>
 
@@ -262,8 +272,7 @@ const Calculator = () => {
             <div className="symbol-stats">
               <p>
                 <span>
-                  {vjLevel >= 0 &&
-                    vjLevel <= 19 &&
+                  {vjLevel <= 19 &&
                     vjSymbolData[vjLevel].mesosRequired.toLocaleString()}
                 </span>{" "}
                 mesos required
