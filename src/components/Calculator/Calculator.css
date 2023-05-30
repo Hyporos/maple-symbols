@@ -1,15 +1,11 @@
-span {
-    @apply text-accent
-}
-
 .symbol-stats {
-    @apply flex text-primary text-opacity-70 flex-col space-y-2 text-center font-maven-pro
+    @apply text-primary text-opacity-70 space-y-2 text-center
 }
 
 .daily-box {
-    @apply bg-secondary text-primary shadow-input py-1.5 w-full border-b-4 border-secondary-border focus:outline-accent tracking-wide
+    @apply bg-secondary text-primary text-opacity-70 hover:text-opacity-100 shadow-input py-1.5 w-full border-b-2 border-unchecked focus:outline-accent tracking-wide
 }
 
 .symbol-input {
-    @apply bg-secondary text-primary text-center text-sm shadow-input p-2.5 w-1/2 focus:outline-none focus:border-accent border-secondary border 
+    @apply bg-secondary shadow-input text-primary text-center text-sm  focus:outline-none p-2.5 w-1/2 
 }

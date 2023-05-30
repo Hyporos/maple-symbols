@@ -9,14 +9,12 @@ export default {
         'card' : '0 0 50px -12px rgb(0 0 0 / 0.25)',
         'input' : '0 0 5px 0px rgb(0 0 0 / 0.25)'
       },
-      maxWidth: {
-        'card' : '350px',
-      },
       textColor: {
         'primary' : '#ffffff',
       },
       backgroundColor: {
         'card' : '#1c1c1c',
+        
       },
       colors: {
         'dark' : '#212121',
@@ -24,7 +22,9 @@ export default {
         'secondary' : '#333333',
         'secondary-border' : '#8b6aa6',
         'tertiary' : 'transparent',
-        'checked' : '#20d63e',
+        'unchecked' : '#a30000',
+        'checked' : '#00ad08',
+        'upgrade' : '#e0e000',
       },
     },
     fontFamily: {

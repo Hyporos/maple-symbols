@@ -1,28 +1,9 @@
 import { useEffect, useState } from "react";
 import { HiChevronUp, HiChevronDoubleUp } from "react-icons/hi";
+import { z } from "zod";
 import "./Calculator.css";
 
 const Calculator = () => {
-  const [vjKillQuest, setVjKillQuest] = useState(false);
-  const [vjPartyQuest, setVjPartyQuest] = useState(false);
-  const [vjExpansion, setVjExpansion] = useState(false);
-
-  const [vjDailySymbols, setVjDailySymbols] = useState(0);
-
-  const [vjLevel, setVjLevel] = useState(1);
-  const [vjExperience, setVjExperience] = useState(0);
-
-  const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
-  const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
-
-  const [vjSpentMesos, setVjSpentMesos] = useState(0);
-  const [vjRemainingMesos, setVjRemainingMesos] = useState(0);
-
-  const [vjDaysRemaining, setVjDaysRemaining] = useState(0);
-  const [vjCompletionDate, setVjCompletionDate] = useState("");
-
-  const [vjUpgradeReady, setVjUpgradeReady] = useState(false);
-
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
     { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -46,6 +27,34 @@ const Calculator = () => {
     { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
   ];
 
+  const arcaneStatData = [
+    { class: "Demon Avenger", statForm: "HP", statGain: 2100 },
+    { class: "Xenon", statForm: "all stat", statGain: 48 },
+    { class: "Other", statForm: "main stat", statGain: 100 },
+  ];
+
+  const [vjKillQuest, setVjKillQuest] = useState(false);
+  const [vjPartyQuest, setVjPartyQuest] = useState(false);
+  const [vjExpansion, setVjExpansion] = useState(false);
+
+  const [vjDailySymbols, setVjDailySymbols] = useState(0);
+
+  const [vjLevel, setVjLevel] = useState(1);
+  const [vjExperience, setVjExperience] = useState(0);
+
+  const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
+  const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
+
+  const [vjSpentMesos, setVjSpentMesos] = useState(0);
+  const [vjRemainingMesos, setVjRemainingMesos] = useState(0);
+
+  const [vjDaysRemaining, setVjDaysRemaining] = useState(0);
+  const [vjCompletionDate, setVjCompletionDate] = useState("");
+
+  const [vjUpgradeReady, setVjUpgradeReady] = useState(false);
+
+  const [selectedClass, setSelectedClass] = useState(2);
+
   useEffect(() => {
     let dailySymbols = 0;
     if (vjKillQuest) dailySymbols += 8;
@@ -55,6 +64,10 @@ const Calculator = () => {
   }, [vjKillQuest, vjPartyQuest, vjExpansion]);
 
   useEffect(() => {
+
+    if (vjLevel > 20) setVjLevel(20);
+    if (vjLevel < 1 ) setVjLevel(1);
+
     let totalSymbols = 0;
     let splicedSymbols = vjSymbolData.splice(0, vjLevel);
     setVjTotalSymbols(
@@ -111,7 +124,6 @@ const Calculator = () => {
     } else {
       setVjUpgradeReady(true);
     }
-    console.log(vjExperience, result?.symbolsRequired);
   }, [vjRemainingSymbols]);
 
   const handleVjUpgrade = () => {
@@ -128,35 +140,59 @@ const Calculator = () => {
   return (
     <section>
       <div className="h-screen flex justify-center items-center">
-        <div className="flex flex-row shadow-card items-center bg-card rounded-lg">
-
-          <div className="flex flex-col space-y-12 justify-center px-10">
+        <div className="flex shadow-card items-center bg-card rounded-lg">
+          <div className="flex-col space-y-12 px-10 w-[330px]">
             <div className="symbol-stats">
-              <h1 className="text-primary text-xl font-bold tracking-wide">Level <span>{vjLevel}</span> &gt; Level <span>{vjLevel + 1}</span></h1>
+              <h1 className="text-primary text-xl font-bold tracking-wide">
+                Level <span>{vjLevel}</span> &gt; Level{" "}
+                <span>{vjLevel + 1}</span>
+              </h1>
             </div>
 
             <div className="symbol-stats">
               <p>
-                <span>{vjTotalSymbols}</span> total symbols
+                <span>
+                  {vjLevel >= 0 &&
+                    vjLevel <= 19 &&
+                    ~~(
+                      (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
+                      vjDailySymbols
+                    )}
+                </span>{" "}
+                days to go
               </p>
               <p>
-                <span>{vjRemainingSymbols}</span> symbols remaining
+                <span>
+                  {vjLevel >= 0 &&
+                    vjLevel <= 19 &&
+                    vjSymbolData[vjLevel].symbolsRequired}
+                </span>{" "}
+                symbols required
+              </p>
+              <p>
+                <span>
+                  {vjLevel >= 0 &&
+                    vjLevel <= 19 &&
+                    vjSymbolData[vjLevel].mesosRequired.toLocaleString()}
+                </span>{" "}
+                mesos required
               </p>
             </div>
 
             <div className="symbol-stats">
               <p>
-                <span>{vjSpentMesos.toLocaleString()}</span> total mesos spent
+                <span>10</span> arcane force gain
               </p>
               <p>
-                <span>{vjRemainingMesos.toLocaleString()}</span> mesos needed
+                <span>{arcaneStatData[selectedClass].statGain}</span>{" "}
+                {arcaneStatData[selectedClass].statForm} gain
               </p>
             </div>
           </div>
 
           <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-white to-transparent opacity-10"></div>
 
-          <div className="px-10 py-10 space-y-5 max-w-card">
+          <div className="px-10 py-10 space-y-5 w-[350px]">
             <div className="flex items-center space-x-4 pb-4">
               <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
               <p className="text-xl text-primary font-semibold tracking-wider uppercase">
@@ -167,7 +203,7 @@ const Calculator = () => {
             <div className="flex space-x-4 justify-center">
               <input
                 type="number"
-                id="vj-level"
+                id="level"
                 placeholder="Level"
                 onChange={(event) => setVjLevel(parseInt(event.target.value))}
                 value={vjLevel}
@@ -175,9 +211,9 @@ const Calculator = () => {
               ></input>
               <input
                 type="number"
-                id="vj-level"
+                id="experience"
                 placeholder="Experience"
-                onChange={(event) =>
+                onChange={(event) => 
                   setVjExperience(parseInt(event.target.value))
                 }
                 value={vjExperience}
@@ -190,7 +226,7 @@ const Calculator = () => {
                 onClick={() => {
                   setVjKillQuest(!vjKillQuest);
                 }}
-                className={`daily-box ${vjKillQuest && "border-primary"}`}
+                className={`daily-box ${vjKillQuest && "border-checked"}`}
               >
                 Kill Quest
               </button>
@@ -199,7 +235,7 @@ const Calculator = () => {
                 onClick={() => {
                   setVjPartyQuest(!vjPartyQuest);
                 }}
-                className={`daily-box ${vjPartyQuest && "border-primary"}`}
+                className={`daily-box ${vjPartyQuest && "border-checked"}`}
               >
                 Party Quest
               </button>
@@ -210,7 +246,7 @@ const Calculator = () => {
                 onClick={() => {
                   setVjExpansion(!vjExpansion);
                 }}
-                className={`daily-box ${vjExpansion && "border-primary"}`}
+                className={`daily-box ${vjExpansion && "border-checked"}`}
               >
                 Reverse City
               </button>
@@ -227,7 +263,7 @@ const Calculator = () => {
               <HiChevronDoubleUp
                 onClick={() => handleVjUpgrade()}
                 size={30}
-                color={!vjUpgradeReady ? "green" : "#919191"}
+                color={!vjUpgradeReady ? "#b18bd0" : "#919191"}
                 cursor={!vjUpgradeReady ? "pointer" : "default"}
               />
             </div>
@@ -235,7 +271,7 @@ const Calculator = () => {
 
           <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-white to-transparent opacity-10"></div>
 
-          <div className="flex flex-col space-y-12 justify-center px-10">
+          <div className="flex flex-col space-y-12 px-10 w-[330px]">
             <div className="symbol-stats">
               <p>
                 <span>{vjDaysRemaining}</span> days to go
@@ -256,10 +292,10 @@ const Calculator = () => {
 
             <div className="symbol-stats">
               <p>
-                <span>{vjSpentMesos.toLocaleString()}</span> total mesos spent
+                <span>{vjSpentMesos.toLocaleString()}</span> total mesos
               </p>
               <p>
-                <span>{vjRemainingMesos.toLocaleString()}</span> mesos needed
+                <span>{vjRemainingMesos.toLocaleString()}</span> mesos required
               </p>
             </div>
           </div>

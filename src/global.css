@@ -16,12 +16,13 @@ input[type="number"] {
 
 @layer base {
     section {
-        @apply bg-dark
-    }
-    h1, p, button, div {
-        @apply font-maven-pro
+        @apply bg-dark font-maven-pro
+        
     }
     button, input {
         @apply rounded-lg
+    }
+    span {
+        @apply text-accent
     }
 }
