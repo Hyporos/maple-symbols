@@ -1,11 +1,15 @@
-.symbol-stats {
-    @apply text-primary text-opacity-70 space-y-1.5 text-center
+.vertical-divider {
+    @apply bg-gradient-to-t from-transparent via-white to-transparent opacity-10 w-px h-[350px] 
 }
 
-.daily-box {
-    @apply bg-secondary shadow-input text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent w-full py-1.5  
+.symbol-stats {
+    @apply text-secondary text-center space-y-1.5
 }
 
 .symbol-input {
     @apply bg-secondary shadow-input text-primary text-center text-sm focus:outline-none w-1/2 p-2.5
+}
+
+.daily-box {
+    @apply bg-secondary shadow-input text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent select-none w-full py-1.5  
 }

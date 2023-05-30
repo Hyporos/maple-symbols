@@ -16,6 +16,7 @@ export default {
         'primary': '#ffffff',
         'secondary': '#bfbfbf',
         'accent': '#b18bd0',
+        'upgrade': '#00b800',
       },
       backgroundColor: {
         'dark': '#212121',
@@ -26,6 +27,7 @@ export default {
       borderColor: {
         'unchecked': '#8c0000',
         'checked': '#008c00',
+        
       },
       outlineColor: {
         'accent': '#b18bd0',

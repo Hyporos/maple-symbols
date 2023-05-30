@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { HiChevronUp, HiChevronDoubleUp, HiArrowSmRight } from "react-icons/hi";
-import { z } from "zod";
+import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 
 const Calculator = () => {
@@ -33,16 +33,15 @@ const Calculator = () => {
     { class: "Other", statForm: "main stat", statGain: 100 },
   ];
 
-  const arcaneForcePerUpgrade = 10;
-
   const [vjKillQuest, setVjKillQuest] = useState(false);
   const [vjPartyQuest, setVjPartyQuest] = useState(false);
   const [vjExpansion, setVjExpansion] = useState(false);
 
   const [vjDailySymbols, setVjDailySymbols] = useState(0);
+  const [vjWeeklySymbols, setVjWeeklySymbols] = useState(0);
 
   const [vjLevel, setVjLevel] = useState(1);
-  const [vjExperience, setVjExperience] = useState(0);
+  const [vjExperience, setVjExperience] = useState(1);
 
   const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
   const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
@@ -54,20 +53,27 @@ const Calculator = () => {
   const [vjCompletionDate, setVjCompletionDate] = useState("");
 
   const [vjUpgradeReady, setVjUpgradeReady] = useState(false);
+  const [vjSymbolMaxed, setVjSymbolMaxed] = useState(false);
 
   const [selectedClass, setSelectedClass] = useState(2);
+
+  const nextSymbol = vjSymbolData.find(
+    (required) => required.level === vjLevel + 1
+  );
+
+  const arcaneForcePerUpgrade = 10;
 
   useEffect(() => {
     let dailySymbols = 0;
     if (vjKillQuest) dailySymbols += 9;
-    if (vjPartyQuest) dailySymbols += 6;
+    vjPartyQuest ? setVjWeeklySymbols(45) : setVjWeeklySymbols(0);
     if (vjExpansion) dailySymbols += 9;
     setVjDailySymbols(dailySymbols);
   }, [vjKillQuest, vjPartyQuest, vjExpansion]);
 
   useEffect(() => {
-    if (vjLevel > 20) setVjLevel(20);
-    if (vjLevel < 1) setVjLevel(1);
+    vjLevel > 20 && setVjLevel(20);
+    vjLevel < 1 && setVjLevel(1);
 
     let totalSymbols = 0;
     let splicedSymbols = vjSymbolData.splice(0, vjLevel);
@@ -83,7 +89,13 @@ const Calculator = () => {
         totalSymbols
       )
     );
-  }, [vjLevel, vjExperience]);
+
+    vjExperience >= nextSymbol?.symbolsRequired
+      ? setVjUpgradeReady(false)
+      : setVjUpgradeReady(true);
+
+    vjLevel === 20 && setVjSymbolMaxed(true);
+  }, [vjLevel, vjExperience]); // if input IS VALID then update value
 
   useEffect(() => {
     let remainingSymbols = 0;
@@ -103,12 +115,14 @@ const Calculator = () => {
   }, [vjTotalSymbols]);
 
   useEffect(() => {
-    setVjDaysRemaining(~~(vjRemainingSymbols / vjDailySymbols));
+    setVjDaysRemaining(Math.ceil(vjRemainingSymbols / vjDailySymbols));
   }, [vjRemainingSymbols, vjDailySymbols]);
 
   useEffect(() => {
     const date = new Date();
-    date.setDate(date.getDate() + ~~(vjRemainingSymbols / vjDailySymbols));
+    date.setDate(
+      date.getDate() + Math.ceil(vjRemainingSymbols / vjDailySymbols)
+    );
     let currentDay = String(date.getDate()).padStart(2, "0");
     let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
     let currentYear = date.getFullYear();
@@ -116,25 +130,10 @@ const Calculator = () => {
     setVjCompletionDate(currentDate);
   }, [vjDaysRemaining]);
 
-  useEffect(() => {
-    const result = vjSymbolData.find(
-      (required) => required.level === vjLevel + 1
-    );
-    if (vjExperience >= result?.symbolsRequired) {
-      setVjUpgradeReady(false);
-    } else {
-      setVjUpgradeReady(true);
-    }
-  }, [vjRemainingSymbols]);
-
   const handleVjUpgrade = () => {
-    const result = vjSymbolData.find(
-      (required) => required.level === vjLevel + 1
-    );
-    if (vjExperience >= result?.symbolsRequired) {
-      setVjExperience(vjExperience - result?.symbolsRequired);
+    if (vjExperience >= nextSymbol?.symbolsRequired) {
+      setVjExperience(vjExperience - nextSymbol?.symbolsRequired); // fix stupid boolean usestate opposite bug
       setVjLevel(vjLevel + 1);
-      setVjUpgradeReady(true);
     }
   };
 
@@ -145,113 +144,121 @@ const Calculator = () => {
           <div className="px-10 space-y-6 w-[350px]">
             <div className="flex justify-center items-center space-x-4 pb-6">
               <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
-              <p className="text-xl text-primary font-semibold tracking-wider uppercase">
+              <p className="text-xl text-primary font-semibold tracking-wide uppercase">
                 Vanishing Journey
               </p>
             </div>
 
-            <div className="flex space-x-4 justify-center">
+            <div className="flex justify-center items-center space-x-2">
               <input
                 type="number"
-                id="level"
                 placeholder="Level"
-                onChange={(event) => setVjLevel(parseInt(event.target.value))}
-                value={vjLevel}
                 className="symbol-input"
+                onChange={(e) => setVjLevel(parseInt(e.target.value))}
               ></input>
+              <TbSlash size={30} color="#B2B2B2" />
               <input
                 type="number"
-                id="experience"
                 placeholder="Experience"
-                onChange={(event) =>
-                  setVjExperience(parseInt(event.target.value))
-                }
-                value={vjExperience}
                 className="symbol-input"
+                onBlur={(e) => setVjExperience(parseInt(e.target.value))}
               ></input>
             </div>
 
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 mt-6">
               <button
-                onClick={() => {
-                  setVjKillQuest(!vjKillQuest);
-                }}
                 className={`daily-box ${vjKillQuest && "border-checked"}`}
+                onClick={() => setVjKillQuest(!vjKillQuest)}
               >
                 Daily
               </button>
 
               <button
-                onClick={() => {
-                  setVjPartyQuest(!vjPartyQuest);
-                }}
                 className={`daily-box ${vjPartyQuest && "border-checked"}`}
+                onClick={() => setVjPartyQuest(!vjPartyQuest)}
               >
                 Weekly
               </button>
               <button
-                onClick={() => {
-                  setVjExpansion(!vjExpansion);
-                }}
                 className={`daily-box ${vjExpansion && "border-checked"}`}
+                onClick={() => setVjExpansion(!vjExpansion)}
               >
                 Extra
               </button>
             </div>
 
-            <div className="flex justify-between items-center text-primary text-opacity-70 pt-6">
+            <div className="flex justify-between items-center text-secondary select-none pt-6">
               <HiChevronUp
-                onClick={() => setVjExperience(vjExperience + vjDailySymbols)}
                 size={30}
-                color={"#b18bd0"}
+                color="#b18bd0"
                 cursor="pointer"
+                onClick={() => setVjExperience(vjExperience + vjDailySymbols)}
               />
-              <p className="select-none">{vjDailySymbols} symbols / day</p>
+              <div className="flex flex-col text-center text-sm">
+                <p>{vjDailySymbols} symbols / day</p>
+                <p>{vjWeeklySymbols} symbols / week</p>
+              </div>
               <HiChevronDoubleUp
-                onClick={() => handleVjUpgrade()}
                 size={30}
-                color={!vjUpgradeReady ? "#b18bd0" : "#333333"}
-                cursor={!vjUpgradeReady ? "pointer" : "default"}
+                color="#b18bd0"
+                cursor="pointer"
+                onClick={() => setVjExperience(vjExperience + vjWeeklySymbols)}
               />
             </div>
           </div>
 
-          <div className="h-[350px] w-px bg-gradient-to-t from-transparent via-white to-transparent opacity-10"></div>
+          <div className="vertical-divider"></div>
 
-          <div className="space-y-8 w-[350px]">
+          <div className="w-[350px] space-y-9">
             <div className="symbol-stats">
-              <div className="flex flex-row items-center justify-center text-primary text-xl font-semibold tracking-wider space-x-2">
-                <h1>
-                  Level <span>{vjLevel}</span>
-                </h1>
-                <HiArrowSmRight size={25} color={"#B2B2B2"}/>
-                <h1>
-                  Level <span>{vjLevel + 1}</span>
-                </h1>
+              <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
+                <div
+                  className={`flex space-x-2 ${
+                    vjLevel < 20 ? "block" : "hidden"
+                  }`}
+                >
+                  <h1>
+                    Level <span>{vjLevel}</span>
+                  </h1>
+                  <HiArrowSmRight size={25} color={"#B2B2B2"} />
+                  <h1>
+                    Level <span>{vjLevel + 1}</span>
+                  </h1>
+                </div>
+                <div
+                  className={`flex tracking-widest uppercase space-x-2 ${
+                    vjLevel < 20 ? "hidden" : "block"
+                  }`}
+                >
+                  <h1>
+                    <span>Max</span> Level
+                  </h1>
+                </div>
               </div>
             </div>
 
             <div className="symbol-stats">
               <p>
                 <span>
-                  {vjLevel >= 0 &&
-                    vjLevel <= 19 &&
-                    ~~(
-                      (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
-                      vjDailySymbols
-                    )}
-                </span>{" "}
-                days to go
+                  {vjLevel <= 19 && vjUpgradeReady
+                    ? Math.ceil(
+                        (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
+                          vjDailySymbols
+                      )
+                    : "Ready"}
+                </span>
+                {vjUpgradeReady ? " days to go" : " for upgrade"}
               </p>
               <p>
                 <span>
-                  {vjLevel >= 0 &&
-                    vjLevel <= 19 &&
-                    vjSymbolData[vjLevel].symbolsRequired - vjExperience}
-                </span>{" "}
-                symbols remaining
+                  {vjLevel <= 19 && vjUpgradeReady
+                    ? vjSymbolData[vjLevel].symbolsRequired - vjExperience
+                    : "Sufficient"}
+                </span>
+                {vjUpgradeReady ? " symbols remaining" : " symbols reached"}
               </p>
             </div>
+
             <div className="symbol-stats">
               <p>
                 <span>

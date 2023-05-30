@@ -20,7 +20,6 @@ input[type="number"] {
     }
     section {
         @apply bg-dark font-maven-pro tracking-wide
-        
     }
     button, input {
         @apply rounded-lg
