@@ -9,7 +9,7 @@ const Calculator = () => {
 
   const [vjDailySymbols, setVjDailySymbols] = useState(0);
 
-  const [vjLevel, setVjLevel] = useState(0);
+  const [vjLevel, setVjLevel] = useState(1);
   const [vjExperience, setVjExperience] = useState(0);
 
   const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
@@ -104,19 +104,19 @@ const Calculator = () => {
 
   useEffect(() => {
     const result = vjSymbolData.find(
-      required => required.level === vjLevel + 1
+      (required) => required.level === vjLevel + 1
     );
     if (vjExperience >= result?.symbolsRequired) {
       setVjUpgradeReady(false);
     } else {
       setVjUpgradeReady(true);
     }
-    console.log(vjExperience, result?.symbolsRequired)
+    console.log(vjExperience, result?.symbolsRequired);
   }, [vjRemainingSymbols]);
 
   const handleVjUpgrade = () => {
     const result = vjSymbolData.find(
-      required => required.level === vjLevel + 1
+      (required) => required.level === vjLevel + 1
     );
     if (vjExperience >= result?.symbolsRequired) {
       setVjExperience(vjExperience - result?.symbolsRequired);
@@ -128,11 +128,38 @@ const Calculator = () => {
   return (
     <section>
       <div className="h-screen flex justify-center items-center">
-        <div className="flex flex-row shadow-card items-center">
+        <div className="flex flex-row shadow-card items-center bg-card rounded-lg">
+
+          <div className="flex flex-col space-y-12 justify-center px-10">
+            <div className="symbol-stats">
+              <h1 className="text-primary text-xl font-bold tracking-wide">Level <span>{vjLevel}</span> &gt; Level <span>{vjLevel + 1}</span></h1>
+            </div>
+
+            <div className="symbol-stats">
+              <p>
+                <span>{vjTotalSymbols}</span> total symbols
+              </p>
+              <p>
+                <span>{vjRemainingSymbols}</span> symbols remaining
+              </p>
+            </div>
+
+            <div className="symbol-stats">
+              <p>
+                <span>{vjSpentMesos.toLocaleString()}</span> total mesos spent
+              </p>
+              <p>
+                <span>{vjRemainingMesos.toLocaleString()}</span> mesos needed
+              </p>
+            </div>
+          </div>
+
+          <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-white to-transparent opacity-10"></div>
+
           <div className="px-10 py-10 space-y-5 max-w-card">
-            <div className="flex justify-center items-center space-x-4 pb-4">
+            <div className="flex items-center space-x-4 pb-4">
               <img src="/vj-symbol.webp" alt="Vanishing Journey Symbol" />
-              <p className="text-xl text-text font-semibold uppercase">
+              <p className="text-xl text-primary font-semibold tracking-wider uppercase">
                 Vanishing Journey
               </p>
             </div>
@@ -150,7 +177,6 @@ const Calculator = () => {
                 type="number"
                 id="vj-level"
                 placeholder="Experience"
-                defaultValue={"1"}
                 onChange={(event) =>
                   setVjExperience(parseInt(event.target.value))
                 }
@@ -190,7 +216,7 @@ const Calculator = () => {
               </button>
             </div>
 
-            <div className="flex justify-between items-center text-text text-opacity-70 pt-4">
+            <div className="flex justify-between items-center text-primary text-opacity-70 pt-4">
               <HiChevronUp
                 onClick={() => setVjExperience(vjExperience + vjDailySymbols)}
                 size={30}
@@ -202,12 +228,12 @@ const Calculator = () => {
                 onClick={() => handleVjUpgrade()}
                 size={30}
                 color={!vjUpgradeReady ? "green" : "#919191"}
-                cursor="pointer"
+                cursor={!vjUpgradeReady ? "pointer" : "default"}
               />
             </div>
           </div>
 
-          <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-secondary to-transparent opacity-30"></div>
+          <div className="h-[350px] w-px mx-8 bg-gradient-to-t from-transparent via-white to-transparent opacity-10"></div>
 
           <div className="flex flex-col space-y-12 justify-center px-10">
             <div className="symbol-stats">

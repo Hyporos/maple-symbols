@@ -12,11 +12,16 @@ export default {
       maxWidth: {
         'card' : '350px',
       },
+      textColor: {
+        'primary' : '#ffffff',
+      },
+      backgroundColor: {
+        'card' : '#1c1c1c',
+      },
       colors: {
         'dark' : '#212121',
-        'text' : '#dedede',
-        'primary' : '#b18bd0',
-        'secondary' : '#606060',
+        'accent' : '#b18bd0',
+        'secondary' : '#333333',
         'secondary-border' : '#8b6aa6',
         'tertiary' : 'transparent',
         'checked' : '#20d63e',
