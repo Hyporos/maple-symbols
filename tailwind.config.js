@@ -32,6 +32,9 @@ export default {
       outlineColor: {
         'accent': '#b18bd0',
       },
+      translate: {
+        'symbol': '-7.5px',
+      }
     },
   },
   plugins: [],

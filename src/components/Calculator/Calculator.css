@@ -7,7 +7,7 @@
 }
 
 .symbol-input {
-    @apply bg-secondary shadow-input text-primary text-center text-sm focus:outline-none w-1/2 p-2.5
+    @apply bg-secondary shadow-input text-primary text-center text-sm tracking-wider focus:outline-none w-1/2 p-2.5
 }
 
 .daily-box {

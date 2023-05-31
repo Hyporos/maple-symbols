@@ -61,7 +61,7 @@ const Calculator = () => {
     (required) => required.level === vjLevel + 1
   );
 
-  const arcaneForcePerUpgrade = 10;
+  const arcaneForcePerLevel = 10;
 
   useEffect(() => {
     let dailySymbols = 0;
@@ -134,26 +134,6 @@ const Calculator = () => {
     }
   };
 
-  const handleValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.id === "level") {
-      e.target.value.length === 0 || Number(e.target.value) < 1
-        ? (e.target.value = "1")
-        : (e.target.value = e.target.value);
-      Number(e.target.value) > 20
-        ? (e.target.value = "20")
-        : (e.target.value = e.target.value);
-      setVjLevel(Number(e.target.value));
-    } else {
-      e.target.value.length === 0 || Number(e.target.value) < 0
-        ? (e.target.value = "0")
-        : (e.target.value = e.target.value);
-      Number(e.target.value) > 2679
-        ? (e.target.value = "2679")
-        : (e.target.value = e.target.value);
-      setVjExperience(Number(e.target.value));
-    }
-  };
-
   return (
     <section>
       <div className="flex justify-center items-center">
@@ -166,21 +146,23 @@ const Calculator = () => {
               </p>
             </div>
 
-            <div className="flex justify-center items-center space-x-2">
+            <div className="flex justify-center items-center space-x-2 ">
               <input
                 type="number"
-                className="symbol-input"
+                placeholder="Level"
                 id="level"
-                defaultValue={1}
-                onBlur={(e) => handleValidation(e)}
+                value={vjLevel}
+                className="symbol-input"
+                onChange={(e) => setVjLevel(parseInt(e.target.value))}
               ></input>
               <TbSlash size={30} color="#B2B2B2" />
               <input
                 type="number"
-                className="symbol-input"
+                placeholder="Experience"
                 id="experience"
-                defaultValue={0}
-                onBlur={(e) => handleValidation(e)}
+                value={vjExperience}
+                className="symbol-input"
+                onChange={(e) => setVjExperience(parseInt(e.target.value))}
               ></input>
             </div>
 
@@ -290,7 +272,7 @@ const Calculator = () => {
 
             <div className="symbol-stats">
               <p>
-                <span>+{arcaneForcePerUpgrade}</span> arcane force
+                <span>+{arcaneForcePerLevel}</span> arcane force
               </p>
               <p>
                 <span>+{arcaneStatData[selectedClass].statGain}</span>{" "}

@@ -6,9 +6,12 @@ import "./Selector.css";
 interface Props {
   swapped: boolean;
   setSwapped: Dispatch<SetStateAction<boolean>>;
+  selectedSymbol: string;
+  setSelectedSymbol: Dispatch<SetStateAction<string>>;
+  locked: boolean;
 }
 
-const Selector = ({ swapped, setSwapped }: Props) => {
+const Selector = ({ swapped, setSwapped, selectedSymbol, setSelectedSymbol, locked }: Props) => {
 
     const handleSettings = () => { 
         
@@ -27,28 +30,28 @@ const Selector = ({ swapped, setSwapped }: Props) => {
             />
           </div>
           <div className={`flex space-x-10 ${swapped ? "hidden" : "block"}`}>
-            <div className="selector-level">
-              <img src="/symbols/vj-symbol.webp" alt="VJ Symbol" />
+            <div className={`selector-level ${selectedSymbol === 'VJ' && 'text-primary'}`} onClick={() => setSelectedSymbol('VJ')}>
+              <img src="/symbols/vj-symbol.webp" alt="VJ Symbol" className={`${selectedSymbol === 'VJ' && 'translate-y-symbol'}`} />
               <p>Lv. 17</p>
             </div>
-            <div className="selector-level">
-              <img src="/symbols/chuchu-symbol.webp" alt="Chu Chu Symbol" />
+            <div className={`selector-level ${selectedSymbol === 'ChuChu' && 'text-primary'}`} onClick={() => setSelectedSymbol('ChuChu')}>
+              <img src="/symbols/chuchu-symbol.webp" alt="Chu Chu Symbol" className={`${selectedSymbol === 'ChuChu' && 'translate-y-symbol'}`}/>
               <p>Lv. 16</p>
             </div>
-            <div className="selector-level">
-              <img src="/symbols/lach-symbol.webp" alt="Lachelein Symbol" />
+            <div className={`selector-level ${selectedSymbol === 'Lach' && 'text-primary'}`} onClick={() => setSelectedSymbol('Lach')}>
+              <img src="/symbols/lach-symbol.webp" alt="Lachelein Symbol" className={`${selectedSymbol === 'Lach' && 'translate-y-symbol'}`}/>
               <p>Lv. 16</p>
             </div>
-            <div className="selector-level">
-              <img src="/symbols/arcana-symbol.webp" alt="Arcana Symbol" />
+            <div className={`selector-level ${selectedSymbol === 'Arcana' && 'text-primary'}`} onClick={() => setSelectedSymbol('Arcana')}>
+              <img src="/symbols/arcana-symbol.webp" alt="Arcana Symbol" className={`${selectedSymbol === 'Arcana' && 'translate-y-symbol'}`}/>
               <p>Lv. 15</p>
             </div>
-            <div className="selector-level">
-              <img src="/symbols/morass-symbol.webp" alt="Morass Symbol" />
+            <div className={`selector-level ${selectedSymbol === 'Morass' && 'text-primary'}`} onClick={() => setSelectedSymbol('Morass')}>
+              <img src="/symbols/morass-symbol.webp" alt="Morass Symbol" className={`${selectedSymbol === 'Morass' && 'translate-y-symbol'}`}/>
               <p>Lv. 14</p>
             </div>
-            <div className="selector-level">
-              <img src="/symbols/esfera-symbol.webp" alt="Esfera Symbol" />
+            <div className={`selector-level ${selectedSymbol === 'Esfera' && 'text-primary'}`} onClick={() => setSelectedSymbol('Esfera')}>
+              <img src="/symbols/esfera-symbol.webp" alt="Esfera Symbol" className={`${selectedSymbol === 'Esfera' && 'translate-y-symbol'}`}/>
               <p>Lv. 14</p>
             </div>
           </div>
