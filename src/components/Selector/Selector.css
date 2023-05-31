@@ -1,0 +1,18 @@
+.selector-level > img {
+    width: 40px;
+    height: 40px;
+    transition: .25s
+}
+
+.selector-level:hover > img {
+    transform: translate(0px,-7.5px);
+    transition: .25s
+}
+
+.selector-level {
+    @apply flex flex-col items-center text-accent hover:text-primary text-xs font-semibold transition-all select-none
+}
+
+.horizontal-divider {
+    @apply my-7 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-white to-transparent opacity-20 w-[700px]
+}
