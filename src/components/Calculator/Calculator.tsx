@@ -1,20 +1,18 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { HiChevronUp, HiChevronDoubleUp, HiArrowSmRight } from "react-icons/hi";
+import { HiArrowUturnLeft } from "react-icons/hi2";
+import { RxReset } from "react-icons/rx";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 
 interface Props {
   vjLevel: number;
   setVjLevel: Dispatch<SetStateAction<Number>>;
-  vjUpgradeReady: boolean;
-  setVjUpgradeReady: Dispatch<SetStateAction<boolean>>;
 }
 
 const Calculator = ({
   vjLevel,
   setVjLevel,
-  vjUpgradeReady,
-  setVjUpgradeReady,
 }: Props) => {
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
@@ -92,10 +90,6 @@ const Calculator = ({
         totalSymbols
       )
     );
-
-    vjExperience < nextSymbol?.symbolsRequired
-      ? setVjUpgradeReady(true)
-      : setVjUpgradeReady(false);
 
   }, [vjLevel, vjExperience]);
 
@@ -211,11 +205,11 @@ const Calculator = ({
             </div>
 
             <div className="flex justify-between items-center text-secondary select-none pt-6">
-              <HiChevronUp
+              <HiArrowUturnLeft
                 size={30}
-                color="#b18bd0"
                 cursor="pointer"
-                onClick={() => setVjExperience(vjExperience + vjDailySymbols)}
+                className="fill-accent hover:fill-white transition-all"
+                onClick={() => {setVjExperience(NaN); setVjLevel(NaN);}}
               />
               <div className="flex flex-col text-center text-sm">
                 <p>{vjDailySymbols} symbols / day</p>
@@ -223,8 +217,8 @@ const Calculator = ({
               </div>
               <HiChevronDoubleUp
                 size={30}
-                color="#b18bd0"
                 cursor="pointer"
+                className="fill-accent hover:fill-white transition-all"
                 onClick={() => setVjExperience(vjExperience + vjWeeklySymbols)}
               />
             </div>
@@ -260,9 +254,9 @@ const Calculator = ({
                       </span>
                     ) : (
                       <div className="space-y-4">
-                        <p className="text-secondary">Locked</p>
+                        <p className="text-secondary">Disabled</p>
                         <p className="text-secondary text-xs lowercase font-light tracking-widest">
-                          Enter a level to unlock this symbol
+                          Enter a level to enable this symbol
                         </p>
                       </div>
                     )}
@@ -278,24 +272,24 @@ const Calculator = ({
             >
               <p>
                 <span>
-                  {vjLevel <= 19 && vjUpgradeReady
+                  {vjLevel <= 19 &&  vjExperience < nextSymbol?.symbolsRequired
                     ? Math.ceil(
                         (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
                           vjDailySymbols
                       )
                     : "Ready"}
                 </span>
-                {vjUpgradeReady
+                {vjExperience < nextSymbol?.symbolsRequired
                   ? " days to go"
                   : " for upgrade"}
               </p>
               <p>
                 <span>
-                  {vjLevel <= 19 && vjUpgradeReady
+                  {vjLevel <= 19 && vjExperience < nextSymbol?.symbolsRequired
                     ? vjSymbolData[vjLevel].symbolsRequired - vjExperience
                     : "Sufficient"}
                 </span>
-                {vjUpgradeReady
+                {vjExperience < nextSymbol?.symbolsRequired
                   ? " symbols remaining"
                   : " symbols reached"}
               </p>

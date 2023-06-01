@@ -12,7 +12,6 @@ function App() {
   const [selectedClass, setSelectedClass] = useState("");
 
   const [vjLevel, setVjLevel] = useState(1);
-  const [vjUpgradeReady, setVjUpgradeReady] = useState(false);
 
   return (
     <>
@@ -25,9 +24,8 @@ function App() {
         selectedSacredSymbol={selectedSacredSymbol}
         setSelectedSacredSymbol={setSelectedSacredSymbol}
         vjLevel={vjLevel}
-        vjUpgradeReady={vjUpgradeReady}
       ></Selector>
-      <Calculator vjLevel={vjLevel} setVjLevel={setVjLevel} vjUpgradeReady={vjUpgradeReady} setVjUpgradeReady={setVjUpgradeReady}></Calculator>
+      <Calculator vjLevel={vjLevel} setVjLevel={setVjLevel}></Calculator>
       {/*<Progress arcaneSymbolData={arcaneSymbolData}></Progress>*/}
       {/*<Footer></Footer>*/}
     </>

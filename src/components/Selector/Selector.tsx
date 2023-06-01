@@ -10,7 +10,6 @@ interface Props {
   selectedSacredSymbol: string;
   setSelectedSacredSymbol: Dispatch<SetStateAction<string>>;
   vjLevel: number;
-  vjUpgradeReady: boolean;
 }
 
 const Selector = ({
@@ -21,7 +20,6 @@ const Selector = ({
   selectedSacredSymbol,
   setSelectedSacredSymbol,
   vjLevel,
-  vjUpgradeReady,
 }: Props) => {
   const handleSettings = () => {};
 
@@ -100,10 +98,10 @@ const Selector = ({
           <div className={`flex space-x-10 ${swapped ? "hidden" : "block"}`}>
             {arcaneSymbols.map((symbol) => (
               <div
-                className={`selector-level ${
+                className={`selector-level cursor-pointer ${
                   selectedArcaneSymbol === symbol.name
                     ? "text-primary"
-                    : Number.isNaN(symbol.level) ? "text-secondary" : !vjUpgradeReady && "text-upgrade"
+                    : Number.isNaN(symbol.level) && "text-secondary"
                 }`}
                 onClick={() => setSelectedArcaneSymbol(symbol.name)}
               >
@@ -125,10 +123,10 @@ const Selector = ({
           <div className={`flex space-x-10 ${swapped ? "block" : "hidden"}`}>
             {sacredSymbols.map((symbol) => (
               <div
-                className={`selector-level ${
+                className={`selector-level cursor-pointer ${
                   selectedSacredSymbol === symbol.name
                     ? "text-primary"
-                    : Number.isNaN(symbol.level) ? "text-secondary" : !vjUpgradeReady && "text-upgrade"
+                    : Number.isNaN(symbol.level) && "text-secondary" 
                 }`}
                 onClick={() => setSelectedSacredSymbol(symbol.name)}
               >
