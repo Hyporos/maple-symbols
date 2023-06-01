@@ -21,20 +21,25 @@ export default {
       backgroundColor: {
         'dark': '#212121',
         'card': '#1c1c1c',
+        'hover': '#444444',
         'secondary': '#333333',
         'tertiary': 'transparent',
       },
       borderColor: {
         'unchecked': '#8c0000',
         'checked': '#008c00',
-        
       },
       outlineColor: {
+        'basic': '#444444',
         'accent': '#b18bd0',
       },
       translate: {
         'symbol': '-7.5px',
-      }
+      },
+      fill: {
+        'hover': '#ffffff',
+        'basic': '#bfbfbf',
+      },
     },
   },
   plugins: [],

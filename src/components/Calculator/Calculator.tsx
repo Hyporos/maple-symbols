@@ -8,7 +8,7 @@ interface Props {
   setVjLevel: Dispatch<SetStateAction<Number>>;
 }
 
-const Calculator = ({vjLevel, setVjLevel} : Props) => {
+const Calculator = ({ vjLevel, setVjLevel }: Props) => {
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
     { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -45,7 +45,6 @@ const Calculator = ({vjLevel, setVjLevel} : Props) => {
   const [vjDailySymbols, setVjDailySymbols] = useState(0);
   const [vjWeeklySymbols, setVjWeeklySymbols] = useState(0);
 
-  
   const [vjExperience, setVjExperience] = useState(1);
 
   const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
@@ -65,8 +64,6 @@ const Calculator = ({vjLevel, setVjLevel} : Props) => {
   const nextSymbol = vjSymbolData.find(
     (required) => required.level === vjLevel + 1
   );
-
-  const arcaneForcePerLevel = 10;
 
   useEffect(() => {
     let dailySymbols = 0;
@@ -145,8 +142,11 @@ const Calculator = ({vjLevel, setVjLevel} : Props) => {
         <div className="flex shadow-card items-center bg-card rounded-lg h-[350px]">
           <div className="px-10 space-y-6 w-[350px]">
             <div className="flex justify-center items-center space-x-4 pb-6">
-              <img src="/symbols/vj-symbol.webp" alt="Vanishing Journey Symbol" />
-              <p className="text-xl text-primary font-semibold tracking-wide uppercase">
+              <img
+                src="/symbols/vj-symbol.webp"
+                alt="Vanishing Journey Symbol"
+              />
+              <p className="text-xl text-primary font-semibold tracking-wider uppercase">
                 Vanishing Journey
               </p>
             </div>
@@ -158,7 +158,13 @@ const Calculator = ({vjLevel, setVjLevel} : Props) => {
                 id="level"
                 value={vjLevel}
                 className="symbol-input"
-                onChange={(e) => setVjLevel(parseInt(e.target.value))}
+                onChange={(e) =>
+                  Number(e.target.value) <= 20 && Number(e.target.value) > 0
+                    ? setVjLevel(parseInt(e.target.value))
+                    : Number(e.target.value) <= 20
+                    ? setVjLevel(NaN)
+                    : setVjLevel(20)
+                }
               ></input>
               <TbSlash size={30} color="#B2B2B2" />
               <input
@@ -167,7 +173,15 @@ const Calculator = ({vjLevel, setVjLevel} : Props) => {
                 id="experience"
                 value={vjExperience}
                 className="symbol-input"
-                onChange={(e) => setVjExperience(parseInt(e.target.value))}
+                onChange={(e) =>
+                  Number(e.target.value) <= 2679 && Number(e.target.value) > 0
+                    ? setVjExperience(parseInt(e.target.value))
+                    : Number(e.target.value) <= 2679 && vjLevel != 1 && e.target.value != '00'
+                    ? setVjExperience(parseInt(e.target.value))
+                    : Number(e.target.value) <= 2679
+                    ? setVjExperience(NaN)
+                    : setVjExperience(2679)
+                }
               ></input>
             </div>
 
@@ -277,7 +291,7 @@ const Calculator = ({vjLevel, setVjLevel} : Props) => {
 
             <div className="symbol-stats">
               <p>
-                <span>+{arcaneForcePerLevel}</span> arcane force
+                <span>+10</span> arcane force
               </p>
               <p>
                 <span>+{arcaneStatData[selectedClass].statGain}</span>{" "}

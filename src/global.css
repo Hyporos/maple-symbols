@@ -16,7 +16,7 @@ input[type="number"] {
 
 @layer base {
     body {
-        @apply flex justify-center items-center bg-dark font-maven-pro tracking-wide  
+        @apply flex justify-center items-center bg-dark font-maven-pro tracking-wide
     }
     button, input {
         @apply rounded-lg

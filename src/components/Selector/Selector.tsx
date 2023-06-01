@@ -1,5 +1,4 @@
-import { MdOutlineSwapVert } from "react-icons/md";
-import { GoSettings } from "react-icons/go";
+import { HiArrowsUpDown, HiBars3 } from "react-icons/hi2";
 import { Dispatch, SetStateAction } from "react";
 import "./Selector.css";
 
@@ -11,7 +10,6 @@ interface Props {
   selectedSacredSymbol: string;
   setSelectedSacredSymbol: Dispatch<SetStateAction<string>>;
   vjLevel: number;
-  locked: boolean;
 }
 
 const Selector = ({
@@ -22,7 +20,6 @@ const Selector = ({
   selectedSacredSymbol,
   setSelectedSacredSymbol,
   vjLevel,
-  locked,
 }: Props) => {
   const handleSettings = () => {};
 
@@ -91,15 +88,15 @@ const Selector = ({
       <div className="selector flex flex-col justify-center pt-16 z-10 mt-40">
         <div className="flex justify-between items-center px-6">
           <div>
-            <GoSettings
+            <HiBars3
               size={40}
-              color={"#bfbfbf"}
               cursor="pointer"
+              className={"fill-basic hover:fill-hover transition-all"}
               onClick={() => handleSettings()}
             />
           </div>
           <div className={`flex space-x-10 ${swapped ? "hidden" : "block"}`}>
-          {arcaneSymbols.map((symbol) => (
+            {arcaneSymbols.map((symbol) => (
               <div
                 className={`selector-level ${
                   selectedArcaneSymbol === symbol.name
@@ -139,7 +136,7 @@ const Selector = ({
                   alt={symbol.alt}
                   className={`${
                     selectedSacredSymbol === symbol.name && "translate-y-symbol"
-                  }  ${String(symbol.level) === "NaN" && "filter grayscale"}`}
+                  }  ${(String(symbol.level) === "NaN") && "filter grayscale"}`}
                 />
                 <p>
                   {String(symbol.level) === "NaN"
@@ -151,10 +148,10 @@ const Selector = ({
             ;
           </div>
           <div>
-            <MdOutlineSwapVert
+            <HiArrowsUpDown
               size={40}
-              color={"#bfbfbf"}
               cursor="pointer"
+              className={"fill-basic hover:fill-hover transition-all"}
               onClick={() => setSwapped(!swapped)}
             />
           </div>
