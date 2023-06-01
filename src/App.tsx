@@ -7,16 +7,11 @@ import Selector from "./components/Selector/Selector";
 
 function App() {
   const [swapped, setSwapped] = useState(false);
-  const [selectedSymbol, setSelectedSymbol] = useState("");
+  const [selectedArcaneSymbol, setSelectedArcaneSymbol] = useState("VJ");
+  const [selectedSacredSymbol, setSelectedSacredSymbol] = useState("Cernium");
   const [selectedClass, setSelectedClass] = useState("");
   const [locked, setLocked] = useState(true);
-
-  const arcaneSymbolData = [
-    { name: "May 2nd", uv: 120 },
-    { name: "Mar 7th", uv: 1330 },
-    { name: "May 9th", uv: 1340 },
-    { name: "May 14th", uv: 2350 },
-  ];
+  const [vjLevel, setVjLevel] = useState(1);
 
   return (
     <>
@@ -24,11 +19,14 @@ function App() {
       <Selector
         swapped={swapped}
         setSwapped={setSwapped}
-        selectedSymbol={selectedSymbol}
-        setSelectedSymbol={setSelectedSymbol}
+        selectedArcaneSymbol={selectedArcaneSymbol}
+        setSelectedArcaneSymbol={setSelectedArcaneSymbol}
+        selectedSacredSymbol={selectedSacredSymbol}
+        setSelectedSacredSymbol={setSelectedSacredSymbol}
+        vjLevel={vjLevel}
         locked={locked}
       ></Selector>
-      <Calculator></Calculator>
+      <Calculator vjLevel={vjLevel} setVjLevel={setVjLevel}></Calculator>
       {/*<Progress arcaneSymbolData={arcaneSymbolData}></Progress>*/}
       {/*<Footer></Footer>*/}
     </>

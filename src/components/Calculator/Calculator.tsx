@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { HiChevronUp, HiChevronDoubleUp, HiArrowSmRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 
-const Calculator = () => {
+interface Props {
+  vjLevel: number;
+  setVjLevel: Dispatch<SetStateAction<Number>>;
+}
+
+const Calculator = ({vjLevel, setVjLevel} : Props) => {
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
     { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -40,7 +45,7 @@ const Calculator = () => {
   const [vjDailySymbols, setVjDailySymbols] = useState(0);
   const [vjWeeklySymbols, setVjWeeklySymbols] = useState(0);
 
-  const [vjLevel, setVjLevel] = useState(1);
+  
   const [vjExperience, setVjExperience] = useState(1);
 
   const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
@@ -146,7 +151,7 @@ const Calculator = () => {
               </p>
             </div>
 
-            <div className="flex justify-center items-center space-x-2 ">
+            <div className="flex justify-center items-center space-x-2">
               <input
                 type="number"
                 placeholder="Level"
