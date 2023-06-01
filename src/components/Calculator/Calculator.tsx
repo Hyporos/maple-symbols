@@ -10,10 +10,7 @@ interface Props {
   setVjLevel: Dispatch<SetStateAction<Number>>;
 }
 
-const Calculator = ({
-  vjLevel,
-  setVjLevel,
-}: Props) => {
+const Calculator = ({ vjLevel, setVjLevel }: Props) => {
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
     { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -90,7 +87,6 @@ const Calculator = ({
         totalSymbols
       )
     );
-
   }, [vjLevel, vjExperience]);
 
   useEffect(() => {
@@ -126,13 +122,6 @@ const Calculator = ({
     setVjCompletionDate(currentDate);
   }, [vjDaysRemaining]);
 
-  const handleVjUpgrade = () => {
-    if (vjExperience < nextSymbol?.symbolsRequired) {
-      setVjExperience(vjExperience - nextSymbol?.symbolsRequired); // fix stupid boolean usestate opposite bug
-      setVjLevel(vjLevel + 1);
-    }
-  };
-
   return (
     <section>
       <div className="flex justify-center items-center">
@@ -155,13 +144,12 @@ const Calculator = ({
                 id="level"
                 value={vjLevel}
                 className="symbol-input"
-                onChange={(e) =>
-                  Number(e.target.value) <= 20 && Number(e.target.value) > 0
-                    ? setVjLevel(parseInt(e.target.value))
-                    : Number(e.target.value) <= 20
-                    ? setVjLevel(NaN)
-                    : setVjLevel(20)
-                }
+                onChange={(e) => {
+                  if (Number(e.target.value) <= 20 && Number(e.target.value) >= 1) setVjLevel(parseInt(e.target.value))
+                  if (Number(e.target.value) === 0 && vjLevel > 0) setVjLevel(NaN)
+                  if (Number(e.target.value) === 0 && isNaN(vjLevel)) setVjLevel(1)
+                  if (Number(e.target.value) > 20) setVjLevel(20)
+                }}
               ></input>
               <TbSlash size={30} color="#B2B2B2" />
               <input
@@ -171,13 +159,13 @@ const Calculator = ({
                 value={vjExperience}
                 className="symbol-input"
                 onChange={(e) =>
-                  Number(e.target.value) <= 2679 && Number(e.target.value) > 0
+                  Number(e.target.value) <= 2679 && Number(e.target.value) > 0 // make all these nested ternary operators IF STATEMTS PLEASE
                     ? setVjExperience(parseInt(e.target.value))
                     : Number(e.target.value) <= 2679 && vjLevel != 1
                     ? setVjExperience(parseInt(e.target.value)) // buggedddddddddd. validate for 0000000000
                     : Number(e.target.value) <= 2679
                     ? setVjExperience(NaN)
-                    : setVjExperience(2679)
+                    : setVjExperience(2679) // also make experience become NaN after level is NaN maaaaybe
                 }
               ></input>
             </div>
@@ -204,23 +192,11 @@ const Calculator = ({
               </button>
             </div>
 
-            <div className="flex justify-between items-center text-secondary select-none pt-6">
-              <HiArrowUturnLeft
-                size={30}
-                cursor="pointer"
-                className="fill-accent hover:fill-white transition-all"
-                onClick={() => {setVjExperience(NaN); setVjLevel(NaN);}}
-              />
+            <div className="flex justify-center items-center text-secondary pt-6">
               <div className="flex flex-col text-center text-sm">
                 <p>{vjDailySymbols} symbols / day</p>
                 <p>{vjWeeklySymbols} symbols / week</p>
               </div>
-              <HiChevronDoubleUp
-                size={30}
-                cursor="pointer"
-                className="fill-accent hover:fill-white transition-all"
-                onClick={() => setVjExperience(vjExperience + vjWeeklySymbols)}
-              />
             </div>
           </div>
 
@@ -231,7 +207,7 @@ const Calculator = ({
               <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
                 <div
                   className={`flex space-x-2 ${
-                    vjLevel === 20 || Number.isNaN(vjLevel) ? "hidden" : "block"
+                    vjLevel === 20 || isNaN(vjLevel) ? "hidden" : "block"
                   }`}
                 >
                   <h1>
@@ -244,7 +220,7 @@ const Calculator = ({
                 </div>
                 <div
                   className={`text-2xl tracking-widest uppercase ${
-                    vjLevel === 20 || Number.isNaN(vjLevel) ? "block" : "hidden"
+                    vjLevel === 20 || isNaN(vjLevel) ? "block" : "hidden"
                   }`}
                 >
                   <h1>
@@ -267,37 +243,63 @@ const Calculator = ({
 
             <div
               className={`symbol-stats ${
-                Number.isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+                isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
               }`}
             >
               <p>
                 <span>
-                  {vjLevel <= 19 &&  vjExperience < nextSymbol?.symbolsRequired
+                  {vjLevel <= 19 &&
+                  vjExperience < nextSymbol?.symbolsRequired &&
+                  (vjDailySymbols != 0 || vjWeeklySymbols != 0)
                     ? Math.ceil(
                         (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
-                          vjDailySymbols
+                          (vjDailySymbols + vjWeeklySymbols)
                       )
+                    : isNaN(vjExperience)
+                    ? "Experience"
+                    : vjExperience < nextSymbol?.symbolsRequired
+                    ? "Quests"
                     : "Ready"}
                 </span>
-                {vjExperience < nextSymbol?.symbolsRequired
+                {vjExperience < nextSymbol?.symbolsRequired && // fix this weird underline
+                Math.ceil(
+                  (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
+                    vjDailySymbols
+                ) != 1 &&
+                (vjDailySymbols != 0 || vjWeeklySymbols != 0)
                   ? " days to go"
+                  :  (String(vjLevel) != 'NaN' && vjLevel != 20) && Math.ceil(
+                      (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
+                        vjDailySymbols
+                    ) === 1
+                  ? " day to go"
+                  : isNaN(vjExperience)
+                  ? " is not set"
+                  : vjExperience < nextSymbol?.symbolsRequired
+                  ? " are not set"
                   : " for upgrade"}
               </p>
               <p>
                 <span>
                   {vjLevel <= 19 && vjExperience < nextSymbol?.symbolsRequired
                     ? vjSymbolData[vjLevel].symbolsRequired - vjExperience
+                    : isNaN(vjExperience)
+                    ? "Unknown"
                     : "Sufficient"}
                 </span>
-                {vjExperience < nextSymbol?.symbolsRequired
+                {(vjExperience < nextSymbol?.symbolsRequired && 
+                  vjSymbolData[vjLevel].symbolsRequired - vjExperience != 1) ||
+                isNaN(vjExperience) 
                   ? " symbols remaining"
+                  : (String(vjLevel) != 'NaN' && vjLevel != 20) && vjSymbolData[vjLevel].symbolsRequired - vjExperience === 1
+                  ? " symbol remaining"
                   : " symbols reached"}
               </p>
             </div>
 
             <div
               className={`symbol-stats ${
-                Number.isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+                isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
               }`}
             >
               <p>
@@ -311,7 +313,7 @@ const Calculator = ({
 
             <div
               className={`symbol-stats ${
-                Number.isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+                isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
               }`}
             >
               <p>

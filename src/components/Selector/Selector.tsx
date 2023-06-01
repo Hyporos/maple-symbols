@@ -101,7 +101,7 @@ const Selector = ({
                 className={`selector-level cursor-pointer ${
                   selectedArcaneSymbol === symbol.name
                     ? "text-primary"
-                    : Number.isNaN(symbol.level) && "text-secondary"
+                    : isNaN(symbol.level) && "text-secondary"
                 }`}
                 onClick={() => setSelectedArcaneSymbol(symbol.name)}
               >
@@ -110,10 +110,10 @@ const Selector = ({
                   alt={symbol.alt}
                   className={`${
                     selectedArcaneSymbol === symbol.name && "translate-y-symbol"
-                  }  ${Number.isNaN(symbol.level) && "filter grayscale"}`}
+                  }  ${isNaN(symbol.level) && "filter grayscale"}`}
                 />
                 <p>
-                  {Number.isNaN(symbol.level)
+                  {isNaN(symbol.level)
                     ? "Lv. 0"
                     : "Lv. " + symbol.level}
                 </p>
@@ -126,7 +126,7 @@ const Selector = ({
                 className={`selector-level cursor-pointer ${
                   selectedSacredSymbol === symbol.name
                     ? "text-primary"
-                    : Number.isNaN(symbol.level) && "text-secondary" 
+                    : isNaN(symbol.level) && "text-secondary" 
                 }`}
                 onClick={() => setSelectedSacredSymbol(symbol.name)}
               >
@@ -135,10 +135,10 @@ const Selector = ({
                   alt={symbol.alt}
                   className={`${
                     selectedSacredSymbol === symbol.name && "translate-y-symbol"
-                  }  ${Number.isNaN(symbol.level) && "filter grayscale"}`}
+                  }  ${isNaN(symbol.level) && "filter grayscale"}`}
                 />
                 <p>
-                  {Number.isNaN(symbol.level)
+                  {isNaN(symbol.level)
                     ? "Lv. 0"
                     : "Lv. " + symbol.level}
                 </p>

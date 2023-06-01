@@ -11,7 +11,7 @@ function App() {
   const [selectedSacredSymbol, setSelectedSacredSymbol] = useState("Cernium");
   const [selectedClass, setSelectedClass] = useState("");
 
-  const [vjLevel, setVjLevel] = useState(1);
+  const [vjLevel, setVjLevel] = useState(NaN);
 
   return (
     <>
