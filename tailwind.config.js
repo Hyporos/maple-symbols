@@ -15,7 +15,6 @@ export default {
       textColor: {
         'primary': '#ffffff',
         'secondary': '#bfbfbf',
-        'accent': '#b18bd0',
         'upgrade': '#00b800',
       },
       backgroundColor: {
@@ -31,7 +30,6 @@ export default {
       },
       outlineColor: {
         'basic': '#444444',
-        'accent': '#b18bd0',
       },
       translate: {
         'symbol': '-7.5px',
@@ -39,6 +37,9 @@ export default {
       fill: {
         'hover': '#ffffff',
         'basic': '#bfbfbf',
+      },
+      colors: {
+        'accent': '#b18bd0',
       },
     },
   },

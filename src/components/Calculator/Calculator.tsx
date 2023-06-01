@@ -6,9 +6,16 @@ import "./Calculator.css";
 interface Props {
   vjLevel: number;
   setVjLevel: Dispatch<SetStateAction<Number>>;
+  vjUpgradeReady: boolean;
+  setVjUpgradeReady: Dispatch<SetStateAction<boolean>>;
 }
 
-const Calculator = ({ vjLevel, setVjLevel }: Props) => {
+const Calculator = ({
+  vjLevel,
+  setVjLevel,
+  vjUpgradeReady,
+  setVjUpgradeReady,
+}: Props) => {
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
     { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -45,7 +52,7 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
   const [vjDailySymbols, setVjDailySymbols] = useState(0);
   const [vjWeeklySymbols, setVjWeeklySymbols] = useState(0);
 
-  const [vjExperience, setVjExperience] = useState(1);
+  const [vjExperience, setVjExperience] = useState(NaN);
 
   const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
   const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
@@ -55,9 +62,6 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
 
   const [vjDaysRemaining, setVjDaysRemaining] = useState(0);
   const [vjCompletionDate, setVjCompletionDate] = useState("");
-
-  const [vjUpgradeReady, setVjUpgradeReady] = useState(false);
-  const [vjSymbolMaxed, setVjSymbolMaxed] = useState(false);
 
   const [selectedClass, setSelectedClass] = useState(2);
 
@@ -89,12 +93,11 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
       )
     );
 
-    vjExperience >= nextSymbol?.symbolsRequired
-      ? setVjUpgradeReady(false)
-      : setVjUpgradeReady(true);
+    vjExperience < nextSymbol?.symbolsRequired
+      ? setVjUpgradeReady(true)
+      : setVjUpgradeReady(false);
 
-    vjLevel === 20 && setVjSymbolMaxed(true);
-  }, [vjLevel, vjExperience]); // if input IS VALID then update value
+  }, [vjLevel, vjExperience]);
 
   useEffect(() => {
     let remainingSymbols = 0;
@@ -130,7 +133,7 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
   }, [vjDaysRemaining]);
 
   const handleVjUpgrade = () => {
-    if (vjExperience >= nextSymbol?.symbolsRequired) {
+    if (vjExperience < nextSymbol?.symbolsRequired) {
       setVjExperience(vjExperience - nextSymbol?.symbolsRequired); // fix stupid boolean usestate opposite bug
       setVjLevel(vjLevel + 1);
     }
@@ -176,8 +179,8 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
                 onChange={(e) =>
                   Number(e.target.value) <= 2679 && Number(e.target.value) > 0
                     ? setVjExperience(parseInt(e.target.value))
-                    : Number(e.target.value) <= 2679 && vjLevel != 1 && e.target.value != '00'
-                    ? setVjExperience(parseInt(e.target.value))
+                    : Number(e.target.value) <= 2679 && vjLevel != 1
+                    ? setVjExperience(parseInt(e.target.value)) // buggedddddddddd. validate for 0000000000
                     : Number(e.target.value) <= 2679
                     ? setVjExperience(NaN)
                     : setVjExperience(2679)
@@ -234,7 +237,7 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
               <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
                 <div
                   className={`flex space-x-2 ${
-                    vjLevel < 20 ? "block" : "hidden"
+                    vjLevel === 20 || Number.isNaN(vjLevel) ? "hidden" : "block"
                   }`}
                 >
                   <h1>
@@ -246,18 +249,33 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
                   </h1>
                 </div>
                 <div
-                  className={`flex tracking-widest uppercase space-x-2 ${
-                    vjLevel < 20 ? "hidden" : "block"
+                  className={`text-2xl tracking-widest uppercase ${
+                    vjLevel === 20 || Number.isNaN(vjLevel) ? "block" : "hidden"
                   }`}
                 >
                   <h1>
-                    <span>Max</span> Level
+                    {vjLevel === 20 ? (
+                      <span className="text-accent text-2xl font-bold">
+                        Max Level
+                      </span>
+                    ) : (
+                      <div className="space-y-4">
+                        <p className="text-secondary">Locked</p>
+                        <p className="text-secondary text-xs lowercase font-light tracking-widest">
+                          Enter a level to unlock this symbol
+                        </p>
+                      </div>
+                    )}
                   </h1>
                 </div>
               </div>
             </div>
 
-            <div className="symbol-stats">
+            <div
+              className={`symbol-stats ${
+                Number.isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+              }`}
+            >
               <p>
                 <span>
                   {vjLevel <= 19 && vjUpgradeReady
@@ -267,7 +285,9 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
                       )
                     : "Ready"}
                 </span>
-                {vjUpgradeReady ? " days to go" : " for upgrade"}
+                {vjUpgradeReady
+                  ? " days to go"
+                  : " for upgrade"}
               </p>
               <p>
                 <span>
@@ -275,11 +295,17 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
                     ? vjSymbolData[vjLevel].symbolsRequired - vjExperience
                     : "Sufficient"}
                 </span>
-                {vjUpgradeReady ? " symbols remaining" : " symbols reached"}
+                {vjUpgradeReady
+                  ? " symbols remaining"
+                  : " symbols reached"}
               </p>
             </div>
 
-            <div className="symbol-stats">
+            <div
+              className={`symbol-stats ${
+                Number.isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+              }`}
+            >
               <p>
                 <span>
                   {vjLevel <= 19 &&
@@ -289,7 +315,11 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
               </p>
             </div>
 
-            <div className="symbol-stats">
+            <div
+              className={`symbol-stats ${
+                Number.isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+              }`}
+            >
               <p>
                 <span>+10</span> arcane force
               </p>

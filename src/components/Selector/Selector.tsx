@@ -10,6 +10,7 @@ interface Props {
   selectedSacredSymbol: string;
   setSelectedSacredSymbol: Dispatch<SetStateAction<string>>;
   vjLevel: number;
+  vjUpgradeReady: boolean;
 }
 
 const Selector = ({
@@ -20,6 +21,7 @@ const Selector = ({
   selectedSacredSymbol,
   setSelectedSacredSymbol,
   vjLevel,
+  vjUpgradeReady,
 }: Props) => {
   const handleSettings = () => {};
 
@@ -101,7 +103,7 @@ const Selector = ({
                 className={`selector-level ${
                   selectedArcaneSymbol === symbol.name
                     ? "text-primary"
-                    : String(symbol.level) === "NaN" && "text-secondary"
+                    : Number.isNaN(symbol.level) ? "text-secondary" : !vjUpgradeReady && "text-upgrade"
                 }`}
                 onClick={() => setSelectedArcaneSymbol(symbol.name)}
               >
@@ -110,10 +112,10 @@ const Selector = ({
                   alt={symbol.alt}
                   className={`${
                     selectedArcaneSymbol === symbol.name && "translate-y-symbol"
-                  }  ${String(symbol.level) === "NaN" && "filter grayscale"}`}
+                  }  ${Number.isNaN(symbol.level) && "filter grayscale"}`}
                 />
                 <p>
-                  {String(symbol.level) === "NaN"
+                  {Number.isNaN(symbol.level)
                     ? "Lv. 0"
                     : "Lv. " + symbol.level}
                 </p>
@@ -126,7 +128,7 @@ const Selector = ({
                 className={`selector-level ${
                   selectedSacredSymbol === symbol.name
                     ? "text-primary"
-                    : String(symbol.level) === "NaN" && "text-secondary"
+                    : Number.isNaN(symbol.level) ? "text-secondary" : !vjUpgradeReady && "text-upgrade"
                 }`}
                 onClick={() => setSelectedSacredSymbol(symbol.name)}
               >
@@ -135,10 +137,10 @@ const Selector = ({
                   alt={symbol.alt}
                   className={`${
                     selectedSacredSymbol === symbol.name && "translate-y-symbol"
-                  }  ${(String(symbol.level) === "NaN") && "filter grayscale"}`}
+                  }  ${Number.isNaN(symbol.level) && "filter grayscale"}`}
                 />
                 <p>
-                  {String(symbol.level) === "NaN"
+                  {Number.isNaN(symbol.level)
                     ? "Lv. 0"
                     : "Lv. " + symbol.level}
                 </p>
