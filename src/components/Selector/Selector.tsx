@@ -119,7 +119,6 @@ const Selector = ({
                 </p>
               </div>
             ))}
-            ;
           </div>
           <div className={`flex space-x-10 ${swapped ? "block" : "hidden"}`}>
             {sacredSymbols.map((symbol) => (
@@ -145,7 +144,6 @@ const Selector = ({
                 </p>
               </div>
             ))}
-            ;
           </div>
           <div>
             <HiArrowsUpDown
