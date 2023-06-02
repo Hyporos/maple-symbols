@@ -34,7 +34,7 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
     { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
   ];
 
-const arcaneStatData = [
+  const classData = [
     { class: "Demon Avenger", statForm: "HP", statGain: 2100 },
     { class: "Xenon", statForm: "all stat", statGain: 48 },
     { class: "Other", statForm: "main stat", statGain: 100 },
@@ -63,6 +63,9 @@ const arcaneStatData = [
   const nextSymbol = vjSymbolData.find(
     (required) => required.level === vjLevel + 1
   );
+
+  const requiredSymbols = nextSymbol?.symbolsRequired - vjExperience;
+  const symbolInProgress = vjExperience < nextSymbol?.symbolsRequired;
 
   useEffect(() => {
     let dailySymbols = 0;
@@ -107,8 +110,8 @@ const arcaneStatData = [
   }, [vjTotalSymbols]);
 
   useEffect(() => {
-    setVjDaysRemaining(Math.ceil(vjRemainingSymbols / vjDailySymbols));
-  }, [vjRemainingSymbols, vjDailySymbols]);
+    setVjDaysRemaining(Math.ceil(vjRemainingSymbols / (vjDailySymbols + 6.42857142857)));
+  }, [vjRemainingSymbols, vjDailySymbols, vjWeeklySymbols]);
 
   useEffect(() => {
     const date = new Date();
@@ -153,12 +156,6 @@ const arcaneStatData = [
                   if (e.target.value === "0") {
                     setVjLevel(1);
                   }
-                  if (
-                    e.target.value === "1" &&
-                    String(vjExperience).startsWith("0")
-                  ) {
-                    setVjExperience(1);
-                  }
                 }}
               ></input>
               <TbSlash size={30} color="#B2B2B2" />
@@ -178,12 +175,9 @@ const arcaneStatData = [
                     setVjExperience(1);
                   }
                   if (e.target.value === "00" || e.target.value === "000") {
-                    vjLevel === 1 ? setVjExperience(1) : e.target.value = "0";
+                    vjLevel === 1 ? setVjExperience(1) : (e.target.value = "0");
                   }
-                  if (
-                    e.target.value.startsWith("0") &&
-                    e.target.value.length >= 2
-                  ) {
+                  if (e.target.value.startsWith("0")) {
                     e.target.value = e.target.value.substring(1);
                   }
                 }}
@@ -266,59 +260,72 @@ const arcaneStatData = [
                 isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
               }`}
             >
-              <p>
-                <span>
-                  {vjLevel <= 19 &&
-                  vjExperience < nextSymbol?.symbolsRequired &&
+              {(() => {
+                if (
+                  symbolInProgress &&
                   (vjDailySymbols != 0 || vjWeeklySymbols != 0)
-                    ? Math.ceil(
+                ) {
+                  return (
+                    <p>
+                      <span>
+                        {Math.ceil(
+                          (vjSymbolData[vjLevel].symbolsRequired -
+                            vjExperience) /
+                            (vjDailySymbols + (vjWeeklySymbols / 7))
+                        )}
+                      </span>{" "}
+                      {Math.ceil(
                         (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
-                          (vjDailySymbols + vjWeeklySymbols)
-                      )
-                    : isNaN(vjExperience)
-                    ? "Experience"
-                    : vjExperience < nextSymbol?.symbolsRequired
-                    ? "Quests"
-                    : "Ready"}
-                </span>
-                {vjExperience < nextSymbol?.symbolsRequired && // fix this weird underline
-                Math.ceil(
-                  (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
-                    vjDailySymbols
-                ) != 1 &&
-                (vjDailySymbols != 0 || vjWeeklySymbols != 0)
-                  ? " days to go"
-                  : String(vjLevel) != "NaN" &&
-                    vjLevel != 20 &&
-                    Math.ceil(
-                      (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
-                        vjDailySymbols
-                    ) === 1
-                  ? " day to go"
-                  : isNaN(vjExperience)
-                  ? " is not set"
-                  : vjExperience < nextSymbol?.symbolsRequired
-                  ? " are not set"
-                  : " for upgrade"}
-              </p>
-              <p>
-                <span>
-                  {vjLevel <= 19 && vjExperience < nextSymbol?.symbolsRequired
-                    ? vjSymbolData[vjLevel].symbolsRequired - vjExperience
-                    : isNaN(vjExperience)
-                    ? "Unknown"
-                    : "Sufficient"}
-                </span>
-                {(vjExperience < nextSymbol?.symbolsRequired &&
-                  vjSymbolData[vjLevel].symbolsRequired - vjExperience != 1) ||
-                isNaN(vjExperience)
-                  ? " symbols remaining"
-                  : String(vjLevel) != "NaN" &&
-                    vjLevel != 20 &&
-                    vjSymbolData[vjLevel].symbolsRequired - vjExperience === 1
-                  ? " symbol remaining"
-                  : " symbols reached"}
-              </p>
+                          (vjDailySymbols + (vjWeeklySymbols / 7))
+                      ) > 1
+                        ? "days to go"
+                        : "day to go"}
+                    </p>
+                  );
+                } else if (requiredSymbols <= 0) {
+                  return (
+                    <p>
+                      <span>Ready</span> for upgrade
+                    </p>
+                  );
+                } else if (isNaN(vjExperience)) {
+                  return (
+                    <p>
+                      <span>Experience</span> is not set
+                    </p>
+                  );
+                } else {
+                  return (
+                    <p>
+                      <span>Quests</span> are not set
+                    </p>
+                  );
+                }
+              })()}
+              {(() => {
+                if (symbolInProgress) {
+                  return (
+                    <p>
+                      <span>{requiredSymbols}</span>{" "}
+                      {requiredSymbols > 1
+                        ? "symbols remaining"
+                        : "symbol remaining"}
+                    </p>
+                  );
+                } else if (requiredSymbols <= 0) {
+                  return (
+                    <p>
+                      <span>Sufficient</span> symbols reached
+                    </p>
+                  );
+                } else {
+                  return (
+                    <p>
+                      <span>Unknown</span> symbols remaining
+                    </p>
+                  );
+                }
+              })()}
             </div>
 
             <div
@@ -344,8 +351,8 @@ const arcaneStatData = [
                 <span>+10</span> arcane force
               </p>
               <p>
-                <span>+{arcaneStatData[selectedClass].statGain}</span>{" "}
-                {arcaneStatData[selectedClass].statForm}
+                <span>+{classData[selectedClass].statGain}</span>{" "}
+                {classData[selectedClass].statForm}
               </p>
             </div>
           </div>
