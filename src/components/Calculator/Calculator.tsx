@@ -34,7 +34,7 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
     { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
   ];
 
-  const arcaneStatData = [
+const arcaneStatData = [
     { class: "Demon Avenger", statForm: "HP", statGain: 2100 },
     { class: "Xenon", statForm: "all stat", statGain: 48 },
     { class: "Other", statForm: "main stat", statGain: 100 },
@@ -141,32 +141,52 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
               <input
                 type="number"
                 placeholder="Level"
-                id="level"
                 value={vjLevel}
                 className="symbol-input"
                 onChange={(e) => {
-                  if (Number(e.target.value) <= 20 && Number(e.target.value) >= 1) setVjLevel(parseInt(e.target.value))
-                  if (Number(e.target.value) === 0 && vjLevel > 0) setVjLevel(NaN)
-                  if (Number(e.target.value) === 0 && isNaN(vjLevel)) setVjLevel(1)
-                  if (Number(e.target.value) > 20) setVjLevel(20)
+                  if (Number(e.target.value) <= 20) {
+                    setVjLevel(parseInt(e.target.value));
+                  }
+                  if (Number(e.target.value) >= 21) {
+                    setVjLevel(20);
+                  }
+                  if (e.target.value === "0") {
+                    setVjLevel(1);
+                  }
+                  if (
+                    e.target.value === "1" &&
+                    String(vjExperience).startsWith("0")
+                  ) {
+                    setVjExperience(1);
+                  }
                 }}
               ></input>
               <TbSlash size={30} color="#B2B2B2" />
               <input
                 type="number"
                 placeholder="Experience"
-                id="experience"
                 value={vjExperience}
                 className="symbol-input"
-                onChange={(e) =>
-                  Number(e.target.value) <= 2679 && Number(e.target.value) > 0 // make all these nested ternary operators IF STATEMTS PLEASE
-                    ? setVjExperience(parseInt(e.target.value))
-                    : Number(e.target.value) <= 2679 && vjLevel != 1
-                    ? setVjExperience(parseInt(e.target.value)) // buggedddddddddd. validate for 0000000000
-                    : Number(e.target.value) <= 2679
-                    ? setVjExperience(NaN)
-                    : setVjExperience(2679) // also make experience become NaN after level is NaN maaaaybe
-                }
+                onChange={(e) => {
+                  if (Number(e.target.value) <= 2679) {
+                    setVjExperience(parseInt(e.target.value));
+                  }
+                  if (Number(e.target.value) >= 2680) {
+                    setVjExperience(2679);
+                  }
+                  if (e.target.value === "0" && vjLevel === 1) {
+                    setVjExperience(1);
+                  }
+                  if (e.target.value === "00" || e.target.value === "000") {
+                    vjLevel === 1 ? setVjExperience(1) : e.target.value = "0";
+                  }
+                  if (
+                    e.target.value.startsWith("0") &&
+                    e.target.value.length >= 2
+                  ) {
+                    e.target.value = e.target.value.substring(1);
+                  }
+                }}
               ></input>
             </div>
 
@@ -268,7 +288,9 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
                 ) != 1 &&
                 (vjDailySymbols != 0 || vjWeeklySymbols != 0)
                   ? " days to go"
-                  :  (String(vjLevel) != 'NaN' && vjLevel != 20) && Math.ceil(
+                  : String(vjLevel) != "NaN" &&
+                    vjLevel != 20 &&
+                    Math.ceil(
                       (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
                         vjDailySymbols
                     ) === 1
@@ -287,11 +309,13 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
                     ? "Unknown"
                     : "Sufficient"}
                 </span>
-                {(vjExperience < nextSymbol?.symbolsRequired && 
+                {(vjExperience < nextSymbol?.symbolsRequired &&
                   vjSymbolData[vjLevel].symbolsRequired - vjExperience != 1) ||
-                isNaN(vjExperience) 
+                isNaN(vjExperience)
                   ? " symbols remaining"
-                  : (String(vjLevel) != 'NaN' && vjLevel != 20) && vjSymbolData[vjLevel].symbolsRequired - vjExperience === 1
+                  : String(vjLevel) != "NaN" &&
+                    vjLevel != 20 &&
+                    vjSymbolData[vjLevel].symbolsRequired - vjExperience === 1
                   ? " symbol remaining"
                   : " symbols reached"}
               </p>

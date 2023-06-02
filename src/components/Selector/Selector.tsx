@@ -85,7 +85,7 @@ const Selector = ({
 
   return (
     <section>
-      <div className="selector flex flex-col justify-center pt-16 z-10 mt-40">
+      <div className="flex flex-col justify-center pt-16 mt-40">
         <div className="flex justify-between items-center px-6">
           <div>
             <HiBars3
