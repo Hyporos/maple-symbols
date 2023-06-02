@@ -1,0 +1,11 @@
+.horizontal-divider {
+    @apply bg-gradient-to-r from-transparent via-white to-transparent border-0 opacity-20 h-px my-7 w-[700px]
+}
+
+.tool-select {
+    @apply bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent select-none transition-all px-4 py-2
+}
+
+.tool-input {
+    @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover outline-none transition-all w-1/2 p-2.5
+}

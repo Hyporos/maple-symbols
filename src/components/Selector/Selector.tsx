@@ -5,83 +5,25 @@ import "./Selector.css";
 interface Props {
   swapped: boolean;
   setSwapped: Dispatch<SetStateAction<boolean>>;
-  selectedArcaneSymbol: string;
-  setSelectedArcaneSymbol: Dispatch<SetStateAction<string>>;
-  selectedSacredSymbol: string;
-  setSelectedSacredSymbol: Dispatch<SetStateAction<string>>;
-  vjLevel: number;
+  selectedArcane: number;
+  setSelectedArcane: Dispatch<SetStateAction<Number>>;
+  selectedSacredSymbol: number;
+  setSelectedSacredSymbol: Dispatch<SetStateAction<Number>>;
+  arcaneSymbols: [{}];
+  sacredSymbols: [{}];
 }
 
 const Selector = ({
   swapped,
   setSwapped,
-  selectedArcaneSymbol,
-  setSelectedArcaneSymbol,
+  selectedArcane,
+  setSelectedArcane,
   selectedSacredSymbol,
   setSelectedSacredSymbol,
-  vjLevel,
+  arcaneSymbols,
+  sacredSymbols
 }: Props) => {
   const handleSettings = () => {};
-
-  const arcaneSymbols = [
-    {
-      name: "VJ",
-      alt: "Vanishing Journey Symbol",
-      img: "/symbols/vj-symbol.webp",
-      level: vjLevel,
-    },
-    {
-      name: "ChuChu",
-      alt: "Chu Chu Symbol",
-      img: "/symbols/chuchu-symbol.webp",
-      level: vjLevel,
-    },
-    {
-      name: "Lachelein",
-      alt: "Lachelein Symbol",
-      img: "/symbols/lach-symbol.webp",
-      level: vjLevel,
-    },
-    {
-      name: "Arcana",
-      alt: "Arcana Symbol",
-      img: "/symbols/arcana-symbol.webp",
-      level: vjLevel,
-    },
-    {
-      name: "Morass",
-      alt: "Morass Symbol",
-      img: "/symbols/morass-symbol.webp",
-      level: vjLevel,
-    },
-    {
-      name: "Esfera",
-      alt: "Esfera Symbol",
-      img: "/symbols/esfera-symbol.webp",
-      level: vjLevel,
-    },
-  ];
-
-  const sacredSymbols = [
-    {
-      name: "Cernium",
-      alt: "Cernium Symbol",
-      img: "/symbols/cern-symbol.webp",
-      level: vjLevel,
-    },
-    {
-      name: "Arcus",
-      alt: "Arcus Symbol",
-      img: "/symbols/arcus-symbol.webp",
-      level: vjLevel,
-    },
-    {
-      name: "Odium",
-      alt: "Odium Symbol",
-      img: "/symbols/odium-symbol.webp",
-      level: vjLevel,
-    },
-  ];
 
   return (
     <section>
@@ -96,20 +38,20 @@ const Selector = ({
             />
           </div>
           <div className={`flex space-x-10 ${swapped ? "hidden" : "block"}`}>
-            {arcaneSymbols.map((symbol) => (
+            {arcaneSymbols.map((symbol, index) => (
               <div
                 className={`selector-level cursor-pointer ${
-                  selectedArcaneSymbol === symbol.name
+                  selectedArcane === index
                     ? "text-primary"
                     : isNaN(symbol.level) && "text-secondary"
                 }`}
-                onClick={() => setSelectedArcaneSymbol(symbol.name)}
+                onClick={() => setSelectedArcane(index)}
               >
                 <img
                   src={symbol.img}
                   alt={symbol.alt}
                   className={`${
-                    selectedArcaneSymbol === symbol.name && "translate-y-symbol"
+                    arcaneSymbols[selectedArcane].name === symbol.name && "translate-y-symbol"
                   }  ${isNaN(symbol.level) && "filter grayscale"}`}
                 />
                 <p>
@@ -121,20 +63,20 @@ const Selector = ({
             ))}
           </div>
           <div className={`flex space-x-10 ${swapped ? "block" : "hidden"}`}>
-            {sacredSymbols.map((symbol) => (
+            {sacredSymbols.map((symbol, index) => (
               <div
                 className={`selector-level cursor-pointer ${
-                  selectedSacredSymbol === symbol.name
+                  selectedSacredSymbol === index
                     ? "text-primary"
                     : isNaN(symbol.level) && "text-secondary" 
                 }`}
-                onClick={() => setSelectedSacredSymbol(symbol.name)}
+                onClick={() => setSelectedSacredSymbol(index)}
               >
                 <img
                   src={symbol.img}
                   alt={symbol.alt}
                   className={`${
-                    selectedSacredSymbol === symbol.name && "translate-y-symbol"
+                    sacredSymbols[selectedSacredSymbol].name === symbol.name && "translate-y-symbol"
                   }  ${isNaN(symbol.level) && "filter grayscale"}`}
                 />
                 <p>

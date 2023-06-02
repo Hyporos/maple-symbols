@@ -1,16 +1,18 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { HiChevronUp, HiChevronDoubleUp, HiArrowSmRight } from "react-icons/hi";
-import { HiArrowUturnLeft } from "react-icons/hi2";
-import { RxReset } from "react-icons/rx";
+import { HiArrowSmRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 
 interface Props {
+  arcaneSymbols: [{}];
+  selectedArcane: number;
   vjLevel: number;
   setVjLevel: Dispatch<SetStateAction<Number>>;
+  vjExperience: number;
+  setVjExperience: Dispatch<SetStateAction<Number>>;
 }
 
-const Calculator = ({ vjLevel, setVjLevel }: Props) => {
+const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExperience, setVjExperience }: Props) => {
   const vjSymbolData = [
     { level: 1, symbolsRequired: 0, mesosRequired: 0 },
     { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -46,8 +48,6 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
 
   const [vjDailySymbols, setVjDailySymbols] = useState(0);
   const [vjWeeklySymbols, setVjWeeklySymbols] = useState(0);
-
-  const [vjExperience, setVjExperience] = useState(NaN);
 
   const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
   const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
@@ -128,15 +128,15 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
   return (
     <section>
       <div className="flex justify-center items-center">
-        <div className="flex shadow-card items-center bg-card rounded-lg h-[350px]">
+        <div className="flex items-center bg-card rounded-t-lg h-[350px]">
           <div className="px-10 space-y-6 w-[350px]">
             <div className="flex justify-center items-center space-x-4 pb-6">
               <img
-                src="/symbols/vj-symbol.webp"
-                alt="Vanishing Journey Symbol"
+                src={arcaneSymbols[selectedArcane].img}
+                alt={arcaneSymbols[selectedArcane].alt}
               />
               <p className="text-xl text-primary font-semibold tracking-wider uppercase">
-                Vanishing Journey
+                {arcaneSymbols[selectedArcane].name}
               </p>
             </div>
 
@@ -220,14 +220,14 @@ const Calculator = ({ vjLevel, setVjLevel }: Props) => {
             <div className="symbol-stats">
               <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
                 <div
-                  className={`flex space-x-2 ${
+                  className={`flex space-x-2 items-center ${
                     vjLevel === 20 || isNaN(vjLevel) ? "hidden" : "block"
                   }`}
                 >
                   <h1>
                     Level <span>{vjLevel}</span>
                   </h1>
-                  <HiArrowSmRight size={25} color={"#B2B2B2"} />
+                  <HiArrowSmRight size={25} className="fill-basic" />
                   <h1>
                     Level <span>{vjLevel + 1}</span>
                   </h1>
