@@ -206,7 +206,7 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
               </button>
             </div>
 
-            <div className="flex justify-center items-center text-secondary pt-6">
+            <div className="flex justify-center items-center text-tertiary pt-6">
               <div className="flex flex-col text-center text-sm">
                 <p>{vjDailySymbols} symbols / day</p>
                 <p>{vjWeeklySymbols} symbols / week</p>
@@ -227,7 +227,7 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
                   <h1>
                     Level <span>{vjLevel}</span>
                   </h1>
-                  <HiArrowSmRight size={25} className="fill-basic" />
+                  <HiArrowSmRight size={30} className="fill-basic" />
                   <h1>
                     Level <span>{vjLevel + 1}</span>
                   </h1>

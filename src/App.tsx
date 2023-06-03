@@ -5,6 +5,7 @@ import Progress from "./components/Graphs/Progress/Progress";
 import Header from "./components/Header/Header";
 import Selector from "./components/Selector/Selector";
 import Tools from "./components/Tools/Tools";
+import Levels from "./components/Levels/Levels";
 
 function App() {
   const [swapped, setSwapped] = useState(false);
@@ -97,13 +98,21 @@ function App() {
         arcaneSymbols={arcaneSymbols}
         sacredSymbols={sacredSymbols}
       ></Selector>
-      <Calculator arcaneSymbols={arcaneSymbols} selectedArcane={selectedArcane} vjLevel={vjLevel} setVjLevel={setVjLevel} vjExperience={vjExperience} setVjExperience={setVjExperience}></Calculator>
+      <Calculator
+        arcaneSymbols={arcaneSymbols}
+        selectedArcane={selectedArcane}
+        vjLevel={vjLevel}
+        setVjLevel={setVjLevel}
+        vjExperience={vjExperience}
+        setVjExperience={setVjExperience}
+      ></Calculator>
       <Tools
         selectedArcane={selectedArcane}
         selectedSacredSymbol={selectedSacredSymbol}
         arcaneSymbols={arcaneSymbols}
         sacredSymbols={sacredSymbols}
       ></Tools>
+      <Levels arcaneSymbols={arcaneSymbols}/>
       {/*<Progress arcaneSymbolData={arcaneSymbolData}></Progress>*/}
       <Footer></Footer>
     </>

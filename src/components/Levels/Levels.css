@@ -1,0 +1,3 @@
+.levels .horizontal-divider {
+    @apply bg-white opacity-10 w-[950px]
+}

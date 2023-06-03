@@ -11,7 +11,7 @@
 }
 
 .symbol-input::placeholder {
-   @apply text-secondary text-opacity-50 hover:text-opacity-100 transition-all
+   @apply text-tertiary hover:text-secondary transition-all
 }
 
 .daily-box {

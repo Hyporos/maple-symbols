@@ -15,6 +15,7 @@ export default {
       textColor: {
         'primary': '#ffffff',
         'secondary': '#bfbfbf',
+        'tertiary' : '#8c8c8c',
         'upgrade': '#00b800',
       },
       backgroundColor: {
