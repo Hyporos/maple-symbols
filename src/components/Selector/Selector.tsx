@@ -26,8 +26,8 @@ const Selector = ({
   const handleSettings = () => {};
 
   return (
-    <section>
-      <div className="flex flex-col justify-center pt-16 mt-40">
+    <section className="flex justify-center">
+      <div className="flex flex-col justify-center pt-16">
         <div className="flex justify-between items-center px-6">
           <div>
             <HiBars3

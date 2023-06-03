@@ -4,23 +4,10 @@ import Button from "../Button/Button";
 function Header() {
   return (
     <section>
-      <div className="flex justify-between items-center px-60 flex-row">
-        <div className="flex justify-center py-10">
-          <h1 className="font-bold text-4xl text-primary font-maven-pro tracking-wider">
-            Maple Symbols
+      <div className="flex justify-center p-5 mb-12 bg-card text-accent select-none">
+          <h1 className="font-semibold text-4xl">
+            maple symbols
           </h1>
-        </div>
-        <div className="flex flex-row space-x-4">
-          <div>
-            <Button name="Donate" variant="tertiary"></Button>
-          </div>
-          <div>
-            <Button name="Documentation" variant="secondary"></Button>
-          </div>
-          <div>
-            <Button name="Documentation" variant="primary"></Button>
-          </div>
-        </div>
       </div>
     </section>
   );

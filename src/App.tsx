@@ -86,7 +86,7 @@ function App() {
 
   return (
     <>
-      {/*<Header></Header>*/}
+      <Header></Header>
       <Selector
         swapped={swapped}
         setSwapped={setSwapped}
@@ -105,7 +105,7 @@ function App() {
         sacredSymbols={sacredSymbols}
       ></Tools>
       {/*<Progress arcaneSymbolData={arcaneSymbolData}></Progress>*/}
-      {/*<Footer></Footer>*/}
+      <Footer></Footer>
     </>
   );
 }

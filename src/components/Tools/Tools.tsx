@@ -17,10 +17,10 @@ const Tools = ({
   const [selectorCount, setSelectorCount] = useState(0);
 
   return (
-    <section>
+    <section className="flex justify-center">
       <div className="flex flex-col bg-card rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
-        <div className="flex justify-between mx-10 text-secondary space-x-4 mb-10">
+        <div className="flex justify-between mx-20 text-secondary space-x-4 mb-10">
           <button
             className={`tool-select flex items-center space-x-2 rounded-3xl ${
               selectedTool === 1 && "bg-secondary text-primary"
@@ -72,7 +72,7 @@ const Tools = ({
             }`}
             onClick={() => setSelectedTool(1)}
           >
-            Apply
+            <p>Apply</p>
           </button>
         </div>
         <div
