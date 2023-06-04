@@ -2,12 +2,13 @@ import { useState } from "react";
 import { HiChevronDown, HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import "./Levels.css";
 
-
 interface Props {
-  arcaneSymbols: [{
-    name: string;
-    level: number;
-  }];
+  arcaneSymbols: [
+    {
+      name: string;
+      level: number;
+    }
+  ];
 }
 
 const Levels = ({ arcaneSymbols }: Props) => {
@@ -21,9 +22,9 @@ const Levels = ({ arcaneSymbols }: Props) => {
             <div className="flex items-center text-center text-tertiary">
               <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
               <p className="w-1/4 tracking-wider">Symbol</p>
-              <p className="w-1/4">Level</p>
-              <p className="w-1/4">Completion Date</p>
-              <p className="w-1/4">Remaining Symbols</p>
+              <p className="w-1/4 tracking-wider">Level</p>
+              <p className="w-1/4 tracking-wider">Completion Date</p>
+              <p className="w-1/4 tracking-wider">Symbols Remaining</p>
             </div>
             <hr className="horizontal-divider" />
             {arcaneSymbols.map((arcaneSymbol, index) => (

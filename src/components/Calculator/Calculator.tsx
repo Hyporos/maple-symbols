@@ -4,124 +4,82 @@ import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 
 interface Props {
-  arcaneSymbols: [{}];
+  arcaneSymbols: [
+    {
+      id: number;
+      name: string;
+      alt: string;
+      img: string;
+      level: number;
+      experience: number;
+      daily: boolean;
+      weekly: boolean;
+      extra: boolean;
+      dailySymbols: number;
+      weeklySymbols: number;
+      data: [{
+        level: number;
+        symbolsRequired: number;
+        mesosRequired: number;
+      }]
+    }
+  ];
+  setArcaneSymbols: Dispatch<SetStateAction<object>>;
   selectedArcane: number;
-  vjLevel: number;
-  setVjLevel: Dispatch<SetStateAction<Number>>;
-  vjExperience: number;
-  setVjExperience: Dispatch<SetStateAction<Number>>;
+  classData: [{
+    name: string;
+    statForm: string;
+    statGain: number;
+  }]
+  selectedClass: number;
 }
 
-const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExperience, setVjExperience }: Props) => {
-  const vjSymbolData = [
-    { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-    { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
-    { level: 3, symbolsRequired: 15, mesosRequired: 11030000 },
-    { level: 4, symbolsRequired: 20, mesosRequired: 14990000 },
-    { level: 5, symbolsRequired: 27, mesosRequired: 18950000 },
-    { level: 6, symbolsRequired: 36, mesosRequired: 22910000 },
-    { level: 7, symbolsRequired: 47, mesosRequired: 26870000 },
-    { level: 8, symbolsRequired: 60, mesosRequired: 30830000 },
-    { level: 9, symbolsRequired: 75, mesosRequired: 34790000 },
-    { level: 10, symbolsRequired: 92, mesosRequired: 38750000 },
-    { level: 11, symbolsRequired: 111, mesosRequired: 42710000 },
-    { level: 12, symbolsRequired: 132, mesosRequired: 46670000 },
-    { level: 13, symbolsRequired: 155, mesosRequired: 50630000 },
-    { level: 14, symbolsRequired: 180, mesosRequired: 54590000 },
-    { level: 15, symbolsRequired: 207, mesosRequired: 58550000 },
-    { level: 16, symbolsRequired: 236, mesosRequired: 62510000 },
-    { level: 17, symbolsRequired: 267, mesosRequired: 66470000 },
-    { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
-    { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
-    { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-  ];
+const Calculator = ({
+  arcaneSymbols,
+  setArcaneSymbols,
+  selectedArcane,
+  classData,
+  selectedClass,
+}: Props) => {
 
-  const classData = [
-    { class: "Demon Avenger", statForm: "HP", statGain: 2100 },
-    { class: "Xenon", statForm: "all stat", statGain: 48 },
-    { class: "Other", statForm: "main stat", statGain: 100 },
-  ];
-
-  const [vjKillQuest, setVjKillQuest] = useState(false);
-  const [vjPartyQuest, setVjPartyQuest] = useState(false);
-  const [vjExpansion, setVjExpansion] = useState(false);
-
-  const [vjDailySymbols, setVjDailySymbols] = useState(0);
-  const [vjWeeklySymbols, setVjWeeklySymbols] = useState(0);
-
-  const [vjTotalSymbols, setVjTotalSymbols] = useState(0);
   const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
-
-  const [vjSpentMesos, setVjSpentMesos] = useState(0);
-  const [vjRemainingMesos, setVjRemainingMesos] = useState(0);
 
   const [vjDaysRemaining, setVjDaysRemaining] = useState(0);
   const [vjCompletionDate, setVjCompletionDate] = useState("");
 
-  const [selectedClass, setSelectedClass] = useState(2);
-
-  const nextSymbol = vjSymbolData.find(
-    (required) => required.level === vjLevel + 1
+  const nextSymbol = arcaneSymbols.find(
+    (symbol) => symbol.level === arcaneSymbols[selectedArcane].level + 1
   );
 
-  const requiredSymbols = nextSymbol?.symbolsRequired - vjExperience;
-  const symbolInProgress = vjExperience < nextSymbol?.symbolsRequired;
+  const requiredSymbols = nextSymbol?.symbolsRequired - arcaneSymbols[selectedArcane].experience;
+  const symbolInProgress = arcaneSymbols[selectedArcane].experience < nextSymbol?.data.symbolsRequired;
 
   useEffect(() => {
-    let dailySymbols = 0;
-    if (vjKillQuest) dailySymbols += 9;
-    vjPartyQuest ? setVjWeeklySymbols(45) : setVjWeeklySymbols(0);
-    if (vjExpansion) dailySymbols += 9;
-    setVjDailySymbols(dailySymbols);
-  }, [vjKillQuest, vjPartyQuest, vjExpansion]);
-
-  useEffect(() => {
-    let totalSymbols = 0;
-    let splicedSymbols = vjSymbolData.splice(0, vjLevel);
-    setVjTotalSymbols(
-      splicedSymbols.reduce(
-        (total, currentSymbol) => total + currentSymbol.symbolsRequired,
-        totalSymbols
-      ) + vjExperience
-    );
-    setVjSpentMesos(
-      splicedSymbols.reduce(
-        (total, currentSymbol) => total + currentSymbol.mesosRequired,
-        totalSymbols
-      )
-    );
-  }, [vjLevel, vjExperience]);
-
-  useEffect(() => {
-    let remainingSymbols = 0;
-    let splicedSymbols = vjSymbolData.splice(vjLevel, 20 - vjLevel);
+    const remainingSymbols = 0;
+    const splicedSymbols = arcaneSymbols[selectedArcane].data.splice(arcaneSymbols[selectedArcane].level, 20 - arcaneSymbols[selectedArcane].level);
     setVjRemainingSymbols(
       splicedSymbols.reduce(
         (total, currentSymbol) => total + currentSymbol.symbolsRequired,
         remainingSymbols
-      ) - vjExperience
+      ) - arcaneSymbols[selectedArcane].experience
     );
-    setVjRemainingMesos(
-      splicedSymbols.reduce(
-        (total, currentSymbol) => total + currentSymbol.mesosRequired,
-        remainingSymbols
-      )
-    );
-  }, [vjTotalSymbols]);
+  }, []);
 
   useEffect(() => {
-    setVjDaysRemaining(Math.ceil(vjRemainingSymbols / (vjDailySymbols + 6.42857142857)));
-  }, [vjRemainingSymbols, vjDailySymbols, vjWeeklySymbols]);
+    setVjDaysRemaining(
+      Math.ceil(vjRemainingSymbols / (arcaneSymbols[selectedArcane].dailySymbols + 6.42857142857))
+    );
+  }, [vjRemainingSymbols, arcaneSymbols[selectedArcane].dailySymbols, arcaneSymbols[selectedArcane].weeklySymbols]);
 
   useEffect(() => {
     const date = new Date();
     date.setDate(
-      date.getDate() + Math.ceil(vjRemainingSymbols / vjDailySymbols)
+      date.getDate() + Math.ceil(vjRemainingSymbols / arcaneSymbols[selectedArcane].dailySymbols)
     );
-    let currentDay = String(date.getDate()).padStart(2, "0");
-    let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-    let currentYear = date.getFullYear();
-    let currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
+    const currentDay = String(date.getDate()).padStart(2, "0");
+    const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+    const currentYear = date.getFullYear();
+    const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
     setVjCompletionDate(currentDate);
   }, [vjDaysRemaining]);
 
@@ -144,17 +102,17 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
               <input
                 type="number"
                 placeholder="Level"
-                value={vjLevel}
+                value={arcaneSymbols[selectedArcane].level}
                 className="symbol-input"
                 onChange={(e) => {
                   if (Number(e.target.value) <= 20) {
-                    setVjLevel(parseInt(e.target.value));
+                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, level: parseInt(e.target.value)} : symbol));
                   }
                   if (Number(e.target.value) >= 21) {
-                    setVjLevel(20);
+                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, level: 20} : symbol));
                   }
                   if (e.target.value === "0") {
-                    setVjLevel(1);
+                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, level: 1} : symbol));
                   }
                 }}
               ></input>
@@ -162,20 +120,20 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
               <input
                 type="number"
                 placeholder="Experience"
-                value={vjExperience}
+                value={arcaneSymbols[selectedArcane].experience}
                 className="symbol-input"
                 onChange={(e) => {
                   if (Number(e.target.value) <= 2679) {
-                    setVjExperience(parseInt(e.target.value));
+                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: parseInt(e.target.value)} : symbol));
                   }
                   if (Number(e.target.value) >= 2680) {
-                    setVjExperience(2679);
+                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: 2679} : symbol));
                   }
-                  if (e.target.value === "0" && vjLevel === 1) {
-                    setVjExperience(1);
+                  if (e.target.value === "0" && arcaneSymbols[selectedArcane].level === 1) {
+                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: 1} : symbol));
                   }
                   if (e.target.value === "00" || e.target.value === "000") {
-                    vjLevel === 1 ? setVjExperience(1) : (e.target.value = "0");
+                    arcaneSymbols[selectedArcane].level === 1 ? setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: 1} : symbol)) : (e.target.value = "0");
                   }
                   if (e.target.value.startsWith("0")) {
                     e.target.value = e.target.value.substring(1);
@@ -186,21 +144,21 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
 
             <div className="flex space-x-2 mt-6">
               <button
-                className={`daily-box ${vjKillQuest && "border-checked"}`}
-                onClick={() => setVjKillQuest(!vjKillQuest)}
+                className={`daily-box ${arcaneSymbols[selectedArcane].daily && "border-checked"}`}
+                onClick={() => setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, daily: !arcaneSymbols[selectedArcane].daily, dailySymbols: arcaneSymbols[selectedArcane].dailySymbols === 0 ? arcaneSymbols[selectedArcane].dailySymbols += 9 : arcaneSymbols[selectedArcane].dailySymbols -= 9} : symbol))}
               >
                 Daily
               </button>
 
               <button
-                className={`daily-box ${vjPartyQuest && "border-checked"}`}
-                onClick={() => setVjPartyQuest(!vjPartyQuest)}
+                className={`daily-box ${arcaneSymbols[selectedArcane].weekly && "border-checked"}`}
+                onClick={() => setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, weekly: !arcaneSymbols[selectedArcane].weekly, weeklySymbols: arcaneSymbols[selectedArcane].weeklySymbols === 0 ? 45 : 0} : symbol)) }
               >
                 Weekly
               </button>
               <button
-                className={`daily-box ${vjExpansion && "border-checked"}`}
-                onClick={() => setVjExpansion(!vjExpansion)}
+                className={`daily-box ${arcaneSymbols[selectedArcane].extra && "border-checked"}`}
+                onClick={() => setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, extra: !arcaneSymbols[selectedArcane].extra, dailySymbols: arcaneSymbols[selectedArcane].dailySymbols === 9 ? arcaneSymbols[selectedArcane].dailySymbols += 9 : arcaneSymbols[selectedArcane].dailySymbols -= 9} : symbol))}
               >
                 Extra
               </button>
@@ -208,8 +166,8 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
 
             <div className="flex justify-center items-center text-tertiary pt-6">
               <div className="flex flex-col text-center text-sm">
-                <p>{vjDailySymbols} symbols / day</p>
-                <p>{vjWeeklySymbols} symbols / week</p>
+                <p>{arcaneSymbols[selectedArcane].dailySymbols} symbols / day</p>
+                <p>{arcaneSymbols[selectedArcane].weeklySymbols} symbols / week</p>
               </div>
             </div>
           </div>
@@ -221,24 +179,24 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
               <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
                 <div
                   className={`flex space-x-2 items-center ${
-                    vjLevel === 20 || isNaN(vjLevel) ? "hidden" : "block"
+                    arcaneSymbols[selectedArcane].level === 20 || isNaN(arcaneSymbols[selectedArcane].level) ? "hidden" : "block"
                   }`}
                 >
                   <h1>
-                    Level <span>{vjLevel}</span>
+                    Level <span>{arcaneSymbols[selectedArcane].level}</span>
                   </h1>
                   <HiArrowSmRight size={30} className="fill-basic" />
                   <h1>
-                    Level <span>{vjLevel + 1}</span>
+                    Level <span>{arcaneSymbols[selectedArcane].level + 1}</span>
                   </h1>
                 </div>
                 <div
                   className={`text-2xl tracking-widest uppercase ${
-                    vjLevel === 20 || isNaN(vjLevel) ? "block" : "hidden"
+                    arcaneSymbols[selectedArcane].level === 20 || isNaN(arcaneSymbols[selectedArcane].level) ? "block" : "hidden"
                   }`}
                 >
                   <h1>
-                    {vjLevel === 20 ? (
+                    {arcaneSymbols[selectedArcane].level === 20 ? (
                       <span className="text-accent text-2xl font-bold">
                         Max Level
                       </span>
@@ -257,26 +215,26 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
 
             <div
               className={`symbol-stats ${
-                isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+                isNaN(arcaneSymbols[selectedArcane].level) || arcaneSymbols[selectedArcane].level === 20 ? "hidden" : "block"
               }`}
             >
               {(() => {
                 if (
                   symbolInProgress &&
-                  (vjDailySymbols != 0 || vjWeeklySymbols != 0)
+                  (arcaneSymbols[selectedArcane].dailySymbols != 0 || arcaneSymbols[selectedArcane].weeklySymbols != 0)
                 ) {
                   return (
                     <p>
                       <span>
                         {Math.ceil(
-                          (vjSymbolData[vjLevel].symbolsRequired -
-                            vjExperience) /
-                            (vjDailySymbols + (vjWeeklySymbols / 7))
+                          (arcaneSymbols[selectedArcane].data[arcaneSymbols[selectedArcane].level].symbolsRequired -
+                            arcaneSymbols[selectedArcane].experience) /
+                            (arcaneSymbols[selectedArcane].dailySymbols + arcaneSymbols[selectedArcane].weeklySymbols / 7)
                         )}
                       </span>{" "}
                       {Math.ceil(
-                        (vjSymbolData[vjLevel].symbolsRequired - vjExperience) /
-                          (vjDailySymbols + (vjWeeklySymbols / 7))
+                        (arcaneSymbols[selectedArcane].data[arcaneSymbols[selectedArcane].level].symbolsRequired - arcaneSymbols[selectedArcane].experience) /
+                          (arcaneSymbols[selectedArcane].dailySymbols + arcaneSymbols[selectedArcane].weeklySymbols / 7)
                       ) > 1
                         ? "days to go"
                         : "day to go"}
@@ -288,7 +246,7 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
                       <span>Ready</span> for upgrade
                     </p>
                   );
-                } else if (isNaN(vjExperience)) {
+                } else if (isNaN(arcaneSymbols[selectedArcane].experience)) {
                   return (
                     <p>
                       <span>Experience</span> is not set
@@ -330,13 +288,13 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
 
             <div
               className={`symbol-stats ${
-                isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+                isNaN(arcaneSymbols[selectedArcane].level) || arcaneSymbols[selectedArcane].level === 20 ? "hidden" : "block"
               }`}
             >
               <p>
                 <span>
-                  {vjLevel <= 19 &&
-                    vjSymbolData[vjLevel].mesosRequired.toLocaleString()}
+                  {arcaneSymbols[selectedArcane].level <= 19 &&
+                    arcaneSymbols[selectedArcane].data[arcaneSymbols[selectedArcane].level].mesosRequired.toLocaleString()}
                 </span>{" "}
                 mesos required
               </p>
@@ -344,7 +302,7 @@ const Calculator = ({ arcaneSymbols, selectedArcane, vjLevel, setVjLevel, vjExpe
 
             <div
               className={`symbol-stats ${
-                isNaN(vjLevel) || vjLevel === 20 ? "hidden" : "block"
+                isNaN(arcaneSymbols[selectedArcane].level) || arcaneSymbols[selectedArcane].level === 20 ? "hidden" : "block"
               }`}
             >
               <p>
