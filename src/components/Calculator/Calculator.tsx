@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { HiArrowSmRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
-import { HiOutlineCursorArrowRipple } from "react-icons/hi2";
 
 interface Props {
   symbols: [
@@ -47,10 +46,6 @@ const Calculator = ({
   classData,
   selectedClass,
 }: Props) => {
-  const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
-
-  const [vjDaysRemaining, setVjDaysRemaining] = useState(0);
-  const [vjCompletionDate, setVjCompletionDate] = useState("");
 
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
@@ -90,6 +85,23 @@ const Calculator = ({
           : symbol
       )
     );
+
+    const date = new Date();
+    date.setDate(
+      date.getDate() +
+        Math.ceil(currentSymbol.symbolsRemaining / symbolCount)
+    );
+    const currentDay = String(date.getDate()).padStart(2, "0");
+    const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+    const currentYear = date.getFullYear();
+    const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
+    setSymbols(
+      symbols.map((symbol) =>
+        symbol.id === selectedSymbol + 1
+          ? { ...symbol, completion: currentDate }
+          : symbol
+      )
+    );
   }, [
     currentSymbol.symbolsRemaining,
     currentSymbol.daily,
@@ -98,17 +110,8 @@ const Calculator = ({
   ]);
 
   useEffect(() => {
-    const date = new Date();
-    date.setDate(
-      date.getDate() +
-        Math.ceil(vjRemainingSymbols / currentSymbol.dailySymbols)
-    );
-    const currentDay = String(date.getDate()).padStart(2, "0");
-    const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-    const currentYear = date.getFullYear();
-    const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
-    setVjCompletionDate(currentDate);
-  }, [vjDaysRemaining]);
+
+  }, [currentSymbol.daysRemaining]);
 
   return (
     <section>
@@ -118,8 +121,7 @@ const Calculator = ({
             <div className="flex justify-center items-center space-x-4 pb-6">
               <img src={currentSymbol.img} alt={currentSymbol.alt} />
               <p className="text-xl text-primary font-semibold tracking-wider uppercase">
-                {currentSymbol.name}
-                <p>{currentSymbol.daysRemaining}</p>
+                {currentSymbol.name} <br></br>
               </p>
             </div>
 
@@ -235,7 +237,7 @@ const Calculator = ({
               <button
                 className={`daily-box ${
                   currentSymbol.weekly && "border-checked"
-                }`}
+                } `}
                 onClick={() =>
                   setSymbols(
                     symbols.map((symbol) =>
@@ -336,6 +338,7 @@ const Calculator = ({
                 </div>
               </div>
             </div>
+            
 
             <div
               className={`symbol-stats ${
@@ -439,8 +442,8 @@ const Calculator = ({
             >
               <p>
                 <span>
-                  {/*(currentSymbol.level <= 19 && currentSymbol.level > 0) &&
-                    nextLevel.mesosRequired.toLocaleString()*/}
+                  {(currentSymbol.level <= 19 && currentSymbol.level > 0) &&
+                    nextLevel.mesosRequired.toLocaleString()}
                 </span>{" "}
                 mesos required
               </p>

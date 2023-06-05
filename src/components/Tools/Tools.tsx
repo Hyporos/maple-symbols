@@ -3,7 +3,11 @@ import { HiArrowSmRight } from "react-icons/hi";
 import "./Tools.css";
 
 interface Props {
-  symbols: [{}];
+  symbols: [{
+    img: string;
+    level: number;
+    experience: number;
+  }];
   selectedSymbol: number;
 }
 
@@ -15,7 +19,7 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
     <section className="flex justify-center">
       <div className="flex flex-col bg-card rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
-        <div className="flex justify-between mx-20 text-secondary space-x-4 mb-10">
+        <div className={`flex justify-between mx-20 text-secondary transition-all space-x-4 mb-10 ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}>
           <button
             className={`tool-select flex items-center space-x-2 rounded-3xl ${
               selectedTool === 1 && "bg-secondary text-primary"
@@ -36,11 +40,11 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
           </button>
         </div>
         <div
-          className={`flex justify-center items-center rounded-3xl mx-10 py-3 bg-dark space-x-14 ${
+          className={`flex justify-center items-center bg-dark rounded-3xl transition-all mx-10 py-3 space-x-14 ${
             selectedTool === 1 ? "block" : "hidden"
-          }`}
+          } ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}
         >
-          <div className="flex space-x-4">
+          <div className="flex items-center space-x-4">
             <img src={symbols[selectedSymbol].img}></img>
             <input
               placeholder="Count"

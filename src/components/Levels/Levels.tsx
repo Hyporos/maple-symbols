@@ -6,13 +6,19 @@ interface Props {
   symbols: [
     {
       name: string;
+      img: string;
+      alt: string;
+      type: string;
       level: number;
       symbolsRemaining: number;
+      daysRemaining: number;
+      completion: string;
     }
   ];
+  swapped: boolean;
 }
 
-const Levels = ({ symbols }: Props) => {
+const Levels = ({ symbols, swapped }: Props) => {
   const [selectedSymbol, setSelectedSymbol] = useState(0);
 
   return (
@@ -28,17 +34,43 @@ const Levels = ({ symbols }: Props) => {
               <p className="w-1/4 tracking-wider">Symbols Remaining</p>
             </div>
             <hr className="horizontal-divider" />
-            {symbols.map((symbol, index) => (
-              <div onClick={() => setSelectedSymbol(index)}>
-                <div className="flex items-center text-center hover:bg-dark rounded-3xl cursor-pointer transition-all py-5">
-                  <HiChevronDown size={30} className="w-1/4 fill-accent" />
-                  <p className="w-1/4 tracking-wider">{symbol.name}</p>
-                  <p className="w-1/4">{symbol.level}</p>
-                  <p className="w-1/4">2023-20-04 (117 days)</p>
-                  <p className="w-1/4">{symbol.symbolsRemaining}</p>
+            {symbols.map((symbol, index) =>
+              !swapped ? ( symbol.type === 'arcane' &&
+                <div onClick={() => setSelectedSymbol(index)}>
+                  <div className={`flex items-center text-center rounded-3xl transition-all py-4 ${isNaN(symbol.level) ? "opacity-25" : "hover:bg-dark cursor-pointer"}`}>
+                    <div className="w-1/4 flex justify-center">
+                      <img src={symbol.img} alt={symbol.alt} width={40} className={`${isNaN(symbol.level) && "filter grayscale"}`}></img>
+                    </div>
+                    <p className="w-1/4 tracking-wider">{symbol.name}</p>
+                    <p className={`w-1/4 ${isNaN(symbol.level) ? "filter grayscale" : "text-accent"}`}>{symbol.level}</p>
+                    <div className="w-1/4">
+                      <p>{(symbol.completion != "" || symbol.completion === "NaN-NaN-NaN") ? symbol.completion : "Indefinite"} </p>
+                      <p className="text-tertiary">
+                        {symbol.daysRemaining != 0 ? symbol.daysRemaining : "head"} days
+                      </p>
+                    </div>
+                    <p className="w-1/4">{symbol.symbolsRemaining}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ) : ( symbol.type === 'sacred' &&
+                <div onClick={() => setSelectedSymbol(index)}>
+                  <div className={`flex items-center text-center rounded-3xl transition-all py-4 ${isNaN(symbol.level) ? "opacity-25" : "hover:bg-dark cursor-pointer"}`}>
+                    <div className="w-1/4 flex justify-center">
+                      <img src={symbol.img} alt={symbol.alt} width={40} className={`${isNaN(symbol.level) && "filter grayscale"}`}></img>
+                    </div>
+                    <p className="w-1/4 tracking-wider">{symbol.name}</p>
+                    <p className={`w-1/4 ${isNaN(symbol.level) ? "filter grayscale" : "text-accent"}`}>{symbol.level}</p>
+                    <div className="w-1/4">
+                      <p>{symbol.completion} </p>
+                      <p className="text-tertiary">
+                        {symbol.daysRemaining} days
+                      </p>
+                    </div>
+                    <p className="w-1/4">{symbol.symbolsRemaining}</p>
+                  </div>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>

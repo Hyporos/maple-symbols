@@ -28,6 +28,7 @@ function App() {
       dailySymbols: 9,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -65,6 +66,7 @@ function App() {
       dailySymbols: 8,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -101,6 +103,7 @@ function App() {
       dailySymbols: 11,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -137,6 +140,7 @@ function App() {
       dailySymbols: 9,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -173,6 +177,7 @@ function App() {
       dailySymbols: 8,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -209,6 +214,7 @@ function App() {
       dailySymbols: 8,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -233,6 +239,7 @@ function App() {
       ],
     },
     {
+      id: 7,
       name: "Cernium",
       alt: "Cernium Symbol",
       img: "/symbols/cern-symbol.webp",
@@ -241,9 +248,10 @@ function App() {
       experience: NaN,
       daily: false,
       extra: false,
-      dailySymbols: 0,
+      dailySymbols: 10,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -268,6 +276,7 @@ function App() {
       ],
     },
     {
+      id: 8,
       name: "Arcus",
       alt: "Arcus Symbol",
       img: "/symbols/arcus-symbol.webp",
@@ -278,6 +287,7 @@ function App() {
       dailySymbols: 10,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -302,6 +312,7 @@ function App() {
       ],
     },
     {
+      id: 9,
       name: "Odium",
       alt: "Odium Symbol",
       img: "/symbols/odium-symbol.webp",
@@ -309,9 +320,10 @@ function App() {
       level: NaN,
       experience: NaN,
       daily: false,
-      dailySymbols: 0,
+      dailySymbols: 5,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -359,9 +371,10 @@ function App() {
         selectedSymbol={selectedSymbol}
         classData={classData}
         selectedClass={selectedClass}
+        swapped={swapped}
       />
       <Tools selectedSymbol={selectedSymbol} symbols={symbols} />
-      <Levels symbols={symbols} />
+      <Levels symbols={symbols} swapped={swapped} />
       <Progress symbols={symbols} />
       <Footer />
     </>
