@@ -46,7 +46,6 @@ const Calculator = ({
   classData,
   selectedClass,
 }: Props) => {
-
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
 
@@ -85,11 +84,17 @@ const Calculator = ({
           : symbol
       )
     );
+  }, [
+    currentSymbol.symbolsRemaining,
+    currentSymbol.daily,
+    currentSymbol.weekly,
+    currentSymbol.extra,
+  ]);
 
+  useEffect(() => {
     const date = new Date();
     date.setDate(
-      date.getDate() +
-        Math.ceil(currentSymbol.symbolsRemaining / symbolCount)
+      date.getDate() + Math.ceil(currentSymbol.symbolsRemaining / symbolCount)
     );
     const currentDay = String(date.getDate()).padStart(2, "0");
     const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
@@ -102,15 +107,6 @@ const Calculator = ({
           : symbol
       )
     );
-  }, [
-    currentSymbol.symbolsRemaining,
-    currentSymbol.daily,
-    currentSymbol.weekly,
-    currentSymbol.extra,
-  ]);
-
-  useEffect(() => {
-
   }, [currentSymbol.daysRemaining]);
 
   return (
@@ -338,7 +334,6 @@ const Calculator = ({
                 </div>
               </div>
             </div>
-            
 
             <div
               className={`symbol-stats ${
@@ -442,7 +437,8 @@ const Calculator = ({
             >
               <p>
                 <span>
-                  {(currentSymbol.level <= 19 && currentSymbol.level > 0) &&
+                  {currentSymbol.level <= 19 &&
+                    currentSymbol.level > 0 &&
                     nextLevel.mesosRequired.toLocaleString()}
                 </span>{" "}
                 mesos required
