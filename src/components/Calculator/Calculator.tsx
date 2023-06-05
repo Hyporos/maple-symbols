@@ -2,9 +2,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { HiArrowSmRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
+import { HiOutlineCursorArrowRipple } from "react-icons/hi2";
 
 interface Props {
-  arcaneSymbols: [
+  symbols: [
     {
       id: number;
       name: string;
@@ -16,65 +17,91 @@ interface Props {
       weekly: boolean;
       extra: boolean;
       dailySymbols: number;
-      weeklySymbols: number;
-      data: [{
-        level: number;
-        symbolsRequired: number;
-        mesosRequired: number;
-      }]
+      daysRemaining: number;
+      symbolsRemaining: number;
+      data: [
+        {
+          level: number;
+          symbolsRequired: number;
+          mesosRequired: number;
+        }
+      ];
     }
   ];
-  setArcaneSymbols: Dispatch<SetStateAction<object>>;
-  selectedArcane: number;
-  classData: [{
-    name: string;
-    statForm: string;
-    statGain: number;
-  }]
+  setSymbols: Dispatch<SetStateAction<object>>;
+  selectedSymbol: number;
+  classData: [
+    {
+      name: string;
+      statForm: string;
+      statGain: number;
+    }
+  ];
   selectedClass: number;
 }
 
 const Calculator = ({
-  arcaneSymbols,
-  setArcaneSymbols,
-  selectedArcane,
+  symbols,
+  setSymbols,
+  selectedSymbol,
   classData,
   selectedClass,
 }: Props) => {
-
   const [vjRemainingSymbols, setVjRemainingSymbols] = useState(0);
 
   const [vjDaysRemaining, setVjDaysRemaining] = useState(0);
   const [vjCompletionDate, setVjCompletionDate] = useState("");
 
-  const nextSymbol = arcaneSymbols.find(
-    (symbol) => symbol.level === arcaneSymbols[selectedArcane].level + 1
-  );
+  const currentSymbol = symbols[selectedSymbol];
+  const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
 
-  const requiredSymbols = nextSymbol?.symbolsRequired - arcaneSymbols[selectedArcane].experience;
-  const symbolInProgress = arcaneSymbols[selectedArcane].experience < nextSymbol?.data.symbolsRequired;
+  const symbolCount =
+    (currentSymbol.extra && currentSymbol.daily
+      ? currentSymbol.dailySymbols * 2
+      : currentSymbol.daily
+      ? currentSymbol.dailySymbols
+      : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
 
   useEffect(() => {
-    const remainingSymbols = 0;
-    const splicedSymbols = arcaneSymbols[selectedArcane].data.splice(arcaneSymbols[selectedArcane].level, 20 - arcaneSymbols[selectedArcane].level);
-    setVjRemainingSymbols(
+    const splicedSymbols = currentSymbol.data.slice(currentSymbol.level, 20);
+
+    const remaining =
       splicedSymbols.reduce(
         (total, currentSymbol) => total + currentSymbol.symbolsRequired,
-        remainingSymbols
-      ) - arcaneSymbols[selectedArcane].experience
+        0
+      ) - currentSymbol.experience;
+
+    setSymbols(
+      symbols.map((symbol) =>
+        symbol.id === selectedSymbol + 1
+          ? { ...symbol, symbolsRemaining: remaining }
+          : symbol
+      )
     );
-  }, []);
+  }, [currentSymbol.level, currentSymbol.experience]);
 
   useEffect(() => {
-    setVjDaysRemaining(
-      Math.ceil(vjRemainingSymbols / (arcaneSymbols[selectedArcane].dailySymbols + 6.42857142857))
+    const remaining = Math.ceil(currentSymbol.symbolsRemaining / symbolCount);
+
+    setSymbols(
+      symbols.map((symbol) =>
+        symbol.id === selectedSymbol + 1
+          ? { ...symbol, daysRemaining: remaining }
+          : symbol
+      )
     );
-  }, [vjRemainingSymbols, arcaneSymbols[selectedArcane].dailySymbols, arcaneSymbols[selectedArcane].weeklySymbols]);
+  }, [
+    currentSymbol.symbolsRemaining,
+    currentSymbol.daily,
+    currentSymbol.weekly,
+    currentSymbol.extra,
+  ]);
 
   useEffect(() => {
     const date = new Date();
     date.setDate(
-      date.getDate() + Math.ceil(vjRemainingSymbols / arcaneSymbols[selectedArcane].dailySymbols)
+      date.getDate() +
+        Math.ceil(vjRemainingSymbols / currentSymbol.dailySymbols)
     );
     const currentDay = String(date.getDate()).padStart(2, "0");
     const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
@@ -89,12 +116,10 @@ const Calculator = ({
         <div className="flex items-center bg-card rounded-t-lg h-[350px]">
           <div className="px-10 space-y-6 w-[350px]">
             <div className="flex justify-center items-center space-x-4 pb-6">
-              <img
-                src={arcaneSymbols[selectedArcane].img}
-                alt={arcaneSymbols[selectedArcane].alt}
-              />
+              <img src={currentSymbol.img} alt={currentSymbol.alt} />
               <p className="text-xl text-primary font-semibold tracking-wider uppercase">
-                {arcaneSymbols[selectedArcane].name}
+                {currentSymbol.name}
+                <p>{currentSymbol.daysRemaining}</p>
               </p>
             </div>
 
@@ -102,17 +127,35 @@ const Calculator = ({
               <input
                 type="number"
                 placeholder="Level"
-                value={arcaneSymbols[selectedArcane].level}
+                value={currentSymbol.level}
                 className="symbol-input"
                 onChange={(e) => {
                   if (Number(e.target.value) <= 20) {
-                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, level: parseInt(e.target.value)} : symbol));
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? { ...symbol, level: parseInt(e.target.value) }
+                          : symbol
+                      )
+                    );
                   }
                   if (Number(e.target.value) >= 21) {
-                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, level: 20} : symbol));
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? { ...symbol, level: 20 }
+                          : symbol
+                      )
+                    );
                   }
                   if (e.target.value === "0") {
-                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, level: 1} : symbol));
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? { ...symbol, level: 1 }
+                          : symbol
+                      )
+                    );
                   }
                 }}
               ></input>
@@ -120,20 +163,46 @@ const Calculator = ({
               <input
                 type="number"
                 placeholder="Experience"
-                value={arcaneSymbols[selectedArcane].experience}
+                value={currentSymbol.experience}
                 className="symbol-input"
                 onChange={(e) => {
                   if (Number(e.target.value) <= 2679) {
-                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: parseInt(e.target.value)} : symbol));
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? { ...symbol, experience: parseInt(e.target.value) }
+                          : symbol
+                      )
+                    );
                   }
                   if (Number(e.target.value) >= 2680) {
-                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: 2679} : symbol));
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? { ...symbol, experience: 2679 }
+                          : symbol
+                      )
+                    );
                   }
-                  if (e.target.value === "0" && arcaneSymbols[selectedArcane].level === 1) {
-                    setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: 1} : symbol));
+                  if (e.target.value === "0" && currentSymbol.level === 1) {
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? { ...symbol, experience: 1 }
+                          : symbol
+                      )
+                    );
                   }
                   if (e.target.value === "00" || e.target.value === "000") {
-                    arcaneSymbols[selectedArcane].level === 1 ? setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, experience: 1} : symbol)) : (e.target.value = "0");
+                    currentSymbol.level === 1
+                      ? setSymbols(
+                          symbols.map((symbol) =>
+                            symbol.id === selectedSymbol + 1
+                              ? { ...symbol, experience: 1 }
+                              : symbol
+                          )
+                        )
+                      : (e.target.value = "0");
                   }
                   if (e.target.value.startsWith("0")) {
                     e.target.value = e.target.value.substring(1);
@@ -144,21 +213,65 @@ const Calculator = ({
 
             <div className="flex space-x-2 mt-6">
               <button
-                className={`daily-box ${arcaneSymbols[selectedArcane].daily && "border-checked"}`}
-                onClick={() => setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, daily: !arcaneSymbols[selectedArcane].daily, dailySymbols: arcaneSymbols[selectedArcane].dailySymbols === 0 ? arcaneSymbols[selectedArcane].dailySymbols += 9 : arcaneSymbols[selectedArcane].dailySymbols -= 9} : symbol))}
+                className={`daily-box ${
+                  currentSymbol.daily && "border-checked"
+                }`}
+                onClick={() =>
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? {
+                            ...symbol,
+                            daily: !currentSymbol.daily,
+                          }
+                        : symbol
+                    )
+                  )
+                }
               >
                 Daily
               </button>
 
               <button
-                className={`daily-box ${arcaneSymbols[selectedArcane].weekly && "border-checked"}`}
-                onClick={() => setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, weekly: !arcaneSymbols[selectedArcane].weekly, weeklySymbols: arcaneSymbols[selectedArcane].weeklySymbols === 0 ? 45 : 0} : symbol)) }
+                className={`daily-box ${
+                  currentSymbol.weekly && "border-checked"
+                }`}
+                onClick={() =>
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? {
+                            ...symbol,
+                            weekly: !currentSymbol.weekly,
+                          }
+                        : symbol
+                    )
+                  )
+                }
               >
                 Weekly
               </button>
               <button
-                className={`daily-box ${arcaneSymbols[selectedArcane].extra && "border-checked"}`}
-                onClick={() => setArcaneSymbols(arcaneSymbols.map(symbol => symbol.id === selectedArcane + 1 ? {...symbol, extra: !arcaneSymbols[selectedArcane].extra, dailySymbols: arcaneSymbols[selectedArcane].dailySymbols === 9 ? arcaneSymbols[selectedArcane].dailySymbols += 9 : arcaneSymbols[selectedArcane].dailySymbols -= 9} : symbol))}
+                className={`daily-box ${
+                  currentSymbol.extra && "border-checked"
+                } ${
+                  typeof currentSymbol.extra !== "undefined"
+                    ? "block"
+                    : "hidden"
+                }
+                }`}
+                onClick={() =>
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? {
+                            ...symbol,
+                            extra: !currentSymbol.extra,
+                          }
+                        : symbol
+                    )
+                  )
+                }
               >
                 Extra
               </button>
@@ -166,8 +279,15 @@ const Calculator = ({
 
             <div className="flex justify-center items-center text-tertiary pt-6">
               <div className="flex flex-col text-center text-sm">
-                <p>{arcaneSymbols[selectedArcane].dailySymbols} symbols / day</p>
-                <p>{arcaneSymbols[selectedArcane].weeklySymbols} symbols / week</p>
+                <p>
+                  {currentSymbol.daily && currentSymbol.extra
+                    ? currentSymbol.dailySymbols * 2
+                    : currentSymbol.daily
+                    ? currentSymbol.dailySymbols
+                    : 0}{" "}
+                  symbols / day
+                </p>
+                <p>{currentSymbol.weekly ? 45 : 0} symbols / week</p>
               </div>
             </div>
           </div>
@@ -179,24 +299,28 @@ const Calculator = ({
               <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
                 <div
                   className={`flex space-x-2 items-center ${
-                    arcaneSymbols[selectedArcane].level === 20 || isNaN(arcaneSymbols[selectedArcane].level) ? "hidden" : "block"
+                    currentSymbol.level === 20 || isNaN(currentSymbol.level)
+                      ? "hidden"
+                      : "block"
                   }`}
                 >
                   <h1>
-                    Level <span>{arcaneSymbols[selectedArcane].level}</span>
+                    Level <span>{currentSymbol.level}</span>
                   </h1>
                   <HiArrowSmRight size={30} className="fill-basic" />
                   <h1>
-                    Level <span>{arcaneSymbols[selectedArcane].level + 1}</span>
+                    Level <span>{currentSymbol.level + 1}</span>
                   </h1>
                 </div>
                 <div
                   className={`text-2xl tracking-widest uppercase ${
-                    arcaneSymbols[selectedArcane].level === 20 || isNaN(arcaneSymbols[selectedArcane].level) ? "block" : "hidden"
+                    currentSymbol.level === 20 || isNaN(currentSymbol.level)
+                      ? "block"
+                      : "hidden"
                   }`}
                 >
                   <h1>
-                    {arcaneSymbols[selectedArcane].level === 20 ? (
+                    {currentSymbol.level === 20 ? (
                       <span className="text-accent text-2xl font-bold">
                         Max Level
                       </span>
@@ -215,86 +339,108 @@ const Calculator = ({
 
             <div
               className={`symbol-stats ${
-                isNaN(arcaneSymbols[selectedArcane].level) || arcaneSymbols[selectedArcane].level === 20 ? "hidden" : "block"
+                isNaN(currentSymbol.level) || currentSymbol.level === 20
+                  ? "hidden"
+                  : "block"
               }`}
             >
               {(() => {
-                if (
-                  symbolInProgress &&
-                  (arcaneSymbols[selectedArcane].dailySymbols != 0 || arcaneSymbols[selectedArcane].weeklySymbols != 0)
-                ) {
-                  return (
-                    <p>
-                      <span>
+                try {
+                  if (
+                    currentSymbol.experience < nextLevel.symbolsRequired &&
+                    (currentSymbol.daily || currentSymbol.weekly)
+                  ) {
+                    return (
+                      <p>
+                        <span>
+                          {Math.ceil(
+                            (nextLevel.symbolsRequired -
+                              currentSymbol.experience) /
+                              symbolCount
+                          )}
+                        </span>{" "}
                         {Math.ceil(
-                          (arcaneSymbols[selectedArcane].data[arcaneSymbols[selectedArcane].level].symbolsRequired -
-                            arcaneSymbols[selectedArcane].experience) /
-                            (arcaneSymbols[selectedArcane].dailySymbols + arcaneSymbols[selectedArcane].weeklySymbols / 7)
-                        )}
-                      </span>{" "}
-                      {Math.ceil(
-                        (arcaneSymbols[selectedArcane].data[arcaneSymbols[selectedArcane].level].symbolsRequired - arcaneSymbols[selectedArcane].experience) /
-                          (arcaneSymbols[selectedArcane].dailySymbols + arcaneSymbols[selectedArcane].weeklySymbols / 7)
-                      ) > 1
-                        ? "days to go"
-                        : "day to go"}
-                    </p>
-                  );
-                } else if (requiredSymbols <= 0) {
-                  return (
-                    <p>
-                      <span>Ready</span> for upgrade
-                    </p>
-                  );
-                } else if (isNaN(arcaneSymbols[selectedArcane].experience)) {
-                  return (
-                    <p>
-                      <span>Experience</span> is not set
-                    </p>
-                  );
-                } else {
-                  return (
-                    <p>
-                      <span>Quests</span> are not set
-                    </p>
-                  );
+                          (nextLevel.symbolsRequired -
+                            currentSymbol.experience) /
+                            symbolCount
+                        ) > 1
+                          ? "days to go"
+                          : "day to go"}
+                      </p>
+                    );
+                  } else if (
+                    nextLevel.symbolsRequired - currentSymbol.experience <=
+                    0
+                  ) {
+                    return (
+                      <p>
+                        <span>Ready</span> for upgrade
+                      </p>
+                    );
+                  } else if (isNaN(currentSymbol.experience)) {
+                    return (
+                      <p>
+                        <span>Experience</span> is not set
+                      </p>
+                    );
+                  } else {
+                    return (
+                      <p>
+                        <span>Quests</span> are not set
+                      </p>
+                    );
+                  }
+                } catch (e) {
+                  //console.log((e as Error).message);
                 }
               })()}
               {(() => {
-                if (symbolInProgress) {
-                  return (
-                    <p>
-                      <span>{requiredSymbols}</span>{" "}
-                      {requiredSymbols > 1
-                        ? "symbols remaining"
-                        : "symbol remaining"}
-                    </p>
-                  );
-                } else if (requiredSymbols <= 0) {
-                  return (
-                    <p>
-                      <span>Sufficient</span> symbols reached
-                    </p>
-                  );
-                } else {
-                  return (
-                    <p>
-                      <span>Unknown</span> symbols remaining
-                    </p>
-                  );
+                try {
+                  if (currentSymbol.experience < nextLevel.symbolsRequired) {
+                    return (
+                      <p>
+                        <span>
+                          {nextLevel.symbolsRequired - currentSymbol.experience}
+                        </span>{" "}
+                        {nextLevel.symbolsRequired - currentSymbol.experience >
+                        1
+                          ? "symbols remaining"
+                          : "symbol remaining"}
+                      </p>
+                    );
+                  } else if (
+                    nextLevel.symbolsRequired - currentSymbol.experience <=
+                    0
+                  ) {
+                    return (
+                      <p>
+                        <span>Sufficient</span> symbols reached
+                      </p>
+                    );
+                  } else {
+                    return (
+                      <p>
+                        <span>Unknown</span> symbols remaining
+                      </p>
+                    );
+                  }
+                } catch (e) {
+                  //console.log((e as Error).message);
                 }
               })()}
             </div>
 
             <div
               className={`symbol-stats ${
-                isNaN(arcaneSymbols[selectedArcane].level) || arcaneSymbols[selectedArcane].level === 20 ? "hidden" : "block"
+                isNaN(currentSymbol.level) || currentSymbol.level === 20
+                  ? "hidden"
+                  : "block"
               }`}
             >
               <p>
                 <span>
-                  {arcaneSymbols[selectedArcane].level <= 19 &&
-                    arcaneSymbols[selectedArcane].data[arcaneSymbols[selectedArcane].level].mesosRequired.toLocaleString()}
+                  {/*(currentSymbol.level <= 19 && currentSymbol.level > 0) &&
+                    nextLevel.mesosRequired.toLocaleString()*/}
                 </span>{" "}
                 mesos required
               </p>
@@ -302,7 +448,9 @@ const Calculator = ({
 
             <div
               className={`symbol-stats ${
-                isNaN(arcaneSymbols[selectedArcane].level) || arcaneSymbols[selectedArcane].level === 20 ? "hidden" : "block"
+                isNaN(currentSymbol.level) || currentSymbol.level === 20
+                  ? "hidden"
+                  : "block"
               }`}
             >
               <p>

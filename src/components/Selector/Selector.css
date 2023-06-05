@@ -1,3 +1,7 @@
+.selector {
+    @apply flex justify-center
+}
+
 .selector-level > img {
     width: 40px;
     height: 40px;

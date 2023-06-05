@@ -9,23 +9,25 @@ import Levels from "./components/Levels/Levels";
 
 function App() {
   const [swapped, setSwapped] = useState(false);
-  const [selectedArcane, setSelectedArcane] = useState(0);
+  const [selectedSymbol, setSelectedSymbol] = useState(0);
   const [selectedSacredSymbol, setSelectedSacredSymbol] = useState(0);
   const [selectedClass, setSelectedClass] = useState(2);
 
-  const [arcaneSymbols, setArcaneSymbols] = useState([
+  const [symbols, setSymbols] = useState([
     {
       id: 1,
       name: "Vanishing Journey",
       alt: "Vanishing Journey Symbol",
       img: "/symbols/vj-symbol.webp",
+      type: "arcane",
       level: NaN,
       experience: NaN,
       daily: false,
       weekly: false,
       extra: false,
-      dailySymbols: 0,
-      weeklySymbols: 0,
+      dailySymbols: 9,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -47,20 +49,22 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
     {
       id: 2,
       name: "Chu Chu Island",
       alt: "Chu Chu Symbol",
       img: "/symbols/chuchu-symbol.webp",
+      type: "arcane",
       level: NaN,
       experience: NaN,
       daily: false,
       weekly: false,
       extra: false,
-      dailySymbols: 0,
-      weeklySymbols: 0,
+      dailySymbols: 8,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -82,19 +86,21 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
     {
       id: 3,
       name: "Lachelein",
       alt: "Lachelein Symbol",
       img: "/symbols/lach-symbol.webp",
+      type: "arcane",
       level: NaN,
       experience: NaN,
       daily: false,
       weekly: false,
-      dailySymbols: 0,
-      weeklySymbols: 0,
+      dailySymbols: 11,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -116,19 +122,21 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
     {
       id: 4,
       name: "Arcana",
       alt: "Arcana Symbol",
       img: "/symbols/arcana-symbol.webp",
+      type: "arcane",
       level: NaN,
       experience: NaN,
       daily: false,
       weekly: false,
-      dailySymbols: 0,
-      weeklySymbols: 0,
+      dailySymbols: 9,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -150,19 +158,21 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
     {
       id: 5,
       name: "Morass",
       alt: "Morass Symbol",
       img: "/symbols/morass-symbol.webp",
+      type: "arcane",
       level: NaN,
       experience: NaN,
       daily: false,
       weekly: false,
-      dailySymbols: 0,
-      weeklySymbols: 0,
+      dailySymbols: 8,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -184,19 +194,21 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
     {
       id: 6,
       name: "Esfera",
       alt: "Esfera Symbol",
       img: "/symbols/esfera-symbol.webp",
+      type: "arcane",
       level: NaN,
       experience: NaN,
       daily: false,
       weekly: false,
-      dailySymbols: 0,
-      weeklySymbols: 0,
+      dailySymbols: 8,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -218,19 +230,20 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
-  ]);
-
-  const sacredSymbols = [
     {
       name: "Cernium",
       alt: "Cernium Symbol",
       img: "/symbols/cern-symbol.webp",
+      type: "sacred",
       level: NaN,
       experience: NaN,
       daily: false,
+      extra: false,
       dailySymbols: 0,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -252,16 +265,19 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
     {
       name: "Arcus",
       alt: "Arcus Symbol",
       img: "/symbols/arcus-symbol.webp",
+      type: "sacred",
       level: NaN,
       experience: NaN,
       daily: false,
-      dailySymbols: 0,
+      dailySymbols: 10,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -283,16 +299,19 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
     {
       name: "Odium",
       alt: "Odium Symbol",
       img: "/symbols/odium-symbol.webp",
+      type: "sacred",
       level: NaN,
       experience: NaN,
       daily: false,
       dailySymbols: 0,
+      daysRemaining: 0,
+      symbolsRemaining: 0,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -314,9 +333,9 @@ function App() {
         { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
         { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
         { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
-      ]
+      ],
     },
-  ];
+  ]);
 
   const classData = [
     { class: "Demon Avenger", statForm: "HP", statGain: 2100 },
@@ -326,33 +345,25 @@ function App() {
 
   return (
     <>
-      <Header></Header>
+      <Header />
       <Selector
         swapped={swapped}
         setSwapped={setSwapped}
-        selectedArcane={selectedArcane}
-        setSelectedArcane={setSelectedArcane}
-        selectedSacredSymbol={selectedSacredSymbol}
-        setSelectedSacredSymbol={setSelectedSacredSymbol}
-        arcaneSymbols={arcaneSymbols}
-        sacredSymbols={sacredSymbols}
-      ></Selector>
+        selectedSymbol={selectedSymbol}
+        setSelectedSymbol={setSelectedSymbol}
+        symbols={symbols}
+      />
       <Calculator
-        arcaneSymbols={arcaneSymbols}
-        setArcaneSymbols={setArcaneSymbols}
-        selectedArcane={selectedArcane}
+        symbols={symbols}
+        setSymbols={setSymbols}
+        selectedSymbol={selectedSymbol}
         classData={classData}
         selectedClass={selectedClass}
-      ></Calculator>
-      <Tools
-        selectedArcane={selectedArcane}
-        selectedSacredSymbol={selectedSacredSymbol}
-        arcaneSymbols={arcaneSymbols}
-        sacredSymbols={sacredSymbols}
-      ></Tools>
-      <Levels arcaneSymbols={arcaneSymbols} />
-      <Progress arcaneSymbols={arcaneSymbols}></Progress>
-      <Footer></Footer>
+      />
+      <Tools selectedSymbol={selectedSymbol} symbols={symbols} />
+      <Levels symbols={symbols} />
+      <Progress symbols={symbols} />
+      <Footer />
     </>
   );
 }

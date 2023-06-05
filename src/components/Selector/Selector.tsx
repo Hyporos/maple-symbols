@@ -3,30 +3,32 @@ import { Dispatch, SetStateAction } from "react";
 import "./Selector.css";
 
 interface Props {
+  symbols: [
+    {
+      name: string;
+      alt: string;
+      img: string;
+      type: string;
+      level: number;
+    }
+  ];
   swapped: boolean;
   setSwapped: Dispatch<SetStateAction<boolean>>;
-  selectedArcane: number;
-  setSelectedArcane: Dispatch<SetStateAction<Number>>;
-  selectedSacredSymbol: number;
-  setSelectedSacredSymbol: Dispatch<SetStateAction<Number>>;
-  arcaneSymbols: [{}];
-  sacredSymbols: [{}];
+  selectedSymbol: number;
+  setSelectedSymbol: Dispatch<SetStateAction<number>>;
 }
 
 const Selector = ({
+  symbols,
   swapped,
   setSwapped,
-  selectedArcane,
-  setSelectedArcane,
-  selectedSacredSymbol,
-  setSelectedSacredSymbol,
-  arcaneSymbols,
-  sacredSymbols
+  selectedSymbol,
+  setSelectedSymbol,
 }: Props) => {
   const handleSettings = () => {};
 
   return (
-    <section className="flex justify-center">
+    <section className="selector">
       <div className="flex flex-col justify-center pt-16">
         <div className="flex justify-between items-center px-6">
           <div>
@@ -37,55 +39,54 @@ const Selector = ({
               onClick={() => handleSettings()}
             />
           </div>
-          <div className={`flex space-x-10 ${swapped ? "hidden" : "block"}`}>
-            {arcaneSymbols.map((symbol, index) => (
-              <div
-                className={`selector-level cursor-pointer ${
-                  selectedArcane === index
-                    ? "text-primary"
-                    : isNaN(symbol.level) && "text-secondary"
-                }`}
-                onClick={() => setSelectedArcane(index)}
-              >
-                <img
-                  src={symbol.img}
-                  alt={symbol.alt}
-                  className={`${
-                    arcaneSymbols[selectedArcane].name === symbol.name && "translate-y-symbol"
-                  }  ${isNaN(symbol.level) && "filter grayscale"}`}
-                />
-                <p>
-                  {isNaN(symbol.level)
-                    ? "Lv. 0"
-                    : "Lv. " + symbol.level}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className={`flex space-x-10 ${swapped ? "block" : "hidden"}`}>
-            {sacredSymbols.map((symbol, index) => (
-              <div
-                className={`selector-level cursor-pointer ${
-                  selectedSacredSymbol === index
-                    ? "text-primary"
-                    : isNaN(symbol.level) && "text-secondary" 
-                }`}
-                onClick={() => setSelectedSacredSymbol(index)}
-              >
-                <img
-                  src={symbol.img}
-                  alt={symbol.alt}
-                  className={`${
-                    sacredSymbols[selectedSacredSymbol].name === symbol.name && "translate-y-symbol"
-                  }  ${isNaN(symbol.level) && "filter grayscale"}`}
-                />
-                <p>
-                  {isNaN(symbol.level)
-                    ? "Lv. 0"
-                    : "Lv. " + symbol.level}
-                </p>
-              </div>
-            ))}
+          <div className="flex space-x-10">
+            {symbols.map((symbol, index) =>
+              !swapped
+                ? symbol.type === "arcane" && (
+                    <div
+                      className={`selector-level cursor-pointer ${
+                        selectedSymbol === index
+                          ? "text-primary"
+                          : isNaN(symbol.level) && "text-secondary"
+                      }`}
+                      onClick={() => setSelectedSymbol(index)}
+                    >
+                      <img
+                        src={symbol.img}
+                        alt={symbol.alt}
+                        className={`${
+                          symbols[selectedSymbol].name === symbol.name &&
+                          "translate-y-symbol"
+                        }  ${isNaN(symbol.level) && "filter grayscale"}`}
+                      />
+                      <p>
+                        {isNaN(symbol.level) ? "Lv. 0" : "Lv. " + symbol.level}
+                      </p>
+                    </div>
+                  )
+                : symbol.type === "sacred" && (
+                    <div
+                      className={`selector-level cursor-pointer ${
+                        selectedSymbol === index
+                          ? "text-primary"
+                          : isNaN(symbol.level) && "text-secondary"
+                      }`}
+                      onClick={() => setSelectedSymbol(index)}
+                    >
+                      <img
+                        src={symbol.img}
+                        alt={symbol.alt}
+                        className={`${
+                          symbols[selectedSymbol].name === symbol.name &&
+                          "translate-y-symbol"
+                        }  ${isNaN(symbol.level) && "filter grayscale"}`}
+                      />
+                      <p>
+                        {isNaN(symbol.level) ? "Lv. 0" : "Lv. " + symbol.level}
+                      </p>
+                    </div>
+                  )
+            )}
           </div>
           <div>
             <HiArrowsUpDown

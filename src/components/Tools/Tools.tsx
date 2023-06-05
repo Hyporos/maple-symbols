@@ -3,16 +3,11 @@ import { HiArrowSmRight } from "react-icons/hi";
 import "./Tools.css";
 
 interface Props {
-    selectedArcane: number;
-  selectedSacredSymbol: number;
-  arcaneSymbols: [{}];
+  symbols: [{}];
+  selectedSymbol: number;
 }
 
-const Tools = ({
-    selectedArcane,
-  selectedSacredSymbol,
-  arcaneSymbols,
-}: Props) => {
+const Tools = ({ symbols, selectedSymbol }: Props) => {
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(0);
 
@@ -46,7 +41,7 @@ const Tools = ({
           }`}
         >
           <div className="flex space-x-4">
-            <img src={arcaneSymbols[selectedArcane].img}></img>
+            <img src={symbols[selectedSymbol].img}></img>
             <input
               placeholder="Count"
               className="tool-input w-[100px]"
@@ -55,14 +50,14 @@ const Tools = ({
           </div>
           <div className="flex space-x-4">
             <p className="text-secondary">
-              {arcaneSymbols[selectedArcane].level} /{" "}
-              {arcaneSymbols[selectedArcane].experience}
+              {symbols[selectedSymbol].level} /{" "}
+              {symbols[selectedSymbol].experience}
             </p>
             <HiArrowSmRight size={25} className="fill-basic" />
             <p className="text-secondary">
               <span>
-                {arcaneSymbols[selectedArcane].level} /{" "}
-                {arcaneSymbols[selectedArcane].experience + selectorCount}
+                {symbols[selectedSymbol].level} /{" "}
+                {symbols[selectedSymbol].experience + selectorCount}
               </span>
             </p>
           </div>
@@ -80,17 +75,18 @@ const Tools = ({
             selectedTool === 2 ? "block" : "hidden"
           }`}
         >
-          <img src={arcaneSymbols[selectedArcane].img}></img>
+          <img src={symbols[selectedSymbol].img}></img>
           <div className="flex space-x-4">
             <p className="text-secondary">
-              {arcaneSymbols[selectedArcane].level} /{" "}
-              {arcaneSymbols[selectedArcane].experience}
+              {symbols[selectedSymbol].level} /{" "}
+              {symbols[selectedSymbol].experience}
             </p>
             <HiArrowSmRight size={25} className="fill-basic" />
             <p className="text-secondary">
               <span>
-                {arcaneSymbols[selectedArcane].level} /{" "}
-                {arcaneSymbols[selectedArcane].experience - (arcaneSymbols[selectedArcane].experience * .2)}
+                {symbols[selectedSymbol].level} /{" "}
+                {symbols[selectedSymbol].experience -
+                  symbols[selectedSymbol].experience * 0.2}
               </span>
             </p>
           </div>

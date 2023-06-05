@@ -3,15 +3,16 @@ import { HiChevronDown, HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import "./Levels.css";
 
 interface Props {
-  arcaneSymbols: [
+  symbols: [
     {
       name: string;
       level: number;
+      symbolsRemaining: number;
     }
   ];
 }
 
-const Levels = ({ arcaneSymbols }: Props) => {
+const Levels = ({ symbols }: Props) => {
   const [selectedSymbol, setSelectedSymbol] = useState(0);
 
   return (
@@ -27,14 +28,14 @@ const Levels = ({ arcaneSymbols }: Props) => {
               <p className="w-1/4 tracking-wider">Symbols Remaining</p>
             </div>
             <hr className="horizontal-divider" />
-            {arcaneSymbols.map((arcaneSymbol, index) => (
+            {symbols.map((symbol, index) => (
               <div onClick={() => setSelectedSymbol(index)}>
                 <div className="flex items-center text-center hover:bg-dark rounded-3xl cursor-pointer transition-all py-5">
                   <HiChevronDown size={30} className="w-1/4 fill-accent" />
-                  <p className="w-1/4 tracking-wider">{arcaneSymbol.name}</p>
-                  <p className="w-1/4">{arcaneSymbol.level}</p>
+                  <p className="w-1/4 tracking-wider">{symbol.name}</p>
+                  <p className="w-1/4">{symbol.level}</p>
                   <p className="w-1/4">2023-20-04 (117 days)</p>
-                  <p className="w-1/4">1,654</p>
+                  <p className="w-1/4">{symbol.symbolsRemaining}</p>
                 </div>
               </div>
             ))}

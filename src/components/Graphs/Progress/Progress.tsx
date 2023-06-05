@@ -3,10 +3,10 @@ import "./Progress.css";
 import { useState } from "react";
 
 interface Props {
-  arcaneSymbols: [{}];
+  symbols: [{}];
 }
 
-const Progress = ({ arcaneSymbols }: Props) => {
+const Progress = ({ symbols }: Props) => {
 
   const [selectedGraph, setSelectedGraph] = useState(1);
 
@@ -38,7 +38,7 @@ const Progress = ({ arcaneSymbols }: Props) => {
             <LineChart
               width={950}
               height={400}
-              data={arcaneSymbols}
+              data={symbols}
               margin={{ top: 5, right: 25, bottom: 5, left: 10 }}
             >
               <Line type="monotone" dataKey="img" stroke="#8884d8" />
