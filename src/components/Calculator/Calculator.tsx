@@ -137,11 +137,11 @@ const Calculator = ({
                       )
                     );
                   }
-                  if (Number(e.target.value) >= 21) {
+                  if (Number(e.target.value) >= 20) {
                     setSymbols(
                       symbols.map((symbol) =>
                         symbol.id === selectedSymbol + 1
-                          ? { ...symbol, level: 20 }
+                          ? { ...symbol, level: 20, experience: 0 }
                           : symbol
                       )
                     );
@@ -150,7 +150,7 @@ const Calculator = ({
                     setSymbols(
                       symbols.map((symbol) =>
                         symbol.id === selectedSymbol + 1
-                          ? { ...symbol, level: 1 }
+                          ? { ...symbol, level: 1, experience: 1 }
                           : symbol
                       )
                     );
@@ -164,7 +164,7 @@ const Calculator = ({
                 value={currentSymbol.experience}
                 className="symbol-input"
                 onChange={(e) => {
-                  if (Number(e.target.value) <= 2679) {
+                  if (Number(e.target.value) <= nextLevel.symbolsRequired) {
                     setSymbols(
                       symbols.map((symbol) =>
                         symbol.id === selectedSymbol + 1
@@ -173,11 +173,11 @@ const Calculator = ({
                       )
                     );
                   }
-                  if (Number(e.target.value) >= 2680) {
+                  if (Number(e.target.value) >= nextLevel.symbolsRequired) {
                     setSymbols(
                       symbols.map((symbol) =>
                         symbol.id === selectedSymbol + 1
-                          ? { ...symbol, experience: 2679 }
+                          ? { ...symbol, experience: nextLevel.symbolsRequired }
                           : symbol
                       )
                     );
