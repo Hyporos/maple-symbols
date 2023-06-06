@@ -10,6 +10,7 @@ interface Props {
       name: string;
       alt: string;
       img: string;
+      type: string;
       level: number;
       experience: number;
       daily: boolean;
@@ -111,356 +112,345 @@ const Calculator = ({
 
   return (
     <section className="calculator">
-        <div className="flex items-center bg-card rounded-t-lg h-[350px]">
-          <div className="px-10 space-y-6 w-[350px]">
-            <div className="flex justify-center items-center space-x-4 pb-6">
-              <img src={currentSymbol.img} alt={currentSymbol.alt} />
-              <p className="text-xl text-primary font-semibold tracking-wider uppercase">
-                {currentSymbol.name} <br></br>
-              </p>
-            </div>
+      <div className="flex py-16 bg-card rounded-t-lg h-[350px]">
+        <div className="px-10 space-y-6 w-[350px]">
+          <div className="flex justify-center items-center space-x-4 pb-6">
+            <img src={currentSymbol.img} alt={currentSymbol.alt} />
+            <p className="text-xl text-primary font-semibold tracking-wider uppercase">
+              {currentSymbol.name}
+            </p>
+          </div>
 
-            <div className="flex justify-center items-center space-x-2">
-              <input
-                type="number"
-                placeholder="Level"
-                value={currentSymbol.level}
-                className="symbol-input"
-                onChange={(e) => {
-                  if (Number(e.target.value) <= 20) {
-                    setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? { ...symbol, level: parseInt(e.target.value) }
-                          : symbol
-                      )
-                    );
-                  }
-                  if (Number(e.target.value) >= 20) {
-                    setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? { ...symbol, level: 20, experience: 0 }
-                          : symbol
-                      )
-                    );
-                  }
-                  if (e.target.value === "0") {
-                    setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? { ...symbol, level: 1, experience: 1 }
-                          : symbol
-                      )
-                    );
-                  }
-                }}
-              ></input>
-              <TbSlash size={30} color="#B2B2B2" />
-              <input
-                type="number"
-                placeholder="Experience"
-                value={currentSymbol.experience}
-                className="symbol-input"
-                onChange={(e) => {
-                  if (Number(e.target.value) <= nextLevel.symbolsRequired) {
-                    setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? { ...symbol, experience: parseInt(e.target.value) }
-                          : symbol
-                      )
-                    );
-                  }
-                  if (Number(e.target.value) >= nextLevel.symbolsRequired) {
-                    setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? { ...symbol, experience: nextLevel.symbolsRequired }
-                          : symbol
-                      )
-                    );
-                  }
-                  if (e.target.value === "0" && currentSymbol.level === 1) {
-                    setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? { ...symbol, experience: 1 }
-                          : symbol
-                      )
-                    );
-                  }
-                  if (e.target.value === "00" || e.target.value === "000") {
-                    currentSymbol.level === 1
-                      ? setSymbols(
-                          symbols.map((symbol) =>
-                            symbol.id === selectedSymbol + 1
-                              ? { ...symbol, experience: 1 }
-                              : symbol
-                          )
+          <div className="flex justify-center items-center space-x-2">
+            <input
+              type="number"
+              placeholder="Level"
+              value={currentSymbol.level}
+              className="symbol-input"
+              onChange={(e) => {
+                if (Number(e.target.value) <= 20) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, level: parseInt(e.target.value) }
+                        : symbol
+                    )
+                  );
+                }
+                if (Number(e.target.value) >= 20) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, level: 20, experience: 0 }
+                        : symbol
+                    )
+                  );
+                }
+                if (e.target.value === "0") {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, level: 1, experience: 1 }
+                        : symbol
+                    )
+                  );
+                }
+              }}
+            ></input>
+            <TbSlash size={30} color="#B2B2B2" />
+            <input
+              type="number"
+              placeholder="Experience"
+              value={currentSymbol.experience}
+              className="symbol-input"
+              onChange={(e) => {
+                if (Number(e.target.value) <= nextLevel.symbolsRequired) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, experience: parseInt(e.target.value) }
+                        : symbol
+                    )
+                  );
+                }
+                if (Number(e.target.value) >= nextLevel.symbolsRequired) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, experience: nextLevel.symbolsRequired }
+                        : symbol
+                    )
+                  );
+                }
+                if (e.target.value === "0" && currentSymbol.level === 1) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, experience: 1 }
+                        : symbol
+                    )
+                  );
+                }
+                if (e.target.value === "00" || e.target.value === "000") {
+                  currentSymbol.level === 1
+                    ? setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? { ...symbol, experience: 1 }
+                            : symbol
                         )
-                      : (e.target.value = "0");
-                  }
-                  if (e.target.value.startsWith("0")) {
-                    e.target.value = e.target.value.substring(1);
-                  }
-                }}
-              ></input>
-            </div>
+                      )
+                    : (e.target.value = "0");
+                }
+                if (e.target.value.startsWith("0")) {
+                  e.target.value = e.target.value.substring(1);
+                }
+              }}
+            ></input>
+          </div>
 
-            <div className="flex space-x-2 mt-6">
-              <button
-                className={`daily-box ${
-                  currentSymbol.daily && "border-checked"
+          <div className="flex space-x-2">
+            <button
+              className={`daily-box ${currentSymbol.daily && "border-checked"}`}
+              onClick={() =>
+                setSymbols(
+                  symbols.map((symbol) =>
+                    symbol.id === selectedSymbol + 1
+                      ? {
+                          ...symbol,
+                          daily: !currentSymbol.daily,
+                        }
+                      : symbol
+                  )
+                )
+              }
+            >
+              Daily
+            </button>
+
+            <button
+              className={`daily-box ${
+                currentSymbol.weekly && "border-checked"
+              } ${currentSymbol.type === 'arcane' ? "block" : "hidden"}`}
+              onClick={() =>
+                setSymbols(
+                  symbols.map((symbol) =>
+                    symbol.id === selectedSymbol + 1
+                      ? {
+                          ...symbol,
+                          weekly: !currentSymbol.weekly,
+                        }
+                      : symbol
+                  )
+                )
+              }
+            >
+              Weekly
+            </button>
+            <button
+              className={`daily-box ${
+                currentSymbol.extra && "border-checked"
+              } ${
+                typeof currentSymbol.extra !== "undefined" ? "block" : "hidden"
+              }
                 }`}
-                onClick={() =>
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? {
-                            ...symbol,
-                            daily: !currentSymbol.daily,
-                          }
-                        : symbol
-                    )
+              onClick={() =>
+                setSymbols(
+                  symbols.map((symbol) =>
+                    symbol.id === selectedSymbol + 1
+                      ? {
+                          ...symbol,
+                          extra: !currentSymbol.extra,
+                        }
+                      : symbol
                   )
-                }
-              >
-                Daily
-              </button>
+                )
+              }
+            >
+              Extra
+            </button>
+          </div>
 
-              <button
-                className={`daily-box ${
-                  currentSymbol.weekly && "border-checked"
-                } `}
-                onClick={() =>
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? {
-                            ...symbol,
-                            weekly: !currentSymbol.weekly,
-                          }
-                        : symbol
-                    )
-                  )
-                }
+          <div className={`flex flex-row text-center text-sm  pt-6 text-tertiary ${currentSymbol.type === 'arcane' ? "justify-between" : "justify-center"}`}>
+            <p>
+              {currentSymbol.daily && currentSymbol.extra
+                ? currentSymbol.dailySymbols * 2
+                : currentSymbol.daily
+                ? currentSymbol.dailySymbols
+                : 0}{" "}
+              symbols / day
+            </p>
+            <p>{currentSymbol.type === 'arcane' ? (currentSymbol.weekly ? 45 + " symbols / week" : 0 + " symbols / week") : ""} </p>
+          </div>
+        </div>
+
+        <div className="vertical-divider"></div>
+
+        <div className="w-[350px] space-y-10">
+          <div className="symbol-stats">
+            <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
+              <div
+                className={`flex space-x-2 items-center ${
+                  currentSymbol.level === 20 || isNaN(currentSymbol.level)
+                    ? "hidden"
+                    : "block"
+                }`}
               >
-                Weekly
-              </button>
-              <button
-                className={`daily-box ${
-                  currentSymbol.extra && "border-checked"
-                } ${
-                  typeof currentSymbol.extra !== "undefined"
+                <h1>
+                  Level <span>{currentSymbol.level}</span>
+                </h1>
+                <HiArrowSmRight size={30} className="fill-basic" />
+                <h1>
+                  Level <span>{currentSymbol.level + 1}</span>
+                </h1>
+              </div>
+              <div
+                className={`text-2xl tracking-widest uppercase ${
+                  currentSymbol.level === 20 || isNaN(currentSymbol.level)
                     ? "block"
                     : "hidden"
-                }
                 }`}
-                onClick={() =>
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? {
-                            ...symbol,
-                            extra: !currentSymbol.extra,
-                          }
-                        : symbol
-                    )
-                  )
-                }
               >
-                Extra
-              </button>
-            </div>
-
-            <div className="flex justify-center items-center text-tertiary pt-6">
-              <div className="flex flex-col text-center text-sm">
-                <p>
-                  {currentSymbol.daily && currentSymbol.extra
-                    ? currentSymbol.dailySymbols * 2
-                    : currentSymbol.daily
-                    ? currentSymbol.dailySymbols
-                    : 0}{" "}
-                  symbols / day
-                </p>
-                <p>{currentSymbol.weekly ? 45 : 0} symbols / week</p>
+                <h1>
+                  {currentSymbol.level === 20 ? (
+                    <div className="py-[72.5%]">
+                    <p className="text-accent">Max Level</p>
+                  </div>
+                  ) : (
+                    <div className="space-y-4 py-[40%]">
+                      <p className="text-secondary">Disabled</p>
+                      <p className="text-secondary text-xs lowercase font-light tracking-widest">
+                        Enter a level to enable this symbol
+                      </p>
+                    </div>
+                  )}
+                </h1>
               </div>
             </div>
           </div>
 
-          <div className="vertical-divider"></div>
-
-          <div className="w-[350px] space-y-9">
-            <div className="symbol-stats">
-              <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
-                <div
-                  className={`flex space-x-2 items-center ${
-                    currentSymbol.level === 20 || isNaN(currentSymbol.level)
-                      ? "hidden"
-                      : "block"
-                  }`}
-                >
-                  <h1>
-                    Level <span>{currentSymbol.level}</span>
-                  </h1>
-                  <HiArrowSmRight size={30} className="fill-basic" />
-                  <h1>
-                    Level <span>{currentSymbol.level + 1}</span>
-                  </h1>
-                </div>
-                <div
-                  className={`text-2xl tracking-widest uppercase ${
-                    currentSymbol.level === 20 || isNaN(currentSymbol.level)
-                      ? "block"
-                      : "hidden"
-                  }`}
-                >
-                  <h1>
-                    {currentSymbol.level === 20 ? (
-                      <span className="text-accent text-2xl font-bold">
-                        Max Level
-                      </span>
-                    ) : (
-                      <div className="space-y-4">
-                        <p className="text-secondary">Disabled</p>
-                        <p className="text-secondary text-xs lowercase font-light tracking-widest">
-                          Enter a level to enable this symbol
-                        </p>
-                      </div>
-                    )}
-                  </h1>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className={`symbol-stats ${
-                isNaN(currentSymbol.level) || currentSymbol.level === 20
-                  ? "hidden"
-                  : "block"
-              }`}
-            >
-              {(() => {
-                try {
-                  if (
-                    currentSymbol.experience < nextLevel.symbolsRequired &&
-                    (currentSymbol.daily || currentSymbol.weekly)
-                  ) {
-                    return (
-                      <p>
-                        <span>
-                          {Math.ceil(
-                            (nextLevel.symbolsRequired -
-                              currentSymbol.experience) /
-                              symbolCount
-                          )}
-                        </span>{" "}
+          <div
+            className={`symbol-stats ${
+              isNaN(currentSymbol.level) || currentSymbol.level === 20
+                ? "hidden"
+                : "block"
+            }`}
+          >
+            {(() => {
+              try {
+                if (
+                  currentSymbol.experience < nextLevel.symbolsRequired &&
+                  (currentSymbol.daily || currentSymbol.weekly)
+                ) {
+                  return (
+                    <p>
+                      <span>
                         {Math.ceil(
                           (nextLevel.symbolsRequired -
                             currentSymbol.experience) /
                             symbolCount
-                        ) > 1
-                          ? "days to go"
-                          : "day to go"}
-                      </p>
-                    );
-                  } else if (
-                    nextLevel.symbolsRequired - currentSymbol.experience <=
-                    0
-                  ) {
-                    return (
-                      <p>
-                        <span>Ready</span> for upgrade
-                      </p>
-                    );
-                  } else if (isNaN(currentSymbol.experience)) {
-                    return (
-                      <p>
-                        <span>Experience</span> is not set
-                      </p>
-                    );
-                  } else {
-                    return (
-                      <p>
-                        <span>Quests</span> are not set
-                      </p>
-                    );
-                  }
-                } catch (e) {
-                  //console.log((e as Error).message);
+                        )}
+                      </span>{" "}
+                      {Math.ceil(
+                        (nextLevel.symbolsRequired - currentSymbol.experience) /
+                          symbolCount
+                      ) > 1
+                        ? "days to go"
+                        : "day to go"}
+                    </p>
+                  );
+                } else if (
+                  nextLevel.symbolsRequired - currentSymbol.experience <=
+                  0
+                ) {
+                  return (
+                    <p>
+                      <span>Ready</span> for upgrade
+                    </p>
+                  );
+                } else if (isNaN(currentSymbol.experience)) {
+                  return (
+                    <p>
+                      <span>Experience</span> is not set
+                    </p>
+                  );
+                } else {
+                  return (
+                    <p>
+                      <span>Quests</span> are not set
+                    </p>
+                  );
                 }
-              })()}
-              {(() => {
-                try {
-                  if (currentSymbol.experience < nextLevel.symbolsRequired) {
-                    return (
-                      <p>
-                        <span>
-                          {nextLevel.symbolsRequired - currentSymbol.experience}
-                        </span>{" "}
-                        {nextLevel.symbolsRequired - currentSymbol.experience >
-                        1
-                          ? "symbols remaining"
-                          : "symbol remaining"}
-                      </p>
-                    );
-                  } else if (
-                    nextLevel.symbolsRequired - currentSymbol.experience <=
-                    0
-                  ) {
-                    return (
-                      <p>
-                        <span>Sufficient</span> symbols reached
-                      </p>
-                    );
-                  } else {
-                    return (
-                      <p>
-                        <span>Unknown</span> symbols remaining
-                      </p>
-                    );
-                  }
-                } catch (e) {
-                  //console.log((e as Error).message);
+              } catch (e) {
+                //console.log((e as Error).message);
+              }
+            })()}
+            {(() => {
+              try {
+                if (currentSymbol.experience < nextLevel.symbolsRequired) {
+                  return (
+                    <p>
+                      <span>
+                        {nextLevel.symbolsRequired - currentSymbol.experience}
+                      </span>{" "}
+                      {nextLevel.symbolsRequired - currentSymbol.experience > 1
+                        ? "symbols remaining"
+                        : "symbol remaining"}
+                    </p>
+                  );
+                } else if (
+                  nextLevel.symbolsRequired - currentSymbol.experience <=
+                  0
+                ) {
+                  return (
+                    <p>
+                      <span>Sufficient</span> symbols reached
+                    </p>
+                  );
+                } else {
+                  return (
+                    <p>
+                      <span>Unknown</span> symbols remaining
+                    </p>
+                  );
                 }
-              })()}
-            </div>
+              } catch (e) {
+                //console.log((e as Error).message);
+              }
+            })()}
+          </div>
 
-            <div
-              className={`symbol-stats ${
-                isNaN(currentSymbol.level) || currentSymbol.level === 20
-                  ? "hidden"
-                  : "block"
-              }`}
-            >
-              <p>
-                <span>
-                  {currentSymbol.level <= 19 &&
-                    currentSymbol.level > 0 &&
-                    nextLevel.mesosRequired.toLocaleString()}
-                </span>{" "}
-                mesos required
-              </p>
-            </div>
+          <div
+            className={`symbol-stats ${
+              isNaN(currentSymbol.level) || currentSymbol.level === 20
+                ? "hidden"
+                : "block"
+            }`}
+          >
+            <p>
+              <span>
+                {currentSymbol.level <= 19 &&
+                  currentSymbol.level > 0 &&
+                  nextLevel.mesosRequired.toLocaleString()}
+              </span>{" "}
+              mesos required
+            </p>
+          </div>
 
-            <div
-              className={`symbol-stats ${
-                isNaN(currentSymbol.level) || currentSymbol.level === 20
-                  ? "hidden"
-                  : "block"
-              }`}
-            >
-              <p>
-                <span>+10</span> arcane force
-              </p>
-              <p>
-                <span>+{classData[selectedClass].statGain}</span>{" "}
-                {classData[selectedClass].statForm}
-              </p>
-            </div>
+          <div
+            className={`symbol-stats ${
+              isNaN(currentSymbol.level) || currentSymbol.level === 20
+                ? "hidden"
+                : "block"
+            }`}
+          >
+            <p>
+              <span>+{classData[selectedClass].statGain}</span>{" "}
+              {classData[selectedClass].statForm}
+            </p>
           </div>
         </div>
+      </div>
     </section>
   );
 };

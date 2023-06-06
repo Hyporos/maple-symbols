@@ -3,7 +3,7 @@
 }
 
 .vertical-divider {
-    @apply bg-gradient-to-t from-transparent via-white to-transparent opacity-10 w-px h-[350px] 
+    @apply bg-gradient-to-t from-transparent via-white to-transparent opacity-10 w-px h-[250px] 
 }
 
 .symbol-stats {

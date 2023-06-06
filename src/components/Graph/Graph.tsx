@@ -1,6 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
-import "./Progress.css";
 import { useState } from "react";
+import "./Graph.css";
 
 interface Props {
   symbols: [{}];

@@ -17,9 +17,9 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
 
   return (
     <section className="tools">
-      <div className="flex flex-col bg-card rounded-b-lg h-[250px] w-[700px]">
+      <div className="flex flex-col justify-between bg-card rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
-        <div className={`flex justify-between mx-20 text-secondary transition-all space-x-4 mb-10 ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}>
+        <div className={`flex justify-between mx-20 text-secondary transition-all space-x-4 mb-7 ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}>
           <button
             className={`tool-select flex items-center space-x-2 rounded-3xl ${
               selectedTool === 1 && "bg-secondary text-primary"
@@ -40,11 +40,11 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
           </button>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark rounded-3xl transition-all mx-10 py-3 space-x-14 ${
+          className={`flex justify-center items-center bg-dark rounded-3xl transition-all mx-10 py-3 mb-9 space-x-10 ${
             selectedTool === 1 ? "block" : "hidden"
           } ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}
         >
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 w-1/4">
             <img src={symbols[selectedSymbol].img}></img>
             <input
               placeholder="Count"
@@ -52,7 +52,7 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
               onChange={(e) => setSelectorCount(parseInt(e.target.value))}
             ></input>
           </div>
-          <div className="flex space-x-4">
+          <div className="flex items-center justify-center space-x-4 w-1/3">
             <p className="text-secondary">
               {symbols[selectedSymbol].level} /{" "}
               {symbols[selectedSymbol].experience}
@@ -66,21 +66,21 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
             </p>
           </div>
           <button
-            className={`tool-select text-secondary hover:text-primary hover:bg-hover ${
-              selectedTool === 1 && "bg-secondary text-primary"
-            }`}
+            className="tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px]"
             onClick={() => setSelectedTool(1)}
           >
             <p>Apply</p>
           </button>
         </div>
         <div
-          className={`flex justify-center items-center rounded-3xl mx-10 py-3 bg-dark space-x-16 ${
+          className={`flex justify-center items-center bg-dark rounded-3xl transition-all mx-10 py-3 mb-9 space-x-10 ${
             selectedTool === 2 ? "block" : "hidden"
-          }`}
+          } ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}
         >
-          <img src={symbols[selectedSymbol].img}></img>
-          <div className="flex space-x-4">
+          <div className="flex items-center space-x-4 w-1/4">
+            <img src={symbols[selectedSymbol].img}></img>
+          </div>
+          <div className="flex space-x-4 w-1/3">
             <p className="text-secondary">
               {symbols[selectedSymbol].level} /{" "}
               {symbols[selectedSymbol].experience}
@@ -89,18 +89,15 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
             <p className="text-secondary">
               <span>
                 {symbols[selectedSymbol].level} /{" "}
-                {symbols[selectedSymbol].experience -
-                  symbols[selectedSymbol].experience * 0.2}
+                {symbols[selectedSymbol].experience + selectorCount}
               </span>
             </p>
           </div>
           <button
-            className={`tool-select text-secondary hover:text-primary hover:bg-hover ${
-              selectedTool === 1 && "bg-secondary text-primary"
-            }`}
+            className="tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px]"
             onClick={() => setSelectedTool(1)}
           >
-            Apply
+            <p>Apply</p>
           </button>
         </div>
       </div>

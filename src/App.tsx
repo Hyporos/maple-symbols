@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Calculator from "./components/Calculator/Calculator";
 import Footer from "./components/Footer/Footer";
-import Progress from "./components/Graphs/Progress/Progress";
+import Graph from "./components/Graph/Graph";
 import Header from "./components/Header/Header";
 import Selector from "./components/Selector/Selector";
 import Tools from "./components/Tools/Tools";
@@ -277,8 +277,8 @@ function App() {
     },
     {
       id: 8,
-      name: "Arcus",
-      alt: "Arcus Symbol",
+      name: "Hotel Arcus",
+      alt: "Hotel Arcus Symbol",
       img: "/symbols/arcus-symbol.webp",
       type: "sacred",
       level: NaN,
@@ -375,7 +375,7 @@ function App() {
       />
       <Tools selectedSymbol={selectedSymbol} symbols={symbols} />
       <Levels symbols={symbols} swapped={swapped} />
-      <Progress symbols={symbols} />
+      <Graph symbols={symbols} />
       <Footer />
     </>
   );
