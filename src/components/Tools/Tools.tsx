@@ -16,7 +16,7 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
   const [selectorCount, setSelectorCount] = useState(0);
 
   return (
-    <section className="flex justify-center">
+    <section className="tools">
       <div className="flex flex-col bg-card rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
         <div className={`flex justify-between mx-20 text-secondary transition-all space-x-4 mb-10 ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}>

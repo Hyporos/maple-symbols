@@ -110,8 +110,7 @@ const Calculator = ({
   }, [currentSymbol.daysRemaining]);
 
   return (
-    <section>
-      <div className="flex justify-center items-center">
+    <section className="calculator">
         <div className="flex items-center bg-card rounded-t-lg h-[350px]">
           <div className="px-10 space-y-6 w-[350px]">
             <div className="flex justify-center items-center space-x-4 pb-6">
@@ -462,7 +461,6 @@ const Calculator = ({
             </div>
           </div>
         </div>
-      </div>
     </section>
   );
 };

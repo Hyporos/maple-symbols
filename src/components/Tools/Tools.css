@@ -1,3 +1,7 @@
+.tools {
+    @apply flex justify-center
+}
+
 .horizontal-divider {
     @apply bg-gradient-to-r from-transparent via-white to-transparent border-0 opacity-20 h-px w-[700px] my-7
 }

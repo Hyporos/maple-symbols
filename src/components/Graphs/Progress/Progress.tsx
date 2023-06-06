@@ -12,7 +12,7 @@ const Progress = ({ symbols }: Props) => {
 
   return (
     <section className="graphs">
-      <div className="flex justify-center items-center">
+      <div className="">
         <div className="flex justify-center items-center bg-card rounded-lg w-[1050px] p-10 mt-16">
           <div>
             <div className="flex justify-center text-secondary space-x-52 mb-10">

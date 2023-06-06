@@ -29,7 +29,6 @@ const Levels = ({ symbols, swapped }: Props) => {
 
   return (
     <section className="levels">
-      <div className="flex justify-center items-center">
         <div className="flex justify-center items-center bg-card rounded-lg w-[1050px] p-10 mt-16">
           <div className="flex flex-col w-[1050px]">
             <div className="flex items-center text-center text-tertiary">
@@ -185,7 +184,6 @@ const Levels = ({ symbols, swapped }: Props) => {
             )}
           </div>
         </div>
-      </div>
     </section>
   );
 };

@@ -1,3 +1,4 @@
 .header {
     background: linear-gradient(#1c1c1c, 50%, #212121);
+    @apply flex justify-center
 }
