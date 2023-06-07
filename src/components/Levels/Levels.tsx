@@ -21,12 +21,6 @@ interface Props {
 const Levels = ({ symbols, swapped }: Props) => {
   const [selectedSymbol, setSelectedSymbol] = useState(0);
 
-  const today = new Date();
-  const currentDay = String(today.getDate()).padStart(2, "0");
-  const currentMonth = String(today.getMonth() + 1).padStart(2, "0");
-  const currentYear = today.getFullYear();
-  const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
-
   return (
     <section className="levels">
         <div className="flex justify-center items-center bg-card rounded-lg w-[1050px] p-10 mt-16">
@@ -46,10 +40,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                       <div
                         className={`flex items-center text-center rounded-3xl transition-all hover:bg-dark cursor-pointer py-4 ${
                           isNaN(symbol.level) &&
-                          "opacity-25 hover:bg-transparent cursor-default"
+                          "opacity-25 pointer-events-none"
                         } ${
                           symbol.level === 20 &&
-                          "cursor-default hover:bg-transparent"
+                          "pointer-events-none"
                         }`}
                       >
                         <div className="w-1/4 flex justify-center">
@@ -116,10 +110,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                       <div
                         className={`flex items-center text-center rounded-3xl transition-all hover:bg-dark cursor-pointer py-4 ${
                           isNaN(symbol.level) &&
-                          "opacity-25 hover:bg-transparent cursor-default"
+                          "opacity-25 pointer-events-none"
                         } ${
                           symbol.level === 20 &&
-                          "cursor-default hover:bg-transparent"
+                          "pointer-events-none"
                         }`}
                       >
                         <div className="w-1/4 flex justify-center">

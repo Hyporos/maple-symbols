@@ -3,7 +3,7 @@
 }
 
 .vertical-divider {
-    @apply bg-gradient-to-t from-transparent via-white to-transparent opacity-10 w-px h-[250px] 
+    @apply bg-gradient-to-t from-transparent via-white to-transparent opacity-10 w-px h-[250px]
 }
 
 .symbol-stats {
@@ -15,9 +15,9 @@
 }
 
 .symbol-input::placeholder {
-   @apply text-tertiary hover:text-secondary transition-all
+    @apply text-tertiary hover:text-secondary transition-all
 }
 
 .daily-box {
-    @apply bg-secondary hover:bg-hover shadow-input text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent select-none transition-all w-full py-1.5  
+    @apply bg-secondary hover:bg-hover shadow-input text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent select-none transition-all w-full py-1.5
 }

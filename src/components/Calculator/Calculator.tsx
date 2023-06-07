@@ -231,7 +231,7 @@ const Calculator = ({
             <button
               className={`daily-box ${
                 currentSymbol.weekly && "border-checked"
-              } ${currentSymbol.type === 'arcane' ? "block" : "hidden"}`}
+              } ${currentSymbol.type === "arcane" ? "block" : "hidden"}`}
               onClick={() =>
                 setSymbols(
                   symbols.map((symbol) =>
@@ -271,16 +271,30 @@ const Calculator = ({
             </button>
           </div>
 
-          <div className={`flex flex-row text-center text-sm  pt-6 text-tertiary ${currentSymbol.type === 'arcane' ? "justify-between" : "justify-center"}`}>
+          <div
+            className={`flex flex-row text-center text-sm  pt-6 text-tertiary ${
+              currentSymbol.type === "arcane"
+                ? "justify-between"
+                : "justify-center"
+            }`}
+          >
             <p>
               {currentSymbol.daily && currentSymbol.extra
-                ? currentSymbol.dailySymbols * 2
+                ? currentSymbol.name != "Cernium"
+                  ? currentSymbol.dailySymbols * 2
+                  : currentSymbol.dailySymbols + 5
                 : currentSymbol.daily
                 ? currentSymbol.dailySymbols
                 : 0}{" "}
               symbols / day
             </p>
-            <p>{currentSymbol.type === 'arcane' ? (currentSymbol.weekly ? 45 + " symbols / week" : 0 + " symbols / week") : ""} </p>
+            <p>
+              {currentSymbol.type === "arcane"
+                ? currentSymbol.weekly
+                  ? 45 + " symbols / week"
+                  : 0 + " symbols / week"
+                : ""}{" "}
+            </p>
           </div>
         </div>
 
@@ -314,8 +328,8 @@ const Calculator = ({
                 <h1>
                   {currentSymbol.level === 20 ? (
                     <div className="py-[72.5%]">
-                    <p className="text-accent">Max Level</p>
-                  </div>
+                      <p className="text-accent">Max Level</p>
+                    </div>
                   ) : (
                     <div className="space-y-4 py-[40%]">
                       <p className="text-secondary">Disabled</p>

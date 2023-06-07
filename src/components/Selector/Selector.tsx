@@ -1,5 +1,5 @@
 import { HiArrowsUpDown, HiBars3 } from "react-icons/hi2";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import "./Selector.css";
 
 interface Props {
@@ -25,7 +25,16 @@ const Selector = ({
   selectedSymbol,
   setSelectedSymbol,
 }: Props) => {
-  const handleSettings = () => {};
+  const openSettings = () => {};
+
+  const [selectedArcane, setSelectedArcane] = useState(0);
+  const [selectedSacred, setSelectedSacred] = useState(6);
+
+  useEffect(() => {
+    !swapped
+      ? setSelectedSymbol(selectedArcane)
+      : setSelectedSymbol(selectedSacred);
+  }, [swapped]);
 
   return (
     <section className="selector">
@@ -36,7 +45,7 @@ const Selector = ({
               size={40}
               cursor="pointer"
               className={"fill-basic hover:fill-hover transition-all"}
-              onClick={() => handleSettings()}
+              onClick={() => openSettings()}
             />
           </div>
           <div className="flex space-x-10">
@@ -49,7 +58,10 @@ const Selector = ({
                           ? "text-primary"
                           : isNaN(symbol.level) && "text-secondary"
                       }`}
-                      onClick={() => setSelectedSymbol(index)}
+                      onClick={() => {
+                        setSelectedSymbol(index);
+                        setSelectedArcane(index);
+                      }}
                     >
                       <img
                         src={symbol.img}
@@ -71,7 +83,10 @@ const Selector = ({
                           ? "text-primary"
                           : isNaN(symbol.level) && "text-secondary"
                       }`}
-                      onClick={() => setSelectedSymbol(index)}
+                      onClick={() => {
+                        setSelectedSymbol(index);
+                        setSelectedSacred(index);
+                      }}
                     >
                       <img
                         src={symbol.img}

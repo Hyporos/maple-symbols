@@ -19,7 +19,7 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
     <section className="tools">
       <div className="flex flex-col justify-between bg-card rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
-        <div className={`flex justify-between mx-20 text-secondary transition-all space-x-4 mb-7 ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}>
+        <div className={`flex justify-between mx-20 text-secondary space-x-4 mb-7 ${isNaN(symbols[selectedSymbol].level) && "opacity-25 pointer-events-none"}`}>
           <button
             className={`tool-select flex items-center space-x-2 rounded-3xl ${
               selectedTool === 1 && "bg-secondary text-primary"
@@ -40,9 +40,9 @@ const Tools = ({ symbols, selectedSymbol }: Props) => {
           </button>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark rounded-3xl transition-all mx-10 py-3 mb-9 space-x-10 ${
+          className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-10 ${
             selectedTool === 1 ? "block" : "hidden"
-          } ${isNaN(symbols[selectedSymbol].level) && "opacity-25"}`}
+          } ${isNaN(symbols[selectedSymbol].level) && "opacity-25 pointer-events-none"}`}
         >
           <div className="flex items-center space-x-4 w-1/4">
             <img src={symbols[selectedSymbol].img}></img>

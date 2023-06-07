@@ -3,12 +3,8 @@ import "./Footer.css";
 function Footer() {
   return (
     <section className="footer">
-      <div className="text-tertiary mt-28 p-5">
-        <div className="flex text-center space-x-96">
-          <p className="">&copy; 2023 Maple Symbols</p>
-          <p className="">v1.0.0 Beta</p>
-          <a className="" href="">Donate</a>
-        </div>
+      <div className="flex justify-between text-tertiary mt-28 p-5">
+          <p>&copy; 2023 Maple Symbols ━ v1.0.0 Beta</p>
       </div>
     </section>
   );

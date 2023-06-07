@@ -6,11 +6,9 @@ import Header from "./components/Header/Header";
 import Selector from "./components/Selector/Selector";
 import Tools from "./components/Tools/Tools";
 import Levels from "./components/Levels/Levels";
-
 function App() {
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
-  const [selectedSacredSymbol, setSelectedSacredSymbol] = useState(0);
   const [selectedClass, setSelectedClass] = useState(2);
 
   const [symbols, setSymbols] = useState([
