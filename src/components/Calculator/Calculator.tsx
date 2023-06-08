@@ -127,6 +127,7 @@ const Calculator = ({
               placeholder="Level"
               value={currentSymbol.level}
               className="symbol-input"
+              onWheel={(e) => e.currentTarget.blur()}
               onChange={(e) => {
                 if (Number(e.target.value) <= 20) {
                   setSymbols(
@@ -146,11 +147,20 @@ const Calculator = ({
                     )
                   );
                 }
+                if (Number(e.target.value) < 0) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, level: NaN }
+                        : symbol
+                    )
+                  );
+                }
                 if (e.target.value === "0") {
                   setSymbols(
                     symbols.map((symbol) =>
                       symbol.id === selectedSymbol + 1
-                        ? { ...symbol, level: 1, experience: 1 }
+                        ? { ...symbol, level: 1 }
                         : symbol
                     )
                   );
@@ -163,6 +173,7 @@ const Calculator = ({
               placeholder="Experience"
               value={currentSymbol.experience}
               className="symbol-input"
+              onWheel={(e) => e.currentTarget.blur()}
               onChange={(e) => {
                 if (Number(e.target.value) <= nextLevel.symbolsRequired) {
                   setSymbols(
@@ -201,6 +212,15 @@ const Calculator = ({
                         )
                       )
                     : (e.target.value = "0");
+                }
+                if (Number(e.target.value) < 0) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, experience: NaN}
+                        : symbol
+                    )
+                  );
                 }
                 if (e.target.value.startsWith("0")) {
                   e.target.value = e.target.value.substring(1);

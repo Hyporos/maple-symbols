@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { HiChevronDown, HiOutlineQuestionMarkCircle } from "react-icons/hi2";
+import { useEffect, useState } from "react";
+import { HiChevronUp, HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import "./Levels.css";
 
 interface Props {
@@ -10,174 +10,343 @@ interface Props {
       alt: string;
       type: string;
       level: number;
+      extra: boolean;
+      daily: ConstrainBooleanParameters;
+      dailySymbols: number;
+      weekly: boolean;
+      experience: number;
       symbolsRemaining: number;
       daysRemaining: number;
       completion: string;
+      data: [
+        {
+          level: number;
+          symbolsRequired: number;
+        }
+      ];
     }
   ];
   swapped: boolean;
+  selectedArcane: number;
 }
 
 const Levels = ({ symbols, swapped }: Props) => {
   const [selectedSymbol, setSelectedSymbol] = useState(0);
+  const [selectedNone, setSelectedNone] = useState(true);
+
+  const [targetLevel, setTargetLevel] = useState(NaN);
+  const [targetSymbols, setTargetSymbols] = useState(0);
+  const [targetDays, setTargetDays] = useState(0);
+  const [targetDate, setTargetDate] = useState("");
+
+  const currentSymbol = symbols[selectedSymbol];
+
+  const symbolCount =
+  (currentSymbol.extra && currentSymbol.daily
+    ? currentSymbol.dailySymbols * 2
+    : currentSymbol.daily
+    ? currentSymbol.dailySymbols
+    : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
+
+  useEffect(() => {
+    const splicedSymbols = currentSymbol.data.slice(
+      symbols[selectedSymbol].level,
+      targetLevel
+    );
+
+    setTargetSymbols(
+      splicedSymbols.reduce(
+        (total, currentSymbol) => total + currentSymbol.symbolsRequired,
+        0
+      ) - symbols[selectedSymbol].experience
+    );
+  }, [targetLevel, currentSymbol.experience]);
+
+  useEffect(() => {
+    setTargetDays(Math.ceil(targetSymbols / symbolCount));
+  }, [targetLevel, targetSymbols, symbolCount]);
+
+  useEffect(() => {
+    const date = new Date();
+    date.setDate(
+      date.getDate() + Math.ceil(targetSymbols / symbolCount)
+    );
+    const currentDay = String(date.getDate()).padStart(2, "0");
+    const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+    const currentYear = date.getFullYear();
+    const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
+    setTargetDate(currentDate);
+  }, [targetLevel, targetSymbols, symbolCount]);
 
   return (
     <section className="levels">
-        <div className="flex justify-center items-center bg-card rounded-lg w-[1050px] p-10 mt-16">
-          <div className="flex flex-col w-[1050px]">
-            <div className="flex items-center text-center text-tertiary">
-              <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
-              <p className="w-1/4 tracking-wider">Symbol</p>
-              <p className="w-1/4 tracking-wider">Level</p>
-              <p className="w-1/4 tracking-wider">Completion Date</p>
-              <p className="w-1/4 tracking-wider">Symbols Remaining</p>
-            </div>
-            <hr className="horizontal-divider" />
-            {symbols.map((symbol, index) =>
-              !swapped
-                ? symbol.type === "arcane" && (
-                    <div onClick={() => setSelectedSymbol(index)}>
-                      <div
-                        className={`flex items-center text-center rounded-3xl transition-all hover:bg-dark cursor-pointer py-4 ${
-                          isNaN(symbol.level) &&
-                          "opacity-25 pointer-events-none"
-                        } ${
-                          symbol.level === 20 &&
-                          "pointer-events-none"
-                        }`}
-                      >
-                        <div className="w-1/4 flex justify-center">
-                          <img
-                            src={symbol.img}
-                            alt={symbol.alt}
-                            width={40}
-                            className={`${
-                              isNaN(symbol.level) && "filter grayscale"
-                            }`}
-                          ></img>
-                        </div>
-                        <p className="w-1/4 tracking-wider">{symbol.name}</p>
-                        <p
-                          className={`w-1/4 ${
-                            isNaN(symbol.level)
-                              ? "filter grayscale"
-                              : "text-accent"
-                          }`}
-                        >
-                          {symbol.level === 20
-                            ? "MAX"
-                            : isNaN(symbol.level)
-                            ? "0"
-                            : symbol.level}
-                        </p>
-                        <div className="w-1/4">
-                          <p>
-                            {symbol.level === 20 || isNaN(symbol.level)
-                              ? "‎"
-                              : symbol.completion === "NaN-NaN-NaN"
-                              ? "Indefinite"
-                              : symbol.daysRemaining === 0
-                              ? "Complete"
-                              : symbol.completion}{" "}
-                          </p>
-                          <p className="text-tertiary">
-                            {symbol.level === 20 || isNaN(symbol.level)
-                              ? "‎"
-                              : String(symbol.daysRemaining) === "Infinity" ||
-                                isNaN(symbol.daysRemaining)
-                              ? "? days"
-                              : symbol.daysRemaining === 0
-                              ? "Ready for upgrade"
-                              : symbol.daysRemaining > 1
-                              ? symbol.daysRemaining + " days"
-                              : symbol.daysRemaining + " day"}
-                          </p>
-                        </div>
-                        <p className="w-1/4">
-                          {symbol.level === 20 || isNaN(symbol.level)
-                            ? "‎"
-                            : isNaN(symbol.symbolsRemaining)
-                            ? "?"
-                            : symbol.symbolsRemaining === 0
-                            ? "‎"
-                            : symbol.symbolsRemaining}
-                        </p>
-                      </div>
-                    </div>
-                  )
-                : symbol.type === "sacred" && (
-                    <div onClick={() => setSelectedSymbol(index)}>
-                      <div
-                        className={`flex items-center text-center rounded-3xl transition-all hover:bg-dark cursor-pointer py-4 ${
-                          isNaN(symbol.level) &&
-                          "opacity-25 pointer-events-none"
-                        } ${
-                          symbol.level === 20 &&
-                          "pointer-events-none"
-                        }`}
-                      >
-                        <div className="w-1/4 flex justify-center">
-                          <img
-                            src={symbol.img}
-                            alt={symbol.alt}
-                            width={40}
-                            className={`${
-                              isNaN(symbol.level) && "filter grayscale"
-                            }`}
-                          ></img>
-                        </div>
-                        <p className="w-1/4 tracking-wider">{symbol.name}</p>
-                        <p
-                          className={`w-1/4 ${
-                            isNaN(symbol.level)
-                              ? "filter grayscale"
-                              : "text-accent"
-                          }`}
-                        >
-                          {symbol.level === 20
-                            ? "MAX"
-                            : isNaN(symbol.level)
-                            ? "0"
-                            : symbol.level}
-                        </p>
-                        <div className="w-1/4">
-                          <p>
-                            {symbol.level === 20 || isNaN(symbol.level)
-                              ? "‎"
-                              : symbol.completion === "NaN-NaN-NaN"
-                              ? "Indefinite"
-                              : symbol.daysRemaining === 0
-                              ? "Complete"
-                              : symbol.completion}{" "}
-                          </p>
-                          <p className="text-tertiary">
-                            {symbol.level === 20 || isNaN(symbol.level)
-                              ? "‎"
-                              : String(symbol.daysRemaining) === "Infinity" ||
-                                isNaN(symbol.daysRemaining)
-                              ? "? days"
-                              : symbol.daysRemaining === 0
-                              ? "Ready for upgrade"
-                              : symbol.daysRemaining > 1
-                              ? symbol.daysRemaining + " days"
-                              : symbol.daysRemaining + " day"}
-                          </p>
-                        </div>
-                        <p className="w-1/4">
-                          {symbol.level === 20 || isNaN(symbol.level)
-                            ? "‎"
-                            : isNaN(symbol.symbolsRemaining)
-                            ? "?"
-                            : symbol.symbolsRemaining === 0
-                            ? "‎"
-                            : symbol.symbolsRemaining}
-                        </p>
-                      </div>
-                    </div>
-                  )
-            )}
+      <div className="flex justify-center items-center bg-card rounded-lg w-[1050px] p-10 mt-16">
+        <div className="flex flex-col w-[1050px]">
+          <div className="flex items-center text-center text-tertiary">
+            <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
+            <p className="w-1/4 tracking-wider">Symbol</p>
+            <p className="w-1/4 tracking-wider">Level</p>
+            <p className="w-1/4 tracking-wider">Completion Date</p>
+            <p className="w-1/4 tracking-wider">Symbols Remaining</p>
           </div>
+          <hr className="horizontal-divider" />
+          {symbols.map((symbol, index) =>
+            !swapped
+              ? symbol.type === "arcane" && (
+                  <div className={`${(selectedSymbol === index && selectedNone === false) && "rounded-3xl shadow-level shadow-accent z-10 "}`}>
+                    <div
+                      onClick={() => { setSelectedSymbol(index); setTargetLevel(NaN); (selectedSymbol === index ? setSelectedNone(!selectedNone) : setSelectedNone(false)) }} className={`flex items-center text-center hover:bg-dark cursor-pointer py-4 ${
+                        isNaN(symbol.level) && "opacity-25 pointer-events-none"
+                      } ${symbol.level === 20 && "pointer-events-none"} ${(selectedSymbol === index && selectedNone === false) ? "bg-dark hover:bg-gradient-to-b hover:from-light rounded-t-3xl" : "rounded-3xl"}`}
+                    >
+                      <div className="w-1/4 flex justify-center">
+                        <img
+                          src={symbol.img}
+                          alt={symbol.alt}
+                          width={40}
+                          className={`${
+                            isNaN(symbol.level) && "filter grayscale"
+                          }`}
+                        ></img>
+                      </div>
+                      <p className="w-1/4 tracking-wider">{symbol.name}</p>
+                      <p
+                        className={`w-1/4 ${
+                          isNaN(symbol.level)
+                            ? "filter grayscale"
+                            : "text-accent"
+                        }`}
+                      >
+                        {symbol.level === 20
+                          ? "MAX"
+                          : isNaN(symbol.level)
+                          ? "0"
+                          : symbol.level}
+                      </p>
+                      <div className="w-1/4">
+                        <p>
+                          {symbol.level === 20 || isNaN(symbol.level)
+                            ? "‎"
+                            : symbol.completion === "NaN-NaN-NaN"
+                            ? "Indefinite"
+                            : symbol.daysRemaining === 0
+                            ? "Complete"
+                            : symbol.completion}
+                        </p>
+                        <p className="text-tertiary">
+                          {symbol.level === 20 || isNaN(symbol.level)
+                            ? "‎"
+                            : String(symbol.daysRemaining) === "Infinity" ||
+                              isNaN(symbol.daysRemaining)
+                            ? "? days"
+                            : symbol.daysRemaining === 0
+                            ? "Ready for upgrade"
+                            : symbol.daysRemaining > 1
+                            ? symbol.daysRemaining + " days"
+                            : symbol.daysRemaining + " day"}
+                        </p>
+                      </div>
+                      <p className="w-1/4">
+                        {symbol.level === 20 || isNaN(symbol.level)
+                          ? "‎"
+                          : isNaN(symbol.symbolsRemaining)
+                          ? "?"
+                          : symbol.symbolsRemaining === 0
+                          ? "‎"
+                          : symbol.symbolsRemaining}
+                      </p>
+                    </div>
+                    <div
+                      className={`flex items-center text-center rounded-b-3xl bg-dark py-4 ${
+                        isNaN(symbol.level) && "opacity-25 pointer-events-none"
+                      } ${symbol.level === 20 && "pointer-events-none"} ${(selectedSymbol === index && selectedNone === false) ? "block border-secondary" : "hidden"}`}
+                    >
+                      <div className="flex justify-center w-1/4">
+                     
+                      </div>
+                      <p className="w-1/4 tracking-wider"></p>
+                      <div className="w-1/4">
+                        <input
+                          type="number"
+                          placeholder="Level"
+                          value={targetLevel}
+                          className="level-input"
+                          onChange={(e) => {
+                            if (Number(e.target.value) <= 20) {
+                              setTargetLevel(parseInt(e.target.value));
+                            }
+                            if (Number(e.target.value) >= 20) {
+                              setTargetLevel(20);
+                            }
+                            if (Number(e.target.value) < 0) {
+                              setTargetLevel(NaN);
+                            }
+                            if (e.target.value === "0") {
+                              setTargetLevel(1);
+                            }
+                          }}
+                        />
+                      </div>
+                      <div className="w-1/4">
+                        <p>
+                          {targetLevel <= symbol.level || isNaN(targetLevel)
+                            ? "Indefinite"
+                            : targetDate === "NaN-NaN-NaN" 
+                            ? "Indefinite" 
+                            : targetDays === 0
+                            ? "Complete"
+                            : targetDate}
+                        </p>
+                        <p className="text-tertiary">
+                          {String(targetDays) === "Infinity" || String(targetDays) === "-Infinity" ||
+                          isNaN(targetDays)
+                            ? "? days"
+                            : targetLevel <= symbol.level || isNaN(targetLevel)
+                            ? "Level too low"
+                            : targetDays === 0
+                            ? "Ready for upgrade"
+                            : targetDays > 1
+                            ? targetDays + " days"
+                            : targetDays + " day"}
+                        </p>
+                      </div>
+                      <p className="w-1/4">
+                        {targetLevel <= symbol.level || isNaN(targetSymbols) || targetSymbols <= 0
+                          ? "?"
+                          : targetSymbols}
+                      </p>
+                    </div>
+                  </div>
+                )
+              : symbol.type === "sacred" && (
+                <div className={`${(selectedSymbol === index && selectedNone === false) && "rounded-3xl shadow-level shadow-accent z-10 "}`}>
+                <div
+                  onClick={() => { setSelectedSymbol(index); setTargetLevel(NaN); (selectedSymbol === index ? setSelectedNone(!selectedNone) : setSelectedNone(false)) }} className={`flex items-center text-center hover:bg-dark cursor-pointer py-4 ${
+                    isNaN(symbol.level) && "opacity-25 pointer-events-none"
+                  } ${symbol.level === 20 && "pointer-events-none"} ${(selectedSymbol === index && selectedNone === false) ? "bg-dark hover:bg-gradient-to-b hover:from-light rounded-t-3xl" : "rounded-3xl"}`}
+                >
+                  <div className="w-1/4 flex justify-center">
+                    <img
+                      src={symbol.img}
+                      alt={symbol.alt}
+                      width={40}
+                      className={`${
+                        isNaN(symbol.level) && "filter grayscale"
+                      }`}
+                    ></img>
+                  </div>
+                  <p className="w-1/4 tracking-wider">{symbol.name}</p>
+                  <p
+                    className={`w-1/4 ${
+                      isNaN(symbol.level)
+                        ? "filter grayscale"
+                        : "text-accent"
+                    }`}
+                  >
+                    {symbol.level === 20
+                      ? "MAX"
+                      : isNaN(symbol.level)
+                      ? "0"
+                      : symbol.level}
+                  </p>
+                  <div className="w-1/4">
+                    <p>
+                      {symbol.level === 20 || isNaN(symbol.level)
+                        ? "‎"
+                        : symbol.completion === "NaN-NaN-NaN"
+                        ? "Indefinite"
+                        : symbol.daysRemaining === 0
+                        ? "Complete"
+                        : symbol.completion}
+                    </p>
+                    <p className="text-tertiary">
+                      {symbol.level === 20 || isNaN(symbol.level)
+                        ? "‎"
+                        : String(symbol.daysRemaining) === "Infinity" ||
+                          isNaN(symbol.daysRemaining)
+                        ? "? days"
+                        : symbol.daysRemaining === 0
+                        ? "Ready for upgrade"
+                        : symbol.daysRemaining > 1
+                        ? symbol.daysRemaining + " days"
+                        : symbol.daysRemaining + " day"}
+                    </p>
+                  </div>
+                  <p className="w-1/4">
+                    {symbol.level === 20 || isNaN(symbol.level)
+                      ? "‎"
+                      : isNaN(symbol.symbolsRemaining)
+                      ? "?"
+                      : symbol.symbolsRemaining === 0
+                      ? "‎"
+                      : symbol.symbolsRemaining}
+                  </p>
+                </div>
+                <div
+                  className={`flex items-center text-center rounded-b-3xl bg-dark py-4 ${
+                    isNaN(symbol.level) && "opacity-25 pointer-events-none"
+                  } ${symbol.level === 20 && "pointer-events-none"} ${(selectedSymbol === index && selectedNone === false) ? "block border-secondary" : "hidden"}`}
+                >
+                  <div className="flex justify-center w-1/4">
+                 
+                  </div>
+                  <p className="w-1/4 tracking-wider"></p>
+                  <div className="w-1/4">
+                    <input
+                      type="number"
+                      placeholder="Level"
+                      value={targetLevel}
+                      className="level-input"
+                      onChange={(e) => {
+                        if (Number(e.target.value) <= 20) {
+                          setTargetLevel(parseInt(e.target.value));
+                        }
+                        if (Number(e.target.value) >= 20) {
+                          setTargetLevel(20);
+                        }
+                        if (Number(e.target.value) < 0) {
+                          setTargetLevel(NaN);
+                        }
+                        if (e.target.value === "0") {
+                          setTargetLevel(1);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/4">
+                    <p>
+                      {targetLevel <= symbol.level || isNaN(targetLevel)
+                        ? "Indefinite"
+                        : targetDate === "NaN-NaN-NaN" 
+                        ? "Indefinite" 
+                        : targetDays === 0
+                        ? "Complete"
+                        : targetDate}
+                    </p>
+                    <p className="text-tertiary">
+                      {String(targetDays) === "Infinity" || String(targetDays) === "-Infinity" ||
+                      isNaN(targetDays)
+                        ? "? days"
+                        : targetLevel <= symbol.level || isNaN(targetLevel)
+                        ? "Level too low"
+                        : targetDays === 0
+                        ? "Ready for upgrade"
+                        : targetDays > 1
+                        ? targetDays + " days"
+                        : targetDays + " day"}
+                    </p>
+                  </div>
+                  <p className="w-1/4">
+                    {targetLevel <= symbol.level || isNaN(targetSymbols) || targetSymbols <= 0
+                      ? "?"
+                      : targetSymbols}
+                  </p>
+                </div>
+              </div>
+                )
+          )}
         </div>
+      </div>
     </section>
   );
 };

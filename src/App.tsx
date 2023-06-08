@@ -346,7 +346,7 @@ function App() {
       />
       <Tools selectedSymbol={selectedSymbol} symbols={symbols} />
       <Levels symbols={symbols} swapped={swapped} />
-      <Graph symbols={symbols} />
+      <Graph symbols={symbols} selectedSymbol={selectedSymbol} />
       <Footer />
     </>
   );

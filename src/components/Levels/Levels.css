@@ -5,3 +5,11 @@
 .levels .horizontal-divider {
     @apply bg-white opacity-10 my-6 w-[950px]
 }
+
+.level-input {
+    @apply w-[75px] p-1.5 text-center bg-secondary hover:bg-hover focus:bg-hover outline-none transition-all
+}
+
+.level-input::placeholder {
+    @apply text-tertiary hover:text-secondary focus:text-secondary transition-all
+ }
