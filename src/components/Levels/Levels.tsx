@@ -161,10 +161,12 @@ const Levels = ({ symbols, swapped }: Props) => {
                         isNaN(symbol.level) && "opacity-25 pointer-events-none"
                       } ${symbol.level === 20 && "pointer-events-none"} ${(selectedSymbol === index && selectedNone === false) ? "block border-secondary" : "hidden"}`}
                     >
-                      <div className="flex justify-center w-1/4">
-                     
+                      <div className="w-1/4">
+                     <hr className="ml-24 w-[330px] border-y border-white border-opacity-5 absolute"></hr>
+                     <hr className="ml-24 translate-y-level h-[40px] border-x border-white border-opacity-5 absolute"></hr>
                       </div>
-                      <p className="w-1/4 tracking-wider"></p>
+                      <div className="w-1/4">
+                      </div>
                       <div className="w-1/4">
                         <input
                           type="number"

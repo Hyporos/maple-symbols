@@ -20,12 +20,9 @@ export default {
         'upgrade': '#00b800',
       },
       backgroundColor: {
-        
-        
         'hover': '#444444',
         'secondary': '#333333',
         'tertiary': 'transparent',
-        'gradient': 'linear-gradient(#ffffff, 50%, #9198e5)',
       },
       borderColor: {
         'unchecked': '#8c0000',
@@ -37,6 +34,7 @@ export default {
       },
       translate: {
         'symbol': '-7.5px',
+        'level': '-40px',
       },
       fill: {
         'hover': '#ffffff',
