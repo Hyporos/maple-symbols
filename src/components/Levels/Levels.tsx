@@ -87,7 +87,7 @@ const Levels = ({ symbols, swapped }: Props) => {
           <div className="flex items-center text-center text-tertiary">
             <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
             <p className="w-1/4 tracking-wider">Symbol</p>
-            <p className="w-1/4 tracking-wider">Level</p>
+            <p className="w-1/4 tracking-wider">Target Level</p>
             <p className="w-1/4 tracking-wider">Completion Date</p>
             <p className="w-1/4 tracking-wider">Symbols Remaining</p>
           </div>
@@ -143,7 +143,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                           ? "MAX"
                           : isNaN(symbol.level)
                           ? "0"
-                          : symbol.level}
+                          : 20}
                       </p>
                       <div className="w-1/4">
                         <p>
@@ -352,11 +352,11 @@ const Levels = ({ symbols, swapped }: Props) => {
                           value={targetLevel}
                           className="level-input"
                           onChange={(e) => {
-                            if (Number(e.target.value) <= 20) {
+                            if (Number(e.target.value) <= 11) {
                               setTargetLevel(parseInt(e.target.value));
                             }
-                            if (Number(e.target.value) >= 20) {
-                              setTargetLevel(20);
+                            if (Number(e.target.value) >= 11) {
+                              setTargetLevel(11);
                             }
                             if (Number(e.target.value) < 0) {
                               setTargetLevel(NaN);
