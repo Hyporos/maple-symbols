@@ -16,7 +16,7 @@ export default {
       textColor: {
         'primary': '#ffffff',
         'secondary': '#bfbfbf',
-        'tertiary' : '#8c8c8c',
+        'tertiary': '#8c8c8c',
         'upgrade': '#00b800',
       },
       backgroundColor: {
@@ -46,6 +46,9 @@ export default {
         'dark': '#212121',
         'light': '#262626',
       },
+      transitionDuration: {
+        '250': '250ms'
+      }
     },
   },
   plugins: [],

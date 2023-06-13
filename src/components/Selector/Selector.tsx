@@ -25,8 +25,6 @@ const Selector = ({
   selectedSymbol,
   setSelectedSymbol,
 }: Props) => {
-  const openSettings = () => {};
-
   const [selectedArcane, setSelectedArcane] = useState(0);
   const [selectedSacred, setSelectedSacred] = useState(6);
 
@@ -40,27 +38,27 @@ const Selector = ({
     <section className="selector">
       <div className="flex flex-col justify-center pt-16">
         <div className="flex justify-between items-center px-8">
-          <div>
-            <HiBars3
-              size={40}
-              cursor="pointer"
-              className={"fill-basic hover:fill-hover transition-all"}
-              onClick={() => openSettings()}
-            />
-          </div>
+          <HiBars3
+            size={40}
+            className={"icon-button"}
+            onClick={() => console.log("Settings Clicked")}
+          />
           <div className="flex space-x-10">
-            {symbols.map((symbol, index) =>
-              !swapped
-                ? symbol.type === "arcane" && (
+            {symbols.map(
+              (symbol, index) =>
+                symbol.type === (!swapped ? "arcane" : "sacred") && (
+                  <div className="group">
                     <div
-                      className={`selector-level cursor-pointer ${
+                      className={`selector-level ${
                         selectedSymbol === index
                           ? "text-primary"
                           : isNaN(symbol.level) && "text-secondary"
                       }`}
                       onClick={() => {
                         setSelectedSymbol(index);
-                        setSelectedArcane(index);
+                        !swapped
+                          ? setSelectedArcane(index)
+                          : setSelectedSacred(index);
                       }}
                     >
                       <img
@@ -75,42 +73,15 @@ const Selector = ({
                         {isNaN(symbol.level) ? "Lv. 0" : "Lv. " + symbol.level}
                       </p>
                     </div>
-                  )
-                : symbol.type === "sacred" && (
-                    <div
-                      className={`selector-level cursor-pointer ${
-                        selectedSymbol === index
-                          ? "text-primary"
-                          : isNaN(symbol.level) && "text-secondary"
-                      }`}
-                      onClick={() => {
-                        setSelectedSymbol(index);
-                        setSelectedSacred(index);
-                      }}
-                    >
-                      <img
-                        src={symbol.img}
-                        alt={symbol.alt}
-                        className={`${
-                          symbols[selectedSymbol].name === symbol.name &&
-                          "translate-y-symbol"
-                        }  ${isNaN(symbol.level) && "filter grayscale"}`}
-                      />
-                      <p>
-                        {isNaN(symbol.level) ? "Lv. 0" : "Lv. " + symbol.level}
-                      </p>
-                    </div>
-                  )
+                  </div>
+                )
             )}
           </div>
-          <div>
-            <HiArrowsUpDown
-              size={40}
-              cursor="pointer"
-              className={"fill-basic hover:fill-hover transition-all"}
-              onClick={() => setSwapped(!swapped)}
-            />
-          </div>
+          <HiArrowsUpDown
+            size={40}
+            className={"icon-button"}
+            onClick={() => setSwapped(!swapped)}
+          />
         </div>
         <hr className="horizontal-divider" />
       </div>

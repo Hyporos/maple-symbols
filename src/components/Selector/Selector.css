@@ -2,23 +2,18 @@
     @apply flex justify-center
 }
 
-.selector-level > img {
-    width: 40px;
-    height: 40px;
-    transition: .25s;
-    margin-bottom: 2.5px
+.selector-level {
+    @apply flex flex-col items-center text-accent hover:text-primary text-xs font-semibold transition-all cursor-pointer select-none
 }
 
-.selector-level:hover > img {
-    transform: translate(0px,-7.5px);
-    transition: .25s
+.selector-level > img {
+    @apply group-hover:translate-y-symbol duration-250 mb-1 w-10 h-10
+}
+
+.icon-button {
+    @apply fill-basic hover:fill-hover transition-all cursor-pointer
 }
 
 .horizontal-divider {
     @apply bg-gradient-to-r from-transparent via-white to-transparent border-0 opacity-20 h-px my-7 w-[700px]
 }
-
-.selector-level {
-    @apply flex flex-col items-center text-accent hover:text-primary text-xs font-semibold transition-all select-none
-}
-
