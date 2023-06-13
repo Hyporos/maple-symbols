@@ -24,11 +24,45 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
   const [selectorLevel, setSelectorLevel] = useState(NaN);
   const [selectorExperience, setSelectorExperience] = useState(NaN);
 
+  const [catalystLevel, setCatalystLevel] = useState(NaN);
+  const [catalystExperience, setCatalystExperience] = useState(NaN);
+
   const currentSymbol = symbols[selectedSymbol];
 
-  const handleSelector = () => {
-    console.log("test");
-  };
+  useEffect(() => {
+    setCatalystLevel(currentSymbol.level);
+    let accumulated = 0;
+    symbols[selectedSymbol].data.forEach((symbol) => {
+      try {
+        if (symbol.level < currentSymbol.level) {
+          accumulated =
+            accumulated + currentSymbol.data[symbol.level].symbolsRequired;
+        }
+      } catch (e) {
+        //console.log((e as Error).message);
+      }
+    });
+    try {
+      let tempCatalystExp =
+        accumulated +
+        (currentSymbol.experience - currentSymbol.experience * 0.2) -
+        Math.ceil(accumulated - accumulated * 0.8);
+      setCatalystExperience(tempCatalystExp);
+
+      symbols[selectedSymbol].data.forEach((symbol) => {
+        if (
+          tempCatalystExp > currentSymbol.data[symbol.level].symbolsRequired
+        ) {
+          tempCatalystExp =
+            tempCatalystExp - currentSymbol.data[symbol.level].symbolsRequired;
+          setCatalystLevel(currentSymbol.data[symbol.level].level);
+          setCatalystExperience(tempCatalystExp);
+        }
+      });
+    } catch (e) {
+      //console.log((e as Error).message);
+    }
+  }, [currentSymbol.level, currentSymbol.experience]);
 
   useEffect(() => {
     setSelectorLevel(currentSymbol.level);
@@ -59,7 +93,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
 
   useEffect(() => {
     setSelectorCount(NaN);
-  }, [selectedSymbol])
+  }, [selectedSymbol]);
 
   return (
     <section className="tools">
@@ -120,13 +154,17 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
           <div className="flex items-center justify-center space-x-4 w-1/3">
             <p className="text-secondary">
               {isNaN(currentSymbol.level) ? "?" : currentSymbol.level} /{" "}
-              {isNaN(currentSymbol.experience) ? "?" : currentSymbol.experience}
+              {isNaN(currentSymbol.experience) || isNaN(currentSymbol.level)
+                ? "?"
+                : currentSymbol.experience}
             </p>
             <HiArrowSmRight size={25} className="fill-basic" />
             <p className="text-secondary">
               <span>
                 {isNaN(currentSymbol.level) ? "?" : selectorLevel} /{" "}
-                {isNaN(selectorExperience) && isNaN(currentSymbol.experience)
+                {(isNaN(selectorExperience) &&
+                  isNaN(currentSymbol.experience)) ||
+                isNaN(currentSymbol.level)
                   ? "?"
                   : selectorLevel === 20
                   ? "0"
@@ -139,7 +177,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
             </p>
           </div>
           <button
-            className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px] ${isNaN(selectorExperience) && "pointer-events-none opacity-25"}`}
+            className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px] ${
+              (isNaN(selectorExperience) || currentSymbol.level === 20) &&
+              "pointer-events-none opacity-25"
+            }`}
             onClick={() => {
               setSymbols(
                 symbols.map((symbol) =>
@@ -151,7 +192,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
                       }
                     : symbol
                 )
-              )
+              );
               setSelectorCount(NaN);
             }}
           >
@@ -159,31 +200,46 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
           </button>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark rounded-3xl transition-all mx-10 py-3 mb-9 space-x-10 ${
+          className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-10 ${
             selectedTool === 2 ? "block" : "hidden"
           } ${isNaN(currentSymbol.level) && "opacity-25"}`}
         >
-          <div className="flex items-center space-x-4 w-1/4">
+          <div className="flex items-center">
             <img src={currentSymbol.img}></img>
           </div>
-          <div className="flex space-x-4 w-1/3">
+          <div className="flex space-x-4">
             <p className="text-secondary">
-              {symbols[selectedSymbol].level} /{" "}
-              {symbols[selectedSymbol].experience}
+              {currentSymbol.level === 1 || isNaN(currentSymbol.level)
+                ? "?"
+                : currentSymbol.level}{" "}
+              /{" "}
+              {currentSymbol.level === 1 ||
+              isNaN(currentSymbol.level) ||
+              isNaN(currentSymbol.experience)
+                ? "?"
+                : currentSymbol.experience}
             </p>
             <HiArrowSmRight size={25} className="fill-basic" />
             <p className="text-secondary">
               <span>
-                {symbols[selectedSymbol].level} /{" "}
-                {symbols[selectedSymbol].experience + selectorCount}
+                {currentSymbol.level === 1 || isNaN(currentSymbol.level)
+                  ? "?"
+                  : catalystLevel}{" "}
+                /{" "}
+                {currentSymbol.level === 1 ||
+                isNaN(currentSymbol.level) ||
+                isNaN(currentSymbol.experience)
+                  ? "?"
+                  : Math.ceil(catalystExperience)}
               </span>
             </p>
           </div>
-          <button
-            className="tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px]"
-            onClick={() => setSelectedTool(1)}
-          >
-            <p>Apply</p>
+          <button className="tool-select pointer-events-none">
+            <p>
+              {currentSymbol.level === 1 || isNaN(currentSymbol.level)
+                ? "Available at level 2 or higher"
+                : "-20% EXP upon use"}
+            </p>
           </button>
         </div>
       </div>
