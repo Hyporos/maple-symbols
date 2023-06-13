@@ -7,13 +7,13 @@
 }
 
 .tool-select {
-    @apply bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent select-none transition-all px-4 py-2
+    @apply bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent select-none transition-colors px-4 py-2
 }
 
 .tool-input {
-    @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover outline-none transition-all w-1/2 p-2.5
+    @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none transition-all w-1/2 p-2.5
 }
 
 .tool-input::placeholder {
-    @apply text-tertiary hover:text-secondary transition-all
+    @apply text-tertiary hover:text-secondary transition-all focus:text-secondary
  }

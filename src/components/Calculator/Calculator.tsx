@@ -38,6 +38,7 @@ interface Props {
     }
   ];
   selectedClass: number;
+  swapped: boolean;
 }
 
 const Calculator = ({
@@ -46,6 +47,7 @@ const Calculator = ({
   selectedSymbol,
   classData,
   selectedClass,
+  swapped,
 }: Props) => {
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
@@ -129,7 +131,7 @@ const Calculator = ({
               className="symbol-input"
               onWheel={(e) => e.currentTarget.blur()}
               onChange={(e) => {
-                if (Number(e.target.value) <= 20) {
+                if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
                   setSymbols(
                     symbols.map((symbol) =>
                       symbol.id === selectedSymbol + 1
@@ -138,11 +140,15 @@ const Calculator = ({
                     )
                   );
                 }
-                if (Number(e.target.value) >= 20) {
+                if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
                   setSymbols(
                     symbols.map((symbol) =>
                       symbol.id === selectedSymbol + 1
-                        ? { ...symbol, level: 20, experience: 0 }
+                        ? {
+                            ...symbol,
+                            level: !swapped ? 20 : 11,
+                            experience: 0,
+                          }
                         : symbol
                     )
                   );
@@ -217,7 +223,7 @@ const Calculator = ({
                   setSymbols(
                     symbols.map((symbol) =>
                       symbol.id === selectedSymbol + 1
-                        ? { ...symbol, experience: NaN}
+                        ? { ...symbol, experience: NaN }
                         : symbol
                     )
                   );
@@ -325,7 +331,8 @@ const Calculator = ({
             <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
               <div
                 className={`flex space-x-2 items-center ${
-                  currentSymbol.level === 20 || isNaN(currentSymbol.level)
+                  currentSymbol.level === (!swapped ? 20 : 11) ||
+                  isNaN(currentSymbol.level)
                     ? "hidden"
                     : "block"
                 }`}
@@ -340,13 +347,14 @@ const Calculator = ({
               </div>
               <div
                 className={`text-2xl tracking-widest uppercase ${
-                  currentSymbol.level === 20 || isNaN(currentSymbol.level)
+                  currentSymbol.level === (!swapped ? 20 : 11) ||
+                  isNaN(currentSymbol.level)
                     ? "block"
                     : "hidden"
                 }`}
               >
                 <h1>
-                  {currentSymbol.level === 20 ? (
+                  {currentSymbol.level === (!swapped ? 20 : 11) ? (
                     <div className="py-[72.5%]">
                       <p className="text-accent">Max Level</p>
                     </div>
@@ -365,7 +373,8 @@ const Calculator = ({
 
           <div
             className={`symbol-stats ${
-              isNaN(currentSymbol.level) || currentSymbol.level === 20
+              isNaN(currentSymbol.level) ||
+              currentSymbol.level === (!swapped ? 20 : 11)
                 ? "hidden"
                 : "block"
             }`}
@@ -456,24 +465,35 @@ const Calculator = ({
 
           <div
             className={`symbol-stats ${
-              isNaN(currentSymbol.level) || currentSymbol.level === 20
+              isNaN(currentSymbol.level) ||
+              currentSymbol.level === (!swapped ? 20 : 11)
                 ? "hidden"
                 : "block"
             }`}
           >
             <p>
-              <span>
-                {currentSymbol.level <= 19 &&
-                  currentSymbol.level > 0 &&
-                  nextLevel.mesosRequired.toLocaleString()}
-              </span>{" "}
+              {(() => {
+                try {
+                  if (
+                    currentSymbol.level <= (!swapped ? 19 : 10) &&
+                    currentSymbol.level > 0
+                  ) {
+                    return (
+                      <span>{nextLevel.mesosRequired.toLocaleString()}</span>
+                    );
+                  }
+                } catch (e) {
+                  //console.log((e as Error).message);
+                }
+              })()}{" "}
               mesos required
             </p>
           </div>
 
           <div
             className={`symbol-stats ${
-              isNaN(currentSymbol.level) || currentSymbol.level === 20
+              isNaN(currentSymbol.level) ||
+              currentSymbol.level === (!swapped ? 20 : 11)
                 ? "hidden"
                 : "block"
             }`}

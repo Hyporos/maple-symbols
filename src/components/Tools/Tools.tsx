@@ -14,11 +14,12 @@ interface Props {
       };
     }
   ];
-  selectedSymbol: number;
   setSymbols: Dispatch<SetStateAction<object>>;
+  selectedSymbol: number;
+  swapped: boolean;
 }
 
-const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
+const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
   const [selectorLevel, setSelectorLevel] = useState(NaN);
@@ -95,28 +96,32 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
     setSelectorCount(NaN);
   }, [selectedSymbol]);
 
+  useEffect(() => {
+    swapped && setSelectedTool(1);
+  }, [swapped]);
+
   return (
     <section className="tools">
       <div className="flex flex-col justify-between bg-card rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
         <div
-          className={`flex justify-between mx-20 text-secondary space-x-4 mb-7 ${
+          className={`flex mx-20 text-secondary space-x-4 mb-7 ${
             isNaN(currentSymbol.level) && "opacity-25 pointer-events-none"
-          }`}
+          } ${!swapped ? "justify-between" : "justify-center"}`}
         >
           <button
             className={`tool-select flex items-center space-x-2 rounded-3xl ${
               selectedTool === 1 && "bg-secondary text-primary"
-            }`}
+            } ${swapped && "cursor-default"}`}
             onClick={() => setSelectedTool(1)}
           >
-            <img src="/symbols/selector.webp"></img>
+            <img src={`${!swapped ? "/symbols/selector.webp" : "/symbols/sacred-selector.webp"}`}></img>
             <p>Symbol Selector</p>
           </button>
           <button
             className={`tool-select flex items-center space-x-2 rounded-3xl ${
               selectedTool === 2 && "bg-secondary text-primary"
-            }`}
+            } ${!swapped ? "block" : "hidden"}`}
             onClick={() => setSelectedTool(2)}
           >
             <img src="/symbols/catalyst.webp"></img>
@@ -224,6 +229,8 @@ const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
               <span>
                 {currentSymbol.level === 1 || isNaN(currentSymbol.level)
                   ? "?"
+                  : currentSymbol.level === 2 // Bugged. Bandaid fix
+                  ? "1" 
                   : catalystLevel}{" "}
                 /{" "}
                 {currentSymbol.level === 1 ||

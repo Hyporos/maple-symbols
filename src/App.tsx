@@ -344,7 +344,7 @@ function App() {
         selectedClass={selectedClass}
         swapped={swapped}
       />
-      <Tools selectedSymbol={selectedSymbol} symbols={symbols} setSymbols={setSymbols} />
+      <Tools symbols={symbols} setSymbols={setSymbols} selectedSymbol={selectedSymbol} swapped={swapped} />
       <Levels symbols={symbols} swapped={swapped} />
       <Graph symbols={symbols} selectedSymbol={selectedSymbol} />
       <Footer />

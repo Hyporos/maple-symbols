@@ -255,6 +255,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                     className={`${
                       selectedSymbol === index &&
                       selectedNone === false &&
+                      symbol.level < 11 &&
                       "rounded-3xl shadow-level shadow-accent z-10 "
                     }`}
                   >
@@ -268,8 +269,8 @@ const Levels = ({ symbols, swapped }: Props) => {
                       }}
                       className={`flex items-center text-center hover:bg-dark cursor-pointer py-4 ${
                         isNaN(symbol.level) && "opacity-25 pointer-events-none"
-                      } ${symbol.level === 20 && "pointer-events-none"} ${
-                        selectedSymbol === index && selectedNone === false
+                      } ${symbol.level === 11 && "pointer-events-none"} ${
+                        selectedSymbol === index && selectedNone === false && symbol.level < 11
                           ? "bg-dark hover:bg-gradient-to-b hover:from-light rounded-t-3xl"
                           : "rounded-3xl"
                       }`}
@@ -292,15 +293,15 @@ const Levels = ({ symbols, swapped }: Props) => {
                             : "text-accent"
                         }`}
                       >
-                        {symbol.level === 20
+                        {symbol.level === 11
                           ? "MAX"
                           : isNaN(symbol.level)
                           ? "0"
-                          : symbol.level}
+                          : 11}
                       </p>
                       <div className="w-1/4">
                         <p>
-                          {symbol.level === 20 || isNaN(symbol.level)
+                          {symbol.level === 11 || isNaN(symbol.level)
                             ? "‎"
                             : symbol.completion === "NaN-NaN-NaN"
                             ? "Indefinite"
@@ -309,7 +310,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                             : symbol.completion}
                         </p>
                         <p className="text-tertiary">
-                          {symbol.level === 20 || isNaN(symbol.level)
+                          {symbol.level === 11 || isNaN(symbol.level)
                             ? "‎"
                             : String(symbol.daysRemaining) === "Infinity" ||
                               isNaN(symbol.daysRemaining)
@@ -322,7 +323,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         </p>
                       </div>
                       <p className="w-1/4">
-                        {symbol.level === 20 || isNaN(symbol.level)
+                        {symbol.level === 11 || isNaN(symbol.level)
                           ? "‎"
                           : isNaN(symbol.symbolsRemaining)
                           ? "?"
@@ -334,8 +335,8 @@ const Levels = ({ symbols, swapped }: Props) => {
                     <div
                       className={`flex items-center text-center rounded-b-3xl bg-dark py-4 ${
                         isNaN(symbol.level) && "opacity-25 pointer-events-none"
-                      } ${symbol.level === 20 && "pointer-events-none"} ${
-                        selectedSymbol === index && selectedNone === false
+                      } ${symbol.level === 11 && "pointer-events-none"} ${
+                        selectedSymbol === index && selectedNone === false && symbol.level < 11
                           ? "block border-secondary"
                           : "hidden"
                       }`}

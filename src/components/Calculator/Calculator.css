@@ -11,13 +11,13 @@
 }
 
 .symbol-input {
-    @apply bg-secondary shadow-input text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover outline-none transition-all w-1/2 p-2.5
+    @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none transition-colors w-1/2 p-2.5
 }
 
 .symbol-input::placeholder {
-    @apply text-tertiary hover:text-secondary transition-all
+    @apply text-tertiary hover:text-secondary transition-all focus:text-secondary
 }
 
 .daily-box {
-    @apply bg-secondary hover:bg-hover shadow-input text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent select-none transition-all w-full py-1.5
+    @apply bg-secondary hover:bg-hover text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent select-none transition-all w-full py-1.5
 }
