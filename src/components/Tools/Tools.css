@@ -7,7 +7,7 @@
 }
 
 .tool-select {
-    @apply bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent select-none transition-colors px-4 py-2
+    @apply flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-3xl select-none transition-colors space-x-2 px-4 py-2 w-[200px]
 }
 
 .tool-input {

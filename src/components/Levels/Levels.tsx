@@ -230,14 +230,16 @@ const Levels = ({ symbols, swapped }: Props) => {
                           {String(targetDays) === "Infinity" ||
                           String(targetDays) === "-Infinity" ||
                           isNaN(targetDays)
-                            ? "? days"
-                            : targetLevel <= symbol.level || isNaN(targetLevel)
-                            ? "Level too low"
-                            : targetDays === 0
-                            ? "Ready for upgrade"
-                            : targetDays > 1
-                            ? targetDays + " days"
-                            : targetDays + " day"}
+                          ? "? days"
+                          : targetLevel <= symbol.level
+                          ? "Level must be over " + symbol.level
+                          : isNaN(targetLevel)
+                          ? "Enter a target level"
+                          : targetDays === 0
+                          ? "Ready for upgrade"
+                          : targetDays > 1
+                          ? targetDays + " days"
+                          : targetDays + " day"}
                         </p>
                       </div>
                       <p className="w-1/4">
@@ -383,8 +385,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                           String(targetDays) === "-Infinity" ||
                           isNaN(targetDays)
                             ? "? days"
-                            : targetLevel <= symbol.level || isNaN(targetLevel)
-                            ? "Level too low"
+                            : targetLevel <= symbol.level
+                            ? "Level must be over " + symbol.level
+                            : isNaN(targetLevel)
+                            ? "Enter a target level"
                             : targetDays === 0
                             ? "Ready for upgrade"
                             : targetDays > 1

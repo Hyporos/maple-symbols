@@ -46,8 +46,8 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
     try {
       let tempCatalystExp =
         accumulated +
-        (currentSymbol.experience - currentSymbol.experience * 0.2) -
-        Math.ceil(accumulated - accumulated * 0.8);
+        (currentSymbol.experience - currentSymbol.experience * (!swapped ? 0.2 : 0.4)) -
+        Math.ceil(accumulated - accumulated * (!swapped ? 0.8 : 0.6));
       setCatalystExperience(tempCatalystExp);
 
       symbols[selectedSymbol].data.forEach((symbol) => {
@@ -96,36 +96,32 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
     setSelectorCount(NaN);
   }, [selectedSymbol]);
 
-  useEffect(() => {
-    swapped && setSelectedTool(1);
-  }, [swapped]);
-
   return (
     <section className="tools">
       <div className="flex flex-col justify-between bg-card rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
         <div
-          className={`flex mx-20 text-secondary space-x-4 mb-7 ${
+          className={`flex justify-between mx-20 text-secondary space-x-4 mb-7 ${
             isNaN(currentSymbol.level) && "opacity-25 pointer-events-none"
-          } ${!swapped ? "justify-between" : "justify-center"}`}
+          }`}
         >
           <button
-            className={`tool-select flex items-center space-x-2 rounded-3xl ${
+            className={`tool-select ${
               selectedTool === 1 && "bg-secondary text-primary"
-            } ${swapped && "cursor-default"}`}
+            }`}
             onClick={() => setSelectedTool(1)}
           >
             <img src={`${!swapped ? "/symbols/selector.webp" : "/symbols/sacred-selector.webp"}`}></img>
             <p>Symbol Selector</p>
           </button>
           <button
-            className={`tool-select flex items-center space-x-2 rounded-3xl ${
+            className={`tool-select ${
               selectedTool === 2 && "bg-secondary text-primary"
-            } ${!swapped ? "block" : "hidden"}`}
+            }`}
             onClick={() => setSelectedTool(2)}
           >
-            <img src="/symbols/catalyst.webp"></img>
-            <p>Arcane Catalyst</p>
+            <img src={`${!swapped ? "/symbols/arcane-catalyst.webp" : "/symbols/sacred-catalyst.webp"}`}></img>
+            <p>{!swapped ? "Arcane Catalyst" : "Sacred Catalyst"}</p>
           </button>
         </div>
         <div
@@ -245,7 +241,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             <p>
               {currentSymbol.level === 1 || isNaN(currentSymbol.level)
                 ? "Available at level 2 or higher"
-                : "-20% EXP upon use"}
+                : !swapped 
+                ? "-20% EXP upon use"
+                : "-40% EXP upon use" }
             </p>
           </button>
         </div>

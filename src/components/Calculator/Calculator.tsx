@@ -1,4 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {useFloating, autoUpdate, offset, flip, shift, useHover,
+  useFocus,
+  useDismiss,
+  useRole,
+  useInteractions,} from '@floating-ui/react';
 import { HiArrowSmRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
@@ -49,6 +54,28 @@ const Calculator = ({
   selectedClass,
   swapped,
 }: Props) => {
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const {refs, floatingStyles, context} = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+    middleware: [offset(10), flip(), shift()],
+    whileElementsMounted: autoUpdate,
+  });
+
+    const hover = useHover(context, {move: false});
+  const focus = useFocus(context);
+  const dismiss = useDismiss(context);
+  const role = useRole(context, {role: 'tooltip'});
+
+  const {getReferenceProps, getFloatingProps} = useInteractions([
+    hover,
+    focus,
+    dismiss,
+    role,
+  ]);
+  
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
 
@@ -237,6 +264,7 @@ const Calculator = ({
 
           <div className="flex space-x-2">
             <button
+            ref={refs.setReference} {...getReferenceProps()}
               className={`daily-box ${currentSymbol.daily && "border-checked"}`}
               onClick={() =>
                 setSymbols(
@@ -253,6 +281,15 @@ const Calculator = ({
             >
               Daily
             </button>
+
+            {isOpen && (
+              <div
+              ref={refs.setFloating}
+              style={floatingStyles}
+              {...getFloatingProps()}>
+                Tooltip element
+              </div>
+            )}
 
             <button
               className={`daily-box ${
