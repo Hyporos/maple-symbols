@@ -9,7 +9,6 @@ import Levels from "./components/Levels/Levels";
 function App() {
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
-  const [selectedClass, setSelectedClass] = useState(2);
 
   const [symbols, setSymbols] = useState([
     {
@@ -320,12 +319,6 @@ function App() {
     },
   ]);
 
-  const classData = [
-    { class: "Demon Avenger", statForm: "HP", statGain: 2100 },
-    { class: "Xenon", statForm: "all stat", statGain: 48 },
-    { class: "Other", statForm: "main stat", statGain: 100 },
-  ];
-
   return (
     <>
       <Header />
@@ -340,13 +333,15 @@ function App() {
         symbols={symbols}
         setSymbols={setSymbols}
         selectedSymbol={selectedSymbol}
-        classData={classData}
-        selectedClass={selectedClass}
         swapped={swapped}
       />
-      <Tools symbols={symbols} setSymbols={setSymbols} selectedSymbol={selectedSymbol} swapped={swapped} />
+      <Tools
+        symbols={symbols}
+        setSymbols={setSymbols}
+        selectedSymbol={selectedSymbol}
+        swapped={swapped}
+      />
       <Levels symbols={symbols} swapped={swapped} />
-      <Graph symbols={symbols} selectedSymbol={selectedSymbol} />
       <Footer />
     </>
   );

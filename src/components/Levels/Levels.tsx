@@ -39,6 +39,8 @@ const Levels = ({ symbols, swapped }: Props) => {
   const [targetDays, setTargetDays] = useState(0);
   const [targetDate, setTargetDate] = useState("");
 
+  const [set, setSet] = useState(false);
+
   const currentSymbol = symbols[selectedSymbol];
 
   const symbolCount =
@@ -68,16 +70,17 @@ const Levels = ({ symbols, swapped }: Props) => {
 
   useEffect(() => {
     setSelectedNone(true);
-  },[swapped])
+  }, [swapped]);
 
   useEffect(() => {
-    const date = new Date();
-    date.setDate(date.getDate() + Math.ceil(targetSymbols / symbolCount));
-    const currentDay = String(date.getDate()).padStart(2, "0");
-    const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-    const currentYear = date.getFullYear();
-    const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
-    setTargetDate(currentDate);
+      const date = new Date();
+      date.setDate(date.getDate() + Math.ceil(targetSymbols / symbolCount));
+      const currentDay = String(date.getDate()).padStart(2, "0");
+      const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+      const currentYear = date.getFullYear();
+      const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
+      setTargetDate(currentDate);
+      setSet(true);
   }, [targetLevel, targetSymbols, symbolCount]);
 
   return (
@@ -230,16 +233,16 @@ const Levels = ({ symbols, swapped }: Props) => {
                           {String(targetDays) === "Infinity" ||
                           String(targetDays) === "-Infinity" ||
                           isNaN(targetDays)
-                          ? "? days"
-                          : targetLevel <= symbol.level
-                          ? "Level must be over " + symbol.level
-                          : isNaN(targetLevel)
-                          ? "Enter a target level"
-                          : targetDays === 0
-                          ? "Ready for upgrade"
-                          : targetDays > 1
-                          ? targetDays + " days"
-                          : targetDays + " day"}
+                            ? "? days"
+                            : targetLevel <= symbol.level
+                            ? "Level must be over " + symbol.level
+                            : isNaN(targetLevel)
+                            ? "Enter a target level"
+                            : targetDays === 0
+                            ? "Ready for upgrade"
+                            : targetDays > 1
+                            ? targetDays + " days"
+                            : targetDays + " day"}
                         </p>
                       </div>
                       <p className="w-1/4">
@@ -272,7 +275,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                       className={`flex items-center text-center hover:bg-dark cursor-pointer py-4 ${
                         isNaN(symbol.level) && "opacity-25 pointer-events-none"
                       } ${symbol.level === 11 && "pointer-events-none"} ${
-                        selectedSymbol === index && selectedNone === false && symbol.level < 11
+                        selectedSymbol === index &&
+                        selectedNone === false &&
+                        symbol.level < 11
                           ? "bg-dark hover:bg-gradient-to-b hover:from-light rounded-t-3xl"
                           : "rounded-3xl"
                       }`}
@@ -338,7 +343,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                       className={`flex items-center text-center rounded-b-3xl bg-dark py-4 ${
                         isNaN(symbol.level) && "opacity-25 pointer-events-none"
                       } ${symbol.level === 11 && "pointer-events-none"} ${
-                        selectedSymbol === index && selectedNone === false && symbol.level < 11
+                        selectedSymbol === index &&
+                        selectedNone === false &&
+                        symbol.level < 11
                           ? "block border-secondary"
                           : "hidden"
                       }`}
@@ -372,35 +379,56 @@ const Levels = ({ symbols, swapped }: Props) => {
                       </div>
                       <div className="w-1/4">
                         <p>
-                          {targetLevel <= symbol.level || isNaN(targetLevel)
+                          {targetSymbols === 0
+                            ? "Complete"
+                            : targetLevel <= symbol.level || isNaN(targetLevel)
                             ? "Indefinite"
                             : targetDate === "NaN-NaN-NaN"
                             ? "Indefinite"
-                            : targetDays === 0
-                            ? "Complete"
                             : targetDate}
                         </p>
                         <p className="text-tertiary">
-                          {String(targetDays) === "Infinity" ||
-                          String(targetDays) === "-Infinity" ||
-                          isNaN(targetDays)
-                            ? "? days"
+                          {(() => {
+                            if (targetSymbols === 0) {
+                              return <p>Ready for upgrade</p>;
+                            } else if (targetLevel <= symbol.level) {
+                              return <p>Level must be over {symbol.level}</p>;
+                            } else if (isNaN(targetLevel)) {
+                              return <p>Enter a target level</p>;
+                            } else if (
+                              String(targetDays) ===
+                                ("Infinity" || "-Infinity") ||
+                              isNaN(targetDays)
+                            ) {
+                              return <p>? days</p>;
+                            } else if (targetDays > 1) {
+                              return <p>{targetDays} days</p>;
+                            } else {
+                              return <p>{targetDays} day BUGGED</p>;
+                            }
+                          })()}
+                          {/*targetSymbols === 0
+                            ? "Ready for upgrade"
                             : targetLevel <= symbol.level
                             ? "Level must be over " + symbol.level
                             : isNaN(targetLevel)
                             ? "Enter a target level"
-                            : targetDays === 0
-                            ? "Ready for upgrade"
+                            : String(targetDays) ===
+                                ("Infinity" || "-Infiinity") ||
+                              isNaN(targetDays)
+                            ? "? days"
                             : targetDays > 1
                             ? targetDays + " days"
-                            : targetDays + " day"}
+                        : targetDays + " day"*/}
                         </p>
                       </div>
                       <p className="w-1/4">
                         {targetLevel <= symbol.level ||
                         isNaN(targetSymbols) ||
-                        targetSymbols <= 0
+                        targetSymbols < 0
                           ? "?"
+                          : targetSymbols === 0
+                          ? "0"
                           : targetSymbols}
                       </p>
                     </div>

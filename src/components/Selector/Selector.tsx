@@ -40,7 +40,7 @@ const Selector = ({
         <div className="flex justify-between items-center px-8">
           <HiBars3
             size={40}
-            className={"icon-button"}
+            className={"icon-button opacity-25 cursor-default hover:fill-basic"}
             onClick={() => console.log("Settings Clicked")}
           />
           <div className="flex space-x-10">

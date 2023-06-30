@@ -1,10 +1,13 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import {useFloating, autoUpdate, offset, flip, shift, useHover,
-  useFocus,
-  useDismiss,
-  useRole,
-  useInteractions,} from '@floating-ui/react';
-import { HiArrowSmRight } from "react-icons/hi";
+import {
+  useFloating,
+  offset,
+  useHover,
+  useInteractions,
+  useTransitionStyles,
+} from "@floating-ui/react";
+import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
+import { RiMoreFill } from "react-icons/ri";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 
@@ -35,14 +38,6 @@ interface Props {
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
   selectedSymbol: number;
-  classData: [
-    {
-      name: string;
-      statForm: string;
-      statGain: number;
-    }
-  ];
-  selectedClass: number;
   swapped: boolean;
 }
 
@@ -50,32 +45,27 @@ const Calculator = ({
   symbols,
   setSymbols,
   selectedSymbol,
-  classData,
-  selectedClass,
   swapped,
 }: Props) => {
-
   const [isOpen, setIsOpen] = useState(false);
 
-  const {refs, floatingStyles, context} = useFloating({
+  const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
-    middleware: [offset(10), flip(), shift()],
-    whileElementsMounted: autoUpdate,
+    middleware: [offset(10)],
   });
 
-    const hover = useHover(context, {move: false});
-  const focus = useFocus(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context, {role: 'tooltip'});
+  const hover = useHover(context, {
+    delay: {
+      open: 500,
+      close: 250,
+    },
+  });
 
-  const {getReferenceProps, getFloatingProps} = useInteractions([
-    hover,
-    focus,
-    dismiss,
-    role,
-  ]);
-  
+  const { isMounted, styles } = useTransitionStyles(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
 
@@ -264,7 +254,8 @@ const Calculator = ({
 
           <div className="flex space-x-2">
             <button
-            ref={refs.setReference} {...getReferenceProps()}
+              ref={refs.setReference}
+              {...getReferenceProps()}
               className={`daily-box ${currentSymbol.daily && "border-checked"}`}
               onClick={() =>
                 setSymbols(
@@ -282,16 +273,31 @@ const Calculator = ({
               Daily
             </button>
 
-            {isOpen && (
+            {isMounted && (
               <div
-              ref={refs.setFloating}
-              style={floatingStyles}
-              {...getFloatingProps()}>
-                Tooltip element
+                className="floating"
+                ref={refs.setFloating}
+                style={{ ...floatingStyles, ...styles }}
+                {...getFloatingProps()}
+              >
+                <span>[Daily Quest]</span> <br></br> Vanishing Journey Research
+              </div>
+            )}
+
+            {isMounted && (
+              <div
+                className="floating"
+                ref={refs.setFloating}
+                style={{ ...floatingStyles, ...styles }}
+                {...getFloatingProps()}
+              >
+                <span>[Daily Quest]</span> <br></br> Vanishing Journey Research
               </div>
             )}
 
             <button
+              ref={refs.setReference}
+              {...getReferenceProps()}
               className={`daily-box ${
                 currentSymbol.weekly && "border-checked"
               } ${currentSymbol.type === "arcane" ? "block" : "hidden"}`}
@@ -310,6 +316,7 @@ const Calculator = ({
             >
               Weekly
             </button>
+
             <button
               className={`daily-box ${
                 currentSymbol.extra && "border-checked"
@@ -535,9 +542,12 @@ const Calculator = ({
                 : "block"
             }`}
           >
-            <p>
-              <span>+{classData[selectedClass].statGain}</span>{" "}
-              {classData[selectedClass].statForm}
+            <p className="flex justify-center items-center space-x-1.5">
+              <span>+100</span> <p>main stat</p>
+              <HiChevronDoubleRight
+                size={19}
+                className="fill-accent hover:fill-hover transition-all"
+              />
             </p>
           </div>
         </div>

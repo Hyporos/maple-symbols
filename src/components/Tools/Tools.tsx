@@ -9,6 +9,7 @@ interface Props {
       img: string;
       level: number;
       experience: number;
+      symbolsRemaining: number;
       data: {
         symbolsRequired: number;
       };
@@ -137,11 +138,11 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               value={selectorCount}
               className="tool-input w-[100px]"
               onChange={(e) => {
-                if (Number(e.target.value) <= 2679) {
+                if (Number(e.target.value) <= currentSymbol.symbolsRemaining) {
                   setSelectorCount(parseInt(e.target.value));
                 }
-                if (Number(e.target.value) >= 2679) {
-                  setSelectorCount(2679);
+                if (Number(e.target.value) >= currentSymbol.symbolsRemaining) {
+                  setSelectorCount(currentSymbol.symbolsRemaining);
                 }
                 if (Number(e.target.value) < 0) {
                   setSelectorCount(NaN);
@@ -179,7 +180,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </div>
           <button
             className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px] ${
-              (isNaN(selectorExperience) || currentSymbol.level === 20) &&
+              (isNaN(selectorExperience) || currentSymbol.level === (!swapped ? 20 : 11)) &&
               "pointer-events-none opacity-25"
             }`}
             onClick={() => {
@@ -189,7 +190,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     ? {
                         ...symbol,
                         level: selectorLevel,
-                        experience: selectorExperience,
+                        experience: selectorCount < currentSymbol.symbolsRemaining ? selectorExperience : 0,
                       }
                     : symbol
                 )
