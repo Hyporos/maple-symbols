@@ -17,11 +17,16 @@ interface Props {
 }
 
 const Progress = ({ symbols }: Props) => {
+
+  const [arcanePower, setArcanePower] = useState([{
+
+  }]);
+  
   return (
     <section className="graphs">
       <div className="">
         <div className="flex justify-center items-center bg-card rounded-lg w-[1050px] p-10 mt-16">
-          <h1 className="text-primary tracking-wider font-semibold text-2xl mb-10">Arcane Force</h1>
+          <h1 className="text-primary tracking-wider font-semibold text-2xl mb-10">Arcane Power</h1>
         </div>
       </div>
     </section>

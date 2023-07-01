@@ -342,6 +342,7 @@ function App() {
         swapped={swapped}
       />
       <Levels symbols={symbols} swapped={swapped} />
+      <Graph symbols={symbols}/>
       <Footer />
     </>
   );

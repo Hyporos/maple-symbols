@@ -198,6 +198,15 @@ const Calculator = ({
               className="symbol-input"
               onWheel={(e) => e.currentTarget.blur()}
               onChange={(e) => {
+                if (isNaN(currentSymbol.level)) {
+                  setSymbols(
+                    symbols.map((symbol) =>
+                      symbol.id === selectedSymbol + 1
+                        ? { ...symbol, experience: NaN }
+                        : symbol
+                    )
+                  );
+                }
                 if (Number(e.target.value) <= nextLevel.symbolsRequired) {
                   setSymbols(
                     symbols.map((symbol) =>

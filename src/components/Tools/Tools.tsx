@@ -47,7 +47,8 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
     try {
       let tempCatalystExp =
         accumulated +
-        (currentSymbol.experience - currentSymbol.experience * (!swapped ? 0.2 : 0.4)) -
+        (currentSymbol.experience -
+          currentSymbol.experience * (!swapped ? 0.2 : 0.4)) -
         Math.ceil(accumulated - accumulated * (!swapped ? 0.8 : 0.6));
       setCatalystExperience(tempCatalystExp);
 
@@ -64,7 +65,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
     } catch (e) {
       //console.log((e as Error).message);
     }
-  }, [currentSymbol.level, currentSymbol.experience]);
+  }, [currentSymbol.level, currentSymbol.experience, currentSymbol.data]);
 
   useEffect(() => {
     setSelectorLevel(currentSymbol.level);
@@ -112,7 +113,13 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             }`}
             onClick={() => setSelectedTool(1)}
           >
-            <img src={`${!swapped ? "/symbols/selector.webp" : "/symbols/sacred-selector.webp"}`}></img>
+            <img
+              src={`${
+                !swapped
+                  ? "/symbols/selector.webp"
+                  : "/symbols/sacred-selector.webp"
+              }`}
+            ></img>
             <p>Symbol Selector</p>
           </button>
           <button
@@ -121,7 +128,13 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             }`}
             onClick={() => setSelectedTool(2)}
           >
-            <img src={`${!swapped ? "/symbols/arcane-catalyst.webp" : "/symbols/sacred-catalyst.webp"}`}></img>
+            <img
+              src={`${
+                !swapped
+                  ? "/symbols/arcane-catalyst.webp"
+                  : "/symbols/sacred-catalyst.webp"
+              }`}
+            ></img>
             <p>{!swapped ? "Arcane Catalyst" : "Sacred Catalyst"}</p>
           </button>
         </div>
@@ -153,34 +166,41 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               }}
             ></input>
           </div>
-          <div className="flex items-center justify-center space-x-4 w-1/3">
-            <p className="text-secondary">
-              {isNaN(currentSymbol.level) ? "?" : currentSymbol.level} /{" "}
-              {isNaN(currentSymbol.experience) || isNaN(currentSymbol.level)
-                ? "?"
-                : currentSymbol.experience}
-            </p>
-            <HiArrowSmRight size={25} className="fill-basic" />
-            <p className="text-secondary">
-              <span>
-                {isNaN(currentSymbol.level) ? "?" : selectorLevel} /{" "}
-                {(isNaN(selectorExperience) &&
-                  isNaN(currentSymbol.experience)) ||
-                isNaN(currentSymbol.level)
+          <div className="flex items-center  justify-around w-1/3">
+            <div>
+              <p className="text-secondary">
+                {isNaN(currentSymbol.level) ? "?" : currentSymbol.level} /{" "}
+                {isNaN(currentSymbol.experience) || isNaN(currentSymbol.level)
                   ? "?"
-                  : selectorLevel === 20
-                  ? "0"
-                  : (isNaN(selectorExperience) &&
-                      currentSymbol.experience > 0) ||
-                    isNaN(selectorExperience)
-                  ? currentSymbol.experience
-                  : selectorExperience}
-              </span>
-            </p>
+                  : currentSymbol.experience}
+              </p>
+            </div>
+            <div>
+              <HiArrowSmRight size={25} className="fill-basic" />
+            </div>
+            <div>
+              <p className="text-secondary">
+                <span>
+                  {isNaN(currentSymbol.level) ? "?" : selectorLevel} /{" "}
+                  {(isNaN(selectorExperience) &&
+                    isNaN(currentSymbol.experience)) ||
+                  isNaN(currentSymbol.level)
+                    ? "?"
+                    : selectorLevel === 20
+                    ? "0"
+                    : (isNaN(selectorExperience) &&
+                        currentSymbol.experience > 0) ||
+                      isNaN(selectorExperience)
+                    ? currentSymbol.experience
+                    : selectorExperience}
+                </span>
+              </p>
+            </div>
           </div>
           <button
             className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px] ${
-              (isNaN(selectorExperience) || currentSymbol.level === (!swapped ? 20 : 11)) &&
+              (isNaN(selectorExperience) ||
+                currentSymbol.level === (!swapped ? 20 : 11)) &&
               "pointer-events-none opacity-25"
             }`}
             onClick={() => {
@@ -190,7 +210,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     ? {
                         ...symbol,
                         level: selectorLevel,
-                        experience: selectorCount < currentSymbol.symbolsRemaining ? selectorExperience : 0,
+                        experience:
+                          selectorCount < currentSymbol.symbolsRemaining
+                            ? selectorExperience
+                            : 0,
                       }
                     : symbol
                 )
@@ -202,51 +225,55 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </button>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-10 ${
+          className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-8 ${
             selectedTool === 2 ? "block" : "hidden"
           } ${isNaN(currentSymbol.level) && "opacity-25"}`}
         >
-          <div className="flex items-center">
+          <div className="flex items-center w-[70px]">
             <img src={currentSymbol.img}></img>
           </div>
-          <div className="flex space-x-4">
-            <p className="text-secondary">
-              {currentSymbol.level === 1 || isNaN(currentSymbol.level)
-                ? "?"
-                : currentSymbol.level}{" "}
-              /{" "}
-              {currentSymbol.level === 1 ||
-              isNaN(currentSymbol.level) ||
-              isNaN(currentSymbol.experience)
-                ? "?"
-                : currentSymbol.experience}
-            </p>
-            <HiArrowSmRight size={25} className="fill-basic" />
-            <p className="text-secondary">
-              <span>
+          <div className="flex items-center justify-around w-1/3">
+            <div>
+              <p className="text-secondary">
                 {currentSymbol.level === 1 || isNaN(currentSymbol.level)
                   ? "?"
-                  : currentSymbol.level === 2 // Bugged. Bandaid fix
-                  ? "1" 
-                  : catalystLevel}{" "}
+                  : currentSymbol.level}{" "}
                 /{" "}
                 {currentSymbol.level === 1 ||
                 isNaN(currentSymbol.level) ||
                 isNaN(currentSymbol.experience)
                   ? "?"
-                  : Math.ceil(catalystExperience)}
-              </span>
-            </p>
+                  : currentSymbol.experience}
+              </p>
+            </div>
+            <div>
+              <HiArrowSmRight size={25} className="fill-basic" />
+            </div>
+            <div>
+              <p className="text-secondary">
+                <span>
+                  {currentSymbol.level === 1 || isNaN(currentSymbol.level)
+                    ? "?"
+                    : currentSymbol.level === 2 // Bugged. Bandaid fix
+                    ? "1"
+                    : catalystLevel}{" "}
+                  /{" "}
+                  {currentSymbol.level === 1 ||
+                  isNaN(currentSymbol.level) ||
+                  isNaN(currentSymbol.experience)
+                    ? "?"
+                    : Math.ceil(catalystExperience)}
+                </span>
+              </p>
+            </div>
           </div>
-          <button className="tool-select pointer-events-none">
-            <p>
+            <p className="w-[200px] text-right py-2">
               {currentSymbol.level === 1 || isNaN(currentSymbol.level)
-                ? "Available at level 2 or higher"
-                : !swapped 
+                ? "Must be level 2 or higher"
+                : !swapped
                 ? "-20% EXP upon use"
-                : "-40% EXP upon use" }
+                : "-40% EXP upon use"}
             </p>
-          </button>
         </div>
       </div>
     </section>
