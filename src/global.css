@@ -43,7 +43,7 @@
 
 @layer base {
     body {
-        @apply font-maven-pro text-secondary tracking-wide bg-dark
+        @apply font-maven-pro text-secondary tracking-wide bg-gradient-to-t from-dark to-[#202020]
     }
 
     button,

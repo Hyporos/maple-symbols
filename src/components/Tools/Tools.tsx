@@ -100,7 +100,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   return (
     <section className="tools">
-      <div className="flex flex-col justify-between bg-card rounded-b-lg h-[250px] w-[700px]">
+      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg h-[250px] w-[700px]">
         <hr className="horizontal-divider" />
         <div
           className={`flex justify-between mx-20 text-secondary space-x-4 mb-7 ${

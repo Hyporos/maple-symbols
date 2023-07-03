@@ -42,8 +42,10 @@ export default {
       },
       colors: {
         'accent': '#b18bd0',
-        'card': '#1c1c1c',
+        'card': '#1d1d1d',
         'dark': '#212121',
+        'card-grad': '#1b1b1b',
+        'card-tool': '#1c1c1c',
         'light': '#262626',
       },
       transitionDuration: {
