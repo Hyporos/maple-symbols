@@ -4,7 +4,7 @@
 
 <div id="user-content-toc">
   <ul>
-    <summary align="center"><h2 style="display: inline-block;" >A tool which provides calculations and guides for symbols in Maplestory.</h1></summary>
+    <summary align="center"><h2 style="display: inline-block;" >A tool which provides calculations and guides for symbols in Maplestory</h1></summary>
     <hr></hr>
   </ul>
 </div>
