@@ -85,7 +85,7 @@ const Levels = ({ symbols, swapped }: Props) => {
 
   return (
     <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[1050px] p-10 mt-16">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[1050px] p-10 mt-28">
         <div className="flex flex-col w-[1050px]">
           <div className="flex items-center text-center text-tertiary">
             <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />

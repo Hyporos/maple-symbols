@@ -9,7 +9,6 @@ export default {
         'maven-pro': ['Maven Pro', 'sans-serif'],
       },
       boxShadow: {
-        'card': '0 0 50px -12px rgb(0 0 0 / 0.25)',
         'input': '0 0 9px 0px rgb(0 0 0 / 0.25)',
         'level': '0 0 2.5px 0px rgb(0 0 0 / 0.1)',
       },

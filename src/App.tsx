@@ -2,6 +2,7 @@ import { useState } from "react";
 import Calculator from "./components/Calculator/Calculator";
 import Footer from "./components/Footer/Footer";
 import Graph from "./components/Graph/Graph";
+import Disclaimer from "./components/Disclaimer/Disclaimer";
 import Header from "./components/Header/Header";
 import Selector from "./components/Selector/Selector";
 import Tools from "./components/Tools/Tools";
@@ -325,12 +326,11 @@ function App() {
   const currentYear = date.getFullYear();
   const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
 
-  const [arcanePower, setArcanePower] = useState([
-    { x: currentDate, y: 0 },
-  ]);
+  const [arcanePower, setArcanePower] = useState([{ x: currentDate, y: 0 }]);
 
   return (
     <>
+      <Disclaimer />
       <Header />
       <Selector
         swapped={swapped}
