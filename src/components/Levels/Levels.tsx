@@ -221,28 +221,51 @@ const Levels = ({ symbols, swapped }: Props) => {
                       </div>
                       <div className="w-1/4">
                         <p>
-                          {targetLevel <= symbol.level || isNaN(targetLevel)
+                          {targetSymbols === 0
+                            ? "Complete"
+                            : targetLevel <= symbol.level || isNaN(targetLevel)
                             ? "Indefinite"
                             : targetDate === "NaN-NaN-NaN"
                             ? "Indefinite"
-                            : targetDays === 0
-                            ? "Complete"
-                            : targetDate}
+                            : targetDays > 0 
+                            ? targetDate
+                            : "‎"}
                         </p>
                         <p className="text-tertiary">
-                          {String(targetDays) === "Infinity" ||
-                          String(targetDays) === "-Infinity" ||
-                          isNaN(targetDays)
-                            ? "? days"
+                          {(() => {
+                            if (targetSymbols === 0) {
+                              return <p>Ready for upgrade</p>;
+                            } else if (targetLevel <= symbol.level) {
+                              return <p>Level must be over {symbol.level}</p>;
+                            } else if (isNaN(targetLevel)) {
+                              return <p>Enter a target level</p>;
+                            } else if (
+                              String(targetDays) ===
+                                ("Infinity" || "-Infinity") ||
+                              isNaN(targetDays)
+                            ) {
+                              return <p>? days</p>;
+                            } else if (targetDays > 1) {
+                              return <p>{targetDays} days</p>;
+                            } else if (targetDays > 0) {
+                              return <p>{targetDays} day</p>;
+                            } else {
+                              return <p>‎</p>
+                            }
+                          })()}
+                          {/*targetSymbols === 0
+                            ? "Ready for upgrade"
                             : targetLevel <= symbol.level
                             ? "Level must be over " + symbol.level
                             : isNaN(targetLevel)
                             ? "Enter a target level"
-                            : targetDays === 0
-                            ? "Ready for upgrade"
+                            : String(targetDays) ===
+                                ("Infinity" || "-Infiinity") ||
+                              isNaN(targetDays)
+                            ? "? days"
                             : targetDays > 1
                             ? targetDays + " days"
-                            : targetDays + " day"}
+                        : targetDays + " day"*/}
                         </p>
                       </div>
                       <p className="w-1/4">
@@ -385,7 +408,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                             ? "Indefinite"
                             : targetDate === "NaN-NaN-NaN"
                             ? "Indefinite"
-                            : targetDate}
+                            : targetDays > 0 
+                            ? targetDate
+                            : "‎"}
                         </p>
                         <p className="text-tertiary">
                           {(() => {
@@ -403,8 +428,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                               return <p>? days</p>;
                             } else if (targetDays > 1) {
                               return <p>{targetDays} days</p>;
+                            } else if (targetDays > 0) {
+                              return <p>{targetDays} day</p>;
                             } else {
-                              return <p>{targetDays} day BUGGED</p>;
+                              return <p>‎</p>
                             }
                           })()}
                           {/*targetSymbols === 0
