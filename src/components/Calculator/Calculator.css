@@ -6,10 +6,6 @@
     @apply bg-gradient-to-t from-transparent via-white to-transparent opacity-10 w-px h-[250px]
 }
 
-.symbol-stats {
-    @apply text-secondary text-center space-y-1.5
-}
-
 .symbol-input {
     @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none transition-colors w-1/2 p-2.5
 }

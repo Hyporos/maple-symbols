@@ -166,37 +166,43 @@ const Calculator = ({
         ];
         let lastDays = 0;
         for (let i = 0; i < currentSymbol.data.length; i++) {
-          const date = new Date();  
+          const date = new Date();
           date.setDate(
             date.getDate() +
-            Math.ceil(
-              ((symbols[selectedSymbol].data[currentSymbol.level + i]
-                .symbolsRequired -
-                currentSymbol.experience) /
-                symbolCount) + lastDays
-            )
+              Math.ceil(
+                (symbols[selectedSymbol].data[currentSymbol.level + i]
+                  .symbolsRequired -
+                  currentSymbol.experience) /
+                  symbolCount +
+                  lastDays
+              )
           );
           const currentDay = String(date.getDate()).padStart(2, "0");
           const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
           const currentYear = date.getFullYear();
           const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
-          lastDays = Math.ceil((symbols[selectedSymbol].data[currentSymbol.level + i]
-            .symbolsRequired -
-            currentSymbol.experience) /
-            symbolCount) + lastDays;
-          console.log(            Math.ceil(
-            ((symbols[selectedSymbol].data[currentSymbol.level + i]
-              .symbolsRequired -
-              currentSymbol.experience) /
-              symbolCount)
-          ));
+          lastDays =
+            Math.ceil(
+              (symbols[selectedSymbol].data[currentSymbol.level + i]
+                .symbolsRequired -
+                currentSymbol.experience) /
+                symbolCount
+            ) + lastDays;
+          console.log(
+            Math.ceil(
+              (symbols[selectedSymbol].data[currentSymbol.level + i]
+                .symbolsRequired -
+                currentSymbol.experience) /
+                symbolCount
+            )
+          );
           remaining[i].x = currentDate;
           setArcanePower(remaining);
           setArcaneForce(arcaneForce + 10);
         }
       }
     } catch (e) {
-      console.log("Error");
+      //console.log("Error");
     }
   }, [currentSymbol.level, currentSymbol.experience]);
 
@@ -451,52 +457,75 @@ const Calculator = ({
         <div className="vertical-divider"></div>
 
         <div className="w-[350px] space-y-10">
-          <div className="symbol-stats">
+          <div className="text-secondary text-center space-y-1.5">
             <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
               <div
-                className={`flex space-x-2 items-center ${
-                  currentSymbol.level === (!swapped ? 20 : 11) ||
-                  isNaN(currentSymbol.level)
+                className={`text-secondary text-center space-y-1.5 ${
+                  isNaN(currentSymbol.level) ||
+                  currentSymbol.level === (!swapped ? 20 : 11)
                     ? "hidden"
                     : "block"
                 }`}
               >
-                <h1>
-                  Level <span>{currentSymbol.level}</span>
-                </h1>
-                <HiArrowSmRight size={30} className="fill-basic" />
-                <h1>
-                  Level <span>{currentSymbol.level + 1}</span>
-                </h1>
+                {(() => {
+                  try {
+                    //BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
+                    if (
+                      currentSymbol.type === (!swapped ? "arcane" : "sacred") ||
+                      (currentSymbol.level != 20 &&
+                        currentSymbol.level != (!swapped && 11) &&
+                        String(currentSymbol.level) != "NaN")
+                    ) {
+                      return (
+                        <div className="flex space-x-2 items-center justify-center text-primary text-xl font-semibold tracking-wider">
+                          <h1>
+                            Level <span>{currentSymbol.level}</span>
+                          </h1>
+                          <HiArrowSmRight size={30} className="fill-basic" />
+                          <h1>
+                            Level <span>{currentSymbol.level + 1}</span>
+                          </h1>
+                        </div>
+                      );
+                    }
+                  } catch (e) {
+                    //console.log((e as Error).message);
+                  }
+                })()}
               </div>
-              <div
-                className={`text-2xl tracking-widest uppercase ${
-                  currentSymbol.level === (!swapped ? 20 : 11) ||
-                  isNaN(currentSymbol.level)
-                    ? "block"
-                    : "hidden"
-                }`}
-              >
-                <h1>
-                  {currentSymbol.level === (!swapped ? 20 : 11) ? (
-                    <div className="py-[72.5%]">
-                      <p className="text-accent">Max Level</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4 py-[40%]">
-                      <p className="text-secondary">Disabled</p>
-                      <p className="text-secondary text-xs lowercase font-light tracking-widest">
-                        Enter a level to enable this symbol
-                      </p>
-                    </div>
-                  )}
-                </h1>
+              <div className={`text-2xl tracking-widest uppercase`}>
+                {(() => {
+                  try {
+                    if (
+                      currentSymbol.level === (!swapped ? 20 : 11) &&
+                      currentSymbol.type === (!swapped ? "arcane" : "sacred")
+                    ) {
+                      //BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
+                      return (
+                        <div className="py-[72.5%]">
+                          <p className="text-accent">Max Level</p>
+                        </div>
+                      );
+                    } else if (isNaN(currentSymbol.level)) {
+                      return (
+                        <div className="space-y-4 py-[40%]">
+                          <p className="text-secondary">Disabled</p>
+                          <p className="text-secondary text-xs lowercase font-light tracking-widest">
+                            Enter a level to enable this symbol
+                          </p>
+                        </div>
+                      );
+                    }
+                  } catch (e) {
+                    //console.log((e as Error).message);
+                  }
+                })()}
               </div>
             </div>
           </div>
 
           <div
-            className={`symbol-stats ${
+            className={`text-secondary text-center space-y-1.5 ${
               isNaN(currentSymbol.level) ||
               currentSymbol.level === (!swapped ? 20 : 11)
                 ? "hidden"
@@ -585,50 +614,32 @@ const Calculator = ({
                 //console.log((e as Error).message);
               }
             })()}
-          </div>
-
-          <div
-            className={`symbol-stats ${
-              isNaN(currentSymbol.level) ||
-              currentSymbol.level === (!swapped ? 20 : 11)
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            <p>
-              {(() => {
-                try {
-                  if (
-                    currentSymbol.level <= (!swapped ? 19 : 10) &&
-                    currentSymbol.level > 0
-                  ) {
-                    return (
-                      <span>{nextLevel.mesosRequired.toLocaleString()}</span>
-                    );
-                  }
-                } catch (e) {
-                  //console.log((e as Error).message);
+            {(() => {
+              try {
+                if (
+                  currentSymbol.level <= (!swapped ? 19 : 10) &&
+                  currentSymbol.level > 0
+                ) {
+                  return (
+                    <p className="pt-8">
+                      <span>{nextLevel.mesosRequired.toLocaleString()}</span>{" "}
+                      mesos required
+                      <div className="flex justify-center items-center space-x-1.5 pt-10">
+                        <p>
+                          <span>{!swapped ? "+100" : "+200"}</span> main stat
+                        </p>
+                        <HiChevronDoubleRight
+                          size={19}
+                          className="fill-accent hover:fill-hover transition-all"
+                        />
+                      </div>
+                    </p>
+                  );
                 }
-              })()}{" "}
-              mesos required
-            </p>
-          </div>
-
-          <div
-            className={`symbol-stats ${
-              isNaN(currentSymbol.level) ||
-              currentSymbol.level === (!swapped ? 20 : 11)
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            <p className="flex justify-center items-center space-x-1.5">
-              <span>+100</span> <p>main stat</p>
-              <HiChevronDoubleRight
-                size={19}
-                className="fill-accent hover:fill-hover transition-all"
-              />
-            </p>
+              } catch (e) {
+                //console.log((e as Error).message);
+              }
+            })()}
           </div>
         </div>
       </div>
