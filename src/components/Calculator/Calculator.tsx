@@ -7,7 +7,6 @@ import {
   useTransitionStyles,
 } from "@floating-ui/react";
 import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
-import { RiMoreFill } from "react-icons/ri";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 
@@ -38,8 +37,6 @@ interface Props {
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
   selectedSymbol: number;
-  arcanePower: [{ x: string; y: number }];
-  setArcanePower: Dispatch<SetStateAction<object>>;
   swapped: boolean;
 }
 
@@ -47,8 +44,6 @@ const Calculator = ({
   symbols,
   setSymbols,
   selectedSymbol,
-  arcanePower,
-  setArcanePower,
   swapped,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,12 +68,10 @@ const Calculator = ({
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
 
-  const symbolCount =
-    (currentSymbol.extra && currentSymbol.daily
-      ? currentSymbol.dailySymbols * 2
-      : currentSymbol.daily
-      ? currentSymbol.dailySymbols
-      : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
+  const questSymbols =
+  (currentSymbol.daily
+    ? currentSymbol.dailySymbols * (currentSymbol.extra ? 2 : 1)
+    : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
 
   useEffect(() => {
     const splicedSymbols = currentSymbol.data.slice(currentSymbol.level, 20);
@@ -99,7 +92,7 @@ const Calculator = ({
   }, [currentSymbol.level, currentSymbol.experience]);
 
   useEffect(() => {
-    const remaining = Math.ceil(currentSymbol.symbolsRemaining / symbolCount);
+    const remaining = Math.ceil(currentSymbol.symbolsRemaining / questSymbols);
 
     setSymbols(
       symbols.map((symbol) =>
@@ -118,7 +111,7 @@ const Calculator = ({
   useEffect(() => {
     const date = new Date();
     date.setDate(
-      date.getDate() + Math.ceil(currentSymbol.symbolsRemaining / symbolCount)
+      date.getDate() + Math.ceil(currentSymbol.symbolsRemaining / questSymbols)
     );
     const currentDay = String(date.getDate()).padStart(2, "0");
     const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
@@ -132,79 +125,6 @@ const Calculator = ({
       )
     );
   }, [currentSymbol.daysRemaining]);
-
-  const [arcaneForce, setArcaneForce] = useState(0);
-
-  useEffect(() => {
-    try {
-      if (
-        currentSymbol.experience < nextLevel.symbolsRequired &&
-        (currentSymbol.daily || currentSymbol.weekly)
-      ) {
-        const remaining = [
-          { x: 0, y: 0 },
-          { x: 0, y: 1 },
-          { x: 0, y: 2 },
-          { x: 0, y: 3 },
-          { x: 0, y: 4 },
-          { x: 0, y: 5 },
-          { x: 0, y: 6 },
-          { x: 0, y: 7 },
-          { x: 0, y: 8 },
-          { x: 0, y: 9 },
-          { x: 0, y: 10 },
-          { x: 0, y: 11 }, //God what is this spaghetti code please make my graph work
-          { x: 0, y: 12 },
-          { x: 0, y: 13 },
-          { x: 0, y: 14 },
-          { x: 0, y: 15 },
-          { x: 0, y: 16 },
-          { x: 0, y: 17 },
-          { x: 0, y: 18 },
-          { x: 0, y: 19 },
-          { x: 0, y: 20 },
-        ];
-        let lastDays = 0;
-        for (let i = 0; i < currentSymbol.data.length; i++) {
-          const date = new Date();
-          date.setDate(
-            date.getDate() +
-              Math.ceil(
-                (symbols[selectedSymbol].data[currentSymbol.level + i]
-                  .symbolsRequired -
-                  currentSymbol.experience) /
-                  symbolCount +
-                  lastDays
-              )
-          );
-          const currentDay = String(date.getDate()).padStart(2, "0");
-          const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-          const currentYear = date.getFullYear();
-          const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
-          lastDays =
-            Math.ceil(
-              (symbols[selectedSymbol].data[currentSymbol.level + i]
-                .symbolsRequired -
-                currentSymbol.experience) /
-                symbolCount
-            ) + lastDays;
-          console.log(
-            Math.ceil(
-              (symbols[selectedSymbol].data[currentSymbol.level + i]
-                .symbolsRequired -
-                currentSymbol.experience) /
-                symbolCount
-            )
-          );
-          remaining[i].x = currentDate;
-          setArcanePower(remaining);
-          setArcaneForce(arcaneForce + 10);
-        }
-      }
-    } catch (e) {
-      //console.log("Error");
-    }
-  }, [currentSymbol.level, currentSymbol.experience]);
 
   return (
     <section className="calculator">
@@ -544,12 +464,12 @@ const Calculator = ({
                         {Math.ceil(
                           (nextLevel.symbolsRequired -
                             currentSymbol.experience) /
-                            symbolCount
+                            questSymbols
                         )}
                       </span>{" "}
                       {Math.ceil(
                         (nextLevel.symbolsRequired - currentSymbol.experience) /
-                          symbolCount
+                          questSymbols
                       ) > 1
                         ? "days to go"
                         : "day to go"}

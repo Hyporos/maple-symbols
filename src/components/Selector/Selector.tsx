@@ -28,12 +28,6 @@ const Selector = ({
   const [selectedArcane, setSelectedArcane] = useState(0);
   const [selectedSacred, setSelectedSacred] = useState(6);
 
-  useEffect(() => {
-    !swapped
-      ? setSelectedSymbol(selectedArcane)
-      : setSelectedSymbol(selectedSacred);
-  }, [swapped]);
-
   return (
     <section className="selector">
       <div className="flex flex-col justify-center pt-12">
@@ -80,7 +74,12 @@ const Selector = ({
           <HiArrowsUpDown
             size={40}
             className={"icon-button"}
-            onClick={() => setSwapped(!swapped)}
+            onClick={() => {
+              setSwapped(!swapped);
+              !swapped
+                ? setSelectedSymbol(selectedSacred)
+                : setSelectedSymbol(selectedArcane);
+            }}
           />
         </div>
         <hr className="horizontal-divider" />

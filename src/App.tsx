@@ -320,14 +320,6 @@ function App() {
     },
   ]);
 
-  const date = new Date();
-  const currentDay = String(date.getDate()).padStart(2, "0");
-  const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-  const currentYear = date.getFullYear();
-  const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
-
-  const [arcanePower, setArcanePower] = useState([{ x: currentDate, y: 0 }]);
-
   return (
     <>
       <Disclaimer />
@@ -343,8 +335,6 @@ function App() {
         symbols={symbols}
         setSymbols={setSymbols}
         selectedSymbol={selectedSymbol}
-        arcanePower={arcanePower}
-        setArcanePower={setArcanePower}
         swapped={swapped}
       />
       <Tools
