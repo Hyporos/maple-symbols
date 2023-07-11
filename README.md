@@ -9,8 +9,6 @@
   </ul>
 </div>
 
-<h1 align="center">Features</h1>
-
 <h2 align="center">Calculator</h2>
 <p align="center">
   <img src="/public/main/calculator.png" alt="Calculator UI"/>
