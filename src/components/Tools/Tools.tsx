@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { HiArrowSmRight } from "react-icons/hi";
 import "./Tools.css";
 
@@ -23,16 +23,15 @@ interface Props {
 const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
-  const [selectorLevel, setSelectorLevel] = useState(NaN);
   const [selectorExperience, setSelectorExperience] = useState(NaN);
-
-  const [catalystLevel, setCatalystLevel] = useState(NaN);
   const [catalystExperience, setCatalystExperience] = useState(NaN);
 
   const currentSymbol = symbols[selectedSymbol];
 
-  useEffect(() => {
-    setCatalystLevel(currentSymbol.level);
+  const [selectorLevel, setSelectorLevel] = useState(currentSymbol.level);
+  const [catalystLevel, setCatalystLevel] = useState(NaN);
+
+  useMemo(() => {
     let accumulated = 0;
     symbols[selectedSymbol].data.forEach((symbol) => {
       try {
@@ -67,8 +66,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
     }
   }, [currentSymbol.level, currentSymbol.experience, currentSymbol.data]);
 
-  useEffect(() => {
-    setSelectorLevel(currentSymbol.level);
+  useMemo(() => {
     let count = 0;
     let accumulated = 0;
     symbols[selectedSymbol].data.forEach((symbol) => {

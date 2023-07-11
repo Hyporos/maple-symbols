@@ -32,9 +32,8 @@ interface Props {
 
 const Levels = ({ symbols, swapped }: Props) => {
   const [targetSymbol, setTargetSymbol] = useState(0);
-  const [selectedNone, setSelectedNone] = useState(true);
-
   const [targetLevel, setTargetLevel] = useState(NaN);
+  const [selectedNone, setSelectedNone] = useState(true);
 
   const currentSymbol = symbols[targetSymbol];
 
@@ -58,7 +57,7 @@ const Levels = ({ symbols, swapped }: Props) => {
     .format("YYYY-MM-DD")
     .toString();
 
-  useEffect(() => {
+  useEffect(() => { 
     setSelectedNone(true);
   }, [swapped]);
 
@@ -129,7 +128,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                       <p>
                         {symbol.level === 20 || isNaN(symbol.level)
                           ? "‎"
-                          : symbol.completion === "NaN-NaN-NaN"
+                          : symbol.completion === "Invalid Date"
                           ? "Indefinite"
                           : symbol.daysRemaining === 0
                           ? "Complete"

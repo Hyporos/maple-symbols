@@ -9,6 +9,7 @@ import {
 import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
+import dayjs from "dayjs";
 
 interface Props {
   symbols: [
@@ -46,6 +47,13 @@ const Calculator = ({
   selectedSymbol,
   swapped,
 }: Props) => {
+  /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const currentSymbol = symbols[selectedSymbol];
+  const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
+
+  /* ―――――――――――――――――――― Floating UI ―――――――――――――――――――― */
+
   const [isOpen, setIsOpen] = useState(false);
 
   const { refs, floatingStyles, context } = useFloating({
@@ -65,39 +73,43 @@ const Calculator = ({
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
-  const currentSymbol = symbols[selectedSymbol];
-  const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
+  /* ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
+  // Calculates Daily/Weekly Symbols
   const questSymbols =
-  (currentSymbol.daily
-    ? currentSymbol.dailySymbols * (currentSymbol.extra ? 2 : 1)
-    : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
+    (currentSymbol.daily
+      ? currentSymbol.dailySymbols * (currentSymbol.extra ? 2 : 1)
+      : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
 
-  useEffect(() => {
-    const splicedSymbols = currentSymbol.data.slice(currentSymbol.level, 20);
-
-    const remaining =
-      splicedSymbols.reduce(
+  // Calculates Remaining Symbols
+  const symbolsRemaining =
+    currentSymbol.data
+      .slice(currentSymbol.level, !swapped ? 20 : 11)
+      .reduce(
         (total, currentSymbol) => total + currentSymbol.symbolsRequired,
         0
       ) - currentSymbol.experience;
 
+  useEffect(() => {
     setSymbols(
       symbols.map((symbol) =>
         symbol.id === selectedSymbol + 1
-          ? { ...symbol, symbolsRemaining: remaining }
+          ? { ...symbol, symbolsRemaining: symbolsRemaining }
           : symbol
       )
     );
   }, [currentSymbol.level, currentSymbol.experience]);
 
-  useEffect(() => {
-    const remaining = Math.ceil(currentSymbol.symbolsRemaining / questSymbols);
+  // Calculates Remaining Days
+  const daysRemaining = Math.ceil(
+    currentSymbol.symbolsRemaining / questSymbols
+  );
 
+  useEffect(() => {
     setSymbols(
       symbols.map((symbol) =>
         symbol.id === selectedSymbol + 1
-          ? { ...symbol, daysRemaining: remaining }
+          ? { ...symbol, daysRemaining: daysRemaining }
           : symbol
       )
     );
@@ -108,23 +120,23 @@ const Calculator = ({
     currentSymbol.extra,
   ]);
 
+  // Calculates Completion Date
+  const completion = dayjs()
+    .add(daysRemaining, "day")
+    .format("YYYY-MM-DD")
+    .toString();
+
   useEffect(() => {
-    const date = new Date();
-    date.setDate(
-      date.getDate() + Math.ceil(currentSymbol.symbolsRemaining / questSymbols)
-    );
-    const currentDay = String(date.getDate()).padStart(2, "0");
-    const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-    const currentYear = date.getFullYear();
-    const currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
     setSymbols(
       symbols.map((symbol) =>
         symbol.id === selectedSymbol + 1
-          ? { ...symbol, completion: currentDate }
+          ? { ...symbol, completion: completion }
           : symbol
       )
     );
   }, [currentSymbol.daysRemaining]);
+
+  /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
     <section className="calculator">
