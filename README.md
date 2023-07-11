@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/Hyporos/maple-symbols/assets/59734777/cc85d4d2-0770-4b85-9c95-5240a47942f6" alt="Maple Symbols Logo"/>
+  <img src="/public/main/calculator.png" alt="Maple Symbols Logo"/>
 </p>
 
 <div id="user-content-toc">
@@ -10,7 +10,6 @@
 </div>
 
 <h1 align="center">Features</h1>
-<h3 align="center">HEAVY WIP THIS WILL LOOK UGLY RIGHT NOW</h3>
 
 
 <h2 align="center">Calculator</h2>
