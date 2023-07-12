@@ -1,6 +1,6 @@
-
+<div align="center">
   <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=shield" alt="Discord"/>
-
+</div>
 
 <div align="center">
   <img src="/public/main/logo.png" alt="Maple Symbols Logo"/>
