@@ -1,6 +1,6 @@
-<p align="center">
+<div align="center">
   <img src="/public/main/logo.png" alt="Maple Symbols Logo"/>
-</p>
+</div>
 
 <div id="user-content-toc">
   <ul>
@@ -11,23 +11,23 @@
 
 <h2 align="center">Calculator</h2>
 
-<p align="center">
+<div align="center">
   <img src="/public/main/calculator.png" alt="Calculator UI"/>
-</p>
+</div>
 
 <h2 align="center">Tools</h2>
 
-<p align="center">
+<div align="center">
   <img src="/public/main/tools.png" alt="Tools UI"/>
-</p>
+</div>
 
 <h2 align="center">Stats</h2>
 
-<p align="center">
+<div align="center">
   <img src="/public/main/levels.png" alt="Stats UI"/>
-</p>
+</div>
 
-<p align="center">
+<div align="center">
   <hr></hr>
-  <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=banner1" alt="Discord Banner"/>
-</p>
+  <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=shield" alt="Discord"/>
+</div>
