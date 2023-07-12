@@ -1,3 +1,7 @@
+
+  <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=shield" alt="Discord"/>
+
+
 <div align="center">
   <img src="/public/main/logo.png" alt="Maple Symbols Logo"/>
 </div>
@@ -27,7 +31,3 @@
   <img src="/public/main/levels.png" alt="Stats UI"/>
 </div>
 
-<div align="center">
-  <hr></hr>
-  <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=shield" alt="Discord"/>
-</div>
