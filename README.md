@@ -10,9 +10,11 @@
 </div>
 
 <h2 align="center">Calculator</h2>
+
 <p align="center">
   <img src="/public/main/calculator.png" alt="Calculator UI"/>
 </p>
+
 <h2 align="center">Tools</h2>
 
 <p align="center">
@@ -25,3 +27,7 @@
   <img src="/public/main/levels.png" alt="Stats UI"/>
 </p>
 
+<p align="center">
+  <hr></hr>
+  <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=banner1" alt="Discord Banner 1"/>
+</p>
