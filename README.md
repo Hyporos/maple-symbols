@@ -28,5 +28,10 @@
 </div>
 
 <div align="center">
+  <hr></hr>
+  <img src="https://img.shields.io/badge/update-savior-red" alt="Updated-Savior"/>
+  &nbsp; &nbsp;
   <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=shield" alt="Discord"/>
+  &nbsp; &nbsp;
+  <img src="https://img.shields.io/badge/version-1.0.0-b18bd0" alt="Version-1.0.0"/>
 </div>
