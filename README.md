@@ -29,5 +29,5 @@
 
 <p align="center">
   <hr></hr>
-  <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=banner1" alt="Discord Banner 1"/>
+  <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=banner1" alt="Discord Banner"/>
 </p>
