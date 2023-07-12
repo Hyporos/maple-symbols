@@ -67,6 +67,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   }, [currentSymbol.level, currentSymbol.experience, currentSymbol.data]);
 
   useMemo(() => {
+    setSelectorLevel(currentSymbol.level);
     let count = 0;
     let accumulated = 0;
     symbols[selectedSymbol].data.forEach((symbol) => {
