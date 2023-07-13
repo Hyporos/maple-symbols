@@ -4,7 +4,7 @@ function Header() {
   return (
     <section className="header">
       <div className="text-accent p-5">
-            <img src="/public/main/logo.png" width={350}></img>
+            <img src="/main/logo.png" width={350}></img>
       </div>
     </section>
   );

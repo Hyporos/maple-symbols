@@ -26,6 +26,7 @@ function App() {
       dailySymbols: 9,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      mondayCount: 0,
       completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
@@ -64,6 +65,7 @@ function App() {
       dailySymbols: 8,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      mondayCount: 0,
       completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
@@ -101,6 +103,7 @@ function App() {
       dailySymbols: 11,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      mondayCount: 0,
       completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
@@ -138,6 +141,7 @@ function App() {
       dailySymbols: 9,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      mondayCount: 0,
       completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
@@ -175,6 +179,7 @@ function App() {
       dailySymbols: 8,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      mondayCount: 0,
       completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
@@ -212,6 +217,7 @@ function App() {
       dailySymbols: 8,
       daysRemaining: 0,
       symbolsRemaining: 0,
+      mondayCount: 0,
       completion: "",
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },

@@ -180,11 +180,11 @@ const Levels = ({ symbols, swapped }: Props) => {
                         value={targetLevel}
                         className="level-input"
                         onChange={(e) => {
-                          if (Number(e.target.value) <= 20) {
+                          if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
                             setTargetLevel(parseInt(e.target.value));
                           }
-                          if (Number(e.target.value) >= 20) {
-                            setTargetLevel(20);
+                          if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
+                            setTargetLevel((!swapped ? 20 : 11));
                           }
                           if (Number(e.target.value) < 0) {
                             setTargetLevel(NaN);

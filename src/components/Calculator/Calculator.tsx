@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
   useFloating,
   offset,
@@ -27,6 +27,8 @@ interface Props {
       dailySymbols: number;
       daysRemaining: number;
       symbolsRemaining: number;
+      mondayCount: number;
+      completion: string;
       data: [
         {
           level: number;
@@ -73,15 +75,15 @@ const Calculator = ({
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
-  /* ―――――――――――――――――――― Calculations ――――――――――――――――――― */
+  /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
-  // Calculates Daily/Weekly Symbols
-  const questSymbols =
-    (currentSymbol.daily
-      ? currentSymbol.dailySymbols * (currentSymbol.extra ? 2 : 1)
-      : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
+  // Calculate Daily/Weekly Symbols
+  const dailySymbols = // rename to daily symbols
+    currentSymbol.daily
+      ? currentSymbol.dailySymbols * (currentSymbol.extra ? (currentSymbol.type === 'arcane' ? 2 : 1.5) : 1)
+      : 0;
 
-  // Calculates Remaining Symbols
+  // Calculate Remaining Symbols
   const symbolsRemaining =
     currentSymbol.data
       .slice(currentSymbol.level, !swapped ? 20 : 11)
@@ -90,7 +92,7 @@ const Calculator = ({
         0
       ) - currentSymbol.experience;
 
-  useEffect(() => {
+  useMemo(() => {
     setSymbols(
       symbols.map((symbol) =>
         symbol.id === selectedSymbol + 1
@@ -100,41 +102,67 @@ const Calculator = ({
     );
   }, [currentSymbol.level, currentSymbol.experience]);
 
-  // Calculates Remaining Days
-  const daysRemaining = Math.ceil(
-    currentSymbol.symbolsRemaining / questSymbols
-  );
+  /** 
+  * | Calculate Remaining Mondays
+  * * ―――――――――――――――――――――――――――
+  * * Count each Monday between the Monday of this week and the expected date of the next level
+  * * If the weekly has not been completed this week, then count this weeks Monday as well
+  * TODO: Make it only calculate weekly is Weekly box is selected
+  */
 
-  useEffect(() => {
+  useMemo(() => {
+    try {
+    let days = 0;
+    let count = 0;
+    let resets = 0;
+    let mondayReached = false;
+      for (let i = 0; i < 10000; i++) { // TODO: Adjust the i < 10000
+        if ((days * dailySymbols) + (currentSymbol.weekly ? resets * 45 : 0) < nextLevel.symbolsRequired - currentSymbol.experience) {
+          if (mondayReached === false && dayjs().add(count, 'day').isBefore(dayjs().day(8))) {
+            count++;
+            if (dayjs().add(count, 'day').isSame(dayjs().day(8))) {
+              //resets++; // * Should the 'Weekly Done' toggle be included?
+              mondayReached = true;
+            }
+          } else if ((days - count) % 7 === 0) {
+            resets++;
+          }
+          days++;
+        }
+      }
+    //// console.log("Current Symbol: ", currentSymbol.name);
+    //// console.log("Dailies Completed: ", days);
+    //// console.log("Weeklies Completed: ", resets);
+    //// console.log("Symbols Required: ", nextLevel.symbolsRequired - currentSymbol.experience);
+    //// console.log("Symbols Obtained: ", (days * dailySymbols) + (currentSymbol.weekly ? resets * 45 : 0))
+
     setSymbols(
       symbols.map((symbol) =>
         symbol.id === selectedSymbol + 1
-          ? { ...symbol, daysRemaining: daysRemaining }
+          ? { ...symbol, daysRemaining: days }
           : symbol
       )
     );
-  }, [
-    currentSymbol.symbolsRemaining,
-    currentSymbol.daily,
-    currentSymbol.weekly,
-    currentSymbol.extra,
-  ]);
+  } catch(e) {
+    //console.log(e as Error);
+} 
+  }, [currentSymbol.completion, currentSymbol.daily, currentSymbol.extra, currentSymbol.weekly, currentSymbol.name, currentSymbol.level, currentSymbol.experience]);
 
-  // Calculates Completion Date
-  const completion = dayjs()
-    .add(daysRemaining, "day")
-    .format("YYYY-MM-DD")
-    .toString();
+// Calculate Completion Date
+const completion = dayjs()
+.add(currentSymbol.daysRemaining, "day")
+.format("YYYY-MM-DD")
+.toString();
 
-  useEffect(() => {
-    setSymbols(
-      symbols.map((symbol) =>
-        symbol.id === selectedSymbol + 1
-          ? { ...symbol, completion: completion }
-          : symbol
-      )
-    );
-  }, [currentSymbol.daysRemaining]);
+useMemo(() => {
+setSymbols(
+  symbols.map((symbol) =>
+    symbol.id === selectedSymbol + 1
+      ? { ...symbol, completion: completion }
+      : symbol
+  )
+);
+}, [currentSymbol.daysRemaining]);
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
@@ -401,7 +429,7 @@ const Calculator = ({
               >
                 {(() => {
                   try {
-                    //BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
+                    //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
                     if (
                       currentSymbol.type === (!swapped ? "arcane" : "sacred") ||
                       (currentSymbol.level != 20 &&
@@ -432,7 +460,7 @@ const Calculator = ({
                       currentSymbol.level === (!swapped ? 20 : 11) &&
                       currentSymbol.type === (!swapped ? "arcane" : "sacred")
                     ) {
-                      //BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
+                      //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
                       return (
                         <div className="py-[72.5%]">
                           <p className="text-accent">Max Level</p>
@@ -473,16 +501,11 @@ const Calculator = ({
                   return (
                     <p>
                       <span>
-                        {Math.ceil(
-                          (nextLevel.symbolsRequired -
-                            currentSymbol.experience) /
-                            questSymbols
-                        )}
+                        {currentSymbol.daysRemaining > 0
+                          ? currentSymbol.daysRemaining
+                          : 0}
                       </span>{" "}
-                      {Math.ceil(
-                        (nextLevel.symbolsRequired - currentSymbol.experience) /
-                          questSymbols
-                      ) > 1
+                      {currentSymbol.daysRemaining > 1
                         ? "days to go"
                         : "day to go"}
                     </p>

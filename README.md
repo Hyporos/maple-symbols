@@ -10,7 +10,7 @@
 </div>
 
 <div align="center">
-  <img src="/public/main/logo.png" alt="Maple Symbols Logo"/>
+  <img src="/main/logo.png" alt="Maple Symbols Logo"/>
 </div>
 
 <div id="user-content-toc">
@@ -27,17 +27,17 @@
 <h2 align="center">Calculator</h2>
 
 <div align="center">
-  <img src="/public/main/calculator.png" alt="Calculator UI"/>
+  <img src="/main/calculator.png" alt="Calculator UI"/>
 </div>
 
 <h2 align="center">Tools</h2>
 
 <div align="center">
-  <img src="/public/main/tools.png" alt="Tools UI"/>
+  <img src="/main/tools.png" alt="Tools UI"/>
 </div>
 
-<h2 align="center">Stats</h2>
+<h2 align="center">Overview</h2>
 
 <div align="center">
-  <img src="/public/main/levels.png" alt="Stats UI"/>
+  <img src="/main/levels.png" alt="Overview UI"/>
 </div>
