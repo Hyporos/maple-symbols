@@ -167,7 +167,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                       <p>
                         {symbol.level === 20 || isNaN(symbol.level)
                           ? "‎"
-                          : symbol.completion === "Invalid Date"
+                          : symbol.completion === "Invalid Date" || (!symbol.daily && !symbol.weekly) || isNaN(symbol.experience)
                           ? "Indefinite"
                           : symbol.daysRemaining === 0
                           ? "Complete"
@@ -177,7 +177,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         {symbol.level === 20 || isNaN(symbol.level)
                           ? "‎"
                           : String(symbol.daysRemaining) === "Infinity" ||
-                            isNaN(symbol.daysRemaining)
+                            isNaN(symbol.daysRemaining) || (!symbol.daily && !symbol.weekly) || isNaN(symbol.experience)
                           ? "? days"
                           : symbol.daysRemaining === 0
                           ? "Ready for upgrade"

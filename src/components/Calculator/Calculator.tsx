@@ -7,6 +7,7 @@ import {
   useTransitionStyles,
 } from "@floating-ui/react";
 import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
+import { produce } from "immer";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 import dayjs from "dayjs";
@@ -53,6 +54,7 @@ const Calculator = ({
 
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
+  const [symbolsToNext, setSymbolsToNext] = useState(NaN);
 
   /* ―――――――――――――――――――― Floating UI ―――――――――――――――――――― */
 
@@ -78,14 +80,17 @@ const Calculator = ({
   /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
   // Calculate Daily/Weekly Symbols
-  const dailySymbols =
-    currentSymbol.daily
-      ? currentSymbol.dailySymbols *
-        (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
-      : 0;
+  const dailySymbols = currentSymbol.daily
+    ? currentSymbol.dailySymbols *
+      (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
+    : 0;
 
-  // Calculate Remaining Symbols // ? Do I even need this?
-  const symbolsRemaining =
+  /*
+   | Calculate Total Symbols Remaining
+   ――――――――――――――――――――――――――――――――
+   */
+
+  const remainingSymbols =
     currentSymbol.data
       .slice(currentSymbol.level, !swapped ? 20 : 11)
       .reduce(
@@ -93,20 +98,19 @@ const Calculator = ({
         0
       ) - currentSymbol.experience;
 
-  useMemo(() => {
+  useEffect(() => {
     setSymbols(
       symbols.map((symbol) =>
         symbol.id === selectedSymbol + 1
-          ? { ...symbol, symbolsRemaining: symbolsRemaining }
+          ? { ...symbol, symbolsRemaining: remainingSymbols }
           : symbol
       )
     );
-  }, [currentSymbol.level, currentSymbol.experience]);
+  }, [currentSymbol.completion, currentSymbol.level, currentSymbol.experience]);
 
-  /**
-   * | Calculate Remaining Mondays
-   * ―――――――――――――――――――――――――――
-   * * 
+  /*
+   | Calculate Remaining Days
+   ―――――――――――――――――――――――――――
    */
 
   useMemo(() => {
@@ -136,16 +140,39 @@ const Calculator = ({
           days++;
         }
       }
-      //// console.log("Current Symbol: ", currentSymbol.name);
-      //// console.log("Dailies Completed: ", days);
-      //// console.log("Weeklies Completed: ", resets);
-      //// console.log("Symbols Required: ", nextLevel.symbolsRequired - currentSymbol.experience);
-      //// console.log("Symbols Obtained: ", (days * dailySymbols) + (currentSymbol.weekly ? resets * 45 : 0))
+
+      setSymbolsToNext(days);
+
+      let days2 = 0;
+      let count2 = 0; //TODO: TONS OF HALF ASS DUPLICTED GARABGE CODE PLEASE FIX.
+      let resets2 = 0;
+      let mondayReached2 = false;
+      for (let i = 0; i < 1000; i++) {
+        if (
+          days2 * dailySymbols + (currentSymbol.weekly ? resets2 * 45 : 0) <
+          remainingSymbols
+        ) {
+          if (
+            // ? Should this be a while loop? while monday false
+            mondayReached2 === false &&
+            dayjs().add(count2, "day").isBefore(dayjs().day(8))
+          ) {
+            count2++;
+            if (dayjs().add(count2, "day").isSame(dayjs().day(8))) {
+              //resets++; // ? Should the 'Weekly Done' toggle be included?
+              mondayReached2 = true;
+            }
+          } else if ((days2 - count2) % 7 === 0) {
+            resets2++;
+          }
+          days2++;
+        }
+      }
 
       setSymbols(
         symbols.map((symbol) =>
           symbol.id === selectedSymbol + 1
-            ? { ...symbol, daysRemaining: days }
+            ? { ...symbol, daysRemaining: days2 }
             : symbol
         )
       );
@@ -515,11 +542,11 @@ const Calculator = ({
                   return (
                     <p>
                       <span>
-                        {currentSymbol.daysRemaining > 0
-                          ? currentSymbol.daysRemaining
+                        {symbolsToNext > 0
+                          ? symbolsToNext
                           : 0}
                       </span>{" "}
-                      {currentSymbol.daysRemaining > 1
+                      {symbolsToNext > 1
                         ? "days to go"
                         : "day to go"}
                     </p>
