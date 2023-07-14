@@ -78,12 +78,13 @@ const Calculator = ({
   /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
   // Calculate Daily/Weekly Symbols
-  const dailySymbols = // rename to daily symbols
+  const dailySymbols =
     currentSymbol.daily
-      ? currentSymbol.dailySymbols * (currentSymbol.extra ? (currentSymbol.type === 'arcane' ? 2 : 1.5) : 1)
+      ? currentSymbol.dailySymbols *
+        (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
       : 0;
 
-  // Calculate Remaining Symbols
+  // Calculate Remaining Symbols // ? Do I even need this?
   const symbolsRemaining =
     currentSymbol.data
       .slice(currentSymbol.level, !swapped ? 20 : 11)
@@ -102,26 +103,31 @@ const Calculator = ({
     );
   }, [currentSymbol.level, currentSymbol.experience]);
 
-  /** 
-  * | Calculate Remaining Mondays
-  * * ―――――――――――――――――――――――――――
-  * * Count each Monday between the Monday of this week and the expected date of the next level
-  * * If the weekly has not been completed this week, then count this weeks Monday as well
-  * TODO: Make it only calculate weekly is Weekly box is selected
-  */
+  /**
+   * | Calculate Remaining Mondays
+   * ―――――――――――――――――――――――――――
+   * * 
+   */
 
   useMemo(() => {
     try {
-    let days = 0;
-    let count = 0;
-    let resets = 0;
-    let mondayReached = false;
-      for (let i = 0; i < 10000; i++) { // TODO: Adjust the i < 10000
-        if ((days * dailySymbols) + (currentSymbol.weekly ? resets * 45 : 0) < nextLevel.symbolsRequired - currentSymbol.experience) {
-          if (mondayReached === false && dayjs().add(count, 'day').isBefore(dayjs().day(8))) {
+      let days = 0;
+      let count = 0;
+      let resets = 0;
+      let mondayReached = false;
+      for (let i = 0; i < 1000; i++) {
+        if (
+          days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
+          nextLevel.symbolsRequired - currentSymbol.experience
+        ) {
+          if (
+            // ? Should this be a while loop? while monday false
+            mondayReached === false &&
+            dayjs().add(count, "day").isBefore(dayjs().day(8))
+          ) {
             count++;
-            if (dayjs().add(count, 'day').isSame(dayjs().day(8))) {
-              //resets++; // * Should the 'Weekly Done' toggle be included?
+            if (dayjs().add(count, "day").isSame(dayjs().day(8))) {
+              //resets++; // ? Should the 'Weekly Done' toggle be included?
               mondayReached = true;
             }
           } else if ((days - count) % 7 === 0) {
@@ -130,39 +136,47 @@ const Calculator = ({
           days++;
         }
       }
-    //// console.log("Current Symbol: ", currentSymbol.name);
-    //// console.log("Dailies Completed: ", days);
-    //// console.log("Weeklies Completed: ", resets);
-    //// console.log("Symbols Required: ", nextLevel.symbolsRequired - currentSymbol.experience);
-    //// console.log("Symbols Obtained: ", (days * dailySymbols) + (currentSymbol.weekly ? resets * 45 : 0))
+      //// console.log("Current Symbol: ", currentSymbol.name);
+      //// console.log("Dailies Completed: ", days);
+      //// console.log("Weeklies Completed: ", resets);
+      //// console.log("Symbols Required: ", nextLevel.symbolsRequired - currentSymbol.experience);
+      //// console.log("Symbols Obtained: ", (days * dailySymbols) + (currentSymbol.weekly ? resets * 45 : 0))
 
+      setSymbols(
+        symbols.map((symbol) =>
+          symbol.id === selectedSymbol + 1
+            ? { ...symbol, daysRemaining: days }
+            : symbol
+        )
+      );
+    } catch (e) {
+      //console.log(e as Error);
+    }
+  }, [
+    currentSymbol.completion,
+    currentSymbol.daily,
+    currentSymbol.extra,
+    currentSymbol.weekly,
+    currentSymbol.name,
+    currentSymbol.level,
+    currentSymbol.experience,
+  ]);
+
+  // Calculate Completion Date
+  const completion = dayjs()
+    .add(currentSymbol.daysRemaining, "day")
+    .format("YYYY-MM-DD")
+    .toString();
+
+  useMemo(() => {
     setSymbols(
       symbols.map((symbol) =>
         symbol.id === selectedSymbol + 1
-          ? { ...symbol, daysRemaining: days }
+          ? { ...symbol, completion: completion }
           : symbol
       )
     );
-  } catch(e) {
-    //console.log(e as Error);
-} 
-  }, [currentSymbol.completion, currentSymbol.daily, currentSymbol.extra, currentSymbol.weekly, currentSymbol.name, currentSymbol.level, currentSymbol.experience]);
-
-// Calculate Completion Date
-const completion = dayjs()
-.add(currentSymbol.daysRemaining, "day")
-.format("YYYY-MM-DD")
-.toString();
-
-useMemo(() => {
-setSymbols(
-  symbols.map((symbol) =>
-    symbol.id === selectedSymbol + 1
-      ? { ...symbol, completion: completion }
-      : symbol
-  )
-);
-}, [currentSymbol.daysRemaining]);
+  }, [currentSymbol.daysRemaining]);
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 

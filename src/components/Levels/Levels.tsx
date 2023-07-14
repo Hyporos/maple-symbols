@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import dayjs from "dayjs";
 import "./Levels.css";
@@ -33,14 +33,15 @@ interface Props {
 const Levels = ({ symbols, swapped }: Props) => {
   const [targetSymbol, setTargetSymbol] = useState(0);
   const [targetLevel, setTargetLevel] = useState(NaN);
+  const [targetDays, setTargetDays] = useState(NaN);
   const [selectedNone, setSelectedNone] = useState(true);
 
   const currentSymbol = symbols[targetSymbol];
 
-  const targetQuestSymbols =
-  (currentSymbol.daily
-    ? currentSymbol.dailySymbols * (currentSymbol.extra ? 2 : 1)
-    : 0) + (currentSymbol.weekly ? 45 / 7 : 0);
+  const dailySymbols = currentSymbol.daily
+    ? currentSymbol.dailySymbols *
+      (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
+    : 0;
 
   const targetSymbols =
     currentSymbol.data
@@ -50,14 +51,52 @@ const Levels = ({ symbols, swapped }: Props) => {
         0
       ) - currentSymbol.experience;
 
-  const targetDays = Math.ceil(targetSymbols / targetQuestSymbols);
+  useMemo(() => {
+    try {
+      let days = 0;
+      let count = 0;
+      let resets = 0;
+      let mondayReached = false;
+      for (let i = 0; i < 1000; i++) {
+        if (
+          days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
+          targetSymbols
+        ) {
+          if (
+            // ? Should this be a while loop? while monday false
+            mondayReached === false &&
+            dayjs().add(count, "day").isBefore(dayjs().day(8))
+          ) {
+            count++;
+            if (dayjs().add(count, "day").isSame(dayjs().day(8))) {
+              //resets++; // ? Should the 'Weekly Done' toggle be included?
+              mondayReached = true;
+            }
+          } else if ((days - count) % 7 === 0) {
+            resets++;
+          }
+          days++;
+        }
+      }
+      setTargetDays(days);
+    } catch (e) {
+      ////console.log(e as Error);
+    }
+  }, [
+    targetLevel,
+    currentSymbol.level,
+    currentSymbol.experience,
+    currentSymbol.weekly,
+    currentSymbol.daily,
+    currentSymbol.extra,
+  ]);
 
   const targetDate = dayjs()
     .add(targetDays, "day")
     .format("YYYY-MM-DD")
     .toString();
 
-  useEffect(() => { 
+  useEffect(() => {
     setSelectedNone(true);
   }, [swapped]);
 
@@ -184,7 +223,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                             setTargetLevel(parseInt(e.target.value));
                           }
                           if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
-                            setTargetLevel((!swapped ? 20 : 11));
+                            setTargetLevel(!swapped ? 20 : 11);
                           }
                           if (Number(e.target.value) < 0) {
                             setTargetLevel(NaN);

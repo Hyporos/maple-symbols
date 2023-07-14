@@ -25,6 +25,7 @@ function App() {
       extra: false,
       dailySymbols: 9,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
@@ -64,6 +65,7 @@ function App() {
       extra: false,
       dailySymbols: 8,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
@@ -102,6 +104,7 @@ function App() {
       weekly: false,
       dailySymbols: 11,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
@@ -140,6 +143,7 @@ function App() {
       weekly: false,
       dailySymbols: 9,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
@@ -178,6 +182,7 @@ function App() {
       weekly: false,
       dailySymbols: 8,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
@@ -216,6 +221,7 @@ function App() {
       weekly: false,
       dailySymbols: 8,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
@@ -254,6 +260,7 @@ function App() {
       extra: false,
       dailySymbols: 10,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       completion: "",
       data: [
@@ -281,6 +288,7 @@ function App() {
       daily: false,
       dailySymbols: 10,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       completion: "",
       data: [
@@ -308,6 +316,7 @@ function App() {
       daily: false,
       dailySymbols: 5,
       daysRemaining: 0,
+      totalDaysRemaining: 0,
       symbolsRemaining: 0,
       completion: "",
       data: [
@@ -349,7 +358,12 @@ function App() {
         selectedSymbol={selectedSymbol}
         swapped={swapped}
       />
-      <Levels symbols={symbols} swapped={swapped} />
+      <Levels
+        symbols={symbols}
+        setSymbols={setSymbols}
+        selectedSymbol={selectedSymbol}
+        swapped={swapped}
+      />
       {/*<Graph symbols={symbols} arcanePower={arcanePower} swapped={swapped}/>*/}
       <Footer />
     </>
