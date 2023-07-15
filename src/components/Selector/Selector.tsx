@@ -1,5 +1,6 @@
-import { HiArrowsUpDown, HiBars3 } from "react-icons/hi2";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
+import { HiArrowsUpDown, HiBars3 } from "react-icons/hi2";
 import "./Selector.css";
 
 interface Props {
@@ -32,11 +33,18 @@ const Selector = ({
     <section className="selector">
       <div className="flex flex-col justify-center pt-12">
         <div className="flex justify-between items-center px-8">
-          <HiBars3
-            size={40}
-            className={"icon-button opacity-25 cursor-default hover:fill-basic"}
-            onClick={() => console.log("Settings Clicked")}
-          />
+          <Tooltip placement="left">
+            <TooltipTrigger>
+              <HiBars3
+                size={40}
+                className={
+                  "icon-button opacity-25 cursor-default hover:fill-basic"
+                }
+                onClick={() => console.log("Information Clicked")}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="tooltip"><span className='text-[#e83333]'>[Unavailable]</span><br></br>The information & settings section <br></br> will be added in a future update</TooltipContent>
+          </Tooltip>
           <div className="flex space-x-10">
             {symbols.map(
               (symbol, index) =>

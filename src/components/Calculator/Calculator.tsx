@@ -1,16 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import {
-  useFloating,
-  offset,
-  useHover,
-  useInteractions,
-  useTransitionStyles,
-} from "@floating-ui/react";
 import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
 import { produce } from "immer";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 import dayjs from "dayjs";
+
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 
 interface Props {
   symbols: [
@@ -20,6 +15,9 @@ interface Props {
       alt: string;
       img: string;
       type: string;
+      dailyName: string;
+      weeklyName: string;
+      extraName: string;
       level: number;
       experience: number;
       daily: boolean;
@@ -55,27 +53,6 @@ const Calculator = ({
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
   const [symbolsToNext, setSymbolsToNext] = useState(NaN);
-
-  /* ―――――――――――――――――――― Floating UI ―――――――――――――――――――― */
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
-    middleware: [offset(10)],
-  });
-
-  const hover = useHover(context, {
-    delay: {
-      open: 500,
-      close: 250,
-    },
-  });
-
-  const { isMounted, styles } = useTransitionStyles(context);
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
   /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
@@ -340,92 +317,94 @@ const Calculator = ({
           </div>
 
           <div className="flex space-x-2">
-            <button
-              ref={refs.setReference}
-              {...getReferenceProps()}
-              className={`daily-box ${currentSymbol.daily && "border-checked"}`}
-              onClick={() =>
-                setSymbols(
-                  symbols.map((symbol) =>
-                    symbol.id === selectedSymbol + 1
-                      ? {
-                          ...symbol,
-                          daily: !currentSymbol.daily,
-                        }
-                      : symbol
-                  )
-                )
-              }
-            >
-              Daily
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <button
+                  className={`daily-box ${
+                    currentSymbol.daily && "border-checked"
+                  }`}
+                  onClick={() =>
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? {
+                              ...symbol,
+                              daily: !currentSymbol.daily,
+                            }
+                          : symbol
+                      )
+                    )
+                  }
+                >
+                  Daily
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                <span>[Daily Quest]</span>
+                <br></br> {currentSymbol.dailyName}
+              </TooltipContent>
+            </Tooltip>
 
-            {isMounted && (
-              <div
-                className="floating"
-                ref={refs.setFloating}
-                style={{ ...floatingStyles, ...styles }}
-                {...getFloatingProps()}
-              >
-                <span>[Daily Quest]</span> <br></br> Vanishing Journey Research
-              </div>
-            )}
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <button
+                  className={`daily-box ${
+                    currentSymbol.weekly && "border-checked"
+                  } ${currentSymbol.type === "arcane" ? "block" : "hidden"}`}
+                  onClick={() =>
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? {
+                              ...symbol,
+                              weekly: !currentSymbol.weekly,
+                            }
+                          : symbol
+                      )
+                    )
+                  }
+                >
+                  Weekly
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                <span>[Weekly Quest]</span>
+                <br></br> {currentSymbol.weeklyName}
+              </TooltipContent>
+            </Tooltip>
 
-            {isMounted && (
-              <div
-                className="floating"
-                ref={refs.setFloating}
-                style={{ ...floatingStyles, ...styles }}
-                {...getFloatingProps()}
-              >
-                <span>[Daily Quest]</span> <br></br> Vanishing Journey Research
-              </div>
-            )}
-
-            <button
-              ref={refs.setReference}
-              {...getReferenceProps()}
-              className={`daily-box ${
-                currentSymbol.weekly && "border-checked"
-              } ${currentSymbol.type === "arcane" ? "block" : "hidden"}`}
-              onClick={() =>
-                setSymbols(
-                  symbols.map((symbol) =>
-                    symbol.id === selectedSymbol + 1
-                      ? {
-                          ...symbol,
-                          weekly: !currentSymbol.weekly,
-                        }
-                      : symbol
-                  )
-                )
-              }
-            >
-              Weekly
-            </button>
-
-            <button
-              className={`daily-box ${
-                currentSymbol.extra && "border-checked"
-              } ${
-                typeof currentSymbol.extra !== "undefined" ? "block" : "hidden"
-              }
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <button
+                  className={`daily-box ${
+                    currentSymbol.extra && "border-checked"
+                  } ${
+                    typeof currentSymbol.extra !== "undefined"
+                      ? "block"
+                      : "hidden"
+                  }
                 }`}
-              onClick={() =>
-                setSymbols(
-                  symbols.map((symbol) =>
-                    symbol.id === selectedSymbol + 1
-                      ? {
-                          ...symbol,
-                          extra: !currentSymbol.extra,
-                        }
-                      : symbol
-                  )
-                )
-              }
-            >
-              Extra
-            </button>
+                  onClick={() =>
+                    setSymbols(
+                      symbols.map((symbol) =>
+                        symbol.id === selectedSymbol + 1
+                          ? {
+                              ...symbol,
+                              extra: !currentSymbol.extra,
+                            }
+                          : symbol
+                      )
+                    )
+                  }
+                >
+                  Extra
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                <span>[Unlocked]</span>
+                <br></br> {currentSymbol.extraName}
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <div
@@ -541,14 +520,8 @@ const Calculator = ({
                 ) {
                   return (
                     <p>
-                      <span>
-                        {symbolsToNext > 0
-                          ? symbolsToNext
-                          : 0}
-                      </span>{" "}
-                      {symbolsToNext > 1
-                        ? "days to go"
-                        : "day to go"}
+                      <span>{symbolsToNext > 0 ? symbolsToNext : 0}</span>{" "}
+                      {symbolsToNext > 1 ? "days to go" : "day to go"}
                     </p>
                   );
                 } else if (
@@ -624,10 +597,21 @@ const Calculator = ({
                         <p>
                           <span>{!swapped ? "+100" : "+200"}</span> main stat
                         </p>
-                        <HiChevronDoubleRight
-                          size={19}
-                          className="fill-accent hover:fill-hover transition-all"
-                        />
+                        <Tooltip placement={"right"}>
+                          <TooltipTrigger>
+                            {" "}
+                            <HiChevronDoubleRight
+                              size={19}
+                              className="fill-accent hover:fill-hover transition-all"
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent className="tooltip">
+                            <span>{!swapped ? "+2,100" : "4,200"} </span> HP
+                            (Demon Avenger)<br></br>
+                            <span>{!swapped ? "+48" : "96"}</span> All Stat
+                            (Xenon)
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </p>
                   );

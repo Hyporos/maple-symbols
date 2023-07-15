@@ -15,5 +15,5 @@
 }
 
 .daily-box {
-    @apply bg-secondary hover:bg-hover text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent select-none transition-[background-color] w-full py-1.5
+    @apply bg-secondary hover:bg-hover text-secondary hover:text-primary tracking-wider border-b border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full 
 }
