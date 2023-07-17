@@ -182,11 +182,38 @@ const Calculator = ({
     );
   }, [currentSymbol.daysRemaining]);
 
+  const symbolData = JSON.parse(localStorage.getItem("symbolData") || "[]");
+
+  useEffect(() => {
+    localStorage.setItem("symbolData", JSON.stringify(symbols));
+  }, [
+    currentSymbol.level,
+    currentSymbol.experience,
+    currentSymbol.daily,
+    currentSymbol.weekly,
+    currentSymbol.extra,
+    currentSymbol.daysRemaining,
+    currentSymbol.symbolsRemaining,
+    currentSymbol.completion,
+  ]);
+
+  // Load data only if data exists. When loading data that does not exist, the app needs an extra refresh to load properly.
+  useEffect(() => {
+    try {
+      for (let i = 0; i < symbols.length; i++) {
+        if (symbolData[i].level !== null || symbolData[i].experience !== null)
+          setSymbols(symbolData);
+      }
+    } catch (e) {
+      console.log("Data Not Detected");
+    }
+  }, []);
+
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
     <section className="calculator">
-      <div className="flex py-16 bg-gradient-to-t from-card-tool to-card-grad rounded-t-lg h-[350px]">
+      <div className="flex py-16 bg-gradient-to-t from-card-tool to-card-grad rounded-t-lg flex-col tablet:flex-row w-[350px] space-y-8 tablet:space-y-0 tablet:w-[700px] h-[700px] tablet:h-[350px]">
         <div className="px-10 space-y-6 w-[350px]">
           <div className="flex justify-center items-center space-x-4 pb-6">
             <img src={currentSymbol.img} alt={currentSymbol.alt} />
@@ -199,7 +226,7 @@ const Calculator = ({
             <input
               type="number"
               placeholder="Level"
-              value={currentSymbol.level}
+              value={currentSymbol.level === null ? "NaN" : currentSymbol.level}
               className="symbol-input"
               onWheel={(e) => e.currentTarget.blur()}
               onChange={(e) => {
@@ -249,11 +276,18 @@ const Calculator = ({
             <input
               type="number"
               placeholder="Experience"
-              value={currentSymbol.experience}
+              value={
+                currentSymbol.experience === null
+                  ? "NaN"
+                  : currentSymbol.experience
+              }
               className="symbol-input"
               onWheel={(e) => e.currentTarget.blur()}
               onChange={(e) => {
-                if (isNaN(currentSymbol.level)) {
+                if (
+                  isNaN(currentSymbol.level) ||
+                  currentSymbol.level === null
+                ) {
                   setSymbols(
                     symbols.map((symbol) =>
                       symbol.id === selectedSymbol + 1
@@ -347,7 +381,7 @@ const Calculator = ({
 
             <Tooltip>
               <TooltipTrigger asChild={true}>
-                <button
+                <button //TODO: maybe make the tooltips BOTTOM cause it covers the input fields
                   className={`daily-box ${
                     currentSymbol.weekly && "border-checked"
                   } ${currentSymbol.type === "arcane" ? "block" : "hidden"}`}
@@ -442,6 +476,7 @@ const Calculator = ({
               <div
                 className={`text-secondary text-center space-y-1.5 ${
                   isNaN(currentSymbol.level) ||
+                  currentSymbol.level === null ||
                   currentSymbol.level === (!swapped ? 20 : 11)
                     ? "hidden"
                     : "block"
@@ -486,7 +521,10 @@ const Calculator = ({
                           <p className="text-accent">Max Level</p>
                         </div>
                       );
-                    } else if (isNaN(currentSymbol.level)) {
+                    } else if (
+                      isNaN(currentSymbol.level) ||
+                      currentSymbol.level === null
+                    ) {
                       return (
                         <div className="space-y-4 py-[40%]">
                           <p className="text-secondary">Disabled</p>
@@ -507,6 +545,7 @@ const Calculator = ({
           <div
             className={`text-secondary text-center space-y-1.5 ${
               isNaN(currentSymbol.level) ||
+              currentSymbol.level === null ||
               currentSymbol.level === (!swapped ? 20 : 11)
                 ? "hidden"
                 : "block"
@@ -516,7 +555,8 @@ const Calculator = ({
               try {
                 if (
                   currentSymbol.experience < nextLevel.symbolsRequired &&
-                  (currentSymbol.daily || currentSymbol.weekly)
+                  (currentSymbol.daily || currentSymbol.weekly) &&
+                  currentSymbol.experience !== null
                 ) {
                   return (
                     <p>
@@ -533,7 +573,10 @@ const Calculator = ({
                       <span>Ready</span> for upgrade
                     </p>
                   );
-                } else if (isNaN(currentSymbol.experience)) {
+                } else if (
+                  isNaN(currentSymbol.experience) ||
+                  currentSymbol.experience === null
+                ) {
                   return (
                     <p>
                       <span>Experience</span> is not set
@@ -552,7 +595,10 @@ const Calculator = ({
             })()}
             {(() => {
               try {
-                if (currentSymbol.experience < nextLevel.symbolsRequired) {
+                if (
+                  currentSymbol.experience < nextLevel.symbolsRequired &&
+                  currentSymbol.experience !== null
+                ) {
                   return (
                     <p>
                       <span>
@@ -598,11 +644,11 @@ const Calculator = ({
                           <span>{!swapped ? "+100" : "+200"}</span> main stat
                         </p>
                         <Tooltip placement={"right"}>
-                          <TooltipTrigger>
+                          <TooltipTrigger asChild={true}>
                             {" "}
                             <HiChevronDoubleRight
-                              size={19}
-                              className="fill-accent hover:fill-hover transition-all"
+                              size={20}
+                              className="fill-accent hover:fill-hover cursor-default transition-all"
                             />
                           </TooltipTrigger>
                           <TooltipContent className="tooltip">

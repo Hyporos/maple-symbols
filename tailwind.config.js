@@ -50,6 +50,11 @@ export default {
       transitionDuration: {
         '250': '250ms'
       },
+      screens: {
+        'laptop' : '1150px',
+        'tablet' : '800px',
+        'phone' : '550px',
+      }
     },
   },
   plugins: [],

@@ -41,7 +41,7 @@ const Levels = ({ symbols, swapped }: Props) => {
   const dailySymbols = currentSymbol.daily
     ? currentSymbol.dailySymbols *
       (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
-    : 0;
+    : 0
 
   const targetSymbols =
     currentSymbol.data
@@ -102,8 +102,8 @@ const Levels = ({ symbols, swapped }: Props) => {
 
   return (
     <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[1050px] p-10 mt-28">
-        <div className="flex flex-col w-[1050px]">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[700px] laptop:w-[1050px] p-10 mt-28">
+        <div className="flex flex-col w-[700px] laptop:w-[1050px]">
           <div className="flex items-center text-center text-tertiary">
             <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
             <p className="w-1/4 tracking-wider">Symbol</p>
@@ -116,6 +116,7 @@ const Levels = ({ symbols, swapped }: Props) => {
             (symbol, index) =>
               symbol.type === (!swapped ? "arcane" : "sacred") && (
                 <div
+                  key={index}
                   className={`${
                     targetSymbol === index &&
                     selectedNone === false &&
@@ -132,7 +133,8 @@ const Levels = ({ symbols, swapped }: Props) => {
                         : setSelectedNone(false);
                     }}
                     className={`flex items-center text-center hover:bg-dark cursor-pointer py-4 ${
-                      isNaN(symbol.level) && "opacity-25 pointer-events-none"
+                      (isNaN(symbol.level) || symbol.level === null) &&
+                      "opacity-25 pointer-events-none"
                     } ${symbol.level === 20 && "pointer-events-none"} ${
                       targetSymbol === index &&
                       selectedNone === false &&
@@ -147,37 +149,50 @@ const Levels = ({ symbols, swapped }: Props) => {
                         alt={symbol.alt}
                         width={40}
                         className={`${
-                          isNaN(symbol.level) && "filter grayscale"
+                          (isNaN(symbol.level) || symbol.level === null) &&
+                          "filter grayscale"
                         }`}
                       ></img>
                     </div>
                     <p className="w-1/4 tracking-wider">{symbol.name}</p>
                     <p
                       className={`w-1/4 ${
-                        isNaN(symbol.level) ? "filter grayscale" : "text-accent"
+                        isNaN(symbol.level) || symbol.level === null
+                          ? "filter grayscale"
+                          : "text-accent"
                       }`}
                     >
                       {symbol.level === 20
                         ? "MAX"
-                        : isNaN(symbol.level)
+                        : isNaN(symbol.level) || symbol.level === null
                         ? "0"
                         : 20}
                     </p>
                     <div className="w-1/4">
                       <p>
-                        {symbol.level === 20 || isNaN(symbol.level)
+                        {symbol.level === 20 ||
+                        isNaN(symbol.level) ||
+                        symbol.level === null
                           ? "‎"
-                          : symbol.completion === "Invalid Date" || (!symbol.daily && !symbol.weekly) || isNaN(symbol.experience)
+                          : symbol.completion === "Invalid Date" ||
+                            (!symbol.daily && !symbol.weekly) ||
+                            isNaN(symbol.experience) ||
+                            symbol.experience === null
                           ? "Indefinite"
                           : symbol.daysRemaining === 0
                           ? "Complete"
                           : symbol.completion}
                       </p>
                       <p className="text-tertiary">
-                        {symbol.level === 20 || isNaN(symbol.level)
+                        {symbol.level === 20 ||
+                        isNaN(symbol.level) ||
+                        symbol.level === null
                           ? "‎"
                           : String(symbol.daysRemaining) === "Infinity" ||
-                            isNaN(symbol.daysRemaining) || (!symbol.daily && !symbol.weekly) || isNaN(symbol.experience)
+                            isNaN(symbol.daysRemaining) ||
+                            (!symbol.daily && !symbol.weekly) ||
+                            isNaN(symbol.experience) ||
+                            symbol.experience === null
                           ? "? days"
                           : symbol.daysRemaining === 0
                           ? "Ready for upgrade"
@@ -187,9 +202,12 @@ const Levels = ({ symbols, swapped }: Props) => {
                       </p>
                     </div>
                     <p className="w-1/4">
-                      {symbol.level === 20 || isNaN(symbol.level)
+                      {symbol.level === 20 ||
+                      isNaN(symbol.level) ||
+                      symbol.level === null
                         ? "‎"
-                        : isNaN(symbol.symbolsRemaining)
+                        : isNaN(symbol.symbolsRemaining) ||
+                          symbol.symbolsRemaining === null
                         ? "?"
                         : symbol.symbolsRemaining === 0
                         ? "‎"
@@ -198,7 +216,8 @@ const Levels = ({ symbols, swapped }: Props) => {
                   </div>
                   <div
                     className={`flex items-center text-center rounded-b-3xl bg-dark py-4 ${
-                      isNaN(symbol.level) && "opacity-25 pointer-events-none"
+                      (isNaN(symbol.level) || symbol.level === null) &&
+                      "opacity-25 pointer-events-none"
                     } ${symbol.level === 20 && "pointer-events-none"} ${
                       targetSymbol === index &&
                       selectedNone === false &&
@@ -236,23 +255,30 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </div>
                     <div className="w-1/4">
                       <p>
-                        {targetSymbols === 0
+                        {targetSymbols === 0 &&
+                        currentSymbol.experience !== null
                           ? "Complete"
                           : targetLevel <= symbol.level ||
+                            isNaN(currentSymbol.experience) ||
+                            currentSymbol.experience === null ||
                             isNaN(targetLevel) ||
                             targetDate === "Invalid Date"
                           ? "Indefinite"
                           : targetDate}
                       </p>
                       <p className="text-tertiary">
-                        {targetSymbols === 0
+                        {targetSymbols === 0 &&
+                        currentSymbol.experience !== null
                           ? "Ready for upgrade"
                           : targetLevel <= symbol.level
                           ? "Level must be over " + symbol.level
                           : isNaN(targetLevel)
                           ? "Enter a target level"
                           : String(targetDays) ===
-                              ("Infinity" || "-Infiinity") || isNaN(targetDays)
+                              ("Infinity" || "-Infiinity") ||
+                            isNaN(targetDays) ||
+                            isNaN(currentSymbol.experience) ||
+                            currentSymbol.experience === null
                           ? "? days"
                           : targetDays > 1
                           ? targetDays + " days"
@@ -260,7 +286,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                       </p>
                     </div>
                     <p className="w-1/4">
-                      {isNaN(targetSymbols) || targetSymbols < 0
+                      {isNaN(targetSymbols) ||
+                      targetSymbols < 0 ||
+                      currentSymbol.experience === null
                         ? "?"
                         : targetSymbols}
                     </p>

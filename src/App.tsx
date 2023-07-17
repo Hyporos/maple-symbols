@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Calculator from "./components/Calculator/Calculator";
 import Footer from "./components/Footer/Footer";
 import Graph from "./components/Graph/Graph";

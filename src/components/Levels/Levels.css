@@ -3,7 +3,7 @@
 }
 
 .levels .horizontal-divider {
-    @apply bg-white opacity-10 my-6 w-[950px]
+    @apply bg-white opacity-10 my-6 w-[600px] laptop:w-[950px]
 }
 
 .level-input {

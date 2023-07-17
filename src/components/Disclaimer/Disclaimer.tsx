@@ -1,10 +1,19 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { isFirefox } from "react-device-detect";
 import { Dialog, Transition } from "@headlessui/react";
 import "./Disclaimer.css";
 
 const Disclaimer = () => {
   const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    localStorage.setItem("disclaimer", JSON.stringify(isOpen));
+  }, [isOpen]);
+
+  useEffect(() => {
+    const disclaimer = JSON.parse(localStorage.getItem("disclaimer") || "[]");
+    setIsOpen(disclaimer);
+  }, []);
 
   return (
     <Transition

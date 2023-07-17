@@ -38,23 +38,28 @@ const Selector = ({
               <HiBars3
                 size={40}
                 className={
-                  "icon-button opacity-25 cursor-default hover:fill-basic"
+                  "icon-button opacity-25 hover:opacity-100 cursor-default hover:fill-basic"
                 }
-                onClick={() => console.log("Information Clicked")}
+                onClick={() => localStorage.clear()}
               />
             </TooltipTrigger>
-            <TooltipContent className="tooltip"><span className='text-[#e83333]'>[Unavailable]</span><br></br>The information & settings section <br></br> will be added in a future update</TooltipContent>
+            <TooltipContent className="tooltip">
+              <span className="text-[#e83333]">[Unavailable]</span>
+              <br></br>The information & settings section <br></br> will be
+              added in a future update
+            </TooltipContent>
           </Tooltip>
           <div className="flex space-x-10">
             {symbols.map(
               (symbol, index) =>
                 symbol.type === (!swapped ? "arcane" : "sacred") && (
-                  <div className="group">
+                  <div key={index} className="group">
                     <div
                       className={`selector-level ${
                         selectedSymbol === index
                           ? "text-primary"
-                          : isNaN(symbol.level) && "text-secondary"
+                          : (isNaN(symbol.level) || symbol.level === null) &&
+                            "text-secondary"
                       }`}
                       onClick={() => {
                         setSelectedSymbol(index);
@@ -69,10 +74,15 @@ const Selector = ({
                         className={`${
                           symbols[selectedSymbol].name === symbol.name &&
                           "translate-y-symbol"
-                        }  ${isNaN(symbol.level) && "filter grayscale"}`}
+                        }  ${
+                          (isNaN(symbol.level) || symbol.level === null) &&
+                          "filter grayscale"
+                        }`}
                       />
                       <p>
-                        {isNaN(symbol.level) ? "Lv. 0" : "Lv. " + symbol.level}
+                        {isNaN(symbol.level) || symbol.level === null
+                          ? "Lv. 0"
+                          : "Lv. " + symbol.level}
                       </p>
                     </div>
                   </div>

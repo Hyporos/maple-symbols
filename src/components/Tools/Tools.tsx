@@ -103,7 +103,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         <hr className="horizontal-divider" />
         <div
           className={`flex justify-between mx-20 text-secondary space-x-4 mb-7 ${
-            isNaN(currentSymbol.level) && "opacity-25 pointer-events-none"
+            (isNaN(currentSymbol.level) || currentSymbol.level === null) && "opacity-25 pointer-events-none"
           }`}
         >
           <button
@@ -140,7 +140,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         <div
           className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-10 ${
             selectedTool === 1 ? "block" : "hidden"
-          } ${isNaN(currentSymbol.level) && "opacity-25 pointer-events-none"}`}
+          } ${(isNaN(currentSymbol.level) || currentSymbol.level === null) && "opacity-25 pointer-events-none"}`}
         >
           <div className="flex items-center space-x-4 w-1/4">
             <img src={currentSymbol.img}></img>
@@ -168,8 +168,8 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           <div className="flex items-center  justify-around w-1/3">
             <div>
               <p className="text-secondary">
-                {isNaN(currentSymbol.level) ? "?" : currentSymbol.level} /{" "}
-                {isNaN(currentSymbol.experience) || isNaN(currentSymbol.level)
+                {(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "?" : currentSymbol.level} /{" "}
+                {(isNaN(currentSymbol.experience) || currentSymbol.experience === null) || (isNaN(currentSymbol.level) || currentSymbol.level === null)
                   ? "?"
                   : currentSymbol.experience}
               </p>
@@ -180,10 +180,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             <div>
               <p className="text-secondary">
                 <span>
-                  {isNaN(currentSymbol.level) ? "?" : selectorLevel} /{" "}
+                  {(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "?" : selectorLevel} /{" "}
                   {(isNaN(selectorExperience) &&
-                    isNaN(currentSymbol.experience)) ||
-                  isNaN(currentSymbol.level)
+                    (isNaN(currentSymbol.experience) || currentSymbol.experience === null)) ||
+                    (isNaN(currentSymbol.level) || currentSymbol.level === null)
                     ? "?"
                     : selectorLevel === 20
                     ? "0"
@@ -226,7 +226,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         <div
           className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-8 ${
             selectedTool === 2 ? "block" : "hidden"
-          } ${isNaN(currentSymbol.level) && "opacity-25"}`}
+          } ${(isNaN(currentSymbol.level) || currentSymbol.level === null) && "opacity-25"}`}
         >
           <div className="flex items-center w-[70px]">
             <img src={currentSymbol.img}></img>
@@ -234,13 +234,13 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           <div className="flex items-center justify-around w-1/3">
             <div>
               <p className="text-secondary">
-                {currentSymbol.level === 1 || isNaN(currentSymbol.level)
+                {currentSymbol.level === 1 || (isNaN(currentSymbol.level) || currentSymbol.level === null)
                   ? "?"
                   : currentSymbol.level}{" "}
                 /{" "}
                 {currentSymbol.level === 1 ||
-                isNaN(currentSymbol.level) ||
-                isNaN(currentSymbol.experience)
+                (isNaN(currentSymbol.level) || currentSymbol.level === null) ||
+                (isNaN(currentSymbol.experience) || currentSymbol.experience === null)
                   ? "?"
                   : currentSymbol.experience}
               </p>
@@ -251,15 +251,15 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             <div>
               <p className="text-secondary">
                 <span>
-                  {currentSymbol.level === 1 || isNaN(currentSymbol.level)
+                  {currentSymbol.level === 1 || (isNaN(currentSymbol.level) || currentSymbol.level === null)
                     ? "?"
                     : currentSymbol.level === 2 // Bugged. Bandaid fix
                     ? "1"
                     : catalystLevel}{" "}
                   /{" "}
                   {currentSymbol.level === 1 ||
-                  isNaN(currentSymbol.level) ||
-                  isNaN(currentSymbol.experience)
+                  (isNaN(currentSymbol.level) || currentSymbol.level === null) ||
+                  (isNaN(currentSymbol.experience) || currentSymbol.experience === null)
                     ? "?"
                     : Math.ceil(catalystExperience)}
                 </span>
@@ -267,7 +267,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             </div>
           </div>
             <p className="w-[200px] text-right py-2">
-              {currentSymbol.level === 1 || isNaN(currentSymbol.level)
+              {currentSymbol.level === 1 || (isNaN(currentSymbol.level) || currentSymbol.level === null)
                 ? "Must be level 2 or higher"
                 : !swapped
                 ? "-20% EXP upon use"

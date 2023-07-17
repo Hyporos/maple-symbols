@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@floating-ui/react': ^0.24.3
-  '@headlessui/react': ~1.5.0
+  '@headlessui/react': 1.6.0
   '@nivo/core': ^0.83.0
   '@nivo/line': ^0.83.0
   '@types/react': ^18.0.28
@@ -28,7 +28,7 @@ specifiers:
 
 dependencies:
   '@floating-ui/react': 0.24.3_react-dom@18.2.0+react@18.2.0
-  '@headlessui/react': 1.5.0_react-dom@18.2.0+react@18.2.0
+  '@headlessui/react': 1.6.0_react-dom@18.2.0+react@18.2.0
   '@nivo/core': 0.83.0_ae99d26bf538c96cd8f1c5ec503a2210
   '@nivo/line': 0.83.0_react-dom@18.2.0+react@18.2.0
   dayjs: 1.11.9
@@ -556,8 +556,8 @@ packages:
       tabbable: 6.1.2
     dev: false
 
-  /@headlessui/react/1.5.0_react-dom@18.2.0+react@18.2.0:
-    resolution: {integrity: sha512-aaRnYxBb3MU2FNJf3Ut9RMTUqqU3as0aI1lQhgo2n9Fa67wRu14iOGqx93xB+uMNVfNwZ5B3y/Ndm7qZGuFeMQ==}
+  /@headlessui/react/1.6.0_react-dom@18.2.0+react@18.2.0:
+    resolution: {integrity: sha512-PlDuytBC6iDC/uMvpANm5VpRSuayyXMEeo/dNIwAZNHCfhZUqDQgLXjGu48SHsvMw22Kc3c3u9TOAMZNg+1vzw==}
     engines: {node: '>=10'}
     peerDependencies:
       react: ^16 || ^17 || ^18

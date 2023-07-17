@@ -15,7 +15,8 @@ import {
   useDelayGroupContext,
   useMergeRefs,
   useId,
-  useTransitionStyles
+  useTransitionStyles,
+  arrow,
 } from "@floating-ui/react";
 import type { Placement } from "@floating-ui/react";
 
@@ -30,21 +31,32 @@ export function useTooltip({
   initialOpen = false,
   placement = "top",
   open: controlledOpen,
-  onOpenChange: setControlledOpen
+  onOpenChange: setControlledOpen,
 }: TooltipOptions = {}) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(initialOpen);
 
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
-  const {delay} = useDelayGroupContext();
+  const { delay } = useDelayGroupContext();
+  const arrowRef = React.useRef(null);
+
+  const ARROW_HEIGHT = 7;
+  const GAP = 5;
 
   const data = useFloating({
     placement,
     open,
     onOpenChange: setOpen,
     whileElementsMounted: autoUpdate,
-    middleware: [offset(11.5), flip(), shift()]
+    middleware: [
+      offset(ARROW_HEIGHT + GAP),
+      flip(),
+      shift(),
+      arrow({
+        element: arrowRef,
+      }),
+    ],
   });
 
   const context = data.context;
@@ -58,7 +70,7 @@ export function useTooltip({
     },
   });
   const focus = useFocus(context, {
-    enabled: controlledOpen == null
+    enabled: controlledOpen == null,
   });
   const dismiss = useDismiss(context);
   const role = useRole(context, { role: "tooltip" });
@@ -70,7 +82,7 @@ export function useTooltip({
       open,
       setOpen,
       ...interactions,
-      ...data
+      ...data,
     }),
     [open, setOpen, interactions, data]
   );
@@ -121,7 +133,7 @@ export const TooltipTrigger = React.forwardRef<
         ref,
         ...props,
         ...children.props,
-        "data-state": state.open ? "open" : "closed"
+        "data-state": state.open ? "open" : "closed",
       })
     );
   }
@@ -158,12 +170,12 @@ export const TooltipContent = React.forwardRef<
           open: instantDuration,
           // `id` is this component's `id`
           // `currentId` is the current group's `id`
-          close: currentId === id ? duration : instantDuration
+          close: currentId === id ? duration : instantDuration,
         }
       : duration,
     initial: {
-      opacity: 0
-    }
+      opacity: 0,
+    },
   });
 
   if (!isMounted) return null;
@@ -175,7 +187,7 @@ export const TooltipContent = React.forwardRef<
         style={{
           ...state.floatingStyles,
           ...props.style,
-          ...styles
+          ...styles,
         }}
         {...state.getFloatingProps(props)}
       />
