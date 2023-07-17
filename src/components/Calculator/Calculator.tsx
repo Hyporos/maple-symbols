@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
-import { produce } from "immer";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 import dayjs from "dayjs";

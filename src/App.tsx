@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Calculator from "./components/Calculator/Calculator";
 import Footer from "./components/Footer/Footer";
-import Graph from "./components/Graph/Graph";
 import Disclaimer from "./components/Disclaimer/Disclaimer";
 import Header from "./components/Header/Header";
 import Selector from "./components/Selector/Selector";
@@ -382,7 +381,6 @@ function App() {
         selectedSymbol={selectedSymbol}
         swapped={swapped}
       />
-      {/*<Graph symbols={symbols} arcanePower={arcanePower} swapped={swapped}/>*/}
       <Footer />
     </>
   );

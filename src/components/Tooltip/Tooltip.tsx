@@ -37,8 +37,7 @@ export function useTooltip({
 
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
-
-  const { delay } = useDelayGroupContext();
+  
   const arrowRef = React.useRef(null);
 
   const ARROW_HEIGHT = 7;
