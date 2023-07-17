@@ -40,13 +40,19 @@ const Selector = ({
                 className={
                   "icon-button opacity-25 hover:opacity-100 cursor-default hover:fill-basic"
                 }
-                onClick={() => localStorage.clear()}
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.reload();
+                }}
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
-              <span className="text-[#e83333]">[Unavailable]</span>
+              <span className="text-red-500">[Unavailable]</span>
               <br></br>The information & settings section <br></br> will be
-              added in a future update
+              added in a future update <br></br> <br></br>
+              <hr></hr>
+              <br></br> <span className="text-red-500">TEST BUILD</span> ━ Click
+              to clear data
             </TooltipContent>
           </Tooltip>
           <div className="flex space-x-10">

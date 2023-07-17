@@ -11,10 +11,11 @@ const Disclaimer = () => {
 
   useEffect(() => {
     try {
-      localStorage.setItem("disclaimer", JSON.stringify(dismissed));
-      console.log("Disclaimer Set");
-    } catch (e) {
-      console.log("Local Storage is full");
+    localStorage.setItem("disclaimer", JSON.stringify(dismissed));
+    console.log("Disclaimer Set");
+    }
+    catch (e) {
+      console.log("Local Storage is full")
     }
   }, [dismissed]);
 
@@ -46,20 +47,24 @@ const Disclaimer = () => {
               </Dialog.Title>
               <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[400px]" />
               <Dialog.Description>
-                This tool is currently in a{" "}
-                <span className="text-red-500">testing</span> state which means
-                that some features may not be present or broken.
+                This tool is currently in a <span>beta</span> state which makes
+                it prone to bugs and other issues.
               </Dialog.Description>
               <Dialog.Description>
                 If you encounter any problems or wish to submit any suggestions,
-                please let me know on {" "}
-                <span
+                please let me know on the{" "}
+                <a
+                  className="text-[#7289DA] hover:text-white outline-none transition-all"
+                  target="_blank"
+                  href="https://discord.gg/FTMgy2ZKPK"
                 >
                   Discord
-                </span>.
+                </a>{" "}
+                server.
               </Dialog.Description>
               <Dialog.Description>
-                The app is currently only meant to operate on a <span>1920x1080</span> resolution or greater.
+                Updates will be consistent and big things are planned such as{" "}
+                <span>graphs</span> and <span>guides</span>.
               </Dialog.Description>
               <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[400px]" />
               <button
