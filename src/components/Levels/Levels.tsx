@@ -275,7 +275,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                           : targetLevel <= symbol.level ||
                             isNaN(currentSymbol.experience) ||
                             currentSymbol.experience === null ||
-                            isNaN(targetLevel) ||
+                            isNaN(targetLevel) || (!currentSymbol.daily && !currentSymbol.weekly) ||
                             targetDate === "Invalid Date"
                           ? "Indefinite"
                           : targetDate}
@@ -290,7 +290,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                           ? "Enter a target level"
                           : String(targetDays) ===
                               ("Infinity" || "-Infiinity") ||
-                            isNaN(targetDays) ||
+                            isNaN(targetDays) || (!currentSymbol.daily && !currentSymbol.weekly) ||
                             isNaN(currentSymbol.experience) ||
                             currentSymbol.experience === null
                           ? "? days"
