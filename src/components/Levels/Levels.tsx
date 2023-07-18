@@ -269,7 +269,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                     <div className="w-1/4">
                       <p>
                         {targetSymbols === 0 &&
-                        currentSymbol.experience !== null
+                        currentSymbol.experience !== null && currentSymbol.experience !== 0
                           ? "Complete"
                           : targetLevel <= symbol.level ||
                             isNaN(currentSymbol.experience) ||
@@ -281,7 +281,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                       </p>
                       <p className="text-tertiary">
                         {targetSymbols === 0 &&
-                        currentSymbol.experience !== null
+                        currentSymbol.experience !== null && currentSymbol.experience !== 0
                           ? "Ready for upgrade"
                           : targetLevel <= symbol.level
                           ? "Level must be over " + symbol.level
@@ -301,7 +301,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                     <p className="w-1/4">
                       {isNaN(targetSymbols) ||
                       targetSymbols < 0 ||
-                      currentSymbol.experience === null
+                      currentSymbol.experience === null || currentSymbol.experience === 0
                         ? "?"
                         : targetSymbols}
                     </p>

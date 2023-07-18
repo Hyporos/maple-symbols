@@ -165,7 +165,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               value={selectorCount}
               className="tool-input w-[100px]"
               onChange={(e) => {
-                if (Number(e.target.value) <= currentSymbol.symbolsRemaining) {
+                if (
+                  Number(e.target.value) <= currentSymbol.symbolsRemaining &&
+                  currentSymbol.experience !== null
+                ) {
                   setSelectorCount(parseInt(e.target.value));
                 }
                 if (Number(e.target.value) >= currentSymbol.symbolsRemaining) {
