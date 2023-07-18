@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import dayjs from "dayjs";
 import "./Levels.css";
@@ -41,7 +42,7 @@ const Levels = ({ symbols, swapped }: Props) => {
   const dailySymbols = currentSymbol.daily
     ? currentSymbol.dailySymbols *
       (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
-    : 0
+    : 0;
 
   const targetSymbols =
     currentSymbol.data
@@ -102,8 +103,8 @@ const Levels = ({ symbols, swapped }: Props) => {
 
   return (
     <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[700px] laptop:w-[1050px] p-10 mt-28">
-        <div className="flex flex-col w-[700px] laptop:w-[1050px]">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[350px] tablet:w-[700px] laptop:w-[1050px] p-10 mt-28">
+        <div className="flex flex-col w-[350px] tablet:w-[700px] laptop:w-[1050px]">
           <div className="flex items-center text-center text-tertiary">
             <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
             <p className="w-1/4 tracking-wider">Symbol</p>
@@ -232,26 +233,38 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </div>
                     <div className="w-1/4"></div>
                     <div className="w-1/4">
-                      <input
-                        type="number"
-                        placeholder="Level"
-                        value={targetLevel}
-                        className="level-input"
-                        onChange={(e) => {
-                          if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
-                            setTargetLevel(parseInt(e.target.value));
-                          }
-                          if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
-                            setTargetLevel(!swapped ? 20 : 11);
-                          }
-                          if (Number(e.target.value) < 0) {
-                            setTargetLevel(NaN);
-                          }
-                          if (e.target.value === "0") {
-                            setTargetLevel(1);
-                          }
-                        }}
-                      />
+                      <Tooltip placement="left">
+                        <TooltipTrigger>
+                          <input
+                            type="number"
+                            placeholder="Level"
+                            value={targetLevel}
+                            className="level-input"
+                            onChange={(e) => {
+                              if (
+                                Number(e.target.value) <= (!swapped ? 20 : 11)
+                              ) {
+                                setTargetLevel(parseInt(e.target.value));
+                              }
+                              if (
+                                Number(e.target.value) >= (!swapped ? 20 : 11)
+                              ) {
+                                setTargetLevel(!swapped ? 20 : 11);
+                              }
+                              if (Number(e.target.value) < 0) {
+                                setTargetLevel(NaN);
+                              }
+                              if (e.target.value === "0") {
+                                setTargetLevel(1);
+                              }
+                            }}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent className="tooltip z-10">
+                          Preview the remaining days and <br></br> symbols for
+                          the specified level
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                     <div className="w-1/4">
                       <p>

@@ -3,7 +3,6 @@ import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import "./Calculator.css";
 import dayjs from "dayjs";
-
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 
 interface Props {

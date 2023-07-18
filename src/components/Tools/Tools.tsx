@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiArrowSmRight } from "react-icons/hi";
 import "./Tools.css";
 
@@ -99,11 +100,12 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   return (
     <section className="tools">
-      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg h-[250px] w-[700px]">
+      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg h-[250px] w-[350px] tablet:w-[700px]">
         <hr className="horizontal-divider" />
         <div
-          className={`flex justify-between mx-20 text-secondary space-x-4 mb-7 ${
-            (isNaN(currentSymbol.level) || currentSymbol.level === null) && "opacity-25 pointer-events-none"
+          className={`flex justify-center tablet:justify-between tablet:mx-20 text-secondary space-x-4 mb-7 ${
+            (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
+            "opacity-25 pointer-events-none"
           }`}
         >
           <button
@@ -121,26 +123,39 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             ></img>
             <p>Symbol Selector</p>
           </button>
-          <button
-            className={`tool-select ${
-              selectedTool === 2 && "bg-secondary text-primary"
-            }`}
-            onClick={() => setSelectedTool(2)}
-          >
-            <img
-              src={`${
-                !swapped
-                  ? "/symbols/arcane-catalyst.webp"
-                  : "/symbols/sacred-catalyst.webp"
-              }`}
-            ></img>
-            <p>{!swapped ? "Arcane Catalyst" : "Sacred Catalyst"}</p>
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild={true}>
+              <button
+                className={`tool-select hidden tablet:flex ${
+                  selectedTool === 2 && "bg-secondary text-primary"
+                }`}
+                onClick={() => setSelectedTool(2)}
+              >
+                <img
+                  src={`${
+                    !swapped
+                      ? "/symbols/arcane-catalyst.webp"
+                      : "/symbols/sacred-catalyst.webp"
+                  }`}
+                ></img>
+                <p>{!swapped ? "Arcane Catalyst" : "Sacred Catalyst"}</p>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent className="tooltip">
+              <span>[Regular Server Only]</span> <br></br> Transfer{" "}
+              {!swapped ? "an Arcane Symbol" : "a Sacred Symbol"} once <br></br>{" "}
+              within the same world <br></br>{" "}
+              <span className="text-red-500">{swapped && "[Coming Soon]"}</span>
+            </TooltipContent>
+          </Tooltip>
         </div>
         <div
           className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-10 ${
             selectedTool === 1 ? "block" : "hidden"
-          } ${(isNaN(currentSymbol.level) || currentSymbol.level === null) && "opacity-25 pointer-events-none"}`}
+          } ${
+            (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
+            "opacity-25 pointer-events-none"
+          }`}
         >
           <div className="flex items-center space-x-4 w-1/4">
             <img src={currentSymbol.img}></img>
@@ -166,35 +181,59 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             ></input>
           </div>
           <div className="flex items-center  justify-around w-1/3">
-            <div>
-              <p className="text-secondary">
-                {(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "?" : currentSymbol.level} /{" "}
-                {(isNaN(currentSymbol.experience) || currentSymbol.experience === null) || (isNaN(currentSymbol.level) || currentSymbol.level === null)
-                  ? "?"
-                  : currentSymbol.experience}
-              </p>
-            </div>
-            <div>
-              <HiArrowSmRight size={25} className="fill-basic" />
-            </div>
-            <div>
-              <p className="text-secondary">
-                <span>
-                  {(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "?" : selectorLevel} /{" "}
-                  {(isNaN(selectorExperience) &&
-                    (isNaN(currentSymbol.experience) || currentSymbol.experience === null)) ||
-                    (isNaN(currentSymbol.level) || currentSymbol.level === null)
-                    ? "?"
-                    : selectorLevel === 20
-                    ? "0"
-                    : (isNaN(selectorExperience) &&
-                        currentSymbol.experience > 0) ||
-                      isNaN(selectorExperience)
-                    ? currentSymbol.experience
-                    : selectorExperience}
-                </span>
-              </p>
-            </div>
+            <Tooltip>
+              <TooltipTrigger className="flex items-center space-x-4 cursor-default">
+                <div>
+                  <p className="text-secondary">
+                    {isNaN(currentSymbol.level) || currentSymbol.level === null
+                      ? "?"
+                      : currentSymbol.level}{" "}
+                    /{" "}
+                    {isNaN(currentSymbol.experience) ||
+                    currentSymbol.experience === null ||
+                    isNaN(currentSymbol.level) ||
+                    currentSymbol.level === null
+                      ? "?"
+                      : currentSymbol.experience}
+                  </p>
+                </div>
+                <div>
+                  <HiArrowSmRight size={25} className="fill-basic" />
+                </div>
+                <div>
+                  <p className="text-secondary">
+                    <span>
+                      {isNaN(currentSymbol.level) ||
+                      currentSymbol.level === null
+                        ? "?"
+                        : selectorLevel}{" "}
+                      /{" "}
+                      {(isNaN(selectorExperience) &&
+                        (isNaN(currentSymbol.experience) ||
+                          currentSymbol.experience === null)) ||
+                      isNaN(currentSymbol.level) ||
+                      currentSymbol.level === null
+                        ? "?"
+                        : selectorLevel === 20
+                        ? "0"
+                        : (isNaN(selectorExperience) &&
+                            currentSymbol.experience > 0) ||
+                          isNaN(selectorExperience)
+                        ? currentSymbol.experience
+                        : selectorExperience}
+                    </span>
+                  </p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                <div className="flex justify-center items-center text-accent space-x-1">
+                  <p>[Before</p>{" "}
+                  <HiArrowSmRight size={19} className="fill-accent" />{" "}
+                  <p>After]</p>
+                </div>{" "}
+                Level / Experience
+              </TooltipContent>
+            </Tooltip>
           </div>
           <button
             className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px] ${
@@ -226,53 +265,78 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         <div
           className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-8 ${
             selectedTool === 2 ? "block" : "hidden"
-          } ${(isNaN(currentSymbol.level) || currentSymbol.level === null) && "opacity-25"}`}
+          } ${
+            (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
+            "opacity-25"
+          }`}
         >
           <div className="flex items-center w-[70px]">
             <img src={currentSymbol.img}></img>
           </div>
           <div className="flex items-center justify-around w-1/3">
-            <div>
-              <p className="text-secondary">
-                {currentSymbol.level === 1 || (isNaN(currentSymbol.level) || currentSymbol.level === null)
-                  ? "?"
-                  : currentSymbol.level}{" "}
-                /{" "}
-                {currentSymbol.level === 1 ||
-                (isNaN(currentSymbol.level) || currentSymbol.level === null) ||
-                (isNaN(currentSymbol.experience) || currentSymbol.experience === null)
-                  ? "?"
-                  : currentSymbol.experience}
-              </p>
-            </div>
-            <div>
-              <HiArrowSmRight size={25} className="fill-basic" />
-            </div>
-            <div>
-              <p className="text-secondary">
-                <span>
-                  {currentSymbol.level === 1 || (isNaN(currentSymbol.level) || currentSymbol.level === null)
-                    ? "?"
-                    : currentSymbol.level === 2 // Bugged. Bandaid fix
-                    ? "1"
-                    : catalystLevel}{" "}
-                  /{" "}
-                  {currentSymbol.level === 1 ||
-                  (isNaN(currentSymbol.level) || currentSymbol.level === null) ||
-                  (isNaN(currentSymbol.experience) || currentSymbol.experience === null)
-                    ? "?"
-                    : Math.ceil(catalystExperience)}
-                </span>
-              </p>
-            </div>
+            <Tooltip>
+              <TooltipTrigger className="flex items-center space-x-4 cursor-default">
+                <div>
+                  <p className="text-secondary">
+                    {currentSymbol.level === 1 ||
+                    isNaN(currentSymbol.level) ||
+                    currentSymbol.level === null
+                      ? "?"
+                      : currentSymbol.level}{" "}
+                    /{" "}
+                    {currentSymbol.level === 1 ||
+                    isNaN(currentSymbol.level) ||
+                    currentSymbol.level === null ||
+                    isNaN(currentSymbol.experience) ||
+                    currentSymbol.experience === null
+                      ? "?"
+                      : currentSymbol.experience}
+                  </p>
+                </div>
+                <div>
+                  <HiArrowSmRight size={25} className="fill-basic" />
+                </div>
+                <div>
+                  <p className="text-secondary">
+                    <span>
+                      {currentSymbol.level === 1 ||
+                      isNaN(currentSymbol.level) ||
+                      currentSymbol.level === null
+                        ? "?"
+                        : currentSymbol.level === 2 // Bugged. Bandaid fix
+                        ? "1"
+                        : catalystLevel}{" "}
+                      /{" "}
+                      {currentSymbol.level === 1 ||
+                      isNaN(currentSymbol.level) ||
+                      currentSymbol.level === null ||
+                      isNaN(currentSymbol.experience) ||
+                      currentSymbol.experience === null
+                        ? "?"
+                        : Math.ceil(catalystExperience)}
+                    </span>
+                  </p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                <div className="flex justify-center items-center text-accent space-x-1">
+                  <p>[Before</p>{" "}
+                  <HiArrowSmRight size={19} className="fill-accent" />{" "}
+                  <p>After]</p>
+                </div>{" "}
+                Level / Experience
+              </TooltipContent>
+            </Tooltip>
           </div>
-            <p className="w-[200px] text-right py-2">
-              {currentSymbol.level === 1 || (isNaN(currentSymbol.level) || currentSymbol.level === null)
-                ? "Must be level 2 or higher"
-                : !swapped
-                ? "-20% EXP upon use"
-                : "-40% EXP upon use"}
-            </p>
+          <p className="w-[200px] text-right py-2">
+            {currentSymbol.level === 1 ||
+            isNaN(currentSymbol.level) ||
+            currentSymbol.level === null
+              ? "Must be level 2 or higher"
+              : !swapped
+              ? "-20% EXP upon use"
+              : "-40% EXP upon use"}
+          </p>
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import "./Footer.css";
 
 function Footer() {
-  //v1.0.0 Beta
+  // ━ v1.0.0 Beta
   return (
     <section className="footer">
       <div className="flex items-center text-tertiary space-x-7 mt-28 p-5">
@@ -12,8 +12,8 @@ function Footer() {
         >
           <p>Discord</p>
         </a>
-        <p>&copy; 2023 Maple Symbols ━ <span className="text-red-500">Test Build</span></p>
-
+        <p>&copy; 2023 Maple Symbols</p>
+        <span className="text-red-500">Test Build</span>
       </div>
     </section>
   );
