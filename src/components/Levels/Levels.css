@@ -7,7 +7,7 @@
 }
 
 .level-input {
-    @apply w-[75px] p-1.5 text-center bg-secondary hover:bg-hover focus:bg-hover outline-none transition-all
+    @apply w-[75px] p-1.5 text-center bg-secondary hover:bg-hover focus:bg-hover outline-none focus:outline-none focus:border-accent transition-all
 }
 
 .level-input::placeholder {

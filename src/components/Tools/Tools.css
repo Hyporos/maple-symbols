@@ -11,7 +11,7 @@
 }
 
 .tool-input {
-    @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none transition-all w-1/2 p-2.5
+    @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-all w-1/2 p-2.5
 }
 
 .tool-input::placeholder {

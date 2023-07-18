@@ -301,7 +301,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                     <p className="w-1/4">
                       {isNaN(targetSymbols) ||
                       targetSymbols < 0 ||
-                      currentSymbol.experience === null || currentSymbol.experience === 0
+                      currentSymbol.experience === null || (currentSymbol.experience === 0 && (targetLevel <= currentSymbol.level || isNaN(targetLevel)))
                         ? "?"
                         : targetSymbols}
                     </p>

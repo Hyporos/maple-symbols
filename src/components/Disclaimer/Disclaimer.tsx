@@ -66,7 +66,7 @@ const Disclaimer = () => {
                 checked={dontShow}
                 className={`${
                   dontShow ? "bg-accent" : "bg-hover"
-                } relative inline-flex h-4 w-8 items-center rounded-full outline-none select-none transition-colors`}
+                } relative inline-flex h-4 w-8 items-center rounded-full focus:outline-none select-none transition-colors`}
               >
                 <span className="sr-only">Don't Show Again</span>
                 <span
