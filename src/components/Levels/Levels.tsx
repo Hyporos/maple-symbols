@@ -240,6 +240,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                             placeholder="Level"
                             value={targetLevel}
                             className="level-input"
+                            onWheel={(e) => e.currentTarget.blur()}
                             onChange={(e) => {
                               if (
                                 Number(e.target.value) <= (!swapped ? 20 : 11)
