@@ -167,7 +167,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         ? "MAX"
                         : isNaN(symbol.level) || symbol.level === null
                         ? "0"
-                        : 20}
+                        : (!swapped ? 20 : 11)}
                     </p>
                     <div className="w-1/4">
                       <p>
@@ -208,7 +208,8 @@ const Levels = ({ symbols, swapped }: Props) => {
                       symbol.level === null
                         ? "‎"
                         : isNaN(symbol.symbolsRemaining) ||
-                          symbol.symbolsRemaining === null
+                          symbol.symbolsRemaining === null ||
+                          symbol.experience === null
                         ? "?"
                         : symbol.symbolsRemaining === 0
                         ? "‎"
@@ -233,7 +234,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </div>
                     <div className="w-1/4"></div>
                     <div className="w-1/4">
-                      <Tooltip placement="left">
+                      <Tooltip placement="left" >
                         <TooltipTrigger>
                           <input
                             type="number"
@@ -263,26 +264,29 @@ const Levels = ({ symbols, swapped }: Props) => {
                         </TooltipTrigger>
                         <TooltipContent className="tooltip z-10">
                           Preview the remaining days and <br></br> symbols for
-                          the specified level
+                          the <span>specified level</span>
                         </TooltipContent>
                       </Tooltip>
                     </div>
                     <div className="w-1/4">
                       <p>
                         {targetSymbols === 0 &&
-                        currentSymbol.experience !== null && currentSymbol.experience !== 0
+                        currentSymbol.experience !== null &&
+                        currentSymbol.experience !== 0
                           ? "Complete"
                           : targetLevel <= symbol.level ||
                             isNaN(currentSymbol.experience) ||
                             currentSymbol.experience === null ||
-                            isNaN(targetLevel) || (!currentSymbol.daily && !currentSymbol.weekly) ||
+                            isNaN(targetLevel) ||
+                            (!currentSymbol.daily && !currentSymbol.weekly) ||
                             targetDate === "Invalid Date"
                           ? "Indefinite"
                           : targetDate}
                       </p>
                       <p className="text-tertiary">
                         {targetSymbols === 0 &&
-                        currentSymbol.experience !== null && currentSymbol.experience !== 0
+                        currentSymbol.experience !== null &&
+                        currentSymbol.experience !== 0
                           ? "Ready for upgrade"
                           : targetLevel <= symbol.level
                           ? "Level must be over " + symbol.level
@@ -290,7 +294,8 @@ const Levels = ({ symbols, swapped }: Props) => {
                           ? "Enter a target level"
                           : String(targetDays) ===
                               ("Infinity" || "-Infiinity") ||
-                            isNaN(targetDays) || (!currentSymbol.daily && !currentSymbol.weekly) ||
+                            isNaN(targetDays) ||
+                            (!currentSymbol.daily && !currentSymbol.weekly) ||
                             isNaN(currentSymbol.experience) ||
                             currentSymbol.experience === null
                           ? "? days"
@@ -302,7 +307,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                     <p className="w-1/4">
                       {isNaN(targetSymbols) ||
                       targetSymbols < 0 ||
-                      currentSymbol.experience === null || (currentSymbol.experience === 0 && (targetLevel <= currentSymbol.level || isNaN(targetLevel)))
+                      currentSymbol.experience === null ||
+                      (currentSymbol.experience === 0 &&
+                        (targetLevel <= currentSymbol.level ||
+                          isNaN(targetLevel)))
                         ? "?"
                         : targetSymbols}
                     </p>

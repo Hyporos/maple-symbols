@@ -327,7 +327,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   <HiArrowSmRight size={19} className="fill-accent" />{" "}
                   <p>After]</p>
                 </div>{" "}
-                Level / Experience
+                Symbol Level / Exp
               </TooltipContent>
             </Tooltip>
           </div>

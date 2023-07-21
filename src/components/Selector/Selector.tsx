@@ -1,6 +1,12 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
-import { HiArrowsUpDown, HiBars3 } from "react-icons/hi2";
+import {
+  HiArrowsUpDown,
+  HiBars3,
+  HiChevronLeft,
+  HiChevronRight,
+} from "react-icons/hi2";
+import { IoChevronForward, IoChevronBack } from "react-icons/io5";
 import "./Selector.css";
 
 interface Props {
@@ -33,28 +39,16 @@ const Selector = ({
     <section className="selector">
       <div className="flex flex-col justify-center pt-12">
         <div className="flex justify-between items-center px-8">
-          <Tooltip placement="left">
-            <TooltipTrigger>
-              <HiBars3
-                size={40}
-                className={
-                  "icon-button opacity-25 hover:opacity-100 cursor-default hover:fill-basic"
-                }
-                onClick={() => {
-                  localStorage.clear();
-                  window.location.reload();
-                }}
-              />
-            </TooltipTrigger>
-            <TooltipContent className="tooltip">
-              <span className="text-red-500">[Unavailable]</span>
-              <br></br>The information & settings section <br></br> will be
-              added in a future update <br></br> <br></br>
-              <hr></hr>
-              <br></br> <span className="text-red-500">TEST BUILD</span> ━ Click
-              to clear data
-            </TooltipContent>
-          </Tooltip>
+          <HiChevronLeft
+            size={40}
+            className={"icon-button"}
+            onClick={() => {
+              setSwapped(!swapped);
+              !swapped
+                ? setSelectedSymbol(selectedSacred)
+                : setSelectedSymbol(selectedArcane);
+            }}
+          />
           <div className="flex space-x-10">
             {symbols.map(
               (symbol, index) =>
@@ -95,7 +89,7 @@ const Selector = ({
                 )
             )}
           </div>
-          <HiArrowsUpDown
+          <HiChevronRight
             size={40}
             className={"icon-button"}
             onClick={() => {

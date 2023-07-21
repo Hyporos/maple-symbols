@@ -220,6 +220,8 @@ const Calculator = ({
             </p>
           </div>
 
+          <Tooltip>
+              <TooltipTrigger className="cursor-default">
           <div className="flex justify-center items-center space-x-2">
             <input
               type="number"
@@ -270,6 +272,7 @@ const Calculator = ({
                 }
               }}
             ></input>
+
             <TbSlash size={30} color="#B2B2B2" />
             <input
               type="number"
@@ -347,6 +350,9 @@ const Calculator = ({
               }}
             ></input>
           </div>
+          </TooltipTrigger>
+            <TooltipContent className="tooltip"><span>Symbol</span> Level / Exp</TooltipContent>
+            </Tooltip>
 
           <div className="flex space-x-2">
             <Tooltip>
