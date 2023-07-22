@@ -5,6 +5,7 @@ import {
   HiBars3,
   HiChevronLeft,
   HiChevronRight,
+  HiChevronDown,
 } from "react-icons/hi2";
 import { IoChevronForward, IoChevronBack } from "react-icons/io5";
 import "./Selector.css";
@@ -38,7 +39,7 @@ const Selector = ({
   return (
     <section className="selector">
       <div className="flex flex-col justify-center pt-12">
-        <div className="flex justify-between items-center px-8">
+        <div className="flex justify-center tablet:justify-between items-center px-8 space-x-10 tablet:space-x-0">
           <HiChevronLeft
             size={40}
             className={"icon-button"}
@@ -49,7 +50,7 @@ const Selector = ({
                 : setSelectedSymbol(selectedArcane);
             }}
           />
-          <div className="flex space-x-10">
+          <div className="hidden space-x-10 tablet:flex">
             {symbols.map(
               (symbol, index) =>
                 symbol.type === (!swapped ? "arcane" : "sacred") && (
@@ -88,6 +89,13 @@ const Selector = ({
                   </div>
                 )
             )}
+          </div>
+          <div className="flex flex-row tablet:hidden cursor-pointer space-x-8 p-2 justify-center items-center shadow-accent shadow-level bg-card rounded-2xl" onClick={() => console.log("tes")}>
+              <img
+                src={symbols[selectedSymbol].img}
+                alt={symbols[selectedSymbol].alt}
+              ></img>
+              <HiChevronDown size={40} />
           </div>
           <HiChevronRight
             size={40}

@@ -100,8 +100,8 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   return (
     <section className="tools">
-      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg h-[250px] w-[350px] tablet:w-[700px]">
-        <hr className="horizontal-divider" />
+      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-lg tablet:rounded-b-lg mt-16 pt-9 tablet:pt-0 tablet:mt-0 tablet:h-[250px] w-[350px] tablet:w-[700px]">
+        <hr className="horizontal-divider hidden tablet:flex" />
         <div
           className={`flex justify-center tablet:justify-between tablet:mx-20 text-secondary space-x-4 mb-7 ${
             (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
@@ -150,14 +150,14 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </Tooltip>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-10 ${
+          className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-10 space-y-7 tablet:space-y-0 ${
             selectedTool === 1 ? "block" : "hidden"
           } ${
             (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
             "opacity-25 pointer-events-none"
           }`}
         >
-          <div className="flex items-center space-x-4 w-1/4">
+          <div className="flex items-center space-x-10 tablet:space-x-4 tablet:w-1/4">
             <img src={currentSymbol.img}></img>
             <input
               type="number"
@@ -183,7 +183,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               }}
             ></input>
           </div>
-          <div className="flex items-center  justify-around w-1/3">
+          <div className="flex items-center justify-around tablet:w-1/3">
             <Tooltip>
               <TooltipTrigger className="flex items-center space-x-4 cursor-default">
                 <div>
@@ -239,7 +239,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             </Tooltip>
           </div>
           <button
-            className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[100px] ${
+            className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] tablet:w-[100px] ${
               (isNaN(selectorExperience) ||
                 currentSymbol.level === (!swapped ? 20 : 11)) &&
               "pointer-events-none opacity-25"

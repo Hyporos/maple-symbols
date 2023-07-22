@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
-import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
+import { HiOutlineQuestionMarkCircle, HiChevronDown } from "react-icons/hi2";
+import { IoMdArrowDropdown } from "react-icons/io";
 import dayjs from "dayjs";
 import "./Levels.css";
 
@@ -103,14 +104,17 @@ const Levels = ({ symbols, swapped }: Props) => {
 
   return (
     <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[350px] tablet:w-[700px] laptop:w-[1050px] p-10 mt-28">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[350px] tablet:w-[700px] laptop:w-[1050px] p-10 mt-16 tablet:mt-28">
         <div className="flex flex-col w-[350px] tablet:w-[700px] laptop:w-[1050px]">
-          <div className="flex items-center text-center text-tertiary">
+          <div className="hidden items-center text-center text-tertiary tablet:flex">
             <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
             <p className="w-1/4 tracking-wider">Symbol</p>
             <p className="w-1/4 tracking-wider">Target Level</p>
             <p className="w-1/4 tracking-wider">Completion Date</p>
             <p className="w-1/4 tracking-wider">Symbols Remaining</p>
+          </div>
+          <div className="flex justify-center items-center text-center text-tertiary tablet:hidden">
+            <h1 className="tracking-wider ">Symbol Overview</h1>
           </div>
           <hr className="horizontal-divider" />
           {symbols.map(
@@ -133,7 +137,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         ? setSelectedNone(!selectedNone)
                         : setSelectedNone(false);
                     }}
-                    className={`flex items-center text-center hover:bg-dark cursor-pointer py-4 ${
+                    className={`flex justify-between px-4 tablet:px-0 tablet:justify-normal items-center text-center hover:bg-dark cursor-pointer py-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
                     } ${symbol.level === 20 && "pointer-events-none"} ${
@@ -144,7 +148,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         : "rounded-3xl"
                     }`}
                   >
-                    <div className="w-1/4 flex justify-center">
+                    <div className="hidden tablet:flex w-1/4 justify-center">
                       <img
                         src={symbol.img}
                         alt={symbol.alt}
@@ -155,9 +159,26 @@ const Levels = ({ symbols, swapped }: Props) => {
                         }`}
                       ></img>
                     </div>
-                    <p className="w-1/4 tracking-wider">{symbol.name}</p>
+                    <div className="flex tablet:hidden justify-center">
+                      <img
+                        src={symbol.img}
+                        alt={symbol.alt}
+                        width={37.5}
+                        className={`${
+                          (isNaN(symbol.level) || symbol.level === null) &&
+                          "filter grayscale"
+                        }`}
+                      ></img>
+                    </div>
+                    <p className="tablet:w-1/4 tracking-wider text-center">
+                      {symbol.name}
+                    </p>
+                    <IoMdArrowDropdown
+                      size={25}
+                      className="block tablet:hidden w-[37.5px]"
+                    ></IoMdArrowDropdown>
                     <p
-                      className={`w-1/4 ${
+                      className={`tablet:w-1/4 hidden tablet:block ${
                         isNaN(symbol.level) || symbol.level === null
                           ? "filter grayscale"
                           : "text-accent"
@@ -167,9 +188,11 @@ const Levels = ({ symbols, swapped }: Props) => {
                         ? "MAX"
                         : isNaN(symbol.level) || symbol.level === null
                         ? "0"
-                        : (!swapped ? 20 : 11)}
+                        : !swapped
+                        ? 20
+                        : 11}
                     </p>
-                    <div className="w-1/4">
+                    <div className="tablet:w-1/4 hidden tablet:block">
                       <p>
                         {symbol.level === 20 ||
                         isNaN(symbol.level) ||
@@ -202,7 +225,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                           : symbol.daysRemaining + " day"}
                       </p>
                     </div>
-                    <p className="w-1/4">
+                    <p className="tablet:w-1/4 hidden tablet:block">
                       {symbol.level === 20 ||
                       isNaN(symbol.level) ||
                       symbol.level === null
@@ -216,8 +239,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                         : symbol.symbolsRemaining}
                     </p>
                   </div>
+
                   <div
-                    className={`flex items-center text-center rounded-b-3xl bg-dark py-4 ${
+                    className={`flex items-center flex-col tablet:flex-row px-4 tablet:px-0 text-center rounded-b-3xl bg-dark py-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
                     } ${symbol.level === 20 && "pointer-events-none"} ${
@@ -228,13 +252,15 @@ const Levels = ({ symbols, swapped }: Props) => {
                         : "hidden"
                     }`}
                   >
-                    <div className="w-1/4">
+                    <hr className="bg-gradient-to-r via-white border-0 opacity-20 h-px w-[250px] mb-8 block tablet:hidden"></hr>
+                    <div className="hidden tablet:block w-1/4">
                       <hr className="ml-24 w-[330px] border-y border-white border-opacity-5 absolute"></hr>
                       <hr className="ml-24 translate-y-level h-[40px] border-x border-white border-opacity-5 absolute"></hr>
                     </div>
-                    <div className="w-1/4"></div>
-                    <div className="w-1/4">
-                      <Tooltip placement="left" >
+                    <div className="tablet:w-1/4"></div>
+                    <div className="tablet:w-1/4 flex items-center justify-between tablet:justify-normal w-full space-x-24 tablet:space-x-0 tablet:block mb-8 tablet:mb-0">
+                      <p className="block tablet:hidden">Target Level</p>
+                      <Tooltip placement="left">
                         <TooltipTrigger>
                           <input
                             type="number"
@@ -268,52 +294,58 @@ const Levels = ({ symbols, swapped }: Props) => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <div className="w-1/4">
+                    <div className="tablet:w-1/4 flex tablet:block justify-between tablet:justify-normal w-full space-x-10 items-center tablet:space-x-0 mb-8 tablet:mb-0">
+                      <p className="block tablet:hidden">Completion Date</p>
+                      <div>
+                        <p>
+                          {targetSymbols === 0 &&
+                          currentSymbol.experience !== null &&
+                          currentSymbol.experience !== 0
+                            ? "Complete"
+                            : targetLevel <= symbol.level ||
+                              isNaN(currentSymbol.experience) ||
+                              currentSymbol.experience === null ||
+                              isNaN(targetLevel) ||
+                              (!currentSymbol.daily && !currentSymbol.weekly) ||
+                              targetDate === "Invalid Date"
+                            ? "Indefinite"
+                            : targetDate}
+                        </p>
+                        <p className="text-tertiary">
+                          {targetSymbols === 0 &&
+                          currentSymbol.experience !== null &&
+                          currentSymbol.experience !== 0
+                            ? "Ready for upgrade"
+                            : targetLevel <= symbol.level
+                            ? "Level must be over " + symbol.level
+                            : isNaN(targetLevel)
+                            ? "Enter a target level"
+                            : String(targetDays) ===
+                                ("Infinity" || "-Infiinity") ||
+                              isNaN(targetDays) ||
+                              (!currentSymbol.daily && !currentSymbol.weekly) ||
+                              isNaN(currentSymbol.experience) ||
+                              currentSymbol.experience === null
+                            ? "? days"
+                            : targetDays > 1
+                            ? targetDays + " days"
+                            : targetDays + " day"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="tablet:w-1/4 flex tablet:block justify-between tablet:justify-normal items-center w-full tablet:space-x-0">
+                      <p className="block tablet:hidden">Symbols Remaining</p>
                       <p>
-                        {targetSymbols === 0 &&
-                        currentSymbol.experience !== null &&
-                        currentSymbol.experience !== 0
-                          ? "Complete"
-                          : targetLevel <= symbol.level ||
-                            isNaN(currentSymbol.experience) ||
-                            currentSymbol.experience === null ||
-                            isNaN(targetLevel) ||
-                            (!currentSymbol.daily && !currentSymbol.weekly) ||
-                            targetDate === "Invalid Date"
-                          ? "Indefinite"
-                          : targetDate}
-                      </p>
-                      <p className="text-tertiary">
-                        {targetSymbols === 0 &&
-                        currentSymbol.experience !== null &&
-                        currentSymbol.experience !== 0
-                          ? "Ready for upgrade"
-                          : targetLevel <= symbol.level
-                          ? "Level must be over " + symbol.level
-                          : isNaN(targetLevel)
-                          ? "Enter a target level"
-                          : String(targetDays) ===
-                              ("Infinity" || "-Infiinity") ||
-                            isNaN(targetDays) ||
-                            (!currentSymbol.daily && !currentSymbol.weekly) ||
-                            isNaN(currentSymbol.experience) ||
-                            currentSymbol.experience === null
-                          ? "? days"
-                          : targetDays > 1
-                          ? targetDays + " days"
-                          : targetDays + " day"}
+                        {isNaN(targetSymbols) ||
+                        targetSymbols < 0 ||
+                        currentSymbol.experience === null ||
+                        (currentSymbol.experience === 0 &&
+                          (targetLevel <= currentSymbol.level ||
+                            isNaN(targetLevel)))
+                          ? "?"
+                          : targetSymbols}
                       </p>
                     </div>
-                    <p className="w-1/4">
-                      {isNaN(targetSymbols) ||
-                      targetSymbols < 0 ||
-                      currentSymbol.experience === null ||
-                      (currentSymbol.experience === 0 &&
-                        (targetLevel <= currentSymbol.level ||
-                          isNaN(targetLevel)))
-                        ? "?"
-                        : targetSymbols}
-                    </p>
                   </div>
                 </div>
               )

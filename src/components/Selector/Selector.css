@@ -15,5 +15,5 @@
 }
 
 .horizontal-divider {
-    @apply bg-gradient-to-r from-transparent via-white to-transparent border-0 opacity-20 h-px my-7 w-[700px]
+    @apply bg-gradient-to-r via-white border-0 opacity-20 h-px my-7 max-w-[350px] tablet:max-w-[700px] laptop:max-w-[1050px]
 }
