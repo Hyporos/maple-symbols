@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiOutlineQuestionMarkCircle, HiChevronDown } from "react-icons/hi2";
 import { useMediaQuery } from "react-responsive";
-import { AiOutlineExclamation } from "react-icons/ai";
 import { IoMdArrowDropdown } from "react-icons/io";
 import dayjs from "dayjs";
 import "./Levels.css";

@@ -211,7 +211,7 @@ const Calculator = ({
 
   return (
     <section className="calculator">
-      <div className="flex py-16 bg-gradient-to-t from-card-tool to-card-grad rounded-t-lg flex-col tablet:flex-row w-[350px] space-y-8 tablet:space-y-0 tablet:w-[700px] h-[700px] tablet:h-[350px]">
+      <div className="flex pt-16 bg-gradient-to-t from-card-tool to-card-grad justify-between tablet:justify-normal rounded-t-lg flex-col tablet:flex-row w-[350px] space-y-8 tablet:space-y-0 tablet:w-[700px] h-[700px] tablet:h-[350px]">
         <div className="px-10 space-y-6 w-[350px]">
           <div className="flex justify-center items-center space-x-4 pb-6">
             <img src={currentSymbol.img} alt={currentSymbol.alt} />

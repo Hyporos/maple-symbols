@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiArrowSmRight } from "react-icons/hi";
+import { useMediaQuery } from "react-responsive";
 import "./Tools.css";
 
 interface Props {
@@ -22,6 +23,8 @@ interface Props {
 }
 
 const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
+  const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
+  const isTablet = useMediaQuery({ query: `(max-width: 1150px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
   const [selectorExperience, setSelectorExperience] = useState(NaN);
@@ -100,8 +103,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   return (
     <section className="tools">
-      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-lg tablet:rounded-b-lg mt-16 pt-9 tablet:pt-0 tablet:mt-0 tablet:h-[250px] w-[350px] tablet:w-[700px]">
-        <hr className="horizontal-divider hidden tablet:flex" />
+      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg pt-10 tablet:pt-0 tablet:h-[250px] w-[350px] tablet:w-[700px]">
+        <hr className="horizontal-divider mb-9" />
+
         <div
           className={`flex justify-center tablet:justify-between tablet:mx-20 text-secondary space-x-4 mb-7 ${
             (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
@@ -110,7 +114,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         >
           <button
             className={`tool-select ${
-              selectedTool === 1 && "bg-secondary text-primary"
+              selectedTool === 1
+                ? "bg-secondary text-primary space-x-2"
+                : isMobile ? "shadow-accent shadow-level w-[50px]" : "space-x-2"
             }`}
             onClick={() => setSelectedTool(1)}
           >
@@ -121,13 +127,17 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   : "/symbols/sacred-selector.webp"
               }`}
             ></img>
-            <p>Symbol Selector</p>
+            <p>{(selectedTool === 1 || !isMobile) && "Symbol Selector"}</p>
           </button>
           <Tooltip>
             <TooltipTrigger asChild={true}>
               <button
-                className={`tool-select hidden tablet:flex ${
-                  selectedTool === 2 && "bg-secondary text-primary"
+                className={`tool-select ${
+                  selectedTool === 2
+                    ? "bg-secondary text-primary space-x-2"
+                    : isMobile
+                    ? "shadow-accent shadow-level w-[50px]"
+                    : "space-x-2"
                 }`}
                 onClick={() => setSelectedTool(2)}
               >
@@ -138,7 +148,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                       : "/symbols/sacred-catalyst.webp"
                   }`}
                 ></img>
-                <p>{!swapped ? "Arcane Catalyst" : "Sacred Catalyst"}</p>
+                <p>
+                  {(selectedTool === 2 || !isMobile) &&
+                    (!swapped ? "Arcane Catalyst" : "Sacred Catalyst")}
+                </p>
               </button>
             </TooltipTrigger>
             <TooltipContent className="tooltip">
