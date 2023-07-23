@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiOutlineQuestionMarkCircle, HiChevronDown } from "react-icons/hi2";
+import { useMediaQuery } from "react-responsive";
+import { AiOutlineExclamation } from "react-icons/ai";
 import { IoMdArrowDropdown } from "react-icons/io";
 import dayjs from "dayjs";
 import "./Levels.css";
@@ -33,10 +35,13 @@ interface Props {
 }
 
 const Levels = ({ symbols, swapped }: Props) => {
+  const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
+  const isTablet = useMediaQuery({ query: `(max-width: 1150px)` });
   const [targetSymbol, setTargetSymbol] = useState(0);
   const [targetLevel, setTargetLevel] = useState(NaN);
   const [targetDays, setTargetDays] = useState(NaN);
   const [selectedNone, setSelectedNone] = useState(true);
+  const [levelSet, setLevelSet] = useState(false);
 
   const currentSymbol = symbols[targetSymbol];
 
@@ -101,6 +106,10 @@ const Levels = ({ symbols, swapped }: Props) => {
   useEffect(() => {
     setSelectedNone(true);
   }, [swapped]);
+
+  useMemo(() => {
+    setLevelSet(false);
+  }, [targetSymbol, selectedNone]);
 
   return (
     <section className="levels">
@@ -175,8 +184,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </p>
                     <IoMdArrowDropdown
                       size={25}
-                      className="block tablet:hidden w-[37.5px]"
+                      className={`block tablet:hidden w-[37.5px] ${symbol.level === (!swapped ? 20 : 11) && "hidden"}`}
                     ></IoMdArrowDropdown>
+                    <p className={`w-[37.5px] text-accent ${(symbol.level === (!swapped ? 20 : 11) && isMobile) ? "block" : "hidden"}`}>MAX</p>
                     <p
                       className={`tablet:w-1/4 hidden tablet:block ${
                         isNaN(symbol.level) || symbol.level === null
@@ -241,7 +251,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                   </div>
 
                   <div
-                    className={`flex items-center flex-col tablet:flex-row px-4 tablet:px-0 text-center rounded-b-3xl bg-dark py-4 ${
+                    className={`flex items-center flex-col tablet:flex-row px-4 tablet:px-0 text-center rounded-b-3xl bg-dark pt-2 pb-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
                     } ${symbol.level === 20 && "pointer-events-none"} ${
@@ -252,20 +262,25 @@ const Levels = ({ symbols, swapped }: Props) => {
                         : "hidden"
                     }`}
                   >
-                    <hr className="bg-gradient-to-r via-white border-0 opacity-20 h-px w-[250px] mb-8 block tablet:hidden"></hr>
                     <div className="hidden tablet:block w-1/4">
-                      <hr className="ml-24 w-[330px] border-y border-white border-opacity-5 absolute"></hr>
-                      <hr className="ml-24 translate-y-level h-[40px] border-x border-white border-opacity-5 absolute"></hr>
+                      <hr className="ml-[60px] laptop:ml-24 w-[190px] laptop:w-[330px] border-y border-white border-opacity-5 absolute"></hr>
+                      <hr className="ml-[60px] laptop:ml-24 translate-y-level h-[40px] laptop:h-[40px] border-x border-white border-opacity-5 absolute"></hr>
                     </div>
                     <div className="tablet:w-1/4"></div>
-                    <div className="tablet:w-1/4 flex items-center justify-between tablet:justify-normal w-full space-x-24 tablet:space-x-0 tablet:block mb-8 tablet:mb-0">
-                      <p className="block tablet:hidden">Target Level</p>
+                    <div className="flex tablet:block tablet:w-1/4 items-center justify-between tablet:justify-normal w-full tablet:space-x-0 mb-6 tablet:mb-0">
+                      <p className="block tablet:hidden text-accent">Target Level</p>
                       <Tooltip placement="left">
                         <TooltipTrigger>
                           <input
                             type="number"
                             placeholder="Level"
-                            value={targetLevel}
+                            value={
+                              String(targetLevel) === "NaN" &&
+                              levelSet === false &&
+                              isMobile
+                                ? setTargetLevel(20)
+                                : targetLevel
+                            }
                             className="level-input"
                             onWheel={(e) => e.currentTarget.blur()}
                             onChange={(e) => {
@@ -273,17 +288,21 @@ const Levels = ({ symbols, swapped }: Props) => {
                                 Number(e.target.value) <= (!swapped ? 20 : 11)
                               ) {
                                 setTargetLevel(parseInt(e.target.value));
+                                setLevelSet(true);
                               }
                               if (
                                 Number(e.target.value) >= (!swapped ? 20 : 11)
                               ) {
                                 setTargetLevel(!swapped ? 20 : 11);
+                                setLevelSet(true);
                               }
                               if (Number(e.target.value) < 0) {
                                 setTargetLevel(NaN);
+                                setLevelSet(true);
                               }
                               if (e.target.value === "0") {
                                 setTargetLevel(1);
+                                setLevelSet(true);
                               }
                             }}
                           />
@@ -294,10 +313,13 @@ const Levels = ({ symbols, swapped }: Props) => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <div className="tablet:w-1/4 flex tablet:block justify-between tablet:justify-normal w-full space-x-10 items-center tablet:space-x-0 mb-8 tablet:mb-0">
+
+                    <hr className="bg-gradient-to-r via-white border-0 opacity-20 h-px w-[250px] mb-6 block tablet:hidden"></hr>
+                    <div className="tablet:w-1/4 flex justify-between w-full flex-col tablet:flex">
+                    <div className="flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
                       <p className="block tablet:hidden">Completion Date</p>
                       <div>
-                        <p>
+                        <p className="text-tertiary tablet:text-secondary">
                           {targetSymbols === 0 &&
                           currentSymbol.experience !== null &&
                           currentSymbol.experience !== 0
@@ -311,15 +333,24 @@ const Levels = ({ symbols, swapped }: Props) => {
                             ? "Indefinite"
                             : targetDate}
                         </p>
-                        <p className="text-tertiary">
+                      </div>
+                    </div>
+                    <div className=" flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
+                      <p className="block tablet:hidden">Days Remaining</p>
+
+                        <p className=" text-tertiary">
                           {targetSymbols === 0 &&
                           currentSymbol.experience !== null &&
                           currentSymbol.experience !== 0
                             ? "Ready for upgrade"
                             : targetLevel <= symbol.level
-                            ? "Level must be over " + symbol.level
+                            ? isTablet
+                              ? "Level too low"
+                              : "Level must be over " + symbol.level
                             : isNaN(targetLevel)
-                            ? "Enter a target level"
+                            ? isTablet
+                              ? "Enter a level"
+                              : "Enter a target level"
                             : String(targetDays) ===
                                 ("Infinity" || "-Infiinity") ||
                               isNaN(targetDays) ||
@@ -332,10 +363,12 @@ const Levels = ({ symbols, swapped }: Props) => {
                             : targetDays + " day"}
                         </p>
                       </div>
+
                     </div>
+
                     <div className="tablet:w-1/4 flex tablet:block justify-between tablet:justify-normal items-center w-full tablet:space-x-0">
                       <p className="block tablet:hidden">Symbols Remaining</p>
-                      <p>
+                      <p className="text-tertiary tablet:text-secondary">
                         {isNaN(targetSymbols) ||
                         targetSymbols < 0 ||
                         currentSymbol.experience === null ||
