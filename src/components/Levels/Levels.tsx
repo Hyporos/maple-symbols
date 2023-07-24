@@ -319,7 +319,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip z-10">
-                          Preview the remaining days and <br></br> symbols for
+                          Preview the remaining {isMobile ? "stats" : "days and"} <br></br> {!isMobile && "symbols"} for
                           the <span>specified level</span>
                         </TooltipContent>
                       </Tooltip>

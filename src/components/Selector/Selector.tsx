@@ -1,8 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import {
-  HiChevronLeft,
-  HiChevronRight,
-} from "react-icons/hi2";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import "./Selector.css";
 
 interface Props {
@@ -34,7 +31,7 @@ const Selector = ({
 
   return (
     <section className="selector">
-      <div className="flex flex-col items-center justify-center pt-8">
+      <div className="flex flex-col items-center tablet:items-stretch justify-center pt-8">
         <div className="flex tablet:items-center px-8">
           <HiChevronLeft
             size={40}
@@ -46,17 +43,42 @@ const Selector = ({
                 : setSelectedSymbol(selectedArcane);
             }}
           />
-                             <div className="block tablet:hidden">
-                      <hr className={`${!swapped && "ml-[-20px] translate-y-[55px] h-[57px] border-x border-white border-opacity-5 absolute"}`}></hr>
-                      <hr className={`${!swapped && "ml-[-20px] translate-y-[112px] w-[40px] border-y border-white border-opacity-5 absolute"}`}></hr>
-                      <hr className={`${!swapped && "ml-[-20px] translate-y-[55px] translate-x-[290px] h-[57px] border-x border-white border-opacity-5 absolute"}`}></hr>
-                      <hr className={`${!swapped && "ml-[-20px] translate-y-[112px] translate-x-[252px] w-[40px] border-y border-white border-opacity-5 absolute"}`}></hr>
-                    </div>
+          <div className="block tablet:hidden">
+            <hr
+              className={`${
+                !swapped &&
+                "ml-[-20px] translate-y-[55px] h-[57px] border-x border-white border-opacity-5 absolute"
+              }`}
+            ></hr>
+            <hr
+              className={`${
+                !swapped &&
+                "ml-[-20px] translate-y-[112px] w-[40px] border-y border-white border-opacity-5 absolute"
+              }`}
+            ></hr>
+            <hr
+              className={`${
+                !swapped &&
+                "ml-[-20px] translate-y-[55px] translate-x-[290px] h-[57px] border-x border-white border-opacity-5 absolute"
+              }`}
+            ></hr>
+            <hr
+              className={`${
+                !swapped &&
+                "ml-[-20px] translate-y-[112px] translate-x-[252px] w-[40px] border-y border-white border-opacity-5 absolute"
+              }`}
+            ></hr>
+          </div>
           <div className="tablet:space-x-10 flex flex-wrap justify-center w-[250px] tablet:w-full ">
             {symbols.map(
               (symbol, index) =>
                 symbol.type === (!swapped ? "arcane" : "sacred") && (
-                  <div key={index} className={`group ${symbol.id < 3 && "mb-8 tablet:mb-0"} mx-4 tablet:mx-0`}>
+                  <div
+                    key={index}
+                    className={`group ${
+                      symbol.id < 3 && "mb-8 tablet:mb-0"
+                    } mx-4 tablet:mx-0`}
+                  >
                     <div
                       className={`selector-level ${
                         selectedSymbol === index

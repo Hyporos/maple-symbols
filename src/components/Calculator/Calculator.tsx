@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
+import { MdOutlineInfo }  from "react-icons/md"
 import "./Calculator.css";
 import dayjs from "dayjs";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
@@ -651,9 +652,9 @@ const Calculator = ({
                         <Tooltip placement={"right"}>
                           <TooltipTrigger asChild={true}>
                             {" "}
-                            <HiChevronDoubleRight
+                            <MdOutlineInfo
                               size={20}
-                              className="fill-accent hover:fill-hover cursor-default transition-all"
+                              className="fill-accent hover:fill-hover cursor-default transition-all mt-0.5"
                             />
                           </TooltipTrigger>
                           <TooltipContent className="tooltip">
