@@ -17,7 +17,7 @@
   <ul>
     <summary align="center">
         <h2 style="display: inline-block;">
-          A tool which provides calculations and guides for symbols in Maplestory
+          A tool which provides calculations for symbols in Maplestory
         </h1>
     </summary>
     <hr></hr>
