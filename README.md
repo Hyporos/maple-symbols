@@ -17,7 +17,7 @@
   <ul>
     <summary align="center">
         <h2 style="display: inline-block;">
-          A simple tool which provides calculations for Arcane & Sacred Symbols in Maplestory.
+          A simple tool which provides calculations for Arcane & Sacred Symbols
         </h1>
     </summary>
     <hr></hr>
