@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { isFirefox } from "react-device-detect";
 import { Dialog, Switch } from "@headlessui/react";
+import { useMediaQuery } from "react-responsive";
 import "./Disclaimer.css";
 
 const Disclaimer = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
+  const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
   const [isOpen, setIsOpen] = useState(true);
   const [dismissed, setDismissed] = useState(
     JSON.parse(localStorage.getItem("disclaimer") || "false")
@@ -28,21 +30,21 @@ const Disclaimer = () => {
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
-  if (!dismissed)
+  if (!dismissed) {
     return (
       <Dialog open={isOpen} onClose={() => handleDismiss()}>
         <div className="fixed inset-0 bg-black/70" aria-hidden="true" />
 
         <div
           className={`fixed inset-0 flex items-center justify-center p-4 ${
-            isOpen && (isFirefox ? "mr-[8px]" : "mr-[15px]") // Accomodate for the thinner scroll bar width on Firefox
+            isOpen && !isMobile && (isFirefox ? "mr-[8px]" : "mr-[15px]") // Accomodate for the thinner scroll bar width on Firefox
           }`}
         >
-          <Dialog.Panel className="flex shadow-level shadow-[#b18bd0] flex-col justify-between items-center bg-card text-center rounded-lg p-10 w-[500px] h-[500px]">
+          <Dialog.Panel className="flex shadow-level shadow-[#b18bd0] flex-col justify-between items-center bg-card text-center rounded-lg p-10 w-[350px] tablet:w-[500px] h-[500px] tablet:h-[450px]">
             <Dialog.Title className="text-white text-2xl font-semibold">
-              Welcome to <span>Maple Symbols</span>!
+              Welcome to {isMobile && <br></br>} <span>Maple Symbols</span>!
             </Dialog.Title>
-            <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[400px]" />
+            <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[250px] tablet:w-[400px]" />
             <Dialog.Description>
               This tool is currently running on a{" "}
               <span className="text-red-500">Test Build</span>, which means that
@@ -53,11 +55,7 @@ const Disclaimer = () => {
               please let me know on{" "}
               <span className="text-[#7289da]">Discord</span>.
             </Dialog.Description>
-            <Dialog.Description>
-              At this moment, the app is only designed to operate on a{" "}
-              <span>1920x1080</span> resolution or greater.
-            </Dialog.Description>
-            <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[400px]" />
+            <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[250px] tablet:w-[400px]" />
             <div
               className="flex items-center space-x-4 cursor-pointer select-none"
               onClick={() => setDontShow(!dontShow)}
@@ -87,6 +85,9 @@ const Disclaimer = () => {
         </div>
       </Dialog>
     );
+  } else {
+    return null;
+  }
 };
 
 export default Disclaimer;

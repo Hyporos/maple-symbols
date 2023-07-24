@@ -1,18 +1,14 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import {
-  HiArrowsUpDown,
-  HiBars3,
   HiChevronLeft,
   HiChevronRight,
-  HiChevronDown,
 } from "react-icons/hi2";
-import { IoChevronForward, IoChevronBack } from "react-icons/io5";
 import "./Selector.css";
 
 interface Props {
   symbols: [
     {
+      id: number;
       name: string;
       alt: string;
       img: string;
@@ -38,11 +34,11 @@ const Selector = ({
 
   return (
     <section className="selector">
-      <div className="flex flex-col justify-center pt-12">
-        <div className="flex justify-center tablet:justify-between items-center px-8 space-x-10 tablet:space-x-0">
+      <div className="flex flex-col items-center justify-center pt-8">
+        <div className="flex tablet:items-center px-8">
           <HiChevronLeft
             size={40}
-            className={"icon-button"}
+            className={"icon-button mt-2.5 tablet:mt-0"}
             onClick={() => {
               setSwapped(!swapped);
               !swapped
@@ -50,11 +46,17 @@ const Selector = ({
                 : setSelectedSymbol(selectedArcane);
             }}
           />
-          <div className="hidden space-x-10 tablet:flex">
+                             <div className="block tablet:hidden">
+                      <hr className={`${!swapped && "ml-[-20px] translate-y-[55px] h-[57px] border-x border-white border-opacity-5 absolute"}`}></hr>
+                      <hr className={`${!swapped && "ml-[-20px] translate-y-[112px] w-[40px] border-y border-white border-opacity-5 absolute"}`}></hr>
+                      <hr className={`${!swapped && "ml-[-20px] translate-y-[55px] translate-x-[290px] h-[57px] border-x border-white border-opacity-5 absolute"}`}></hr>
+                      <hr className={`${!swapped && "ml-[-20px] translate-y-[112px] translate-x-[252px] w-[40px] border-y border-white border-opacity-5 absolute"}`}></hr>
+                    </div>
+          <div className="tablet:space-x-10 flex flex-wrap justify-center w-[250px] tablet:w-full ">
             {symbols.map(
               (symbol, index) =>
                 symbol.type === (!swapped ? "arcane" : "sacred") && (
-                  <div key={index} className="group">
+                  <div key={index} className={`group ${symbol.id < 3 && "mb-8 tablet:mb-0"} mx-4 tablet:mx-0`}>
                     <div
                       className={`selector-level ${
                         selectedSymbol === index
@@ -90,16 +92,9 @@ const Selector = ({
                 )
             )}
           </div>
-          <div className="flex flex-row tablet:hidden cursor-pointer space-x-8 p-2 justify-center items-center shadow-accent shadow-level bg-card rounded-2xl" onClick={() => console.log("tes")}>
-              <img
-                src={symbols[selectedSymbol].img}
-                alt={symbols[selectedSymbol].alt}
-              ></img>
-              <HiChevronDown size={40} />
-          </div>
           <HiChevronRight
             size={40}
-            className={"icon-button"}
+            className={"icon-button mt-2.5 tablet:mt-0"}
             onClick={() => {
               setSwapped(!swapped);
               !swapped
@@ -108,7 +103,7 @@ const Selector = ({
             }}
           />
         </div>
-        <hr className="horizontal-divider" />
+        <hr className="horizontal-divider flex justify-center" />
       </div>
     </section>
   );

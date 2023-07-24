@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
-import { HiOutlineQuestionMarkCircle, HiChevronDown } from "react-icons/hi2";
+import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { useMediaQuery } from "react-responsive";
 import { IoMdArrowDropdown } from "react-icons/io";
 import dayjs from "dayjs";
@@ -183,9 +183,19 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </p>
                     <IoMdArrowDropdown
                       size={25}
-                      className={`block tablet:hidden w-[37.5px] ${symbol.level === (!swapped ? 20 : 11) && "hidden"}`}
+                      className={`block tablet:hidden w-[37.5px] ${
+                        symbol.level === (!swapped ? 20 : 11) && "hidden"
+                      }`}
                     ></IoMdArrowDropdown>
-                    <p className={`w-[37.5px] text-accent ${(symbol.level === (!swapped ? 20 : 11) && isMobile) ? "block" : "hidden"}`}>MAX</p>
+                    <p
+                      className={`w-[37.5px] text-accent ${
+                        symbol.level === (!swapped ? 20 : 11) && isMobile
+                          ? "block"
+                          : "hidden"
+                      }`}
+                    >
+                      MAX
+                    </p>
                     <p
                       className={`tablet:w-1/4 hidden tablet:block ${
                         isNaN(symbol.level) || symbol.level === null
@@ -267,7 +277,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </div>
                     <div className="tablet:w-1/4"></div>
                     <div className="flex tablet:block tablet:w-1/4 items-center justify-between tablet:justify-normal w-full tablet:space-x-0 mb-6 tablet:mb-0">
-                      <p className="block tablet:hidden text-accent">Target Level</p>
+                      <p className="block tablet:hidden text-accent">
+                        Target Level
+                      </p>
                       <Tooltip placement="left">
                         <TooltipTrigger>
                           <input
@@ -315,27 +327,28 @@ const Levels = ({ symbols, swapped }: Props) => {
 
                     <hr className="bg-gradient-to-r via-white border-0 opacity-20 h-px w-[250px] mb-6 block tablet:hidden"></hr>
                     <div className="tablet:w-1/4 flex justify-between w-full flex-col tablet:flex">
-                    <div className="flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
-                      <p className="block tablet:hidden">Completion Date</p>
-                      <div>
-                        <p className="text-tertiary tablet:text-secondary">
-                          {targetSymbols === 0 &&
-                          currentSymbol.experience !== null &&
-                          currentSymbol.experience !== 0
-                            ? "Complete"
-                            : targetLevel <= symbol.level ||
-                              isNaN(currentSymbol.experience) ||
-                              currentSymbol.experience === null ||
-                              isNaN(targetLevel) ||
-                              (!currentSymbol.daily && !currentSymbol.weekly) ||
-                              targetDate === "Invalid Date"
-                            ? "Indefinite"
-                            : targetDate}
-                        </p>
+                      <div className="flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
+                        <p className="block tablet:hidden">Completion Date</p>
+                        <div>
+                          <p className="text-tertiary tablet:text-secondary">
+                            {targetSymbols === 0 &&
+                            currentSymbol.experience !== null &&
+                            currentSymbol.experience !== 0
+                              ? "Complete"
+                              : targetLevel <= symbol.level ||
+                                isNaN(currentSymbol.experience) ||
+                                currentSymbol.experience === null ||
+                                isNaN(targetLevel) ||
+                                (!currentSymbol.daily &&
+                                  !currentSymbol.weekly) ||
+                                targetDate === "Invalid Date"
+                              ? "Indefinite"
+                              : targetDate}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div className=" flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
-                      <p className="block tablet:hidden">Days Remaining</p>
+                      <div className=" flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
+                        <p className="block tablet:hidden">Days Remaining</p>
 
                         <p className=" text-tertiary">
                           {targetSymbols === 0 &&
@@ -362,7 +375,6 @@ const Levels = ({ symbols, swapped }: Props) => {
                             : targetDays + " day"}
                         </p>
                       </div>
-
                     </div>
 
                     <div className="tablet:w-1/4 flex tablet:block justify-between tablet:justify-normal items-center w-full tablet:space-x-0">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Calculator from "./components/Calculator/Calculator";
 import Footer from "./components/Footer/Footer";
 import Disclaimer from "./components/Disclaimer/Disclaimer";
@@ -377,7 +377,6 @@ function App() {
       />
       <Levels
         symbols={symbols}
-        setSymbols={setSymbols}
         selectedSymbol={selectedSymbol}
         swapped={swapped}
       />

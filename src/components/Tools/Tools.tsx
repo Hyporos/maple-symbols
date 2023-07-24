@@ -9,12 +9,11 @@ interface Props {
     {
       id: number;
       img: string;
+      name: string;
       level: number;
       experience: number;
       symbolsRemaining: number;
-      data: {
-        symbolsRequired: number;
-      };
+      data: any[];
     }
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
@@ -24,7 +23,6 @@ interface Props {
 
 const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
-  const isTablet = useMediaQuery({ query: `(max-width: 1150px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
   const [selectorExperience, setSelectorExperience] = useState(NaN);
@@ -37,7 +35,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   useMemo(() => {
     let accumulated = 0;
-    symbols[selectedSymbol].data.forEach((symbol) => {
+    symbols[selectedSymbol].data.forEach((symbol : any) => {
       try {
         if (symbol.level < currentSymbol.level) {
           accumulated =
@@ -55,7 +53,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         Math.ceil(accumulated - accumulated * (!swapped ? 0.8 : 0.6));
       setCatalystExperience(tempCatalystExp);
 
-      symbols[selectedSymbol].data.forEach((symbol) => {
+      symbols[selectedSymbol].data.forEach((symbol: any) => {
         if (
           tempCatalystExp > currentSymbol.data[symbol.level].symbolsRequired
         ) {
@@ -74,7 +72,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
     setSelectorLevel(currentSymbol.level);
     let count = 0;
     let accumulated = 0;
-    symbols[selectedSymbol].data.forEach((symbol) => {
+    symbols[selectedSymbol].data.forEach(((symbol : any) => {
       try {
         if (
           selectorCount >=
@@ -94,7 +92,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
       } catch (e) {
         //console.log((e as Error).message);
       }
-    });
+    }));
   }, [currentSymbol.level, currentSymbol.experience, selectorCount]);
 
   useEffect(() => {
@@ -116,7 +114,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             className={`tool-select ${
               selectedTool === 1
                 ? "bg-secondary text-primary space-x-2"
-                : isMobile ? "shadow-accent shadow-level w-[50px]" : "space-x-2"
+                : isMobile ? `${(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "" : "shadow-accent"} shadow-level w-[50px]` : "space-x-2"
             }`}
             onClick={() => setSelectedTool(1)}
           >
@@ -136,7 +134,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   selectedTool === 2
                     ? "bg-secondary text-primary space-x-2"
                     : isMobile
-                    ? "shadow-accent shadow-level w-[50px]"
+                    ? `${(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "" : "shadow-accent"} shadow-level w-[50px]`
                     : "space-x-2"
                 }`}
                 onClick={() => setSelectedTool(2)}
@@ -163,7 +161,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </Tooltip>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-10 space-y-7 tablet:space-y-0 ${
+          className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-10 space-y-5 tablet:space-y-0 ${
             selectedTool === 1 ? "block" : "hidden"
           } ${
             (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
@@ -279,17 +277,18 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </button>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark rounded-3xl mx-10 py-3 mb-9 space-x-8 ${
+          className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-8 space-y-5 tablet:space-y-0 ${
             selectedTool === 2 ? "block" : "hidden"
           } ${
             (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
             "opacity-25"
           }`}
         >
-          <div className="flex items-center w-[70px]">
-            <img src={currentSymbol.img}></img>
+          <div className="flex items-center space-x-4 tablet:w-[70px]">
+            <img src={currentSymbol.img} className="p-[3.5px] tablet:p-0"></img>
+            <p>{isMobile && currentSymbol.name}</p>
           </div>
-          <div className="flex items-center justify-around w-1/3">
+          <div className="flex items-center justify-around tablet:w-1/3">
             <Tooltip>
               <TooltipTrigger className="flex items-center space-x-4 cursor-default">
                 <div>
@@ -344,7 +343,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               </TooltipContent>
             </Tooltip>
           </div>
-          <p className="w-[200px] text-right py-2">
+          <p className="w-[200px] text-center tablet:text-right text-tertiary py-2">
             {currentSymbol.level === 1 ||
             isNaN(currentSymbol.level) ||
             currentSymbol.level === null

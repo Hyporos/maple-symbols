@@ -1,5 +1,5 @@
 .calculator {
-    @apply flex justify-center
+    @apply flex justify-center w-screen 
 }
 
 .vertical-divider {

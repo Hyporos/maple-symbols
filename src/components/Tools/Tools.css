@@ -1,5 +1,5 @@
 .tools {
-    @apply flex justify-center
+    @apply flex justify-center w-screen
 }
 
 .horizontal-divider {

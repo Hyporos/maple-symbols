@@ -23,6 +23,7 @@ interface Props {
       extra: boolean;
       dailySymbols: number;
       daysRemaining: number;
+      totalDaysRemaining: number;
       symbolsRemaining: number;
       mondayCount: number;
       completion: string;
