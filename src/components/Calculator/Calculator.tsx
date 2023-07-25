@@ -357,7 +357,7 @@ const Calculator = ({
             </Tooltip>
 
           <div className="flex space-x-2">
-            <Tooltip>
+            <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
                   className={`daily-box ${
@@ -385,7 +385,7 @@ const Calculator = ({
               </TooltipContent>
             </Tooltip>
 
-            <Tooltip>
+            <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button //TODO: maybe make the tooltips BOTTOM cause it covers the input fields
                   className={`daily-box ${
@@ -413,7 +413,7 @@ const Calculator = ({
               </TooltipContent>
             </Tooltip>
 
-            <Tooltip>
+            <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
                   className={`daily-box ${

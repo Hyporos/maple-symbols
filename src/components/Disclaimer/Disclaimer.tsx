@@ -40,20 +40,30 @@ const Disclaimer = () => {
             isOpen && !isMobile && (isFirefox ? "mr-[8px]" : "mr-[15px]") // Accomodate for the thinner scroll bar width on Firefox
           }`}
         >
-          <Dialog.Panel className="flex shadow-level shadow-[#b18bd0] flex-col justify-between items-center bg-card text-center rounded-lg p-10 w-[350px] tablet:w-[500px] h-[500px] tablet:h-[450px]">
+          <Dialog.Panel className="flex shadow-level shadow-[#b18bd0] flex-col justify-between items-center bg-card text-center rounded-lg p-10 w-[350px] tablet:w-[500px] h-[600px] tablet:h-[500px]">
             <Dialog.Title className="text-white text-2xl font-semibold">
               Welcome to {isMobile && <br></br>} <span>Maple Symbols</span>!
             </Dialog.Title>
             <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[250px] tablet:w-[400px]" />
             <Dialog.Description>
-              This tool is currently running on a{" "}
-              <span className="text-red-500">Test Build</span>, which means that
-              some features may be missing or broken.
+              This tool is currently in a <span>beta</span> state which makes it
+              prone to bugs and other issues.
             </Dialog.Description>
             <Dialog.Description>
               If you encounter any problems or wish to submit any suggestions,
-              please let me know on{" "}
-              <span className="text-[#7289da]">Discord</span>.
+              please let me know on the{" "}
+              <a
+                className="text-[#7289DA] hover:text-white outline-none transition-all"
+                target="_blank"
+                href="https://discord.gg/FTMgy2ZKPK"
+              >
+                Discord
+              </a>{" "}
+              server.
+            </Dialog.Description>
+            <Dialog.Description>
+              Please use a <span>different browser</span> and report an issue if
+              the website looks very off. (alignment or colors)
             </Dialog.Description>
             <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[250px] tablet:w-[400px]" />
             <div
