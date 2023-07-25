@@ -156,7 +156,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               <span>[Regular Server Only]</span> <br></br> Transfer{" "}
               {!swapped ? "an Arcane Symbol" : "a Sacred Symbol"} once <br></br>{" "}
               within the same world <br></br>{" "}
-              <span className="text-red-500">{swapped && "[Coming Soon]"}</span>
+              <span className="text-red-500">{swapped && "[New Age - Nov 15 Update]"}</span>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -176,6 +176,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               value={selectorCount}
               className="tool-input w-[100px]"
               onChange={(e) => {
+                if (isNaN(currentSymbol.experience)) {
+                  setSelectorCount(NaN);
+                }
                 if (
                   Number(e.target.value) <= currentSymbol.symbolsRemaining &&
                   currentSymbol.experience !== null

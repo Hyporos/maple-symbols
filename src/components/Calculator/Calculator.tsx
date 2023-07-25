@@ -565,10 +565,24 @@ const Calculator = ({
                   currentSymbol.experience !== null
                 ) {
                   return (
-                    <p>
+                    <div className="flex justify-center space-x-1.5">
+                                        <p>
                       <span>{symbolsToNext > 0 ? symbolsToNext : 0}</span>{" "}
                       {symbolsToNext > 1 ? "days to go" : "day to go"}
                     </p>
+                    <Tooltip placement={"top"}>
+                    <TooltipTrigger asChild={true}>
+                      {" "}
+                      <MdOutlineInfo
+                        size={20}
+                        className="fill-accent hover:fill-hover cursor-default transition-all mt-0.5"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className="tooltip">
+                      The completion date assumes that <br></br> you have <span>completed</span> both your <br></br> <span>daily</span> and <span>weekly</span> quests.
+                    </TooltipContent>
+                  </Tooltip>
+                    </div>
                   );
                 } else if (
                   nextLevel.symbolsRequired - currentSymbol.experience <=
