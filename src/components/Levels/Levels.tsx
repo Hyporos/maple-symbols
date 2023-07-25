@@ -110,6 +110,10 @@ const Levels = ({ symbols, swapped }: Props) => {
     setLevelSet(false);
   }, [targetSymbol, selectedNone]);
 
+  useEffect(() => {
+    if (isNaN(currentSymbol.level)) setSelectedNone(true);
+  }, [currentSymbol.level])
+
   return (
     <section className="levels">
       <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[350px] tablet:w-[700px] laptop:w-[1050px] p-10 mt-16 tablet:mt-28">

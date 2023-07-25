@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import Calculator from "./components/Calculator/Calculator";
@@ -16,7 +16,7 @@ const firebaseConfig = {
   storageBucket: "maple-symbols.appspot.com",
   messagingSenderId: "1034069866026",
   appId: "1:1034069866026:web:f7d7f1d55054339039b553",
-  measurementId: "G-5EGQQS4DDK"
+  measurementId: "G-5EGQQS4DDK",
 };
 
 function App() {
@@ -366,6 +366,17 @@ function App() {
       ],
     },
   ]);
+
+  useEffect(() => {
+    if (navigator.userAgent.match(/samsung/i)) {
+      alert(
+        "Your browser (Samsung Internet) may not show this website " +
+          "correctly. Please consider using a standards-compliant " +
+          "browser instead. \n\n" +
+          "We recommend Firefox, Microsoft Edge, or Google Chrome."
+      );
+    }
+  }, []);
 
   return (
     <>
