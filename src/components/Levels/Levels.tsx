@@ -293,7 +293,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                               String(targetLevel) === "NaN" &&
                               levelSet === false &&
                               isMobile
-                                ? setTargetLevel(20)
+                                ? setTargetLevel(!swapped ? 20 : 11)
                                 : targetLevel
                             }
                             className="level-input"
