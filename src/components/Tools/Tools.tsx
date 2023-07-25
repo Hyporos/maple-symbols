@@ -280,7 +280,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </button>
         </div>
         <div
-          className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-8 space-y-5 tablet:space-y-0 ${
+          className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-[31.5px] tablet:py-3 mb-9 tablet:space-x-8 space-y-6 tablet:space-y-0 ${
             selectedTool === 2 ? "block" : "hidden"
           } ${
             (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
@@ -288,7 +288,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           }`}
         >
           <div className="flex items-center space-x-4 tablet:w-[70px]">
-            <img src={currentSymbol.img} width={33} className="p-[3.5px] tablet:p-0"></img>
+            <img src={currentSymbol.img} width={33} className="tablet:p-0"></img>
             <p>{isMobile && currentSymbol.name}</p>
           </div>
           <div className="flex items-center justify-around tablet:w-1/3">

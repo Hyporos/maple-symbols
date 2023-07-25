@@ -62,9 +62,9 @@ const Disclaimer = () => {
               server.
             </Dialog.Description>
             <Dialog.Description>
-              Please use a <span>different browser</span> and report an issue if
-              the website looks very off. (alignment or colors)
-            </Dialog.Description>
+                Updates will be consistent and big things are planned such as{" "}
+                <span>graphs</span> and <span>guides</span>.
+              </Dialog.Description>
             <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[250px] tablet:w-[400px]" />
             <div
               className="flex items-center space-x-4 cursor-pointer select-none"
