@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
-import { MdOutlineInfo }  from "react-icons/md"
+import { MdOutlineInfo } from "react-icons/md";
 import "./Calculator.css";
 import dayjs from "dayjs";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
@@ -223,138 +223,148 @@ const Calculator = ({
           </div>
 
           <Tooltip>
-              <TooltipTrigger className="cursor-default">
-          <div className="flex justify-center items-center space-x-2">
-            <input
-              type="number"
-              placeholder="Level"
-              value={currentSymbol.level === null ? "NaN" : currentSymbol.level}
-              className="symbol-input"
-              onWheel={(e) => e.currentTarget.blur()}
-              onChange={(e) => {
-                if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, level: parseInt(e.target.value) }
-                        : symbol
-                    )
-                  );
-                }
-                if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? {
-                            ...symbol,
-                            level: !swapped ? 20 : 11,
-                            experience: 0,
-                          }
-                        : symbol
-                    )
-                  );
-                }
-                if (Number(e.target.value) < 0) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, level: NaN }
-                        : symbol
-                    )
-                  );
-                }
-                if (e.target.value === "0") {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, level: 1 }
-                        : symbol
-                    )
-                  );
-                }
-              }}
-            ></input>
+            <TooltipTrigger className="cursor-default">
+              <div className="flex justify-center items-center space-x-2">
+                <input
+                  type="number"
+                  placeholder="Level"
+                  value={
+                    currentSymbol.level === null ? "NaN" : currentSymbol.level
+                  }
+                  className="symbol-input"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  onChange={(e) => {
+                    if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? { ...symbol, level: parseInt(e.target.value) }
+                            : symbol
+                        )
+                      );
+                    }
+                    if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? {
+                                ...symbol,
+                                level: !swapped ? 20 : 11,
+                                experience: 0,
+                              }
+                            : symbol
+                        )
+                      );
+                    }
+                    if (Number(e.target.value) < 0) {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? { ...symbol, level: NaN }
+                            : symbol
+                        )
+                      );
+                    }
+                    if (e.target.value === "0") {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? { ...symbol, level: 1 }
+                            : symbol
+                        )
+                      );
+                    }
+                  }}
+                ></input>
 
-            <TbSlash size={30} color="#B2B2B2" />
-            <input
-              type="number"
-              placeholder="Experience"
-              value={
-                currentSymbol.experience === null
-                  ? "NaN"
-                  : currentSymbol.experience
-              }
-              className="symbol-input"
-              onWheel={(e) => e.currentTarget.blur()}
-              onChange={(e) => {
-                if (
-                  isNaN(currentSymbol.level) ||
-                  currentSymbol.level === null
-                ) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, experience: NaN }
-                        : symbol
-                    )
-                  );
-                }
-                if (Number(e.target.value) <= nextLevel.symbolsRequired) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, experience: parseInt(e.target.value) }
-                        : symbol
-                    )
-                  );
-                }
-                if (Number(e.target.value) >= nextLevel.symbolsRequired) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, experience: nextLevel.symbolsRequired }
-                        : symbol
-                    )
-                  );
-                }
-                if (e.target.value === "0" && currentSymbol.level === 1) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, experience: 1 }
-                        : symbol
-                    )
-                  );
-                }
-                if (e.target.value === "00" || e.target.value === "000") {
-                  currentSymbol.level === 1
-                    ? setSymbols(
+                <TbSlash size={30} color="#B2B2B2" />
+                <input
+                  type="number"
+                  placeholder="Experience"
+                  value={
+                    currentSymbol.experience === null
+                      ? "NaN"
+                      : currentSymbol.experience
+                  }
+                  className="symbol-input"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  onChange={(e) => {
+                    if (
+                      isNaN(currentSymbol.level) ||
+                      currentSymbol.level === null
+                    ) {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? { ...symbol, experience: NaN }
+                            : symbol
+                        )
+                      );
+                    }
+                    if (Number(e.target.value) <= nextLevel.symbolsRequired) {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? {
+                                ...symbol,
+                                experience: parseInt(e.target.value),
+                              }
+                            : symbol
+                        )
+                      );
+                    }
+                    if (Number(e.target.value) >= nextLevel.symbolsRequired) {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? {
+                                ...symbol,
+                                experience: nextLevel.symbolsRequired,
+                              }
+                            : symbol
+                        )
+                      );
+                    }
+                    if (e.target.value === "0" && currentSymbol.level === 1) {
+                      setSymbols(
                         symbols.map((symbol) =>
                           symbol.id === selectedSymbol + 1
                             ? { ...symbol, experience: 1 }
                             : symbol
                         )
-                      )
-                    : (e.target.value = "0");
-                }
-                if (Number(e.target.value) < 0) {
-                  setSymbols(
-                    symbols.map((symbol) =>
-                      symbol.id === selectedSymbol + 1
-                        ? { ...symbol, experience: NaN }
-                        : symbol
-                    )
-                  );
-                }
-                if (e.target.value.startsWith("0")) {
-                  e.target.value = e.target.value.substring(1);
-                }
-              }}
-            ></input>
-          </div>
-          </TooltipTrigger>
-            <TooltipContent className="tooltip"><span>Symbol</span> Level / Exp</TooltipContent>
-            </Tooltip>
+                      );
+                    }
+                    if (e.target.value === "00" || e.target.value === "000") {
+                      currentSymbol.level === 1
+                        ? setSymbols(
+                            symbols.map((symbol) =>
+                              symbol.id === selectedSymbol + 1
+                                ? { ...symbol, experience: 1 }
+                                : symbol
+                            )
+                          )
+                        : (e.target.value = "0");
+                    }
+                    if (Number(e.target.value) < 0) {
+                      setSymbols(
+                        symbols.map((symbol) =>
+                          symbol.id === selectedSymbol + 1
+                            ? { ...symbol, experience: NaN }
+                            : symbol
+                        )
+                      );
+                    }
+                    if (e.target.value.startsWith("0")) {
+                      e.target.value = e.target.value.substring(1);
+                    }
+                  }}
+                ></input>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="tooltip">
+              <span>Symbol</span> Level / Exp
+            </TooltipContent>
+          </Tooltip>
 
           <div className="flex space-x-2">
             <Tooltip placement="bottom">
@@ -500,11 +510,17 @@ const Calculator = ({
                       return (
                         <div className="flex space-x-2 items-center justify-center text-primary font-semibold tracking-wider">
                           <h1 className="text-xl">
-                            Level <span className="text-xl">{currentSymbol.level}</span>
+                            Level{" "}
+                            <span className="text-xl">
+                              {currentSymbol.level}
+                            </span>
                           </h1>
                           <HiArrowSmRight size={30} className="fill-basic" />
                           <h1 className="text-xl">
-                            Level <span className="text-xl">{currentSymbol.level + 1}</span>
+                            Level{" "}
+                            <span className="text-xl">
+                              {currentSymbol.level + 1}
+                            </span>
                           </h1>
                         </div>
                       );
@@ -524,7 +540,9 @@ const Calculator = ({
                       //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
                       return (
                         <div className="py-[72.5%]">
-                          <p className="text-accent text-2xl tracking-widest uppercase">Max Level</p>
+                          <p className="text-accent text-2xl tracking-widest uppercase">
+                            Max Level
+                          </p>
                         </div>
                       );
                     } else if (
@@ -533,7 +551,9 @@ const Calculator = ({
                     ) {
                       return (
                         <div className="space-y-4 py-[40%]">
-                          <p className="text-secondary text-2xl tracking-widest uppercase">Disabled</p>
+                          <p className="text-secondary text-2xl tracking-widest uppercase">
+                            Disabled
+                          </p>
                           <p className="text-secondary text-xs lowercase font-light tracking-widest">
                             Enter a level to enable this symbol
                           </p>
@@ -566,22 +586,24 @@ const Calculator = ({
                 ) {
                   return (
                     <div className="flex justify-center space-x-1.5">
-                                        <p>
-                      <span>{symbolsToNext > 0 ? symbolsToNext : 0}</span>{" "}
-                      {symbolsToNext > 1 ? "days to go" : "day to go"}
-                    </p>
-                    <Tooltip placement={"top"}>
-                    <TooltipTrigger asChild={true}>
-                      {" "}
-                      <MdOutlineInfo
-                        size={20}
-                        className="fill-accent hover:fill-hover cursor-default transition-all mt-0.5"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent className="tooltip">
-                      The completion date assumes that <br></br> you have <span>completed</span> both your <br></br> <span>daily</span> and <span>weekly</span> quests.
-                    </TooltipContent>
-                  </Tooltip>
+                      <p>
+                        <span>{symbolsToNext > 0 ? symbolsToNext : 0}</span>{" "}
+                        {symbolsToNext > 1 ? "days to go" : "day to go"}
+                      </p>
+                      <Tooltip placement={"top"}>
+                        <TooltipTrigger asChild={true}>
+                          {" "}
+                          <MdOutlineInfo
+                            size={20}
+                            className="fill-accent hover:fill-hover cursor-default transition-all mt-0.5"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent className="tooltip">
+                          The completion date assumes that <br></br> you have{" "}
+                          <span>completed</span> both your <br></br>{" "}
+                          <span>daily</span> and <span>weekly</span> quests
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   );
                 } else if (
