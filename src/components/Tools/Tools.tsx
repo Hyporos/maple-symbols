@@ -22,7 +22,7 @@ interface Props {
 }
 
 const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
-  const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
   const [selectorExperience, setSelectorExperience] = useState(NaN);

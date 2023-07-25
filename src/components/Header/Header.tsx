@@ -2,7 +2,7 @@ import { useMediaQuery } from "react-responsive";
 import "./Header.css";
 
 function Header() {
-  const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
   return (
     <section className="header">
       <div className="text-accent p-5 flex-shrink-0">
