@@ -454,7 +454,7 @@ const Calculator = ({
                 : "justify-center"
             }`}
           >
-            <p>
+            <p className="text-sm">
               {currentSymbol.daily && currentSymbol.extra
                 ? currentSymbol.name != "Cernium"
                   ? currentSymbol.dailySymbols * 2
@@ -464,7 +464,7 @@ const Calculator = ({
                 : 0}{" "}
               symbols / day
             </p>
-            <p>
+            <p className="text-sm">
               {currentSymbol.type === "arcane"
                 ? currentSymbol.weekly
                   ? 45 + " symbols / week"
@@ -500,11 +500,11 @@ const Calculator = ({
                       return (
                         <div className="flex space-x-2 items-center justify-center text-primary text-xl font-semibold tracking-wider">
                           <h1>
-                            Level <span>{currentSymbol.level}</span>
+                            Level <span className="text-xl">{currentSymbol.level}</span>
                           </h1>
                           <HiArrowSmRight size={30} className="fill-basic" />
                           <h1>
-                            Level <span>{currentSymbol.level + 1}</span>
+                            Level <span className="text-xl">{currentSymbol.level + 1}</span>
                           </h1>
                         </div>
                       );
@@ -514,7 +514,7 @@ const Calculator = ({
                   }
                 })()}
               </div>
-              <div className={`text-2xl tracking-widest uppercase`}>
+              <div>
                 {(() => {
                   try {
                     if (
@@ -524,7 +524,7 @@ const Calculator = ({
                       //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
                       return (
                         <div className="py-[72.5%]">
-                          <p className="text-accent">Max Level</p>
+                          <p className="text-accent text-2xl tracking-widest uppercase">Max Level</p>
                         </div>
                       );
                     } else if (
@@ -533,7 +533,7 @@ const Calculator = ({
                     ) {
                       return (
                         <div className="space-y-4 py-[40%]">
-                          <p className="text-secondary">Disabled</p>
+                          <p className="text-secondary text-2xl tracking-widest uppercase">Disabled</p>
                           <p className="text-secondary text-xs lowercase font-light tracking-widest">
                             Enter a level to enable this symbol
                           </p>

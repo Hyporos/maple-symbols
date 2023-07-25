@@ -57,5 +57,9 @@
     .tooltip {
         @apply bg-[#111111] px-2.5 py-1.5 text-center text-sm rounded-lg shadow-input
     }
+
+    * {
+        @apply text-[16px]
+    }
     
 }

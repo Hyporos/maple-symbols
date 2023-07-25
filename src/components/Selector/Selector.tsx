@@ -31,8 +31,8 @@ const Selector = ({
 
   return (
     <section className="selector">
-      <div className="flex flex-col items-center tablet:items-stretch justify-center pt-8">
-        <div className="flex tablet:items-center px-8">
+      <div className="flex flex-col max-w-[350px] tablet:max-w-[750px] items-center tablet:items-stretch justify-center pt-8">
+        <div className="flex tablet:items-center mx-8">
           <HiChevronLeft
             size={40}
             className={"icon-button mt-2.5 tablet:mt-0"}
@@ -104,7 +104,7 @@ const Selector = ({
                           "filter grayscale"
                         }`}
                       />
-                      <p>
+                      <p className="text-xs">
                         {isNaN(symbol.level) || symbol.level === null
                           ? "Lv. 0"
                           : "Lv. " + symbol.level}
