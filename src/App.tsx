@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import Calculator from "./components/Calculator/Calculator";
 import Footer from "./components/Footer/Footer";
 import Disclaimer from "./components/Disclaimer/Disclaimer";
@@ -6,7 +8,20 @@ import Header from "./components/Header/Header";
 import Selector from "./components/Selector/Selector";
 import Tools from "./components/Tools/Tools";
 import Levels from "./components/Levels/Levels";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
+  authDomain: "maple-symbols.firebaseapp.com",
+  projectId: "maple-symbols",
+  storageBucket: "maple-symbols.appspot.com",
+  messagingSenderId: "1034069866026",
+  appId: "1:1034069866026:web:f7d7f1d55054339039b553",
+  measurementId: "G-5EGQQS4DDK"
+};
+
 function App() {
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
 
