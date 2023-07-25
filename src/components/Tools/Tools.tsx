@@ -169,7 +169,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           }`}
         >
           <div className="flex items-center space-x-10 tablet:space-x-4 tablet:w-1/4">
-            <img src={currentSymbol.img}></img>
+            <img src={currentSymbol.img} width={33}></img>
             <input
               type="number"
               placeholder="Count"
@@ -285,7 +285,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           }`}
         >
           <div className="flex items-center space-x-4 tablet:w-[70px]">
-            <img src={currentSymbol.img} className="p-[3.5px] tablet:p-0"></img>
+            <img src={currentSymbol.img} width={33} className="p-[3.5px] tablet:p-0"></img>
             <p>{isMobile && currentSymbol.name}</p>
           </div>
           <div className="flex items-center justify-around tablet:w-1/3">

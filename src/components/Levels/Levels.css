@@ -1,5 +1,5 @@
 .levels { 
-    @apply flex justify-center w-screen
+    @apply flex justify-center
 }
 
 .levels .horizontal-divider {

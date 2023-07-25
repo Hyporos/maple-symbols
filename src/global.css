@@ -43,7 +43,7 @@
 
 @layer base {
     body {
-        @apply font-maven-pro text-secondary tracking-wide bg-gradient-to-t from-dark to-[#202020] overflow-x-hidden w-screen
+        @apply font-maven-pro text-secondary tracking-wide bg-gradient-to-t from-dark to-[#202020] overflow-x-hidden
     }
 
     button,
@@ -56,6 +56,10 @@
     }
     .tooltip {
         @apply bg-[#111111] px-2.5 py-1.5 text-center text-sm rounded-lg shadow-input
+    }
+
+    * {
+        
     }
     
 }

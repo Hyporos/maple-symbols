@@ -1,5 +1,5 @@
 .selector {
-    @apply flex justify-center w-screen
+    @apply flex justify-center
 }
 
 .selector-level {
