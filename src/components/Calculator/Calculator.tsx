@@ -498,12 +498,12 @@ const Calculator = ({
                         String(currentSymbol.level) != "NaN")
                     ) {
                       return (
-                        <div className="flex space-x-2 items-center justify-center text-primary text-xl font-semibold tracking-wider">
-                          <h1>
+                        <div className="flex space-x-2 items-center justify-center text-primary font-semibold tracking-wider">
+                          <h1 className="text-xl">
                             Level <span className="text-xl">{currentSymbol.level}</span>
                           </h1>
                           <HiArrowSmRight size={30} className="fill-basic" />
-                          <h1>
+                          <h1 className="text-xl">
                             Level <span className="text-xl">{currentSymbol.level + 1}</span>
                           </h1>
                         </div>

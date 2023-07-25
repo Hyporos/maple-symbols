@@ -241,9 +241,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               </TooltipTrigger>
               <TooltipContent className="tooltip">
                 <div className="flex justify-center items-center text-accent space-x-1">
-                  <p>[Before</p>{" "}
+                  <p className="text-sm">[Before</p>{" "}
                   <HiArrowSmRight size={19} className="fill-accent" />{" "}
-                  <p>After]</p>
+                  <p className="text-sm">After]</p>
                 </div>{" "}
                 Level / Experience
               </TooltipContent>
@@ -335,9 +335,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               </TooltipTrigger>
               <TooltipContent className="tooltip">
                 <div className="flex justify-center items-center text-accent space-x-1">
-                  <p>[Before</p>{" "}
+                  <p className="text-sm">[Before</p>{" "}
                   <HiArrowSmRight size={19} className="fill-accent" />{" "}
-                  <p>After]</p>
+                  <p className="text-sm">After]</p>
                 </div>{" "}
                 Symbol Level / Exp
               </TooltipContent>
