@@ -33,9 +33,11 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const [selectorLevel, setSelectorLevel] = useState(currentSymbol.level);
   const [catalystLevel, setCatalystLevel] = useState(NaN);
 
+  const disabled = isNaN(currentSymbol.level) || currentSymbol.level === null;
+
   useMemo(() => {
     let accumulated = 0;
-    symbols[selectedSymbol].data.forEach((symbol : any) => {
+    symbols[selectedSymbol].data.forEach((symbol: any) => {
       try {
         if (symbol.level < currentSymbol.level) {
           accumulated =
@@ -72,7 +74,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
     setSelectorLevel(currentSymbol.level);
     let count = 0;
     let accumulated = 0;
-    symbols[selectedSymbol].data.forEach(((symbol : any) => {
+    symbols[selectedSymbol].data.forEach((symbol: any) => {
       try {
         if (
           selectorCount >=
@@ -92,7 +94,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
       } catch (e) {
         //console.log((e as Error).message);
       }
-    }));
+    });
   }, [currentSymbol.level, currentSymbol.experience, selectorCount]);
 
   useEffect(() => {
@@ -101,22 +103,28 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   return (
     <section className="tools">
-      <div className="flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg pt-10 tablet:pt-0 tablet:h-[250px] w-[350px] tablet:w-[700px]">
+      <div
+        className={`flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg pt-10 tablet:pt-0 tablet:h-[250px] w-[350px] tablet:w-[700px]  ${
+          disabled && "[&>*]:opacity-25 [&>*]:pointer-events-none select-none "
+        }`}
+      >
         <hr className="horizontal-divider mb-9" />
 
-        <div
-          className={`flex justify-center tablet:justify-between tablet:mx-20 text-secondary space-x-4 mb-7 ${
-            (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
-            "opacity-25 pointer-events-none"
-          }`}
-        >
+        <div className="flex justify-center tablet:justify-between tablet:mx-20 text-secondary space-x-4 mb-7">
           <button
             className={`tool-select ${
               selectedTool === 1
                 ? "bg-secondary text-primary space-x-2"
-                : isMobile ? `${(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "" : "shadow-accent"} shadow-level w-[50px]` : "space-x-2"
+                : isMobile
+                ? `${
+                    isNaN(currentSymbol.level) || currentSymbol.level === null
+                      ? ""
+                      : "shadow-accent"
+                  } shadow-level w-[50px]`
+                : "space-x-2"
             }`}
             onClick={() => setSelectedTool(1)}
+            tabIndex={disabled ? -1 : 0}
           >
             <img
               src={`${
@@ -134,10 +142,16 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   selectedTool === 2
                     ? "bg-secondary text-primary space-x-2"
                     : isMobile
-                    ? `${(isNaN(currentSymbol.level) || currentSymbol.level === null) ? "" : "shadow-accent"} shadow-level w-[50px]`
+                    ? `${
+                        isNaN(currentSymbol.level) ||
+                        currentSymbol.level === null
+                          ? ""
+                          : "shadow-accent"
+                      } shadow-level w-[50px]`
                     : "space-x-2"
                 }`}
                 onClick={() => setSelectedTool(2)}
+                tabIndex={disabled ? -1 : 0}
               >
                 <img
                   src={`${
@@ -156,16 +170,15 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               <span>[Regular Server Only]</span> <br></br> Transfer{" "}
               {!swapped ? "an Arcane Symbol" : "a Sacred Symbol"} once <br></br>{" "}
               within the same world <br></br>{" "}
-              <span className="text-red-500">{swapped && "[New Age - Nov 15 Update]"}</span>
+              <span className="text-red-500">
+                {swapped && "[New Age - Nov 15 Update]"}
+              </span>
             </TooltipContent>
           </Tooltip>
         </div>
         <div
           className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-10 space-y-5 tablet:space-y-0 ${
             selectedTool === 1 ? "block" : "hidden"
-          } ${
-            (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
-            "opacity-25 pointer-events-none"
           }`}
         >
           <div className="flex items-center space-x-10 tablet:space-x-4 tablet:w-1/4">
@@ -175,6 +188,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               placeholder="Count"
               value={selectorCount}
               className="tool-input w-[100px]"
+              tabIndex={disabled ? -1 : 0}
               onChange={(e) => {
                 if (isNaN(currentSymbol.experience)) {
                   setSelectorCount(NaN);
@@ -199,7 +213,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </div>
           <div className="flex items-center justify-around tablet:w-1/3">
             <Tooltip>
-              <TooltipTrigger className="flex items-center space-x-4 cursor-default">
+              <TooltipTrigger
+                className="flex items-center space-x-4 cursor-default"
+                tabIndex={disabled ? -1 : 0}
+              >
                 <div>
                   <p className="text-secondary">
                     {isNaN(currentSymbol.level) || currentSymbol.level === null
@@ -253,6 +270,13 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             </Tooltip>
           </div>
           <button
+            tabIndex={
+              disabled ||
+              isNaN(selectorExperience) ||
+              currentSymbol.level === (!swapped ? 20 : 11)
+                ? -1
+                : 0
+            }
             className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] tablet:w-[100px] ${
               (isNaN(selectorExperience) ||
                 currentSymbol.level === (!swapped ? 20 : 11)) &&
@@ -282,18 +306,22 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         <div
           className={`flex justify-center items-center bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-[31.5px] tablet:py-3 mb-9 tablet:space-x-8 space-y-6 tablet:space-y-0 ${
             selectedTool === 2 ? "block" : "hidden"
-          } ${
-            (isNaN(currentSymbol.level) || currentSymbol.level === null) &&
-            "opacity-25"
-          }`}
+          } `}
         >
           <div className="flex items-center space-x-4 tablet:w-[70px]">
-            <img src={currentSymbol.img} width={33} className="tablet:p-0"></img>
+            <img
+              src={currentSymbol.img}
+              width={33}
+              className="tablet:p-0"
+            ></img>
             <p>{isMobile && currentSymbol.name}</p>
           </div>
           <div className="flex items-center justify-around tablet:w-1/3">
             <Tooltip>
-              <TooltipTrigger className="flex items-center space-x-4 cursor-default">
+              <TooltipTrigger
+                className="flex items-center space-x-4 cursor-default"
+                tabIndex={disabled ? -1 : 0}
+              >
                 <div>
                   <p className="text-secondary">
                     {currentSymbol.level === 1 ||
