@@ -55,7 +55,7 @@ const Levels = ({ symbols, swapped }: Props) => {
       .reduce(
         (total, currentSymbol) => total + currentSymbol.symbolsRequired,
         0
-      ) - currentSymbol.experience;
+      ) - (currentSymbol.experience);
 
   useMemo(() => {
     try {
@@ -111,7 +111,7 @@ const Levels = ({ symbols, swapped }: Props) => {
   }, [targetSymbol, selectedNone]);
 
   useEffect(() => {
-    if (isNaN(currentSymbol.level)) setSelectedNone(true);
+    if (isNaN(currentSymbol.level) || currentSymbol.level === (!swapped ? 20 : 11)) setSelectedNone(true);
   }, [currentSymbol.level])
 
   return (
@@ -257,12 +257,11 @@ const Levels = ({ symbols, swapped }: Props) => {
                           symbol.symbolsRemaining === null ||
                           symbol.experience === null
                         ? "?"
-                        : symbol.symbolsRemaining === 0
-                        ? "‎"
+                        : symbol.symbolsRemaining <= 0
+                        ? "0"
                         : symbol.symbolsRemaining}
                     </p>
                   </div>
-
                   <div
                     className={`flex items-center flex-col tablet:flex-row px-4 tablet:px-0 text-center rounded-b-3xl bg-dark pt-2 pb-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
@@ -328,7 +327,6 @@ const Levels = ({ symbols, swapped }: Props) => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-
                     <hr className="bg-gradient-to-r via-white border-0 opacity-20 h-px w-[250px] mb-6 block tablet:hidden"></hr>
                     <div className="tablet:w-1/4 flex justify-between w-full flex-col tablet:flex">
                       <div className="flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
@@ -347,11 +345,13 @@ const Levels = ({ symbols, swapped }: Props) => {
                                   !currentSymbol.weekly) ||
                                 targetDate === "Invalid Date"
                               ? "Indefinite"
+                              : targetDays <= 0
+                              ? "Complete"
                               : targetDate}
                           </p>
                         </div>
                       </div>
-                      <div className=" flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
+                      <div className="flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
                         <p className="block tablet:hidden">Days Remaining</p>
 
                         <p className=" text-tertiary">
@@ -376,11 +376,12 @@ const Levels = ({ symbols, swapped }: Props) => {
                             ? "? days"
                             : targetDays > 1
                             ? targetDays + " days"
+                            : targetDays <= 0
+                            ? "Ready for upgrade"
                             : targetDays + " day"}
                         </p>
                       </div>
                     </div>
-
                     <div className="tablet:w-1/4 flex tablet:block justify-between tablet:justify-normal items-center w-full tablet:space-x-0">
                       <p className="block tablet:hidden">Symbols Remaining</p>
                       <p className="text-tertiary tablet:text-secondary">
@@ -390,7 +391,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         (currentSymbol.experience === 0 &&
                           (targetLevel <= currentSymbol.level ||
                             isNaN(targetLevel)))
-                          ? "?"
+                          ? (targetSymbols <= 0 ? "0" : "?")
                           : targetSymbols}
                       </p>
                     </div>
