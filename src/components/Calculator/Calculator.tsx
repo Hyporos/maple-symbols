@@ -4,6 +4,7 @@ import { TbSlash } from "react-icons/tb";
 import { MdOutlineInfo } from "react-icons/md";
 import "./Calculator.css";
 import dayjs from "dayjs";
+import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 
 interface Props {
@@ -28,6 +29,7 @@ interface Props {
       symbolsRemaining: number;
       mondayCount: number;
       completion: string;
+      locked: boolean;
       data: [
         {
           level: number;
@@ -53,6 +55,9 @@ const Calculator = ({
   const currentSymbol = symbols[selectedSymbol];
   const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
   const [symbolsToNext, setSymbolsToNext] = useState(NaN);
+
+  const [overflowLevel, setOverflowLevel] = useState(NaN);
+  const [overflowExperience, setOverflowExperience] = useState(NaN);
 
   /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
@@ -195,9 +200,10 @@ const Calculator = ({
     currentSymbol.daysRemaining,
     currentSymbol.symbolsRemaining,
     currentSymbol.completion,
+    currentSymbol.locked
   ]);
 
-  // Load data only if data exists. When loading data that does not exist, the app needs an extra refresh to load properly.
+  // Load data only if data exists.
   useEffect(() => {
     try {
       for (let i = 0; i < symbols.length; i++) {
@@ -208,6 +214,60 @@ const Calculator = ({
       console.log("Data Not Detected");
     }
   }, []);
+
+  useMemo(() => {
+    setOverflowLevel(currentSymbol.level);
+    let count = 0;
+    let accumulated = 0;
+    symbols[selectedSymbol].data.forEach((symbol: any) => {
+      try {
+        if (
+          currentSymbol.experience >=
+            currentSymbol.data[symbol.level - 1].symbolsRequired +
+              accumulated &&
+          symbol.level > currentSymbol.level
+        ) {
+          count++;
+          accumulated =
+            accumulated + currentSymbol.data[symbol.level - 1].symbolsRequired;
+            setOverflowLevel(currentSymbol.level + count);
+        }
+        setOverflowExperience(
+          currentSymbol.experience - accumulated
+        );
+      } catch (e) {
+        ////console.log((e as Error).message);
+      }
+    });
+  }, [currentSymbol.level, currentSymbol.experience]);
+
+  useMemo(() => {
+    try {
+    if (currentSymbol.experience >= nextLevel.symbolsRequired && currentSymbol.locked) {
+      setSymbols(
+        symbols.map((symbol) =>
+          symbol.id === selectedSymbol + 1
+            ? { ...symbol, experience: nextLevel.symbolsRequired }
+            : symbol
+        )
+      );
+    }
+  } catch (e) { 
+    ////console.log((e as Error).message);
+  }
+  }, [currentSymbol.locked])
+
+  useEffect(() => {
+    if (currentSymbol.experience === 0 && currentSymbol.level === 20) {
+      setSymbols(
+        symbols.map((symbol) =>
+          symbol.id === selectedSymbol + 1
+            ? { ...symbol, locked: true }
+            : symbol
+        )
+      );
+    }
+  }, [currentSymbol.experience]);
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
@@ -276,11 +336,87 @@ const Calculator = ({
                     }
                   }}
                 ></input>
-
                 <TbSlash size={30} color="#B2B2B2" />
+                {(() => {
+                  try {
+                    //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
+                    if (
+                      !currentSymbol.locked ||
+                    currentSymbol.experience === nextLevel.symbolsRequired
+                    ) {
+                      return (
+                        <div className="absolute translate-x-[111px]">
+                          <div className="w-[40px] h-[40px] pl-2">
+                            <Tooltip>
+                              <TooltipTrigger className="translate-y-[11px]">
+                            <FiUnlock
+                              size={18}
+                              color="#718571"
+                              onClick={() => {setSymbols(
+                                symbols.map((symbol) =>
+                                  symbol.id === selectedSymbol + 1
+                                    ? { ...symbol, locked: !currentSymbol.locked }
+                                    : symbol
+                                )
+                              );}}
+                              className={`cursor-pointer ${
+                                !currentSymbol.locked && "hidden"
+                              }`}
+                            />
+                            <FiLock
+                              size={18}
+                              color="#857871"
+                              onClick={() => {setSymbols(
+                                symbols.map((symbol) =>
+                                  symbol.id === selectedSymbol + 1
+                                    ? { ...symbol, locked: !currentSymbol.locked }
+                                    : symbol
+                                )
+                              );}}
+                              className={`cursor-pointer ${
+                                currentSymbol.locked && "hidden"
+                              }`}
+                            />
+                            </TooltipTrigger>
+                            <TooltipContent className="tooltip"><span>{currentSymbol.locked ? "Unlock" : "Lock"}</span> experience cap</TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <div className={`absolute translate-x-[46px] ${currentSymbol.experience <= nextLevel.symbolsRequired && "pointer-events-none"}`}>
+                            <FiCheck
+                              size={20}
+                              color={currentSymbol.experience > nextLevel.symbolsRequired ? "#718571" : "#857871"}
+                              onClick={() =>
+                                setSymbols(
+                                  symbols.map((symbol) =>
+                                    symbol.id === selectedSymbol + 1
+                                      ? {
+                                          ...symbol,
+                                          level: overflowLevel,
+                                          experience:
+                                            currentSymbol.experience <
+                                            (currentSymbol.symbolsRemaining + currentSymbol.experience)
+                                              ? overflowExperience
+                                              : 0,
+                                        }
+                                      : symbol
+                                  )
+                                )
+                              }
+                              className={`cursor-pointer translate-y-[-29.5px] ${
+                                currentSymbol.locked && "hidden"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      );
+                    }
+                  } catch (e) {
+                    //console.log((e as Error).message);
+                  }
+                })()}
                 <input
                   type="number"
-                  placeholder="Experience"
+                  placeholder={currentSymbol.locked ? "Experience" : "Exp"}
                   value={
                     currentSymbol.experience === null
                       ? "NaN"
@@ -301,7 +437,14 @@ const Calculator = ({
                         )
                       );
                     }
-                    if (Number(e.target.value) <= nextLevel.symbolsRequired) {
+                    if (
+                      Number(e.target.value) <=
+                      (currentSymbol.locked
+                        ? nextLevel.symbolsRequired
+                        : !swapped
+                        ? 2679
+                        : 4565)
+                    ) {
                       setSymbols(
                         symbols.map((symbol) =>
                           symbol.id === selectedSymbol + 1
@@ -313,13 +456,24 @@ const Calculator = ({
                         )
                       );
                     }
-                    if (Number(e.target.value) >= nextLevel.symbolsRequired) {
+                    if (
+                      Number(e.target.value) >=
+                      (currentSymbol.locked
+                        ? nextLevel.symbolsRequired
+                        : !swapped
+                        ? 2679
+                        : 4565)
+                    ) {
                       setSymbols(
                         symbols.map((symbol) =>
                           symbol.id === selectedSymbol + 1
                             ? {
                                 ...symbol,
-                                experience: nextLevel.symbolsRequired,
+                                experience: currentSymbol.locked
+                                  ? nextLevel.symbolsRequired
+                                  : !swapped
+                                  ? 2679
+                                  : 4565,
                               }
                             : symbol
                         )

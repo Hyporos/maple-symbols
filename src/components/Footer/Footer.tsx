@@ -12,7 +12,7 @@ function Footer() {
         > 
           <p className="mb-2 tablet:mb-0">GitHub</p>
         </a>
-        <p>&copy; 2023 Maple Symbols ━ v1.0.2 Beta</p>
+        <p>&copy; 2023 Maple Symbols ━ v1.1.0 Beta</p>
         <a
           target="_blank"
           href="https://discord.gg/FTMgy2ZKPK"

@@ -5,7 +5,7 @@
     <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=shield" alt="Discord"/>
   </a>
   &nbsp; &nbsp;
-  <img src="https://img.shields.io/badge/version-1.0.0-red" alt="Version-1.0.0"/>
+  <img src="https://img.shields.io/badge/version-1.1.0-red" alt="Version-1.1.0"/>
   <hr></hr>
 </div>
 

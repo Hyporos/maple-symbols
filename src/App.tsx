@@ -46,6 +46,7 @@ function App() {
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
@@ -89,6 +90,7 @@ function App() {
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 10840000 },
@@ -130,6 +132,7 @@ function App() {
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 14610000 },
@@ -171,6 +174,7 @@ function App() {
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 17136000 },
@@ -212,6 +216,7 @@ function App() {
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 17136000 },
@@ -253,6 +258,7 @@ function App() {
       symbolsRemaining: 0,
       mondayCount: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 12, mesosRequired: 17136000 },
@@ -293,6 +299,7 @@ function App() {
       totalDaysRemaining: 0,
       symbolsRemaining: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 29, mesosRequired: 185400000 },
@@ -322,6 +329,7 @@ function App() {
       totalDaysRemaining: 0,
       symbolsRemaining: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 29, mesosRequired: 203900000 },
@@ -351,6 +359,7 @@ function App() {
       totalDaysRemaining: 0,
       symbolsRemaining: 0,
       completion: "",
+      locked: true,
       data: [
         { level: 1, symbolsRequired: 0, mesosRequired: 0 },
         { level: 2, symbolsRequired: 29, mesosRequired: 224500000 },

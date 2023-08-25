@@ -51,7 +51,8 @@
     }
 
     button,
-    input {
+    input, 
+    .focus {
         @apply rounded-lg focus-visible:outline focus:outline-2 focus:outline-accent focus-visible:border-0 
     }
     
