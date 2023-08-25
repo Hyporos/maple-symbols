@@ -200,7 +200,7 @@ const Calculator = ({
     currentSymbol.daysRemaining,
     currentSymbol.symbolsRemaining,
     currentSymbol.completion,
-    currentSymbol.locked
+    currentSymbol.locked,
   ]);
 
   // Load data only if data exists.
@@ -230,11 +230,9 @@ const Calculator = ({
           count++;
           accumulated =
             accumulated + currentSymbol.data[symbol.level - 1].symbolsRequired;
-            setOverflowLevel(currentSymbol.level + count);
+          setOverflowLevel(currentSymbol.level + count);
         }
-        setOverflowExperience(
-          currentSymbol.experience - accumulated
-        );
+        setOverflowExperience(currentSymbol.experience - accumulated);
       } catch (e) {
         ////console.log((e as Error).message);
       }
@@ -243,19 +241,22 @@ const Calculator = ({
 
   useMemo(() => {
     try {
-    if (currentSymbol.experience >= nextLevel.symbolsRequired && currentSymbol.locked) {
-      setSymbols(
-        symbols.map((symbol) =>
-          symbol.id === selectedSymbol + 1
-            ? { ...symbol, experience: nextLevel.symbolsRequired }
-            : symbol
-        )
-      );
+      if (
+        currentSymbol.experience >= nextLevel.symbolsRequired &&
+        currentSymbol.locked
+      ) {
+        setSymbols(
+          symbols.map((symbol) =>
+            symbol.id === selectedSymbol + 1
+              ? { ...symbol, experience: nextLevel.symbolsRequired }
+              : symbol
+          )
+        );
+      }
+    } catch (e) {
+      ////console.log((e as Error).message);
     }
-  } catch (e) { 
-    ////console.log((e as Error).message);
-  }
-  }, [currentSymbol.locked])
+  }, [currentSymbol.locked]);
 
   useEffect(() => {
     if (currentSymbol.experience === 0 && currentSymbol.level === 20) {
@@ -337,83 +338,99 @@ const Calculator = ({
                   }}
                 ></input>
                 <TbSlash size={30} color="#B2B2B2" />
-                {(() => {
-                  try {
-                    //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
-                    if (
-                      !currentSymbol.locked ||
-                    currentSymbol.experience === nextLevel.symbolsRequired
-                    ) {
-                      return (
-                        <div className="absolute translate-x-[111px]">
-                          <div className="w-[40px] h-[40px] pl-2">
-                            <Tooltip>
-                              <TooltipTrigger className="translate-y-[11px]">
-                            <FiUnlock
-                              size={18}
-                              color="#718571"
-                              onClick={() => {setSymbols(
-                                symbols.map((symbol) =>
-                                  symbol.id === selectedSymbol + 1
-                                    ? { ...symbol, locked: !currentSymbol.locked }
-                                    : symbol
-                                )
-                              );}}
-                              className={`cursor-pointer ${
-                                !currentSymbol.locked && "hidden"
-                              }`}
-                            />
-                            <FiLock
-                              size={18}
-                              color="#857871"
-                              onClick={() => {setSymbols(
-                                symbols.map((symbol) =>
-                                  symbol.id === selectedSymbol + 1
-                                    ? { ...symbol, locked: !currentSymbol.locked }
-                                    : symbol
-                                )
-                              );}}
-                              className={`cursor-pointer ${
-                                currentSymbol.locked && "hidden"
-                              }`}
-                            />
-                            </TooltipTrigger>
-                            <TooltipContent className="tooltip"><span>{currentSymbol.locked ? "Unlock" : "Lock"}</span> experience cap</TooltipContent>
-                            </Tooltip>
-                          </div>
-                          <div className={`absolute translate-x-[46px] ${currentSymbol.experience <= nextLevel.symbolsRequired && "pointer-events-none"}`}>
-                            <FiCheck
-                              size={20}
-                              color={currentSymbol.experience > nextLevel.symbolsRequired ? "#718571" : "#857871"}
-                              onClick={() =>
-                                setSymbols(
-                                  symbols.map((symbol) =>
-                                    symbol.id === selectedSymbol + 1
-                                      ? {
-                                          ...symbol,
-                                          level: overflowLevel,
-                                          experience:
-                                            currentSymbol.experience <
-                                            (currentSymbol.symbolsRemaining + currentSymbol.experience)
-                                              ? overflowExperience
-                                              : 0,
-                                        }
-                                      : symbol
-                                  )
-                                )
-                              }
-                              className={`cursor-pointer translate-y-[-29.5px] ${
-                                currentSymbol.locked && "hidden"
-                              }`}
-                            />
-                          </div>
-                        </div>
-                      );
-                    }
-                  } catch (e) {
-                    //console.log((e as Error).message);
-                  }
-                })()}
+                <div className="absolute translate-x-[111px]">
+                  <div
+                    className={`w-[40px] h-[40px] pl-2 ${
+                      (currentSymbol.experience < nextLevel?.symbolsRequired ||
+                        isNaN(currentSymbol.experience) ||
+                        currentSymbol.experience === 0) &&
+                      currentSymbol.locked &&
+                      "hidden"
+                    }`}
+                  >
+                    <Tooltip placement="bottom">
+                      <TooltipTrigger className="translate-y-[11px]">
+                        <FiUnlock
+                          size={18}
+                          color="#718571"
+                          onClick={() => {
+                            setSymbols(
+                              symbols.map((symbol) =>
+                                symbol.id === selectedSymbol + 1
+                                  ? { ...symbol, locked: !currentSymbol.locked }
+                                  : symbol
+                              )
+                            );
+                          }}
+                          className={`cursor-pointer ${
+                            (!currentSymbol.locked ||
+                              currentSymbol.experience <
+                                nextLevel?.symbolsRequired ||
+                              isNaN(currentSymbol.experience) ||
+                              currentSymbol.experience === 0) &&
+                            "hidden"
+                          }`}
+                        />
+                        <FiLock
+                          size={18}
+                          color="#857871"
+                          onClick={() => {
+                            setSymbols(
+                              symbols.map((symbol) =>
+                                symbol.id === selectedSymbol + 1
+                                  ? { ...symbol, locked: !currentSymbol.locked }
+                                  : symbol
+                              )
+                            );
+                          }}
+                          className={`cursor-pointer ${
+                            currentSymbol.locked && "hidden"
+                          }`}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent className="tooltip">
+                        <span>{currentSymbol.locked ? "Unlock" : "Lock"}</span>{" "}
+                        experience cap
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <div
+                    className={`absolute translate-x-[46px] ${
+                      currentSymbol.experience <= nextLevel?.symbolsRequired &&
+                      "pointer-events-none"
+                    }`}
+                  >
+                    <FiCheck
+                      size={20}
+                      color={
+                        currentSymbol.experience > nextLevel?.symbolsRequired
+                          ? "#718571"
+                          : "#857871"
+                      }
+                      onClick={() =>
+                        setSymbols(
+                          symbols.map((symbol) =>
+                            symbol.id === selectedSymbol + 1
+                              ? {
+                                  ...symbol,
+                                  level: overflowLevel,
+                                  experience:
+                                    currentSymbol.experience <
+                                    currentSymbol.symbolsRemaining +
+                                      currentSymbol.experience
+                                      ? overflowExperience
+                                      : 0,
+                                }
+                              : symbol
+                          )
+                        )
+                      }
+                      className={`cursor-pointer translate-y-[-29.5px] ${
+                        currentSymbol.locked && "hidden"
+                      }`}
+                    />
+                  </div>
+                </div>
                 <input
                   type="number"
                   placeholder={currentSymbol.locked ? "Experience" : "Exp"}
@@ -551,7 +568,7 @@ const Calculator = ({
 
             <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
-                <button //TODO: maybe make the tooltips BOTTOM cause it covers the input fields
+                <button
                   className={`daily-box ${
                     currentSymbol.weekly && "border-checked"
                   } ${currentSymbol.type === "arcane" ? "block" : "hidden"}`}
