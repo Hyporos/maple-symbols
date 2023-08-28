@@ -56,7 +56,7 @@ const Levels = ({ symbols, swapped }: Props) => {
       .reduce(
         (total, currentSymbol) => total + currentSymbol.symbolsRequired,
         0
-      ) - (currentSymbol.experience);
+      ) - currentSymbol.experience;
 
   useMemo(() => {
     try {
@@ -112,17 +112,28 @@ const Levels = ({ symbols, swapped }: Props) => {
   }, [targetSymbol, selectedNone]);
 
   useEffect(() => {
-    if (isNaN(currentSymbol.level) || currentSymbol.level === (!swapped ? 20 : 11)) setSelectedNone(true);
-  }, [currentSymbol.level])
+    if (
+      isNaN(currentSymbol.level) ||
+      currentSymbol.level === (!swapped ? 20 : 11)
+    )
+      setSelectedNone(true);
+  }, [currentSymbol.level]);
 
-  const newAgeCheck = (completionDate: string, name: string, level: number, daily: boolean, weekly: boolean) => {
+  const newAgeCheck = (
+    completionDate: string,
+    name: string,
+    level: number,
+    daily: boolean,
+    weekly: boolean
+  ) => {
     if (
       name != "Hotel Arcus" &&
       level !== (!swapped ? 20 : 11) &&
-      !isNaN(level) && (daily || weekly)
+      !isNaN(level) &&
+      (daily || weekly)
     )
       return dayjs(completionDate).isAfter(dayjs("2023-11-14"));
-  }
+  };
 
   return (
     <section className="levels">
@@ -147,7 +158,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                   className={`${
                     targetSymbol === index &&
                     selectedNone === false &&
-                    symbol.level < 20 &&
+                    symbol.level < (!swapped ? 20 : 11) &&
                     "rounded-3xl shadow-level shadow-accent z-10 "
                   }`}
                 >
@@ -162,10 +173,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                     className={`flex justify-between px-4 tablet:px-0 tablet:justify-normal items-center text-center hover:bg-dark cursor-pointer py-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
-                    } ${symbol.level === 20 && "pointer-events-none"} ${
+                    } ${symbol.level === (!swapped ? 20 : 11) && "pointer-events-none"} ${
                       targetSymbol === index &&
                       selectedNone === false &&
-                      symbol.level < 20
+                      symbol.level < (!swapped ? 20 : 11)
                         ? "bg-dark hover:bg-gradient-to-b hover:from-light rounded-t-3xl"
                         : "rounded-3xl"
                     }`}
@@ -217,7 +228,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                           : "text-accent"
                       }`}
                     >
-                      {symbol.level === 20
+                      {symbol.level === (!swapped ? 20 : 11)
                         ? "MAX"
                         : isNaN(symbol.level) || symbol.level === null
                         ? "0"
@@ -227,7 +238,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </p>
                     <div className="tablet:w-1/4 hidden tablet:block">
                       <p>
-                        {symbol.level === 20 ||
+                        {symbol.level === (!swapped ? 20 : 11) ||
                         isNaN(symbol.level) ||
                         symbol.level === null
                           ? "‎"
@@ -242,7 +253,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                       </p>
                       <div className="flex justify-center items-center space-x-1">
                         <p className="text-tertiary">
-                          {symbol.level === 20 ||
+                          {symbol.level === (!swapped ? 20 : 11) ||
                           isNaN(symbol.level) ||
                           symbol.level === null
                             ? "‎"
@@ -261,8 +272,13 @@ const Levels = ({ symbols, swapped }: Props) => {
                         <Tooltip placement="top">
                           <TooltipTrigger
                             className={`${
-                              !newAgeCheck(symbol.completion, symbol.name, symbol.level, symbol.daily, symbol.weekly) &&
-                              "hidden"
+                              !newAgeCheck(
+                                symbol.completion,
+                                symbol.name,
+                                symbol.level,
+                                symbol.daily,
+                                symbol.weekly
+                              ) && "hidden"
                             }`}
                           >
                             <MdOutlineInfo
@@ -270,12 +286,17 @@ const Levels = ({ symbols, swapped }: Props) => {
                               className={`fill-accent hover:fill-hover cursor-default transition-all mt-0.5`}
                             />
                           </TooltipTrigger>
-                          <TooltipContent className="tooltip z-10">Around <span>November 15th</span>, an update will <span>increase</span> <br></br> the daily symbol count for {symbol.name}. <br></br> The completion date will be <span>sooner</span> than it shows. </TooltipContent>
+                          <TooltipContent className="tooltip z-10">
+                            Around <span>November 15th</span>, an update will{" "}
+                            <span>increase</span> <br></br> the daily symbol
+                            count for {symbol.name}. <br></br> The completion
+                            date will be <span>sooner</span> than it shows.{" "}
+                          </TooltipContent>
                         </Tooltip>
                       </div>
                     </div>
                     <p className="tablet:w-1/4 hidden tablet:block">
-                      {symbol.level === 20 ||
+                      {symbol.level === (!swapped ? 20 : 11) ||
                       isNaN(symbol.level) ||
                       symbol.level === null
                         ? "‎"
@@ -292,10 +313,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                     className={`flex items-center flex-col tablet:flex-row px-4 tablet:px-0 text-center rounded-b-3xl bg-dark pt-2 pb-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
-                    } ${symbol.level === 20 && "pointer-events-none"} ${
+                    } ${symbol.level === (!swapped ? 20 : 11) && "pointer-events-none"} ${
                       targetSymbol === index &&
                       selectedNone === false &&
-                      symbol.level < 20
+                      symbol.level < (!swapped ? 20 : 11)
                         ? "block border-secondary"
                         : "hidden"
                     }`}
@@ -382,47 +403,58 @@ const Levels = ({ symbols, swapped }: Props) => {
                       <div className="flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
                         <p className="block tablet:hidden">Days Remaining</p>
 
-<div className="flex tablet:space-x-1 justify-center items-center flex-row-reverse tablet:flex-row">
-                        <p className=" text-tertiary ml-1 tablet:ml-0">
-                          {targetSymbols === 0 &&
-                          currentSymbol.experience !== null &&
-                          currentSymbol.experience !== 0
-                            ? "Ready for upgrade"
-                            : targetLevel <= symbol.level
-                            ? isTablet
-                              ? "Level too low"
-                              : "Level must be over " + symbol.level
-                            : isNaN(targetLevel)
-                            ? isTablet
-                              ? "Enter a level"
-                              : "Enter a target level"
-                            : String(targetDays) ===
-                                ("Infinity" || "-Infiinity") ||
-                              isNaN(targetDays) ||
-                              (!currentSymbol.daily && !currentSymbol.weekly) ||
-                              isNaN(currentSymbol.experience) ||
-                              currentSymbol.experience === null
-                            ? "? days"
-                            : targetDays > 1
-                            ? targetDays + " days"
-                            : targetDays <= 0
-                            ? "Ready for upgrade"
-                            : targetDays + " day"}
-                        </p>
-                        <Tooltip placement="top">
-                          <TooltipTrigger
-                            className={`${
-                              !newAgeCheck(targetDate, symbol.name, symbol.level, symbol.daily, symbol.weekly) &&
-                              "hidden"
-                            }`}
-                          >
-                            <MdOutlineInfo
-                              size={20}
-                              className={`fill-accent hover:fill-hover cursor-default transition-all mt-0.5`}
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent className="tooltip z-10">Around <span>November 15th</span>, an update will <span>increase</span> <br></br> the daily symbol count for {symbol.name}. <br></br> The completion date will be <span>sooner</span> than it shows. </TooltipContent>
-                        </Tooltip>
+                        <div className="flex tablet:space-x-1 justify-center items-center flex-row-reverse tablet:flex-row">
+                          <p className=" text-tertiary ml-1 tablet:ml-0">
+                            {targetSymbols === 0 &&
+                            currentSymbol.experience !== null &&
+                            currentSymbol.experience !== 0
+                              ? "Ready for upgrade"
+                              : targetLevel <= symbol.level
+                              ? isTablet
+                                ? "Level too low"
+                                : "Level must be over " + symbol.level
+                              : isNaN(targetLevel)
+                              ? isTablet
+                                ? "Enter a level"
+                                : "Enter a target level"
+                              : String(targetDays) ===
+                                  ("Infinity" || "-Infiinity") ||
+                                isNaN(targetDays) ||
+                                (!currentSymbol.daily &&
+                                  !currentSymbol.weekly) ||
+                                isNaN(currentSymbol.experience) ||
+                                currentSymbol.experience === null
+                              ? "? days"
+                              : targetDays > 1
+                              ? targetDays + " days"
+                              : targetDays <= 0
+                              ? "Ready for upgrade"
+                              : targetDays + " day"}
+                          </p>
+                          <Tooltip placement="top">
+                            <TooltipTrigger
+                              className={`${
+                                !newAgeCheck(
+                                  targetDate,
+                                  symbol.name,
+                                  symbol.level,
+                                  symbol.daily,
+                                  symbol.weekly
+                                ) && "hidden"
+                              }`}
+                            >
+                              <MdOutlineInfo
+                                size={20}
+                                className={`fill-accent hover:fill-hover cursor-default transition-all mt-0.5`}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent className="tooltip z-10">
+                              Around <span>November 15th</span>, an update will{" "}
+                              <span>increase</span> <br></br> the daily symbol
+                              count for {symbol.name}. <br></br> The completion
+                              date will be <span>sooner</span> than it shows.{" "}
+                            </TooltipContent>
+                          </Tooltip>
                         </div>
                       </div>
                     </div>
