@@ -1,12 +1,10 @@
-import { useMediaQuery } from "react-responsive";
 import "./Header.css";
 
 function Header() {
-  const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
   return (
     <section className="header">
-      <div className="text-accent p-5 flex-shrink-0">
-            <img src="/main/logo.png" width={isMobile ? 300 : 350}></img>
+      <div className="text-accent p-5">
+        <img src="/main/logo.png" className="w-[300px] tablet:w-[350px]"></img>
       </div>
     </section>
   );

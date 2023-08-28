@@ -14,6 +14,14 @@
     @apply fill-basic hover:fill-hover transition-all cursor-pointer
 }
 
+.mobile-lines {
+    @apply ml-[-20px] border-white border-opacity-5 absolute
+}
+
+.swap-icon {
+    @apply icon-button mt-2.5 tablet:mt-0
+}
+
 .horizontal-divider {
     @apply bg-gradient-to-r via-white border-0 opacity-20 h-px my-7 max-w-[350px] tablet:max-w-[700px] laptop:max-w-[1050px]
 }
