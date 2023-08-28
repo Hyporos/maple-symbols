@@ -136,7 +136,7 @@ const Levels = ({ symbols, swapped }: Props) => {
             <p className="w-1/4 tracking-wider">Symbols Remaining</p>
           </div>
           <div className="flex justify-center items-center text-center text-tertiary tablet:hidden">
-            <h1 className="tracking-wider ">Symbol Overview</h1>
+            <h1 className="tracking-wider">Symbol Overview</h1>
           </div>
           <hr className="horizontal-divider" />
           {symbols.map(
@@ -382,7 +382,8 @@ const Levels = ({ symbols, swapped }: Props) => {
                       <div className="flex tablet:block justify-between tablet:justify-normal w-full items-center tablet:space-x-0 mb-5 tablet:mb-0">
                         <p className="block tablet:hidden">Days Remaining</p>
 
-                        <p className=" text-tertiary">
+<div className="flex tablet:space-x-1 justify-center items-center flex-row-reverse tablet:flex-row">
+                        <p className=" text-tertiary ml-1 tablet:ml-0">
                           {targetSymbols === 0 &&
                           currentSymbol.experience !== null &&
                           currentSymbol.experience !== 0
@@ -408,6 +409,21 @@ const Levels = ({ symbols, swapped }: Props) => {
                             ? "Ready for upgrade"
                             : targetDays + " day"}
                         </p>
+                        <Tooltip placement="top">
+                          <TooltipTrigger
+                            className={`${
+                              !newAgeCheck(targetDate, symbol.name, symbol.level, symbol.daily, symbol.weekly) &&
+                              "hidden"
+                            }`}
+                          >
+                            <MdOutlineInfo
+                              size={20}
+                              className={`fill-accent hover:fill-hover cursor-default transition-all mt-0.5`}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent className="tooltip z-10">Around <span>November 15th</span>, an update will <span>increase</span> <br></br> the daily symbol count for {symbol.name}. <br></br> The completion date will be <span>sooner</span> than it shows. </TooltipContent>
+                        </Tooltip>
+                        </div>
                       </div>
                     </div>
                     <div className="tablet:w-1/4 flex tablet:block justify-between tablet:justify-normal items-center w-full tablet:space-x-0">
