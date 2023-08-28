@@ -13,7 +13,7 @@ interface Props {
       level: number;
       experience: number;
       symbolsRemaining: number;
-      data: any[];
+      symbolsRequired: Array<number>;
     }
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
@@ -30,6 +30,8 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   const currentSymbol = symbols[selectedSymbol];
 
+  const nextExperience = currentSymbol.symbolsRequired[currentSymbol.level];
+
   const [selectorLevel, setSelectorLevel] = useState(currentSymbol.level);
   const [catalystLevel, setCatalystLevel] = useState(NaN);
 
@@ -37,11 +39,11 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   useMemo(() => {
     let accumulated = 0;
-    symbols[selectedSymbol].data.forEach((symbol: any) => {
+    currentSymbol.symbolsRequired.forEach((symbol, index) => {
       try {
-        if (symbol.level < currentSymbol.level) {
+        if (index < currentSymbol.level) {
           accumulated =
-            accumulated + currentSymbol.data[symbol.level].symbolsRequired;
+            accumulated + currentSymbol.symbolsRequired[index];
         }
       } catch (e) {
         //console.log((e as Error).message);
@@ -51,55 +53,55 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
       let tempCatalystExp =
         accumulated +
         ((currentSymbol.experience <
-        currentSymbol.data[currentSymbol.level].symbolsRequired
+          nextExperience
           ? currentSymbol.experience
-          : currentSymbol.data[currentSymbol.level].symbolsRequired) -
+          : nextExperience) -
           (currentSymbol.experience <
-          currentSymbol.data[currentSymbol.level].symbolsRequired
+            nextExperience
             ? currentSymbol.experience
-            : currentSymbol.data[currentSymbol.level].symbolsRequired) *
+            : nextExperience) *
             (!swapped ? 0.2 : 0.4)) -
         Math.ceil(accumulated - accumulated * (!swapped ? 0.8 : 0.6));
       setCatalystExperience(tempCatalystExp);
 
-      symbols[selectedSymbol].data.forEach((symbol: any) => {
+      currentSymbol.symbolsRequired.forEach((symbol, index) => {
         if (
-          tempCatalystExp > currentSymbol.data[symbol.level].symbolsRequired
+          tempCatalystExp > currentSymbol.symbolsRequired[index]
         ) {
           tempCatalystExp =
-            tempCatalystExp - currentSymbol.data[symbol.level].symbolsRequired;
-          setCatalystLevel(currentSymbol.data[symbol.level].level);
+            tempCatalystExp - currentSymbol.symbolsRequired[index];
+          setCatalystLevel(index + 1);
           setCatalystExperience(tempCatalystExp);
         }
       });
     } catch (e) {
       //console.log((e as Error).message);
     }
-  }, [currentSymbol.level, currentSymbol.experience, currentSymbol.data]);
+  }, [currentSymbol.level, currentSymbol.experience]);
 
   useMemo(() => {
     setSelectorLevel(currentSymbol.level);
     let count = 0;
     let accumulated = 0;
-    symbols[selectedSymbol].data.forEach((symbol: any) => {
+    currentSymbol.symbolsRequired.forEach((symbol, index) => {
       try {
         if (
           selectorCount >=
-            currentSymbol.data[symbol.level - 1].symbolsRequired +
+            currentSymbol.symbolsRequired[index - 1] +
               accumulated -
               currentSymbol.experience &&
-          symbol.level > currentSymbol.level
+          index > currentSymbol.level
         ) {
           count++;
           accumulated =
-            accumulated + currentSymbol.data[symbol.level - 1].symbolsRequired;
+            accumulated + currentSymbol.symbolsRequired[index - 1];
           setSelectorLevel(currentSymbol.level + count);
         }
         setSelectorExperience(
           currentSymbol.experience <=
-            currentSymbol.data[currentSymbol.level].symbolsRequired
+          nextExperience
             ? selectorCount - accumulated + currentSymbol.experience
-            : currentSymbol.data[currentSymbol.level].symbolsRequired
+            : nextExperience
         );
       } catch (e) {
         //console.log((e as Error).message);
@@ -194,7 +196,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               disabled ||
               (currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience <
-                  currentSymbol.data[currentSymbol.level]?.symbolsRequired) || currentSymbol.level === 20
+                  nextExperience) || currentSymbol.level === 20
                 ? -1
                 : 0
             }
@@ -205,7 +207,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               } ${
                 currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience >
-                  currentSymbol.data[currentSymbol.level]?.symbolsRequired &&
+                  nextExperience &&
                 "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
               }`}
             >
@@ -220,7 +222,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     disabled ||
                     (currentSymbol.level < (!swapped ? 20 : 11) &&
                       currentSymbol.experience >
-                        currentSymbol.data[currentSymbol.level]?.symbolsRequired)
+                        nextExperience)
                       ? -1
                       : 0
                   }
@@ -257,7 +259,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                       disabled ||
                       (currentSymbol.level < (!swapped ? 20 : 11) &&
                         currentSymbol.experience >
-                          currentSymbol.data[currentSymbol.level]?.symbolsRequired)
+                          nextExperience)
                         ? -1
                         : 0
                     }
@@ -276,10 +278,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                           ? "?"
                           : currentSymbol.level < (!swapped ? 20 : 11) &&
                             currentSymbol.experience <
-                              currentSymbol.data[currentSymbol.level]?.symbolsRequired
+                              nextExperience
                           ? currentSymbol.experience
                           : currentSymbol.level < (!swapped ? 20 : 11)
-                          ? currentSymbol.data[currentSymbol.level]?.symbolsRequired
+                          ? nextExperience
                           : 0}
                       </p>
                     </div>
@@ -328,7 +330,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   currentSymbol.level === (!swapped ? 20 : 11) ||
                   (currentSymbol.level < (!swapped ? 20 : 11) &&
                     currentSymbol.experience >
-                      currentSymbol.data[currentSymbol.level]?.symbolsRequired)
+                      nextExperience)
                     ? -1
                     : 0
                 }
@@ -363,7 +365,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             className={`tooltip ${
               currentSymbol.level < (!swapped ? 20 : 11) &&
               currentSymbol.experience >
-                currentSymbol.data[currentSymbol.level]?.symbolsRequired
+                nextExperience
                 ? "block"
                 : "hidden"
             }`}
@@ -380,7 +382,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               disabled ||
               (currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience <
-                  currentSymbol.data[currentSymbol.level]?.symbolsRequired) || currentSymbol.level === 20
+                  nextExperience) || currentSymbol.level === 20
                 ? -1
                 : 0
             }
@@ -391,7 +393,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               } ${
                 currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience >
-                  currentSymbol.data[currentSymbol.level]?.symbolsRequired &&
+                  nextExperience &&
                 "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
               }`}
             >
@@ -411,7 +413,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                       disabled ||
                       (currentSymbol.level < (!swapped ? 20 : 11) &&
                         currentSymbol.experience >
-                          currentSymbol.data[currentSymbol.level]?.symbolsRequired)
+                          nextExperience)
                         ? -1
                         : 0
                     }
@@ -432,10 +434,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                           ? "?"
                           : currentSymbol.experience <
                             (currentSymbol.level < (!swapped ? 20 : 11) &&
-                              currentSymbol.data[currentSymbol.level]?.symbolsRequired)
+                              nextExperience)
                           ? currentSymbol.experience
                           : currentSymbol.level < (!swapped ? 20 : 11)
-                          ? currentSymbol.data[currentSymbol.level]?.symbolsRequired
+                          ? nextExperience
                           : 0}
                       </p>
                     </div>
@@ -489,7 +491,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             className={`tooltip ${
               currentSymbol.level < (!swapped ? 20 : 11) &&
               currentSymbol.experience >
-                currentSymbol.data[currentSymbol.level]?.symbolsRequired
+                nextExperience
                 ? "block"
                 : "hidden"
             }`}

@@ -30,13 +30,8 @@ interface Props {
       mondayCount: number;
       completion: string;
       locked: boolean;
-      data: [
-        {
-          level: number;
-          symbolsRequired: number;
-          mesosRequired: number;
-        }
-      ];
+      symbolsRequired: Array<number>;
+      mesosRequired: Array<number>;
     }
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
@@ -53,11 +48,12 @@ const Calculator = ({
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
   const currentSymbol = symbols[selectedSymbol];
-  const nextLevel = symbols[selectedSymbol].data[currentSymbol.level];
   const [symbolsToNext, setSymbolsToNext] = useState(NaN);
 
   const [overflowLevel, setOverflowLevel] = useState(NaN);
   const [overflowExperience, setOverflowExperience] = useState(NaN);
+  
+  const nextExperience = currentSymbol.symbolsRequired[currentSymbol.level];
 
   /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
@@ -73,12 +69,10 @@ const Calculator = ({
    */
 
   const remainingSymbols =
-    currentSymbol.data
+    currentSymbol.symbolsRequired
       .slice(currentSymbol.level, !swapped ? 20 : 11)
-      .reduce(
-        (total, currentSymbol) => total + currentSymbol.symbolsRequired,
-        0
-      ) - currentSymbol.experience;
+      .reduce((accumulator, experience) => accumulator + experience, 0) -
+    currentSymbol.experience;
 
   useEffect(() => {
     setSymbols(
@@ -104,7 +98,7 @@ const Calculator = ({
       for (let i = 0; i < 1000; i++) {
         if (
           days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
-          nextLevel.symbolsRequired - currentSymbol.experience
+          nextExperience - currentSymbol.experience
         ) {
           if (
             // ? Should this be a while loop? while monday false
@@ -219,17 +213,17 @@ const Calculator = ({
     setOverflowLevel(currentSymbol.level);
     let count = 0;
     let accumulated = 0;
-    symbols[selectedSymbol].data.forEach((symbol: any) => {
+    currentSymbol.symbolsRequired.forEach((symbol, index) => {
       try {
         if (
           currentSymbol.experience >=
-            currentSymbol.data[symbol.level - 1].symbolsRequired +
+          currentSymbol.symbolsRequired[index - 1] +
               accumulated &&
-          symbol.level > currentSymbol.level
+              index > currentSymbol.level
         ) {
           count++;
           accumulated =
-            accumulated + currentSymbol.data[symbol.level - 1].symbolsRequired;
+            accumulated + currentSymbol.symbolsRequired[index - 1];
           setOverflowLevel(currentSymbol.level + count);
         }
         setOverflowExperience(currentSymbol.experience - accumulated);
@@ -242,13 +236,13 @@ const Calculator = ({
   useMemo(() => {
     try {
       if (
-        currentSymbol.experience >= nextLevel.symbolsRequired &&
+        currentSymbol.experience >= nextExperience &&
         currentSymbol.locked
       ) {
         setSymbols(
           symbols.map((symbol) =>
             symbol.id === selectedSymbol + 1
-              ? { ...symbol, experience: nextLevel.symbolsRequired }
+              ? { ...symbol, experience: nextExperience }
               : symbol
           )
         );
@@ -341,7 +335,7 @@ const Calculator = ({
                 <div className="absolute translate-x-[111px]">
                   <div
                     className={`w-[40px] h-[40px] pl-2 ${
-                      (currentSymbol.experience < nextLevel?.symbolsRequired ||
+                      (currentSymbol.experience < nextExperience ||
                         isNaN(currentSymbol.experience) ||
                         currentSymbol.experience === 0 || !currentSymbol.level) &&
                       currentSymbol.locked &&
@@ -365,7 +359,7 @@ const Calculator = ({
                           className={`cursor-pointer ${
                             (!currentSymbol.locked ||
                               currentSymbol.experience <
-                                nextLevel?.symbolsRequired ||
+                              nextExperience ||
                               isNaN(currentSymbol.experience) ||
                               currentSymbol.experience === 0) &&
                             "hidden"
@@ -396,14 +390,14 @@ const Calculator = ({
                   </div>
                   <div
                     className={`absolute translate-x-[46px] ${
-                      currentSymbol.experience <= nextLevel?.symbolsRequired &&
+                      currentSymbol.experience <= nextExperience &&
                       "pointer-events-none"
                     }`}
                   >
                     <FiCheck
                       size={20}
                       color={
-                        currentSymbol.experience > nextLevel?.symbolsRequired
+                        currentSymbol.experience > nextExperience
                           ? "#718571"
                           : "#857871"
                       }
@@ -457,7 +451,7 @@ const Calculator = ({
                     if (
                       Number(e.target.value) <=
                       (currentSymbol.locked
-                        ? nextLevel.symbolsRequired
+                        ? nextExperience
                         : !swapped
                         ? 2679
                         : 4565)
@@ -476,7 +470,7 @@ const Calculator = ({
                     if (
                       Number(e.target.value) >=
                       (currentSymbol.locked
-                        ? nextLevel.symbolsRequired
+                        ? nextExperience
                         : !swapped
                         ? 2679
                         : 4565)
@@ -487,7 +481,7 @@ const Calculator = ({
                             ? {
                                 ...symbol,
                                 experience: currentSymbol.locked
-                                  ? nextLevel.symbolsRequired
+                                  ? nextExperience
                                   : !swapped
                                   ? 2679
                                   : 4565,
@@ -751,7 +745,7 @@ const Calculator = ({
             {(() => {
               try {
                 if (
-                  currentSymbol.experience < nextLevel.symbolsRequired &&
+                  currentSymbol.experience < nextExperience &&
                   (currentSymbol.daily || currentSymbol.weekly) &&
                   currentSymbol.experience !== null
                 ) {
@@ -778,7 +772,7 @@ const Calculator = ({
                     </div>
                   );
                 } else if (
-                  nextLevel.symbolsRequired - currentSymbol.experience <=
+                  nextExperience - currentSymbol.experience <=
                   0
                 ) {
                   return (
@@ -809,21 +803,21 @@ const Calculator = ({
             {(() => {
               try {
                 if (
-                  currentSymbol.experience < nextLevel.symbolsRequired &&
+                  currentSymbol.experience < nextExperience &&
                   currentSymbol.experience !== null
                 ) {
                   return (
                     <p>
                       <span>
-                        {nextLevel.symbolsRequired - currentSymbol.experience}
+                        {nextExperience - currentSymbol.experience}
                       </span>{" "}
-                      {nextLevel.symbolsRequired - currentSymbol.experience > 1
+                      {nextExperience - currentSymbol.experience > 1
                         ? "symbols remaining"
                         : "symbol remaining"}
                     </p>
                   );
                 } else if (
-                  nextLevel.symbolsRequired - currentSymbol.experience <=
+                  nextExperience - currentSymbol.experience <=
                   0
                 ) {
                   return (
@@ -850,7 +844,7 @@ const Calculator = ({
                 ) {
                   return (
                     <p className="pt-8">
-                      <span>{nextLevel.mesosRequired.toLocaleString()}</span>{" "}
+                      <span>{currentSymbol.mesosRequired[currentSymbol.level].toLocaleString()}</span>{" "}
                       mesos required
                       <div className="flex justify-center items-center space-x-1.5 pt-10">
                         <p>

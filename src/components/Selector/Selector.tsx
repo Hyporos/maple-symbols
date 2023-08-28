@@ -72,7 +72,9 @@ const Selector = ({
                   <div
                     key={index}
                     className={`group mx-4 tablet:mx-0 ${
-                      symbol.id === 1 && "mb-8 tablet:mb-0" // Add spacing between top and bottom symbols if on mobile
+                      // TODO: Use logic that is more self explanatory
+                      // Add spacing between top and bottom symbols if on mobile
+                      symbol.id === 1 && "mb-8 tablet:mb-0"
                     }`}
                   >
                     <div
