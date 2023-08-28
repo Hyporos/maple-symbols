@@ -392,11 +392,11 @@ function App() {
       <Disclaimer />
       <Header />
       <Selector
-        swapped={swapped}
-        setSwapped={setSwapped}
+        symbols={symbols}
         selectedSymbol={selectedSymbol}
         setSelectedSymbol={setSelectedSymbol}
-        symbols={symbols}
+        swapped={swapped}
+        setSwapped={setSwapped}
       />
       <Calculator
         symbols={symbols}

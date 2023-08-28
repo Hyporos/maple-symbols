@@ -34,8 +34,8 @@ const Selector = ({
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
   // Checks if the specified value is valid (not empty)
-  const isValid = (value: string | number) => {
-    return !isNaN(Number(value)) || value !== null;
+  const isValid = (value: number) => {
+    return !isNaN(value) && value !== null;
   };
 
   // Handle the logic of selecting a symbol
@@ -47,7 +47,7 @@ const Selector = ({
   // Handle the logic of swapping from Arcane to Sacred symbols
   const handleSwap = () => {
     setSwapped(!swapped);
-    setSelectedSymbol(!swapped ? selectedArcane : selectedSacred);
+    setSelectedSymbol(!swapped ? selectedSacred : selectedArcane);
   };
 
   return (
@@ -60,10 +60,10 @@ const Selector = ({
             onClick={() => handleSwap()}
           />
           <div className={`block tablet:hidden ${swapped && "hidden"}`}>
-            <hr className="mobile-lines translate-y-[55px] h-[57px] border-x"></hr>
-            <hr className="mobile-lines translate-y-[112px] w-[40px] border-y"></hr>
-            <hr className="mobile-lines translate-y-[55px] translate-x-[290px] h-[57px] border-x"></hr>
-            <hr className="mobile-lines translate-y-[112px] translate-x-[252px] w-[40px] border-y"></hr>
+            <hr className="mobile-lines-x"></hr>
+            <hr className="mobile-lines-y"></hr>
+            <hr className="mobile-lines-x translate-x-[290px]"></hr>
+            <hr className="mobile-lines-y translate-x-[252px]"></hr>
           </div>
           <div className="flex flex-wrap justify-center tablet:space-x-10 w-[250px] tablet:w-full">
             {symbols.map(
@@ -72,14 +72,14 @@ const Selector = ({
                   <div
                     key={index}
                     className={`group mx-4 tablet:mx-0 ${
-                      symbol.id < 3 && "mb-8 tablet:mb-0"
+                      symbol.id === 1 && "mb-8 tablet:mb-0" // Add spacing between top and bottom symbols if on mobile
                     }`}
                   >
                     <div
                       className={`selector-level ${
                         selectedSymbol === index
                           ? "text-primary"
-                          : isValid(symbol.level) && "text-secondary"
+                          : !isValid(symbol.level) && "text-secondary"
                       }`}
                       onClick={() => handleSelect(index)}
                     >
@@ -87,14 +87,13 @@ const Selector = ({
                         src={symbol.img}
                         alt={symbol.alt}
                         className={`${
-                          symbols[selectedSymbol].name === symbol.name &&
-                          "translate-y-symbol"
-                        }  ${isValid(symbol.level) && "filter grayscale"}`}
+                          selectedSymbol === index && "translate-y-[-7.5px]"
+                        }  ${!isValid(symbol.level) && "filter grayscale"}`}
                       />
-                      <p className="text-xs">
+                      <p className={`text-xs`}>
                         {isValid(symbol.level)
-                          ? "Lv. 0"
-                          : "Lv. " + symbol.level}
+                          ? "Lv. " + symbol.level
+                          : "Lv. 0"}
                       </p>
                     </div>
                   </div>

@@ -7,21 +7,21 @@
 }
 
 .selector-level > img {
-    @apply group-hover:translate-y-symbol duration-250 mb-1 w-10 h-10
-}
-
-.icon-button {
-    @apply fill-basic hover:fill-hover transition-all cursor-pointer
-}
-
-.mobile-lines {
-    @apply absolute border-white border-opacity-5 ml-[-20px]
+    @apply group-hover:translate-y-[-7.5px] duration-250 mb-1 w-10 h-10
 }
 
 .swap-icon {
     @apply fill-basic hover:fill-hover transition-all cursor-pointer mt-2.5 tablet:mt-0
 }
 
+.mobile-lines-x {
+    @apply absolute border-x border-white border-opacity-5 translate-y-[55px] ml-[-20px] h-[57px]
+}
+
+.mobile-lines-y {
+    @apply absolute border-y border-white border-opacity-5 translate-y-[112px] ml-[-20px] w-[40px]  
+}
+
 .selector .horizontal-divider {
-    @apply bg-gradient-to-r via-white border-0 opacity-20 h-px my-7 w-[350px] tablet:w-[700px]
+    @apply bg-gradient-to-r via-white/20 border-0 h-px my-8 w-[350px] tablet:w-[700px]
 }

@@ -32,7 +32,6 @@ export default {
         'basic': '#444444',
       },
       translate: {
-        'symbol': '-7.5px',
         'level': '-40px',
       },
       fill: {
