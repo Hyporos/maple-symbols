@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { HiArrowSmRight, HiChevronDoubleRight } from "react-icons/hi";
+import { HiArrowSmRight } from "react-icons/hi";
 import { TbSlash } from "react-icons/tb";
 import { MdOutlineInfo } from "react-icons/md";
 import "./Calculator.css";

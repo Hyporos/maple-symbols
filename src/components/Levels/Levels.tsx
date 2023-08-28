@@ -3,6 +3,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { useMediaQuery } from "react-responsive";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { MdOutlineInfo } from "react-icons/md";
 import dayjs from "dayjs";
 import "./Levels.css";
 
@@ -113,6 +114,15 @@ const Levels = ({ symbols, swapped }: Props) => {
   useEffect(() => {
     if (isNaN(currentSymbol.level) || currentSymbol.level === (!swapped ? 20 : 11)) setSelectedNone(true);
   }, [currentSymbol.level])
+
+  const newAgeCheck = (completionDate: string, name: string, level: number, daily: boolean, weekly: boolean) => {
+    if (
+      name != "Hotel Arcus" &&
+      level !== (!swapped ? 20 : 11) &&
+      !isNaN(level) && (daily || weekly)
+    )
+      return dayjs(completionDate).isAfter(dayjs("2023-11-14"));
+  }
 
   return (
     <section className="levels">
@@ -230,23 +240,39 @@ const Levels = ({ symbols, swapped }: Props) => {
                           ? "Complete"
                           : symbol.completion}
                       </p>
-                      <p className="text-tertiary">
-                        {symbol.level === 20 ||
-                        isNaN(symbol.level) ||
-                        symbol.level === null
-                          ? "‎"
-                          : String(symbol.daysRemaining) === "Infinity" ||
-                            isNaN(symbol.daysRemaining) ||
-                            (!symbol.daily && !symbol.weekly) ||
-                            isNaN(symbol.experience) ||
-                            symbol.experience === null
-                          ? "? days"
-                          : symbol.daysRemaining === 0
-                          ? "Ready for upgrade"
-                          : symbol.daysRemaining > 1
-                          ? symbol.daysRemaining + " days"
-                          : symbol.daysRemaining + " day"}
-                      </p>
+                      <div className="flex justify-center items-center space-x-1">
+                        <p className="text-tertiary">
+                          {symbol.level === 20 ||
+                          isNaN(symbol.level) ||
+                          symbol.level === null
+                            ? "‎"
+                            : String(symbol.daysRemaining) === "Infinity" ||
+                              isNaN(symbol.daysRemaining) ||
+                              (!symbol.daily && !symbol.weekly) ||
+                              isNaN(symbol.experience) ||
+                              symbol.experience === null
+                            ? "? days"
+                            : symbol.daysRemaining === 0
+                            ? "Ready for upgrade"
+                            : symbol.daysRemaining > 1
+                            ? symbol.daysRemaining + " days"
+                            : symbol.daysRemaining + " day"}
+                        </p>
+                        <Tooltip placement="top">
+                          <TooltipTrigger
+                            className={`${
+                              !newAgeCheck(symbol.completion, symbol.name, symbol.level, symbol.daily, symbol.weekly) &&
+                              "hidden"
+                            }`}
+                          >
+                            <MdOutlineInfo
+                              size={20}
+                              className={`fill-accent hover:fill-hover cursor-default transition-all mt-0.5`}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent className="tooltip z-10">Around <span>November 15th</span>, an update will <span>increase</span> <br></br> the daily symbol count for {symbol.name}. <br></br> The completion date will be <span>sooner</span> than it shows. </TooltipContent>
+                        </Tooltip>
+                      </div>
                     </div>
                     <p className="tablet:w-1/4 hidden tablet:block">
                       {symbol.level === 20 ||
@@ -322,8 +348,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip z-10">
-                          Preview the remaining {isMobile ? "stats" : "days and"} <br></br> {!isMobile && "symbols"} for
-                          the <span>specified level</span>
+                          Preview the remaining{" "}
+                          {isMobile ? "stats" : "days and"} <br></br>{" "}
+                          {!isMobile && "symbols"} for the{" "}
+                          <span>specified level</span>
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -391,7 +419,9 @@ const Levels = ({ symbols, swapped }: Props) => {
                         (currentSymbol.experience === 0 &&
                           (targetLevel <= currentSymbol.level ||
                             isNaN(targetLevel)))
-                          ? (targetSymbols <= 0 ? "0" : "?")
+                          ? targetSymbols <= 0
+                            ? "0"
+                            : "?"
                           : targetSymbols}
                       </p>
                     </div>

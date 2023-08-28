@@ -192,9 +192,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             className={`cursor-default ${selectedTool === 2 && "hidden"}`}
             tabIndex={
               disabled ||
-              (currentSymbol.level < 20 &&
+              (currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience <
-                  currentSymbol.data[currentSymbol.level].symbolsRequired) || currentSymbol.level === 20
+                  currentSymbol.data[currentSymbol.level]?.symbolsRequired) || currentSymbol.level === 20
                 ? -1
                 : 0
             }
@@ -203,7 +203,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               className={`flex justify-center items-center bg-dark flex-col focus tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-10 space-y-5 tablet:space-y-0 ${
                 selectedTool === 1 ? "block" : "hidden"
               } ${
-                currentSymbol.level < 20 &&
+                currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience >
                   currentSymbol.data[currentSymbol.level]?.symbolsRequired &&
                 "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
@@ -218,9 +218,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   className="tool-input w-[100px]"
                   tabIndex={
                     disabled ||
-                    (currentSymbol.level < 20 &&
+                    (currentSymbol.level < (!swapped ? 20 : 11) &&
                       currentSymbol.experience >
-                        currentSymbol.data[currentSymbol.level].symbolsRequired)
+                        currentSymbol.data[currentSymbol.level]?.symbolsRequired)
                       ? -1
                       : 0
                   }
@@ -255,10 +255,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     className="flex items-center space-x-4 cursor-default"
                     tabIndex={
                       disabled ||
-                      (currentSymbol.level < 20 &&
+                      (currentSymbol.level < (!swapped ? 20 : 11) &&
                         currentSymbol.experience >
-                          currentSymbol.data[currentSymbol.level]
-                            .symbolsRequired)
+                          currentSymbol.data[currentSymbol.level]?.symbolsRequired)
                         ? -1
                         : 0
                     }
@@ -275,14 +274,12 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                         isNaN(currentSymbol.level) ||
                         currentSymbol.level === null
                           ? "?"
-                          : currentSymbol.level < 20 &&
+                          : currentSymbol.level < (!swapped ? 20 : 11) &&
                             currentSymbol.experience <
-                              currentSymbol.data[currentSymbol.level]
-                                .symbolsRequired
+                              currentSymbol.data[currentSymbol.level]?.symbolsRequired
                           ? currentSymbol.experience
-                          : currentSymbol.level < 20
-                          ? currentSymbol.data[currentSymbol.level]
-                              .symbolsRequired
+                          : currentSymbol.level < (!swapped ? 20 : 11)
+                          ? currentSymbol.data[currentSymbol.level]?.symbolsRequired
                           : 0}
                       </p>
                     </div>
@@ -329,7 +326,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   disabled ||
                   isNaN(selectorExperience) ||
                   currentSymbol.level === (!swapped ? 20 : 11) ||
-                  (currentSymbol.level < 20 &&
+                  (currentSymbol.level < (!swapped ? 20 : 11) &&
                     currentSymbol.experience >
                       currentSymbol.data[currentSymbol.level]?.symbolsRequired)
                     ? -1
@@ -364,7 +361,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </TooltipTrigger>
           <TooltipContent
             className={`tooltip ${
-              currentSymbol.level < 20 &&
+              currentSymbol.level < (!swapped ? 20 : 11) &&
               currentSymbol.experience >
                 currentSymbol.data[currentSymbol.level]?.symbolsRequired
                 ? "block"
@@ -381,9 +378,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             className={`cursor-default ${selectedTool === 1 && "hidden"}`}
             tabIndex={
               disabled ||
-              (currentSymbol.level < 20 &&
+              (currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience <
-                  currentSymbol.data[currentSymbol.level].symbolsRequired) || currentSymbol.level === 20
+                  currentSymbol.data[currentSymbol.level]?.symbolsRequired) || currentSymbol.level === 20
                 ? -1
                 : 0
             }
@@ -392,7 +389,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               className={`flex justify-center items-center focus bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-[31.5px] tablet:py-3 mb-9 tablet:space-x-8 space-y-6 tablet:space-y-0 ${
                 selectedTool === 2 ? "block" : "hidden"
               } ${
-                currentSymbol.level < 20 &&
+                currentSymbol.level < (!swapped ? 20 : 11) &&
                 currentSymbol.experience >
                   currentSymbol.data[currentSymbol.level]?.symbolsRequired &&
                 "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
@@ -412,10 +409,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     className="flex items-center space-x-4 cursor-default"
                     tabIndex={
                       disabled ||
-                      (currentSymbol.level < 20 &&
+                      (currentSymbol.level < (!swapped ? 20 : 11) &&
                         currentSymbol.experience >
-                          currentSymbol.data[currentSymbol.level]
-                            .symbolsRequired)
+                          currentSymbol.data[currentSymbol.level]?.symbolsRequired)
                         ? -1
                         : 0
                     }
@@ -435,13 +431,11 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                         currentSymbol.experience === null
                           ? "?"
                           : currentSymbol.experience <
-                            (currentSymbol.level < 20 &&
-                              currentSymbol.data[currentSymbol.level]
-                                .symbolsRequired)
+                            (currentSymbol.level < (!swapped ? 20 : 11) &&
+                              currentSymbol.data[currentSymbol.level]?.symbolsRequired)
                           ? currentSymbol.experience
-                          : currentSymbol.level < 20
-                          ? currentSymbol.data[currentSymbol.level]
-                              .symbolsRequired
+                          : currentSymbol.level < (!swapped ? 20 : 11)
+                          ? currentSymbol.data[currentSymbol.level]?.symbolsRequired
                           : 0}
                       </p>
                     </div>
@@ -493,7 +487,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </TooltipTrigger>
           <TooltipContent
             className={`tooltip ${
-              currentSymbol.level < 20 &&
+              currentSymbol.level < (!swapped ? 20 : 11) &&
               currentSymbol.experience >
                 currentSymbol.data[currentSymbol.level]?.symbolsRequired
                 ? "block"
