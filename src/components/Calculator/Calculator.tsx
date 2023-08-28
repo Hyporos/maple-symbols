@@ -259,7 +259,7 @@ const Calculator = ({
   }, [currentSymbol.locked]);
 
   useEffect(() => {
-    if (currentSymbol.experience === 0 && currentSymbol.level === 20) {
+    if ((currentSymbol.experience === 0 && currentSymbol.level === (!swapped ? 20 : 11))) {
       setSymbols(
         symbols.map((symbol) =>
           symbol.id === selectedSymbol + 1
@@ -343,7 +343,7 @@ const Calculator = ({
                     className={`w-[40px] h-[40px] pl-2 ${
                       (currentSymbol.experience < nextLevel?.symbolsRequired ||
                         isNaN(currentSymbol.experience) ||
-                        currentSymbol.experience === 0) &&
+                        currentSymbol.experience === 0 || !currentSymbol.level) &&
                       currentSymbol.locked &&
                       "hidden"
                     }`}
@@ -674,7 +674,7 @@ const Calculator = ({
                     //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
                     if (
                       currentSymbol.type === (!swapped ? "arcane" : "sacred") ||
-                      (currentSymbol.level != 20 &&
+                      (currentSymbol.level != (!swapped ? 20 : 11) &&
                         currentSymbol.level != (!swapped && 11) &&
                         String(currentSymbol.level) != "NaN")
                     ) {
