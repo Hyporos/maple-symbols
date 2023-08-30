@@ -19,6 +19,11 @@ interface Props {
   setSelectedSymbol: Dispatch<SetStateAction<number>>;
 }
 
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The Selector component is the top bar which contains the list of symbols.
+// * You can select a symbol by clicking on it, or swap from Arcane to Sacred using the arrows.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
 const Selector = ({
   symbols,
   swapped,
@@ -33,18 +38,18 @@ const Selector = ({
 
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
-  // Checks if the specified value is valid (not empty)
+  // Check if the specified value is valid (not empty)
   const isValid = (value: number) => {
     return !isNaN(value) && value !== null;
   };
 
-  // Handle the logic of selecting a symbol
+  // Select a symbol
   const handleSelect = (index: number) => {
     setSelectedSymbol(index);
     !swapped ? setSelectedArcane(index) : setSelectedSacred(index);
   };
 
-  // Handle the logic of swapping from Arcane to Sacred symbols
+  // Swap from Arcane to Sacred symbols
   const handleSwap = () => {
     setSwapped(!swapped);
     setSelectedSymbol(!swapped ? selectedSacred : selectedArcane);

@@ -1,4 +1,11 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiArrowSmRight } from "react-icons/hi";
 import { useMediaQuery } from "react-responsive";
@@ -37,81 +44,67 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   const disabled = isNaN(currentSymbol.level) || currentSymbol.level === null;
 
-  useMemo(() => {
-    let accumulated = 0;
-    currentSymbol.symbolsRequired.forEach((symbol, index) => {
-      try {
-        if (index < currentSymbol.level) {
-          accumulated =
-            accumulated + currentSymbol.symbolsRequired[index];
-        }
-      } catch (e) {
-        //console.log((e as Error).message);
-      }
-    });
-    try {
-      let tempCatalystExp =
-        accumulated +
-        ((currentSymbol.experience <
-          nextExperience
-          ? currentSymbol.experience
-          : nextExperience) -
-          (currentSymbol.experience <
-            nextExperience
-            ? currentSymbol.experience
-            : nextExperience) *
-            (!swapped ? 0.2 : 0.4)) -
-        Math.ceil(accumulated - accumulated * (!swapped ? 0.8 : 0.6));
-      setCatalystExperience(tempCatalystExp);
+  /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
-      currentSymbol.symbolsRequired.forEach((symbol, index) => {
-        if (
-          tempCatalystExp > currentSymbol.symbolsRequired[index]
-        ) {
-          tempCatalystExp =
-            tempCatalystExp - currentSymbol.symbolsRequired[index];
-          setCatalystLevel(index + 1);
-          setCatalystExperience(tempCatalystExp);
-        }
-      });
-    } catch (e) {
-      //console.log((e as Error).message);
-    }
-  }, [currentSymbol.level, currentSymbol.experience]);
+  // Check if the specified value is valid (not empty)
+  const isValid = (value: number) => {
+    return !isNaN(value) && value !== null;
+  };
 
-  useMemo(() => {
-    setSelectorLevel(currentSymbol.level);
-    let count = 0;
-    let accumulated = 0;
-    currentSymbol.symbolsRequired.forEach((symbol, index) => {
-      try {
-        if (
-          selectorCount >=
-            currentSymbol.symbolsRequired[index - 1] +
-              accumulated -
-              currentSymbol.experience &&
-          index > currentSymbol.level
-        ) {
-          count++;
-          accumulated =
-            accumulated + currentSymbol.symbolsRequired[index - 1];
-          setSelectorLevel(currentSymbol.level + count);
-        }
-        setSelectorExperience(
-          currentSymbol.experience <=
-          nextExperience
-            ? selectorCount - accumulated + currentSymbol.experience
-            : nextExperience
-        );
-      } catch (e) {
-        //console.log((e as Error).message);
+  // Preview the updated symbol level / experience when applying Symbol Selectors
+  useLayoutEffect(() => {
+    setSelectorLevel(currentSymbol.level); // If the amount of Symbol Selectors is not enough to level up, default to the current level
+    let totalLevels = 0;
+    let totalExp = 0;
+    currentSymbol.symbolsRequired.forEach((symbol, indexLevel) => {
+      if (
+        indexLevel >= currentSymbol.level &&
+        selectorCount >=
+          currentSymbol.symbolsRequired[indexLevel] -
+            currentSymbol.experience +
+            totalExp
+      ) {
+        totalLevels++;
+        totalExp += currentSymbol.symbolsRequired[indexLevel];
+        setSelectorLevel(currentSymbol.level + totalLevels);
       }
+      setSelectorExperience(
+        selectorCount - totalExp + currentSymbol.experience
+      );
     });
   }, [currentSymbol.level, currentSymbol.experience, selectorCount]);
 
-  useEffect(() => {
-    setSelectorCount(NaN);
-  }, [selectedSymbol]);
+  // Preview the updated symbol level / experience when using a Catalyst
+  useMemo(() => {
+    let accumulated = 0;
+    currentSymbol.symbolsRequired.forEach((symbol, index) => {
+      if (index < currentSymbol.level) {
+        accumulated = accumulated + currentSymbol.symbolsRequired[index];
+      }
+    });
+    let tempCatalystExp =
+      accumulated +
+      ((currentSymbol.experience < nextExperience
+        ? currentSymbol.experience
+        : nextExperience) -
+        (currentSymbol.experience < nextExperience
+          ? currentSymbol.experience
+          : nextExperience) *
+          (!swapped ? 0.2 : 0.4)) -
+      Math.ceil(accumulated - accumulated * (!swapped ? 0.8 : 0.6));
+    setCatalystExperience(tempCatalystExp);
+
+    currentSymbol.symbolsRequired.forEach((symbol, index) => {
+      if (tempCatalystExp > currentSymbol.symbolsRequired[index]) {
+        tempCatalystExp =
+          tempCatalystExp - currentSymbol.symbolsRequired[index];
+        setCatalystLevel(index + 1);
+        setCatalystExperience(tempCatalystExp);
+      }
+    });
+  }, [currentSymbol.level, currentSymbol.experience]);
+
+
 
   return (
     <section className="tools">
@@ -190,13 +183,13 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         </div>
         <Tooltip placement={isMobile ? "bottom" : "top"}>
           <TooltipTrigger
-          asChild={true}
+            asChild={true}
             className={`cursor-default ${selectedTool === 2 && "hidden"}`}
             tabIndex={
               disabled ||
               (currentSymbol.level < (!swapped ? 20 : 11) &&
-                currentSymbol.experience <
-                  nextExperience) || currentSymbol.level === 20
+                currentSymbol.experience < nextExperience) ||
+              currentSymbol.level === 20
                 ? -1
                 : 0
             }
@@ -206,8 +199,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                 selectedTool === 1 ? "block" : "hidden"
               } ${
                 currentSymbol.level < (!swapped ? 20 : 11) &&
-                currentSymbol.experience >
-                  nextExperience &&
+                currentSymbol.experience > nextExperience &&
                 "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
               }`}
             >
@@ -221,8 +213,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   tabIndex={
                     disabled ||
                     (currentSymbol.level < (!swapped ? 20 : 11) &&
-                      currentSymbol.experience >
-                        nextExperience)
+                      currentSymbol.experience > nextExperience)
                       ? -1
                       : 0
                   }
@@ -258,8 +249,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     tabIndex={
                       disabled ||
                       (currentSymbol.level < (!swapped ? 20 : 11) &&
-                        currentSymbol.experience >
-                          nextExperience)
+                        currentSymbol.experience > nextExperience)
                         ? -1
                         : 0
                     }
@@ -277,8 +267,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                         currentSymbol.level === null
                           ? "?"
                           : currentSymbol.level < (!swapped ? 20 : 11) &&
-                            currentSymbol.experience <
-                              nextExperience
+                            currentSymbol.experience < nextExperience
                           ? currentSymbol.experience
                           : currentSymbol.level < (!swapped ? 20 : 11)
                           ? nextExperience
@@ -291,11 +280,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     <div>
                       <p className="text-secondary">
                         <span>
-                          {isNaN(currentSymbol.level) ||
-                          currentSymbol.level === null
-                            ? "?"
-                            : selectorLevel}{" "}
-                          /{" "}
+                          {isValid(currentSymbol.level) ? selectorLevel : "?"} /{" "}
                           {(isNaN(selectorExperience) &&
                             (isNaN(currentSymbol.experience) ||
                               currentSymbol.experience === null)) ||
@@ -329,8 +314,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   isNaN(selectorExperience) ||
                   currentSymbol.level === (!swapped ? 20 : 11) ||
                   (currentSymbol.level < (!swapped ? 20 : 11) &&
-                    currentSymbol.experience >
-                      nextExperience)
+                    currentSymbol.experience > nextExperience)
                     ? -1
                     : 0
                 }
@@ -364,8 +348,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           <TooltipContent
             className={`tooltip ${
               currentSymbol.level < (!swapped ? 20 : 11) &&
-              currentSymbol.experience >
-                nextExperience
+              currentSymbol.experience > nextExperience
                 ? "block"
                 : "hidden"
             }`}
@@ -376,13 +359,13 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         </Tooltip>
         <Tooltip placement={isMobile ? "bottom" : "top"}>
           <TooltipTrigger
-          asChild={true}
+            asChild={true}
             className={`cursor-default ${selectedTool === 1 && "hidden"}`}
             tabIndex={
               disabled ||
               (currentSymbol.level < (!swapped ? 20 : 11) &&
-                currentSymbol.experience <
-                  nextExperience) || currentSymbol.level === 20
+                currentSymbol.experience < nextExperience) ||
+              currentSymbol.level === 20
                 ? -1
                 : 0
             }
@@ -392,8 +375,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                 selectedTool === 2 ? "block" : "hidden"
               } ${
                 currentSymbol.level < (!swapped ? 20 : 11) &&
-                currentSymbol.experience >
-                  nextExperience &&
+                currentSymbol.experience > nextExperience &&
                 "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
               }`}
             >
@@ -412,8 +394,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     tabIndex={
                       disabled ||
                       (currentSymbol.level < (!swapped ? 20 : 11) &&
-                        currentSymbol.experience >
-                          nextExperience)
+                        currentSymbol.experience > nextExperience)
                         ? -1
                         : 0
                     }
@@ -490,8 +471,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           <TooltipContent
             className={`tooltip ${
               currentSymbol.level < (!swapped ? 20 : 11) &&
-              currentSymbol.experience >
-                nextExperience
+              currentSymbol.experience > nextExperience
                 ? "block"
                 : "hidden"
             }`}
