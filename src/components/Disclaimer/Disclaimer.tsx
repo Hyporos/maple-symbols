@@ -14,7 +14,7 @@ const Disclaimer = () => {
   );
   const [dontShow, setDontShow] = useState(false);
 
-  /* ―――――――――――――――――――― Functions & Hooks ―――――――――――――― */
+  /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
   function handleDismiss() {
     setIsOpen(false);

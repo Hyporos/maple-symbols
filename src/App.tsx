@@ -1,35 +1,28 @@
 import { useEffect, useState } from "react";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import Calculator from "./components/Calculator/Calculator";
-import Footer from "./components/Footer/Footer";
 import Disclaimer from "./components/Disclaimer/Disclaimer";
 import Header from "./components/Header/Header";
 import Selector from "./components/Selector/Selector";
+import Calculator from "./components/Calculator/Calculator";
 import Tools from "./components/Tools/Tools";
 import Levels from "./components/Levels/Levels";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
-  authDomain: "maple-symbols.firebaseapp.com",
-  projectId: "maple-symbols",
-  storageBucket: "maple-symbols.appspot.com",
-  messagingSenderId: "1034069866026",
-  appId: "1:1034069866026:web:f7d7f1d55054339039b553",
-  measurementId: "G-5EGQQS4DDK",
-};
+import Footer from "./components/Footer/Footer";
 
 function App() {
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
+
+  const arcaneData = [
+    0, 12, 15, 20, 27, 36, 47, 60, 75, 92, 111, 132, 155, 180, 207, 236, 267,
+    300, 335, 372,
+  ];
+
+  const sacredData = [0, 29, 76, 141, 224, 325, 444, 581, 736, 909, 1100];
 
   const [symbols, setSymbols] = useState([
     {
       id: 1,
       name: "Vanishing Journey",
-      alt: "Vanishing Journey Symbol",
+      alt: "Vanishing Journey",
       img: "/symbols/vj-symbol.webp",
       type: "arcane",
       dailyName: "Vanishing Journey Research",
@@ -47,33 +40,17 @@ function App() {
       mondayCount: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 12, mesosRequired: 7070000 },
-        { level: 3, symbolsRequired: 15, mesosRequired: 11030000 },
-        { level: 4, symbolsRequired: 20, mesosRequired: 14990000 },
-        { level: 5, symbolsRequired: 27, mesosRequired: 18950000 },
-        { level: 6, symbolsRequired: 36, mesosRequired: 22910000 },
-        { level: 7, symbolsRequired: 47, mesosRequired: 26870000 },
-        { level: 8, symbolsRequired: 60, mesosRequired: 30830000 },
-        { level: 9, symbolsRequired: 75, mesosRequired: 34790000 },
-        { level: 10, symbolsRequired: 92, mesosRequired: 38750000 },
-        { level: 11, symbolsRequired: 111, mesosRequired: 42710000 },
-        { level: 12, symbolsRequired: 132, mesosRequired: 46670000 },
-        { level: 13, symbolsRequired: 155, mesosRequired: 50630000 },
-        { level: 14, symbolsRequired: 180, mesosRequired: 54590000 },
-        { level: 15, symbolsRequired: 207, mesosRequired: 58550000 },
-        { level: 16, symbolsRequired: 236, mesosRequired: 62510000 },
-        { level: 17, symbolsRequired: 267, mesosRequired: 66470000 },
-        { level: 18, symbolsRequired: 300, mesosRequired: 70430000 },
-        { level: 19, symbolsRequired: 335, mesosRequired: 74390000 },
-        { level: 20, symbolsRequired: 372, mesosRequired: 78350000 },
+      symbolsRequired: arcaneData,
+      mesosRequired: [
+        0, 970000, 1230000, 1660000, 2260000, 3060000, 4040000, 5220000,
+        6600000, 8180000, 9990000, 12010000, 14260000, 16740000, 19450000,
+        22420000, 25630000, 29100000, 32830000, 36820000
       ],
     },
     {
       id: 2,
       name: "Chu Chu Island",
-      alt: "Chu Chu Symbol",
+      alt: "Chu Chu Island",
       img: "/symbols/chuchu-symbol.webp",
       type: "arcane",
       dailyName: "Chu Chu's Finest Cuisine",
@@ -91,33 +68,17 @@ function App() {
       mondayCount: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 12, mesosRequired: 10840000 },
-        { level: 3, symbolsRequired: 15, mesosRequired: 15460000 },
-        { level: 4, symbolsRequired: 20, mesosRequired: 20080000 },
-        { level: 5, symbolsRequired: 27, mesosRequired: 24700000 },
-        { level: 6, symbolsRequired: 36, mesosRequired: 29320000 },
-        { level: 7, symbolsRequired: 47, mesosRequired: 33940000 },
-        { level: 8, symbolsRequired: 60, mesosRequired: 38560000 },
-        { level: 9, symbolsRequired: 75, mesosRequired: 43180000 },
-        { level: 10, symbolsRequired: 92, mesosRequired: 47800000 },
-        { level: 11, symbolsRequired: 111, mesosRequired: 52420000 },
-        { level: 12, symbolsRequired: 132, mesosRequired: 57040000 },
-        { level: 13, symbolsRequired: 155, mesosRequired: 61660000 },
-        { level: 14, symbolsRequired: 180, mesosRequired: 66280000 },
-        { level: 15, symbolsRequired: 207, mesosRequired: 70900000 },
-        { level: 16, symbolsRequired: 236, mesosRequired: 75520000 },
-        { level: 17, symbolsRequired: 267, mesosRequired: 80140000 },
-        { level: 18, symbolsRequired: 300, mesosRequired: 84760000 },
-        { level: 19, symbolsRequired: 335, mesosRequired: 89380000 },
-        { level: 20, symbolsRequired: 372, mesosRequired: 94000000 },
+      symbolsRequired: arcaneData,
+      mesosRequired: [
+        0, 1210000, 1530000, 2060000, 2800000, 3780000, 4980000, 6420000,
+        8100000, 10020000, 12210000, 14650000, 17360000, 20340000, 23590000,
+        27140000, 30970000, 35100000, 39530000, 44260000
       ],
     },
     {
       id: 3,
       name: "Lachelein",
-      alt: "Lachelein Symbol",
+      alt: "Lachelein",
       img: "/symbols/lach-symbol.webp",
       type: "arcane",
       dailyName: "A Night's Peace in Lachelein",
@@ -133,33 +94,17 @@ function App() {
       mondayCount: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 12, mesosRequired: 14610000 },
-        { level: 3, symbolsRequired: 15, mesosRequired: 19890000 },
-        { level: 4, symbolsRequired: 20, mesosRequired: 25170000 },
-        { level: 5, symbolsRequired: 27, mesosRequired: 30450000 },
-        { level: 6, symbolsRequired: 36, mesosRequired: 35730000 },
-        { level: 7, symbolsRequired: 47, mesosRequired: 41010000 },
-        { level: 8, symbolsRequired: 60, mesosRequired: 46290000 },
-        { level: 9, symbolsRequired: 75, mesosRequired: 51570000 },
-        { level: 10, symbolsRequired: 92, mesosRequired: 56850000 },
-        { level: 11, symbolsRequired: 111, mesosRequired: 62130000 },
-        { level: 12, symbolsRequired: 132, mesosRequired: 67410000 },
-        { level: 13, symbolsRequired: 155, mesosRequired: 72690000 },
-        { level: 14, symbolsRequired: 180, mesosRequired: 77970000 },
-        { level: 15, symbolsRequired: 207, mesosRequired: 83250000 },
-        { level: 16, symbolsRequired: 236, mesosRequired: 88530000 },
-        { level: 17, symbolsRequired: 267, mesosRequired: 93810000 },
-        { level: 18, symbolsRequired: 300, mesosRequired: 99090000 },
-        { level: 19, symbolsRequired: 335, mesosRequired: 104370000 },
-        { level: 20, symbolsRequired: 372, mesosRequired: 109650000 },
+      symbolsRequired: arcaneData,
+      mesosRequired: [
+        0, 1450000, 1830000, 2460000, 3340000, 4500000, 5920000, 7620000,
+        9600000, 11860000, 14430000, 17290000, 20460000, 23940000, 27730000,
+        31860000, 36310000, 41000000, 46230000, 51700000
       ],
     },
     {
       id: 4,
       name: "Arcana",
-      alt: "Arcana Symbol",
+      alt: "Arcana",
       img: "/symbols/arcana-symbol.webp",
       type: "arcane",
       dailyName: "Peace in Arcana",
@@ -175,33 +120,17 @@ function App() {
       mondayCount: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 12, mesosRequired: 17136000 },
-        { level: 3, symbolsRequired: 15, mesosRequired: 23076000 },
-        { level: 4, symbolsRequired: 20, mesosRequired: 29016000 },
-        { level: 5, symbolsRequired: 27, mesosRequired: 34956000 },
-        { level: 6, symbolsRequired: 36, mesosRequired: 40896000 },
-        { level: 7, symbolsRequired: 47, mesosRequired: 46836000 },
-        { level: 8, symbolsRequired: 60, mesosRequired: 52776000 },
-        { level: 9, symbolsRequired: 75, mesosRequired: 58716000 },
-        { level: 10, symbolsRequired: 92, mesosRequired: 64656000 },
-        { level: 11, symbolsRequired: 111, mesosRequired: 70596000 },
-        { level: 12, symbolsRequired: 132, mesosRequired: 76536000 },
-        { level: 13, symbolsRequired: 155, mesosRequired: 82476000 },
-        { level: 14, symbolsRequired: 180, mesosRequired: 88416000 },
-        { level: 15, symbolsRequired: 207, mesosRequired: 94356000 },
-        { level: 16, symbolsRequired: 236, mesosRequired: 100296000 },
-        { level: 17, symbolsRequired: 267, mesosRequired: 106236000 },
-        { level: 18, symbolsRequired: 300, mesosRequired: 112176000 },
-        { level: 19, symbolsRequired: 335, mesosRequired: 118116000 },
-        { level: 20, symbolsRequired: 372, mesosRequired: 124056000 },
+      symbolsRequired: arcaneData,
+      mesosRequired: [
+        0, 1690000, 2130000, 2860000, 3880000, 5220000, 6860000, 8820000,
+        11100000, 13700000, 16650000, 19930000, 23560000, 27540000, 31870000,
+        36580000, 41650000, 47100000, 52930000, 59140000
       ],
     },
     {
       id: 5,
       name: "Morass",
-      alt: "Morass Symbol",
+      alt: "Morass",
       img: "/symbols/morass-symbol.webp",
       type: "arcane",
       dailyName: "Save the Morass",
@@ -217,33 +146,17 @@ function App() {
       mondayCount: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 12, mesosRequired: 17136000 },
-        { level: 3, symbolsRequired: 15, mesosRequired: 23076000 },
-        { level: 4, symbolsRequired: 20, mesosRequired: 29016000 },
-        { level: 5, symbolsRequired: 27, mesosRequired: 34956000 },
-        { level: 6, symbolsRequired: 36, mesosRequired: 40896000 },
-        { level: 7, symbolsRequired: 47, mesosRequired: 46836000 },
-        { level: 8, symbolsRequired: 60, mesosRequired: 52776000 },
-        { level: 9, symbolsRequired: 75, mesosRequired: 58716000 },
-        { level: 10, symbolsRequired: 92, mesosRequired: 64656000 },
-        { level: 11, symbolsRequired: 111, mesosRequired: 70596000 },
-        { level: 12, symbolsRequired: 132, mesosRequired: 76536000 },
-        { level: 13, symbolsRequired: 155, mesosRequired: 82476000 },
-        { level: 14, symbolsRequired: 180, mesosRequired: 88416000 },
-        { level: 15, symbolsRequired: 207, mesosRequired: 94356000 },
-        { level: 16, symbolsRequired: 236, mesosRequired: 100296000 },
-        { level: 17, symbolsRequired: 267, mesosRequired: 106236000 },
-        { level: 18, symbolsRequired: 300, mesosRequired: 112176000 },
-        { level: 19, symbolsRequired: 335, mesosRequired: 118116000 },
-        { level: 20, symbolsRequired: 372, mesosRequired: 124056000 },
+      symbolsRequired: arcaneData,
+      mesosRequired: [
+        0, 1930000, 2430000, 3260000, 4420000, 5940000, 7800000, 10020000,
+        12600000, 15540000, 18870000, 22570000, 26660000, 31140000, 36010000,
+        41300000, 46990000, 53100000, 59630000, 66580000
       ],
     },
     {
       id: 6,
       name: "Esfera",
-      alt: "Esfera Symbol",
+      alt: "Esfera",
       img: "/symbols/esfera-symbol.webp",
       type: "arcane",
       dailyName: "Esfera Research Orders",
@@ -259,33 +172,17 @@ function App() {
       mondayCount: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 12, mesosRequired: 17136000 },
-        { level: 3, symbolsRequired: 15, mesosRequired: 23076000 },
-        { level: 4, symbolsRequired: 20, mesosRequired: 29016000 },
-        { level: 5, symbolsRequired: 27, mesosRequired: 34956000 },
-        { level: 6, symbolsRequired: 36, mesosRequired: 40896000 },
-        { level: 7, symbolsRequired: 47, mesosRequired: 46836000 },
-        { level: 8, symbolsRequired: 60, mesosRequired: 52776000 },
-        { level: 9, symbolsRequired: 75, mesosRequired: 58716000 },
-        { level: 10, symbolsRequired: 92, mesosRequired: 64656000 },
-        { level: 11, symbolsRequired: 111, mesosRequired: 70596000 },
-        { level: 12, symbolsRequired: 132, mesosRequired: 76536000 },
-        { level: 13, symbolsRequired: 155, mesosRequired: 82476000 },
-        { level: 14, symbolsRequired: 180, mesosRequired: 88416000 },
-        { level: 15, symbolsRequired: 207, mesosRequired: 94356000 },
-        { level: 16, symbolsRequired: 236, mesosRequired: 100296000 },
-        { level: 17, symbolsRequired: 267, mesosRequired: 106236000 },
-        { level: 18, symbolsRequired: 300, mesosRequired: 112176000 },
-        { level: 19, symbolsRequired: 335, mesosRequired: 118116000 },
-        { level: 20, symbolsRequired: 372, mesosRequired: 124056000 },
+      symbolsRequired: arcaneData,
+      mesosRequired: [
+        0, 2170000, 2730000, 3660000, 4960000, 6660000, 8740000, 11220000,
+        14100000, 17380000, 21090000, 25210000, 29760000, 34740000, 40150000,
+        46020000, 52330000, 59100000, 66330000, 74020000
       ],
     },
     {
       id: 7,
       name: "Cernium",
-      alt: "Cernium Symbol",
+      alt: "Cernium",
       img: "/symbols/cern-symbol.webp",
       type: "sacred",
       dailyName: "Cernium Research",
@@ -300,24 +197,16 @@ function App() {
       symbolsRemaining: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 29, mesosRequired: 185400000 },
-        { level: 3, symbolsRequired: 76, mesosRequired: 273900000 },
-        { level: 4, symbolsRequired: 141, mesosRequired: 362400000 },
-        { level: 5, symbolsRequired: 224, mesosRequired: 450900000 },
-        { level: 6, symbolsRequired: 325, mesosRequired: 539400000 },
-        { level: 7, symbolsRequired: 444, mesosRequired: 627900000 },
-        { level: 8, symbolsRequired: 581, mesosRequired: 716400000 },
-        { level: 9, symbolsRequired: 736, mesosRequired: 804900000 },
-        { level: 10, symbolsRequired: 909, mesosRequired: 893400000 },
-        { level: 11, symbolsRequired: 1100, mesosRequired: 981900000 },
+      symbolsRequired: sacredData,
+      mesosRequired: [
+        0, 36500000, 91200000, 160700000, 241900000, 331500000, 426200000,
+        522900000, 618200000, 709000000, 792000000
       ],
     },
     {
       id: 8,
       name: "Hotel Arcus",
-      alt: "Hotel Arcus Symbol",
+      alt: "Hotel Arcus",
       img: "/symbols/arcus-symbol.webp",
       type: "sacred",
       dailyName: "Clean Up Around Hotel Arcus",
@@ -330,24 +219,16 @@ function App() {
       symbolsRemaining: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 29, mesosRequired: 203900000 },
-        { level: 3, symbolsRequired: 76, mesosRequired: 301200000 },
-        { level: 4, symbolsRequired: 141, mesosRequired: 398500000 },
-        { level: 5, symbolsRequired: 224, mesosRequired: 495800000 },
-        { level: 6, symbolsRequired: 325, mesosRequired: 593100000 },
-        { level: 7, symbolsRequired: 444, mesosRequired: 690400000 },
-        { level: 8, symbolsRequired: 581, mesosRequired: 787700000 },
-        { level: 9, symbolsRequired: 736, mesosRequired: 885000000 },
-        { level: 10, symbolsRequired: 909, mesosRequired: 982300000 },
-        { level: 11, symbolsRequired: 1100, mesosRequired: 1079600000 },
+      symbolsRequired: sacredData,
+      mesosRequired: [
+        0, 41700000, 104800000, 186100000, 282200000, 390000000, 506100000,
+        627400000, 750700000, 872600000, 990000000
       ],
     },
     {
       id: 9,
       name: "Odium",
-      alt: "Odium Symbol",
+      alt: "Odium",
       img: "/symbols/odium-symbol.webp",
       type: "sacred",
       dailyName: "Odium Area Expedition",
@@ -360,22 +241,15 @@ function App() {
       symbolsRemaining: 0,
       completion: "",
       locked: true,
-      data: [
-        { level: 1, symbolsRequired: 0, mesosRequired: 0 },
-        { level: 2, symbolsRequired: 29, mesosRequired: 224500000 },
-        { level: 3, symbolsRequired: 76, mesosRequired: 331600000 },
-        { level: 4, symbolsRequired: 141, mesosRequired: 438700000 },
-        { level: 5, symbolsRequired: 224, mesosRequired: 545800000 },
-        { level: 6, symbolsRequired: 325, mesosRequired: 652900000 },
-        { level: 7, symbolsRequired: 444, mesosRequired: 760000000 },
-        { level: 8, symbolsRequired: 581, mesosRequired: 867100000 },
-        { level: 9, symbolsRequired: 736, mesosRequired: 974200000 },
-        { level: 10, symbolsRequired: 909, mesosRequired: 1081300000 },
-        { level: 11, symbolsRequired: 1100, mesosRequired: 1188400000 },
+      symbolsRequired: sacredData,
+      mesosRequired: [
+        0, 46900000, 118500000, 211500000, 322500000, 448500000, 586000000,
+        732000000, 883200000, 1036200000, 1188000000
       ],
     },
   ]);
 
+  // If using Samsung Internet, display an alert. The built in dark theme will mess with the colors.
   useEffect(() => {
     if (navigator.userAgent.match(/samsung/i)) {
       alert(
@@ -392,11 +266,11 @@ function App() {
       <Disclaimer />
       <Header />
       <Selector
-        swapped={swapped}
-        setSwapped={setSwapped}
+        symbols={symbols}
         selectedSymbol={selectedSymbol}
         setSelectedSymbol={setSelectedSymbol}
-        symbols={symbols}
+        swapped={swapped}
+        setSwapped={setSwapped}
       />
       <Calculator
         symbols={symbols}

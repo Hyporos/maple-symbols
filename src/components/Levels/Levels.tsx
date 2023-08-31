@@ -23,12 +23,7 @@ interface Props {
       symbolsRemaining: number;
       daysRemaining: number;
       completion: string;
-      data: [
-        {
-          level: number;
-          symbolsRequired: number;
-        }
-      ];
+      symbolsRequired: Array<number>;
     }
   ];
   swapped: boolean;
@@ -50,13 +45,12 @@ const Levels = ({ symbols, swapped }: Props) => {
       (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
     : 0;
 
-  const targetSymbols =
-    currentSymbol.data
+    const targetSymbols =
+    currentSymbol.symbolsRequired
       .slice(currentSymbol.level, targetLevel)
-      .reduce(
-        (total, currentSymbol) => total + currentSymbol.symbolsRequired,
-        0
-      ) - currentSymbol.experience;
+      .reduce((accumulator, experience) => accumulator + experience, 0) -
+    currentSymbol.experience;
+      
 
   useMemo(() => {
     try {

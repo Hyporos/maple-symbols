@@ -2,10 +2,6 @@
     @apply flex justify-center
 }
 
-.horizontal-divider {
-    @apply bg-gradient-to-r from-transparent via-white to-transparent border-0 opacity-20 h-px w-[350px] tablet:w-[700px]
-}
-
 .tool-select {
     @apply flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl tablet:rounded-3xl select-none tablet:transition-colors px-2 tablet:px-4 py-2 w-[200px] tablet:w-[200px]
 }
@@ -17,3 +13,7 @@
 .tool-input::placeholder {
     @apply text-tertiary hover:text-secondary transition-all focus:text-secondary
  }
+
+ .tools .horizontal-divider {
+    @apply bg-gradient-to-r via-white/20 border-0 my-8 h-px w-[350px] tablet:w-[700px]
+}

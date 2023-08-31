@@ -2,10 +2,6 @@
     @apply flex justify-center
 }
 
-.levels .horizontal-divider {
-    @apply bg-white opacity-10 my-6 w-[300px] tablet:w-[600px] laptop:w-[950px]
-}
-
 .level-input {
     @apply w-[75px] p-1.5 text-center bg-secondary hover:bg-hover focus:bg-hover outline-none focus:outline-none transition-all
 }
@@ -13,3 +9,7 @@
 .level-input::placeholder {
     @apply text-tertiary hover:text-secondary focus:text-secondary transition-all
  }
+
+ .levels .horizontal-divider {
+    @apply opacity-10 my-8 w-[300px] tablet:w-[600px] laptop:w-[950px]
+}

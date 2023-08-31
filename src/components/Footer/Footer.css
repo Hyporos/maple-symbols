@@ -1,4 +1,3 @@
 .footer {
-    background: linear-gradient(#212121, 50%, #1c1c1c);
-    @apply flex justify-center
+    @apply flex justify-center bg-gradient-to-b from-[#212121] to-[#1c1c1c]
 }
