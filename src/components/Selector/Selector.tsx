@@ -13,10 +13,10 @@ interface Props {
       level: number;
     }
   ];
-  swapped: boolean;
-  setSwapped: Dispatch<SetStateAction<boolean>>;
   selectedSymbol: number;
   setSelectedSymbol: Dispatch<SetStateAction<number>>;
+  swapped: boolean;
+  setSwapped: Dispatch<SetStateAction<boolean>>;
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――

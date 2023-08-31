@@ -1,14 +1,13 @@
 import {
   Dispatch,
   SetStateAction,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useState,
 } from "react";
+import { useMediaQuery } from "react-responsive";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { HiArrowSmRight } from "react-icons/hi";
-import { useMediaQuery } from "react-responsive";
 import "./Tools.css";
 
 interface Props {
@@ -28,15 +27,19 @@ interface Props {
   swapped: boolean;
 }
 
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The Tools component is the section under the Calculator which contains the Selectors and Catalyst.
+// * You can preview the functionality of both items by clicking their respective buttons.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
 const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
-  const [selectorExperience, setSelectorExperience] = useState(NaN);
-  const [catalystExperience, setCatalystExperience] = useState(NaN);
+  const [selectorExp, setselectorExp] = useState(NaN);
+  const [catalystExp, setcatalystExp] = useState(NaN);
 
   const currentSymbol = symbols[selectedSymbol];
-
   const nextExperience = currentSymbol.symbolsRequired[currentSymbol.level];
 
   const [selectorLevel, setSelectorLevel] = useState(currentSymbol.level);
@@ -53,7 +56,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   // Preview the updated symbol level / experience when applying Symbol Selectors
   useLayoutEffect(() => {
-    setSelectorLevel(currentSymbol.level); // If the amount of Symbol Selectors is not enough to level up, default to the current level
+    setSelectorLevel(currentSymbol.level); // If the selector count is not enough to level up, default to the current level
     let totalLevels = 0;
     let totalExp = 0;
     currentSymbol.symbolsRequired.forEach((symbol, indexLevel) => {
@@ -68,43 +71,61 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         totalExp += currentSymbol.symbolsRequired[indexLevel];
         setSelectorLevel(currentSymbol.level + totalLevels);
       }
-      setSelectorExperience(
-        selectorCount - totalExp + currentSymbol.experience
+      setselectorExp(
+        selectorCount
+          ? selectorCount - totalExp + currentSymbol.experience
+          : currentSymbol.experience
       );
     });
   }, [currentSymbol.level, currentSymbol.experience, selectorCount]);
 
   // Preview the updated symbol level / experience when using a Catalyst
   useMemo(() => {
-    let accumulated = 0;
-    currentSymbol.symbolsRequired.forEach((symbol, index) => {
-      if (index < currentSymbol.level) {
-        accumulated = accumulated + currentSymbol.symbolsRequired[index];
+    let totalExp = 0;
+    currentSymbol.symbolsRequired.forEach((symbol, indexLevel) => {
+      if (indexLevel < currentSymbol.level) {
+        totalExp = totalExp + currentSymbol.symbolsRequired[indexLevel];
       }
     });
     let tempCatalystExp =
-      accumulated +
-      ((currentSymbol.experience < nextExperience
-        ? currentSymbol.experience
-        : nextExperience) -
-        (currentSymbol.experience < nextExperience
-          ? currentSymbol.experience
-          : nextExperience) *
-          (!swapped ? 0.2 : 0.4)) -
-      Math.ceil(accumulated - accumulated * (!swapped ? 0.8 : 0.6));
-    setCatalystExperience(tempCatalystExp);
+      (totalExp +
+        (currentSymbol.experience > nextExperience
+          ? nextExperience
+          : currentSymbol.experience)) *
+      (!swapped ? 0.8 : 0.6);
+    setcatalystExp(tempCatalystExp);
 
-    currentSymbol.symbolsRequired.forEach((symbol, index) => {
-      if (tempCatalystExp > currentSymbol.symbolsRequired[index]) {
+    currentSymbol.symbolsRequired.forEach((symbol, indexLevel) => {
+      if (tempCatalystExp > currentSymbol.symbolsRequired[indexLevel - 1]) {
         tempCatalystExp =
-          tempCatalystExp - currentSymbol.symbolsRequired[index];
-        setCatalystLevel(index + 1);
-        setCatalystExperience(tempCatalystExp);
+          tempCatalystExp - currentSymbol.symbolsRequired[indexLevel - 1];
+        setCatalystLevel(indexLevel);
+        setcatalystExp(tempCatalystExp);
       }
     });
   }, [currentSymbol.level, currentSymbol.experience]);
 
-
+  // Display the current or resulted selector and catalyst level / experience
+  const displayPreview = (levelType: number, expType: number) => {
+    if (levelType === currentSymbol.level && levelType <= 1 && selectedTool === 2) {
+      return "? / ?"
+    }
+    if (currentSymbol.experience > nextExperience && expType !== catalystExp) { 
+      return currentSymbol.level + " / " + nextExperience; // Prevent modification from unlocked exp field overflow on Symbol Selectors
+    }
+    if (levelType === (!swapped ? 20 : 11)) {
+      return levelType + " / 0"
+    }
+    if (!isValid(currentSymbol.level)) {
+      return "? / ?";
+    }
+    if (!isValid(currentSymbol.experience)) {
+      return levelType + " / ?";
+    }
+    if (isValid(currentSymbol.level) && isValid(currentSymbol.experience)) {
+      return levelType + " / " + Math.ceil(expType);
+    }
+  };
 
   return (
     <section className="tools">
@@ -256,22 +277,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   >
                     <div>
                       <p className="text-secondary">
-                        {isNaN(currentSymbol.level) ||
-                        currentSymbol.level === null
-                          ? "?"
-                          : currentSymbol.level}{" "}
-                        /{" "}
-                        {isNaN(currentSymbol.experience) ||
-                        currentSymbol.experience === null ||
-                        isNaN(currentSymbol.level) ||
-                        currentSymbol.level === null
-                          ? "?"
-                          : currentSymbol.level < (!swapped ? 20 : 11) &&
-                            currentSymbol.experience < nextExperience
-                          ? currentSymbol.experience
-                          : currentSymbol.level < (!swapped ? 20 : 11)
-                          ? nextExperience
-                          : 0}
+                        {displayPreview(currentSymbol.level, currentSymbol.experience)}
                       </p>
                     </div>
                     <div>
@@ -279,22 +285,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     </div>
                     <div>
                       <p className="text-secondary">
-                        <span>
-                          {isValid(currentSymbol.level) ? selectorLevel : "?"} /{" "}
-                          {(isNaN(selectorExperience) &&
-                            (isNaN(currentSymbol.experience) ||
-                              currentSymbol.experience === null)) ||
-                          isNaN(currentSymbol.level) ||
-                          currentSymbol.level === null
-                            ? "?"
-                            : selectorLevel === 20
-                            ? "0"
-                            : (isNaN(selectorExperience) &&
-                                currentSymbol.experience > 0) ||
-                              isNaN(selectorExperience)
-                            ? currentSymbol.experience
-                            : selectorExperience}
-                        </span>
+                        <span>{displayPreview(selectorLevel, selectorExp)}</span>
                       </p>
                     </div>
                   </TooltipTrigger>
@@ -311,7 +302,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               <button
                 tabIndex={
                   disabled ||
-                  isNaN(selectorExperience) ||
+                  isNaN(selectorExp) ||
                   currentSymbol.level === (!swapped ? 20 : 11) ||
                   (currentSymbol.level < (!swapped ? 20 : 11) &&
                     currentSymbol.experience > nextExperience)
@@ -319,7 +310,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     : 0
                 }
                 className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] tablet:w-[100px] ${
-                  (isNaN(selectorExperience) ||
+                  (isNaN(selectorExp) ||
                     currentSymbol.level === (!swapped ? 20 : 11)) &&
                   "pointer-events-none opacity-25"
                 }`}
@@ -332,7 +323,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                             level: selectorLevel,
                             experience:
                               selectorCount < currentSymbol.symbolsRemaining
-                                ? selectorExperience
+                                ? selectorExp
                                 : 0,
                           }
                         : symbol
@@ -357,26 +348,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             unlocked
           </TooltipContent>
         </Tooltip>
-        <Tooltip placement={isMobile ? "bottom" : "top"}>
-          <TooltipTrigger
-            asChild={true}
-            className={`cursor-default ${selectedTool === 1 && "hidden"}`}
-            tabIndex={
-              disabled ||
-              (currentSymbol.level < (!swapped ? 20 : 11) &&
-                currentSymbol.experience < nextExperience) ||
-              currentSymbol.level === 20
-                ? -1
-                : 0
-            }
-          >
             <div
               className={`flex justify-center items-center focus bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-[31.5px] tablet:py-3 mb-9 tablet:space-x-8 space-y-6 tablet:space-y-0 ${
                 selectedTool === 2 ? "block" : "hidden"
-              } ${
-                currentSymbol.level < (!swapped ? 20 : 11) &&
-                currentSymbol.experience > nextExperience &&
-                "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
               }`}
             >
               <div className="flex items-center space-x-4 tablet:w-[70px]">
@@ -401,25 +375,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   >
                     <div>
                       <p className="text-secondary">
-                        {currentSymbol.level === 1 ||
-                        isNaN(currentSymbol.level) ||
-                        currentSymbol.level === null
-                          ? "?"
-                          : currentSymbol.level}{" "}
-                        /{" "}
-                        {currentSymbol.level === 1 ||
-                        isNaN(currentSymbol.level) ||
-                        currentSymbol.level === null ||
-                        isNaN(currentSymbol.experience) ||
-                        currentSymbol.experience === null
-                          ? "?"
-                          : currentSymbol.experience <
-                            (currentSymbol.level < (!swapped ? 20 : 11) &&
-                              nextExperience)
-                          ? currentSymbol.experience
-                          : currentSymbol.level < (!swapped ? 20 : 11)
-                          ? nextExperience
-                          : 0}
+                        {displayPreview(currentSymbol.level, currentSymbol.experience)}
                       </p>
                     </div>
                     <div>
@@ -427,23 +383,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     </div>
                     <div>
                       <p className="text-secondary">
-                        <span>
-                          {currentSymbol.level === 1 ||
-                          isNaN(currentSymbol.level) ||
-                          currentSymbol.level === null
-                            ? "?"
-                            : currentSymbol.level === 2 // Bugged. Bandaid fix
-                            ? "1"
-                            : catalystLevel}{" "}
-                          /{" "}
-                          {currentSymbol.level === 1 ||
-                          isNaN(currentSymbol.level) ||
-                          currentSymbol.level === null ||
-                          isNaN(currentSymbol.experience) ||
-                          currentSymbol.experience === null
-                            ? "?"
-                            : Math.ceil(catalystExperience)}
-                        </span>
+                        <span>{displayPreview(catalystLevel, catalystExp)}</span>
                       </p>
                     </div>
                   </TooltipTrigger>
@@ -467,19 +407,6 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   : "-40% EXP upon use"}
               </p>
             </div>
-          </TooltipTrigger>
-          <TooltipContent
-            className={`tooltip ${
-              currentSymbol.level < (!swapped ? 20 : 11) &&
-              currentSymbol.experience > nextExperience
-                ? "block"
-                : "hidden"
-            }`}
-          >
-            This feature is <span>disabled</span> while <br></br> experience is
-            unlocked
-          </TooltipContent>
-        </Tooltip>
       </div>
     </section>
   );
