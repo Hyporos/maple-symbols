@@ -87,13 +87,14 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         totalExp = totalExp + currentSymbol.symbolsRequired[indexLevel];
       }
     });
+
     let tempCatalystExp =
       (totalExp +
         (currentSymbol.experience > nextExperience
           ? nextExperience
           : currentSymbol.experience)) *
       (!swapped ? 0.8 : 0.6);
-    setcatalystExp(tempCatalystExp);
+    setcatalystExp(tempCatalystExp); // ? Maybe this can be removed?
 
     currentSymbol.symbolsRequired.forEach((symbol, indexLevel) => {
       if (tempCatalystExp > currentSymbol.symbolsRequired[indexLevel - 1]) {
@@ -107,14 +108,18 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   // Display the current or resulted selector and catalyst level / experience
   const displayPreview = (levelType: number, expType: number) => {
-    if (levelType === currentSymbol.level && levelType <= 1 && selectedTool === 2) {
-      return "? / ?"
+    if (
+      levelType === currentSymbol.level &&
+      levelType <= 1 &&
+      selectedTool === 2
+    ) {
+      return "? / ?";
     }
-    if (currentSymbol.experience > nextExperience && expType !== catalystExp) { 
+    if (currentSymbol.experience > nextExperience && expType !== catalystExp) {
       return currentSymbol.level + " / " + nextExperience; // Prevent modification from unlocked exp field overflow on Symbol Selectors
     }
     if (levelType === (!swapped ? 20 : 11)) {
-      return levelType + " / 0"
+      return levelType + " / 0";
     }
     if (!isValid(currentSymbol.level)) {
       return "? / ?";
@@ -277,7 +282,10 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   >
                     <div>
                       <p className="text-secondary">
-                        {displayPreview(currentSymbol.level, currentSymbol.experience)}
+                        {displayPreview(
+                          currentSymbol.level,
+                          currentSymbol.experience
+                        )}
                       </p>
                     </div>
                     <div>
@@ -285,7 +293,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     </div>
                     <div>
                       <p className="text-secondary">
-                        <span>{displayPreview(selectorLevel, selectorExp)}</span>
+                        <span>
+                          {displayPreview(selectorLevel, selectorExp)}
+                        </span>
                       </p>
                     </div>
                   </TooltipTrigger>
@@ -310,8 +320,8 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     : 0
                 }
                 className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] tablet:w-[100px] ${
-                  (isNaN(selectorExp) ||
-                    currentSymbol.level === (!swapped ? 20 : 11)) &&
+                  (!isValid(selectorCount) ||
+                    currentSymbol.level === (!swapped ? 20 : 11)) && // remove this. change logic in intpu
                   "pointer-events-none opacity-25"
                 }`}
                 onClick={() => {
@@ -348,65 +358,68 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             unlocked
           </TooltipContent>
         </Tooltip>
-            <div
-              className={`flex justify-center items-center focus bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-[31.5px] tablet:py-3 mb-9 tablet:space-x-8 space-y-6 tablet:space-y-0 ${
-                selectedTool === 2 ? "block" : "hidden"
-              }`}
-            >
-              <div className="flex items-center space-x-4 tablet:w-[70px]">
-                <img
-                  src={currentSymbol.img}
-                  width={33}
-                  className="tablet:p-0"
-                ></img>
-                <p>{isMobile && currentSymbol.name}</p>
-              </div>
-              <div className="flex items-center justify-around tablet:w-1/3">
-                <Tooltip>
-                  <TooltipTrigger
-                    className="flex items-center space-x-4 cursor-default"
-                    tabIndex={
-                      disabled ||
-                      (currentSymbol.level < (!swapped ? 20 : 11) &&
-                        currentSymbol.experience > nextExperience)
-                        ? -1
-                        : 0
-                    }
-                  >
-                    <div>
-                      <p className="text-secondary">
-                        {displayPreview(currentSymbol.level, currentSymbol.experience)}
-                      </p>
-                    </div>
-                    <div>
-                      <HiArrowSmRight size={25} className="fill-basic" />
-                    </div>
-                    <div>
-                      <p className="text-secondary">
-                        <span>{displayPreview(catalystLevel, catalystExp)}</span>
-                      </p>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="tooltip">
-                    <div className="flex justify-center items-center text-accent space-x-1">
-                      <p className="text-sm">[Before</p>{" "}
-                      <HiArrowSmRight size={19} className="fill-accent" />{" "}
-                      <p className="text-sm">After]</p>
-                    </div>{" "}
-                    Symbol Level / Exp
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <p className="w-[200px] text-center tablet:text-right text-tertiary py-2">
-                {currentSymbol.level === 1 ||
-                isNaN(currentSymbol.level) ||
-                currentSymbol.level === null
-                  ? "Must be level 2 or higher"
-                  : !swapped
-                  ? "-20% EXP upon use"
-                  : "-40% EXP upon use"}
-              </p>
-            </div>
+        <div
+          className={`flex justify-center items-center focus bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-[31.5px] tablet:py-3 mb-9 tablet:space-x-8 space-y-6 tablet:space-y-0 ${
+            selectedTool === 2 ? "block" : "hidden"
+          }`}
+        >
+          <div className="flex items-center space-x-4 tablet:w-[70px]">
+            <img
+              src={currentSymbol.img}
+              width={33}
+              className="tablet:p-0"
+            ></img>
+            <p>{isMobile && currentSymbol.name}</p>
+          </div>
+          <div className="flex items-center justify-around tablet:w-1/3">
+            <Tooltip>
+              <TooltipTrigger
+                className="flex items-center space-x-4 cursor-default"
+                tabIndex={
+                  disabled ||
+                  (currentSymbol.level < (!swapped ? 20 : 11) &&
+                    currentSymbol.experience > nextExperience)
+                    ? -1
+                    : 0
+                }
+              >
+                <div>
+                  <p className="text-secondary">
+                    {displayPreview(
+                      currentSymbol.level,
+                      currentSymbol.experience
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <HiArrowSmRight size={25} className="fill-basic" />
+                </div>
+                <div>
+                  <p className="text-secondary">
+                    <span>{displayPreview(catalystLevel, catalystExp)}</span>
+                  </p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                <div className="flex justify-center items-center text-accent space-x-1">
+                  <p className="text-sm">[Before</p>{" "}
+                  <HiArrowSmRight size={19} className="fill-accent" />{" "}
+                  <p className="text-sm">After]</p>
+                </div>{" "}
+                Symbol Level / Exp
+              </TooltipContent>
+            </Tooltip>
+          </div>
+          <p className="w-[200px] text-center tablet:text-right text-tertiary py-2">
+            {currentSymbol.level === 1 ||
+            isNaN(currentSymbol.level) ||
+            currentSymbol.level === null
+              ? "Must be level 2 or higher"
+              : !swapped
+              ? "-20% EXP upon use"
+              : "-40% EXP upon use"}
+          </p>
+        </div>
       </div>
     </section>
   );
