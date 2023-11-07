@@ -7,7 +7,28 @@ import Tools from "./components/Tools/Tools";
 import Levels from "./components/Levels/Levels";
 import Footer from "./components/Footer/Footer";
 
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
 function App() {
+  // TODO: Replace the following with your app's Firebase project configuration
+  // See: https://firebase.google.com/docs/web/learn-more#config-object
+  const firebaseConfig = {
+    apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
+    authDomain: "maple-symbols.firebaseapp.com",
+    projectId: "maple-symbols",
+    storageBucket: "maple-symbols.appspot.com",
+    messagingSenderId: "1034069866026",
+    appId: "1:1034069866026:web:f7d7f1d55054339039b553",
+    measurementId: "G-5EGQQS4DDK"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+  // Initialize Analytics and get a reference to the service
+  const analytics = getAnalytics(app);
+
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
 
@@ -44,7 +65,7 @@ function App() {
       mesosRequired: [
         0, 970000, 1230000, 1660000, 2260000, 3060000, 4040000, 5220000,
         6600000, 8180000, 9990000, 12010000, 14260000, 16740000, 19450000,
-        22420000, 25630000, 29100000, 32830000, 36820000
+        22420000, 25630000, 29100000, 32830000, 36820000,
       ],
     },
     {
@@ -72,7 +93,7 @@ function App() {
       mesosRequired: [
         0, 1210000, 1530000, 2060000, 2800000, 3780000, 4980000, 6420000,
         8100000, 10020000, 12210000, 14650000, 17360000, 20340000, 23590000,
-        27140000, 30970000, 35100000, 39530000, 44260000
+        27140000, 30970000, 35100000, 39530000, 44260000,
       ],
     },
     {
@@ -98,7 +119,7 @@ function App() {
       mesosRequired: [
         0, 1450000, 1830000, 2460000, 3340000, 4500000, 5920000, 7620000,
         9600000, 11860000, 14430000, 17290000, 20460000, 23940000, 27730000,
-        31860000, 36310000, 41000000, 46230000, 51700000
+        31860000, 36310000, 41000000, 46230000, 51700000,
       ],
     },
     {
@@ -124,7 +145,7 @@ function App() {
       mesosRequired: [
         0, 1690000, 2130000, 2860000, 3880000, 5220000, 6860000, 8820000,
         11100000, 13700000, 16650000, 19930000, 23560000, 27540000, 31870000,
-        36580000, 41650000, 47100000, 52930000, 59140000
+        36580000, 41650000, 47100000, 52930000, 59140000,
       ],
     },
     {
@@ -150,7 +171,7 @@ function App() {
       mesosRequired: [
         0, 1930000, 2430000, 3260000, 4420000, 5940000, 7800000, 10020000,
         12600000, 15540000, 18870000, 22570000, 26660000, 31140000, 36010000,
-        41300000, 46990000, 53100000, 59630000, 66580000
+        41300000, 46990000, 53100000, 59630000, 66580000,
       ],
     },
     {
@@ -176,7 +197,7 @@ function App() {
       mesosRequired: [
         0, 2170000, 2730000, 3660000, 4960000, 6660000, 8740000, 11220000,
         14100000, 17380000, 21090000, 25210000, 29760000, 34740000, 40150000,
-        46020000, 52330000, 59100000, 66330000, 74020000
+        46020000, 52330000, 59100000, 66330000, 74020000,
       ],
     },
     {
@@ -200,7 +221,7 @@ function App() {
       symbolsRequired: sacredData,
       mesosRequired: [
         0, 36500000, 91200000, 160700000, 241900000, 331500000, 426200000,
-        522900000, 618200000, 709000000, 792000000
+        522900000, 618200000, 709000000, 792000000,
       ],
     },
     {
@@ -222,7 +243,7 @@ function App() {
       symbolsRequired: sacredData,
       mesosRequired: [
         0, 41700000, 104800000, 186100000, 282200000, 390000000, 506100000,
-        627400000, 750700000, 872600000, 990000000
+        627400000, 750700000, 872600000, 990000000,
       ],
     },
     {
@@ -244,7 +265,7 @@ function App() {
       symbolsRequired: sacredData,
       mesosRequired: [
         0, 46900000, 118500000, 211500000, 322500000, 448500000, 586000000,
-        732000000, 883200000, 1036200000, 1188000000
+        732000000, 883200000, 1036200000, 1188000000,
       ],
     },
   ]);
