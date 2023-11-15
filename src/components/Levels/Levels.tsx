@@ -126,7 +126,7 @@ const Levels = ({ symbols, swapped }: Props) => {
       !isNaN(level) &&
       (daily || weekly)
     )
-      return dayjs(completionDate).isAfter(dayjs("2023-11-14"));
+      return dayjs(completionDate).isAfter(dayjs("2053-11-14")); // DISABLED TEMPORARILY
   };
 
   return (

@@ -64,7 +64,7 @@ const Selector = ({
             className={"swap-icon"}
             onClick={() => handleSwap()}
           />
-          <div className={`block tablet:hidden ${swapped && "hidden"}`}>
+          <div className={`block tablet:hidden`}>
             <hr className="mobile-lines-x"></hr>
             <hr className="mobile-lines-y"></hr>
             <hr className="mobile-lines-x translate-x-[290px]"></hr>
@@ -79,7 +79,7 @@ const Selector = ({
                     className={`group mx-4 tablet:mx-0 ${
                       // TODO: Use logic that is more self explanatory
                       // Add spacing between top and bottom symbols if on mobile
-                      symbol.id === 1 && "mb-8 tablet:mb-0"
+                      symbol.id === (!swapped ? 1 : 7)&& "mb-8 tablet:mb-0"
                     }`}
                   >
                     <div

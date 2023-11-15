@@ -11,7 +11,7 @@ function Footer() {
         > 
           <p className="mb-2 tablet:mb-0">GitHub</p>
         </a>
-        <p>&copy; 2023 Maple Symbols ━ v1.1.3 Beta</p>
+        <p>&copy; 2023 Maple Symbols ━ v1.1.4 Beta</p>
         <div className="flex space-x-6 block tablet:hidden">
         <a
           target="_blank"

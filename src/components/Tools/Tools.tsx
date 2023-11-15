@@ -200,10 +200,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             <TooltipContent className="tooltip">
               <span>[Regular Server Only]</span> <br></br> Transfer{" "}
               {!swapped ? "an Arcane Symbol" : "a Sacred Symbol"} once <br></br>{" "}
-              within the same world <br></br>{" "}
-              <span className="text-red-500">
-                {swapped && "[New Age - Nov 15 Update]"}
-              </span>
+              within the same world
             </TooltipContent>
           </Tooltip>
         </div>
