@@ -29,6 +29,11 @@ function App() {
   // Initialize Analytics and get a reference to the service
   const analytics = getAnalytics(app);
 
+  if (localStorage.getItem("clearStorage") === null) {
+     localStorage.clear();
+     localStorage.setItem("clearStorage", "1.1.4");
+  }
+
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
 
