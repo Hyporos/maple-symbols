@@ -6,6 +6,7 @@ import Calculator from "./components/Calculator/Calculator";
 import Tools from "./components/Tools/Tools";
 import Levels from "./components/Levels/Levels";
 import Footer from "./components/Footer/Footer";
+import Graph from "./components/Graph/Graph";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -20,7 +21,7 @@ function App() {
     storageBucket: "maple-symbols.appspot.com",
     messagingSenderId: "1034069866026",
     appId: "1:1034069866026:web:f7d7f1d55054339039b553",
-    measurementId: "G-5EGQQS4DDK"
+    measurementId: "G-5EGQQS4DDK",
   };
 
   // Initialize Firebase
@@ -30,8 +31,8 @@ function App() {
   const analytics = getAnalytics(app);
 
   if (localStorage.getItem("clearStorage") === null) {
-     localStorage.clear();
-     localStorage.setItem("clearStorage", "1.1.4");
+    localStorage.clear();
+    localStorage.setItem("clearStorage", "1.1.4");
   }
 
   const [swapped, setSwapped] = useState(false);
@@ -377,6 +378,10 @@ function App() {
       <Levels
         symbols={symbols}
         selectedSymbol={selectedSymbol}
+        swapped={swapped}
+      />
+      <Graph
+        symbols={symbols}
         swapped={swapped}
       />
       <Footer />

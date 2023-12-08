@@ -66,7 +66,7 @@ const Calculator = ({
   /*
    | Calculate Total Symbols Remaining
    ――――――――――――――――――――――――――――――――
-   */
+  */
 
   const remainingSymbols =
     currentSymbol.symbolsRequired
@@ -408,7 +408,7 @@ const Calculator = ({
                                       currentSymbol.experience
                                       ? overflowExperience
                                       : 0,
-                                      locked: true,
+                                  locked: true,
                                 }
                               : symbol
                           )
