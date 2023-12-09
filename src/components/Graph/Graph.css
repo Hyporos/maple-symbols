@@ -1,0 +1,15 @@
+.power-input {
+    @apply bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2.5
+}
+
+.power-input::placeholder {
+    @apply text-tertiary hover:text-secondary focus:text-secondary transition-all
+ }
+
+.graph-select {
+    @apply flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl tablet:rounded-3xl select-none tablet:transition-colors px-2 tablet:px-4 py-2 w-[200px] tablet:w-[200px]
+}
+
+.graph .horizontal-divider {
+    @apply opacity-10 my-8 w-[300px] tablet:w-[600px] laptop:w-[950px]
+}
