@@ -1,16 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
 import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import "./Graph.css";
+import { HiArrowSmRight } from "react-icons/hi";
 dayjs.extend(isSameOrBefore);
 
 interface Props {
@@ -46,6 +40,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
   const [graphSymbols, setGraphSymbols] = useState<GraphSymbols[]>([]);
   const [finalSymbols, setFinalSymbols] = useState([]);
+  const [nonReduced, setNonReduced] = useState([]);
   const [basePower, setBasePower] = useState(0);
   const [targetPower, setTargetPower] = useState(0);
   const [dateToPower, setDateToPower] = useState("");
@@ -199,24 +194,33 @@ const Graph = ({ symbols, swapped }: Props) => {
         );
 
         return entry;
-      })
-      .reduce((result, entry) => {
-        // Only add entries with the highest power for each date
-        if (entry.power === maxPowerByDate[entry.date]) {
-          result.push(entry);
-        }
-        return result;
-      }, []);
+      });
 
-    setFinalSymbols(graphSymbols2);
+    const reduced = graphSymbols2.reduce((result, entry) => {
+      // Only add entries with the highest power for each date
+      if (entry.power === maxPowerByDate[entry.date]) {
+        result.push(entry);
+      }
+      return result;
+    }, []);
+
+    // Add today's date and base power to the beginning of the graph
+    reduced.unshift({
+      date: dayjs().format("YYYY-MM-DD"),
+      power: basePower,
+    });
+
+    setFinalSymbols(reduced);
+    setNonReduced(graphSymbols2);
   }, [graphSymbols]);
 
-  console.log(finalSymbols);
+  console.log("reduced", finalSymbols);
+  console.log("non reduced", nonReduced);
 
   // Get the domain and tick numbers for the Y axis
   const getYAxisData = (option: string) => {
     let activeSymbols = 0;
-    const ticks = [];
+    const ticks = [basePower];
 
     // Check how many symbols are currently enabled
     for (const symbol of graphSymbols) {
@@ -239,6 +243,52 @@ const Graph = ({ symbols, swapped }: Props) => {
     }
   };
 
+  // Render the custom tooltip for the graph
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      // Get the list of symbol names
+      const symbolNames = [...new Set(nonReduced.map((entry) => entry.name))];
+
+      // Check if the entry is the first one (base power)
+      const isFirstEntry = payload[0].value === basePower;
+
+      return (
+        <div className="flex flex-col bg-light p-4 space-y-1 rounded-lg">
+          <p>{`${label}`}</p>
+          <p className={`text-accent text-sm ${!isFirstEntry && "pb-2"}`}>
+            Arcane Power : {payload[0].value}
+          </p>
+          {!isFirstEntry && <hr className="tooltip-divider pb-2" />}
+
+          <div className="flex flex-col space-y-1">
+            {symbolNames.map((symbolName) => {
+              // Find the entry with the given name and date
+              const symbolEntry = nonReduced.find(
+                (entry) => entry.name === symbolName && entry.date === label
+              );
+
+              if (symbolEntry) {
+                return (
+                  // Display the previous and next level of the given entry, if the symbol leveled up
+                  <div className="flex items-center space-x-1">
+                    <p key={symbolName} className="text-sm text-tertiary">
+                      {`${symbolName} : ${symbolEntry.entryLevel - 1}`}
+                    </p>
+                    <HiArrowSmRight fill="#8c8c8c" className="opacity-75" />
+                    <p key={symbolName} className="text-sm text-tertiary">
+                      {`${symbolEntry.entryLevel}`}
+                    </p>
+                  </div>
+                );
+              }
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
@@ -247,13 +297,11 @@ const Graph = ({ symbols, swapped }: Props) => {
         <div className="flex flex-col w-[350px] tablet:w-[700px] laptop:w-[1050px] items-center">
           <div className="flex space-x-8">
             <div className="flex flex-col justify-center items-center mb-4 bg-dark py-4 px-8 rounded-xl">
-              <div className="flex items-center space-x-4 pb-2.5">
-                <p>Base Arcane Power</p>
-              </div>
-              <p className="text-accent text-xl">{basePower} / 1320</p>
+              <p>Base Arcane Power</p>
+              <p className="text-accent text-lg pt-2.5">{basePower} / 1320</p>
             </div>
             <div className="flex flex-col justify-center items-center mb-4 bg-dark py-4 px-8 rounded-xl">
-              <div className="flex items-center space-x-4 pb-2.5">
+              <div className="flex items-center space-x-3 pb-2.5">
                 <p>When will</p>
                 <input
                   type="number"
@@ -263,12 +311,12 @@ const Graph = ({ symbols, swapped }: Props) => {
                 ></input>
                 <p>arcane power be reached?</p>
               </div>
-              <p className="text-accent text-xl">
+              <p className="text-accent text-lg">
                 {dateToPower || "Enter a target power"}
               </p>
             </div>
           </div>
-          <hr className="horizontal-divider" />
+          <hr className="horizontal-divider b-2" />
           <LineChart
             width={950}
             height={450}
@@ -284,7 +332,12 @@ const Graph = ({ symbols, swapped }: Props) => {
               dot={{ stroke: "#b18bd0", strokeWidth: 1.5, fill: "#b18bd0" }}
               activeDot={{ stroke: "#8c8c8c", strokeWidth: 10, r: 1 }}
             />
-            <XAxis dataKey="date" tickMargin={10} stroke="#8c8c8c" />
+            <XAxis
+              dataKey="date"
+              tickMargin={10}
+              stroke="#8c8c8c"
+              padding={{ left: 0 }}
+            />
             <YAxis
               dataKey="power"
               tickMargin={10}
@@ -294,7 +347,7 @@ const Graph = ({ symbols, swapped }: Props) => {
             />
             <Tooltip
               cursor={{ stroke: "#8c8c8c", strokeWidth: 1.5 }}
-              contentStyle={{ background: "#262626", borderColor: "#262626" }}
+              content={<CustomTooltip />}
             />
           </LineChart>
         </div>

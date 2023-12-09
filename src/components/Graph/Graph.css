@@ -13,3 +13,7 @@
 .graph .horizontal-divider {
     @apply opacity-10 my-8 w-[300px] tablet:w-[600px] laptop:w-[950px]
 }
+
+.tooltip-divider {
+    @apply opacity-10 my-8 w-full
+}
