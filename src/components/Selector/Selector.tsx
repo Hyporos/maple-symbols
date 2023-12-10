@@ -38,7 +38,7 @@ const Selector = ({
 
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
-  // Check if the specified value is valid (not empty)
+  // Check if the provided value is valid (not empty)
   const isValid = (value: number) => {
     return !isNaN(value) && value !== null;
   };

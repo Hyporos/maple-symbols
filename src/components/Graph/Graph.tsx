@@ -1,10 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
-import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 import dayjs from "dayjs";
-import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { useMediaQuery } from "react-responsive";
 import "./Graph.css";
 import { HiArrowSmRight } from "react-icons/hi";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 dayjs.extend(isSameOrBefore);
 
 interface Props {
@@ -37,6 +45,9 @@ interface GraphSymbols {
 
 const Graph = ({ symbols, swapped }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
+  const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
 
   const [graphSymbols, setGraphSymbols] = useState<GraphSymbols[]>([]);
   const [finalSymbols, setFinalSymbols] = useState([]);
@@ -289,52 +300,90 @@ const Graph = ({ symbols, swapped }: Props) => {
 
     return null;
   };
-  /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
+
+  // const getTargetPowerDate = () => {
+
+  // }
+
+  // Get the date or error message for the attainment date of the target power
+  const getTargetPowerResponse = () => {
+    let errorMessage = "";
+
+    // If a valid target is provided, return the date
+    if (dateToPower) return dateToPower;
+
+    // Otherwise, return an error message
+    if (isMobile) {
+      errorMessage = "Invalid Power"
+    } else {
+      errorMessage = targetPower === 0 ? "Enter a target power" : `Power must be greater than ${basePower}`
+    }
+
+    return errorMessage;
+  };
+
+  /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */ // !! check firefox
 
   return (
     <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[350px] tablet:w-[700px] laptop:w-[1050px] p-10 mt-16 tablet:mt-28">
-        <div className="flex flex-col w-[350px] tablet:w-[700px] laptop:w-[1050px] items-center">
-          <div className="flex space-x-8">
-            <div className="flex flex-col justify-center items-center mb-4 bg-dark py-4 px-8 rounded-xl">
-              <p>Base Arcane Power</p>
-              <p className="text-accent text-lg pt-2.5">{basePower} / 1320</p>
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
+        <div className="flex flex-col items-center w-[350px] tablet:w-[700px] laptop:w-[1050px]">
+          <div className="flex flex-col tablet:flex-row text-center space-y-2 tablet:space-y-0 tablet:space-x-8">
+            <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
+              <p>Arcane Power</p>
+              <p className="text-accent laptop:text-lg pt-2.5">{basePower} / 1320</p>
             </div>
-            <div className="flex flex-col justify-center items-center mb-4 bg-dark py-4 px-8 rounded-xl">
-              <div className="flex items-center space-x-3 pb-2.5">
-                <p>When will</p>
+
+            <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
+              <div className="flex items-center space-x-3 tablet:space-x-3 pb-2.5">
+                <p>{isMobile ? "Target Arcane Power" : "When will"}</p>
                 <input
                   type="number"
                   className="power-input h-[30px] w-[65px]"
                   placeholder="Target"
                   onChange={(e) => setTargetPower(Number(e.target.value))}
                 ></input>
-                <p>arcane power be reached?</p>
+                <p className={isMobile ? "hidden" : "block"}>arcane power be reached?</p>
               </div>
-              <p className="text-accent text-lg">
-                {dateToPower || "Enter a target power"}
+              <div className="flex space-x-1.5">
+              <p className={isMobile ? "block" : "hidden"}>Attainment Date: </p>
+              <p className="text-accent laptop:text-lg">
+                {getTargetPowerResponse()}
               </p>
+              </div>
             </div>
           </div>
-          <hr className="horizontal-divider b-2" />
+
+          <hr className="horizontal-divider" />
+
           <LineChart
-            width={950}
-            height={450}
+            width={isMobile ? 300 : isTablet ? 600 : 950}
+            height={isMobile ? 300 : 450}
             data={finalSymbols}
             margin={{ top: 15, right: 50 }}
+            className="text-xl"
           >
+            <Tooltip
+              cursor={{ stroke: "#8c8c8c", strokeWidth: 1.5 }}
+              content={<CustomTooltip />}
+            />
             <Line
               type="monotone"
               dataKey="power"
               name="Arcane Power"
               stroke="#b18bd0"
               strokeWidth={1.5}
-              dot={{ stroke: "#b18bd0", strokeWidth: 1.5, fill: "#b18bd0" }}
-              activeDot={{ stroke: "#8c8c8c", strokeWidth: 10, r: 1 }}
+              dot={{
+                stroke: "#b18bd0",
+                r: isMobile ? 2 : isTablet ? 2.5 : 3,
+                fill: "#b18bd0",
+              }}
+              activeDot={{ stroke: "#b18bd0", strokeWidth: 10, r: 1 }}
             />
             <XAxis
               dataKey="date"
               tickMargin={10}
+              minTickGap={15}
               stroke="#8c8c8c"
               padding={{ left: 0 }}
             />
@@ -344,10 +393,6 @@ const Graph = ({ symbols, swapped }: Props) => {
               stroke="#8c8c8c"
               domain={getYAxisData("domain")}
               ticks={getYAxisData("ticks")}
-            />
-            <Tooltip
-              cursor={{ stroke: "#8c8c8c", strokeWidth: 1.5 }}
-              content={<CustomTooltip />}
             />
           </LineChart>
         </div>
