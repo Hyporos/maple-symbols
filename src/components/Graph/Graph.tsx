@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
 import {
   LineChart,
@@ -76,7 +76,7 @@ const Graph = ({ symbols, swapped }: Props) => {
   }, [symbols]);
 
   // Calculate the date in which the target power will be reached
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Merge all symbol level up dates into one array and sort them
     const mergedDates = [];
 
@@ -103,9 +103,9 @@ const Graph = ({ symbols, swapped }: Props) => {
   }, [targetPower, basePower, graphSymbols]);
 
   // Calculate and store every symbol's date needed to reach future levels
-  useMemo(() => {
+  useLayoutEffect(() => {
     try {
-      const tempGraphSymbols = symbols
+      const tempGraphSymbols = symbols // ! THERES LAG PROLLY CAUSE OF ALL THE CALLS
         .filter(
           (currentSymbol) =>
             (currentSymbol.weekly || currentSymbol.daily) &&
@@ -314,9 +314,9 @@ const Graph = ({ symbols, swapped }: Props) => {
 
     // Otherwise, return an error message
     if (isMobile) {
-      errorMessage = "Invalid Power"
+      errorMessage = targetPower === 0 ? "Enter a target power" : `Target must be over ${basePower}`
     } else {
-      errorMessage = targetPower === 0 ? "Enter a target power" : `Power must be greater than ${basePower}`
+      errorMessage = targetPower === 0 ? "Enter a target power" : `Target must be greater than ${basePower}`
     }
 
     return errorMessage;
@@ -328,7 +328,7 @@ const Graph = ({ symbols, swapped }: Props) => {
     <section className="levels">
       <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
         <div className="flex flex-col items-center w-[350px] tablet:w-[700px] laptop:w-[1050px]">
-          <div className="flex flex-col tablet:flex-row text-center space-y-2 tablet:space-y-0 tablet:space-x-8">
+          <div className={`flex flex-col tablet:flex-row text-center tablet:space-x-8 ${isMobile && "space-y-2"}`} /* Bug. Spacing weird if this is put in responsively with Tailwind.*/ >
             <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
               <p>Arcane Power</p>
               <p className="text-accent laptop:text-lg pt-2.5">{basePower} / 1320</p>
@@ -346,7 +346,7 @@ const Graph = ({ symbols, swapped }: Props) => {
                 <p className={isMobile ? "hidden" : "block"}>arcane power be reached?</p>
               </div>
               <div className="flex space-x-1.5">
-              <p className={isMobile ? "block" : "hidden"}>Attainment Date: </p>
+              <p className={(isMobile && targetPower >= basePower) ? "block" : "hidden"}>Attainment Date: </p>
               <p className="text-accent laptop:text-lg">
                 {getTargetPowerResponse()}
               </p>
