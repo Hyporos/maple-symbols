@@ -1,21 +1,28 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
-  Tooltip,
-  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  TooltipProps,
 } from "recharts";
-import dayjs from "dayjs";
+import {
+  ValueType,
+  NameType,
+} from 'recharts/types/component/DefaultTooltipContent'
 import { useMediaQuery } from "react-responsive";
-import "./Graph.css";
 import { HiArrowSmRight } from "react-icons/hi";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
+import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
+
+import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 dayjs.extend(isSameOrBefore);
 
-interface Props {
+import "./Graph.css";
+
+type Props = {
   symbols: [
     {
       name: string;
@@ -35,13 +42,23 @@ interface Props {
     }
   ];
   swapped: boolean;
-}
+};
 
-interface GraphSymbols {
+type DateSymbols = {
   name: string;
   level: number;
   progress: [{ level: number; date: string }];
-}
+};
+
+type GraphSymbols = {
+  name: string;
+  level: number;
+  entryLevel: number;
+  date: string;
+  power: number;
+};
+
+type UnmergedSymbols = GraphSymbols;
 
 const Graph = ({ symbols, swapped }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
@@ -49,30 +66,29 @@ const Graph = ({ symbols, swapped }: Props) => {
   const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
 
+  const [dateSymbols, setDateSymbols] = useState<DateSymbols[]>([]);
   const [graphSymbols, setGraphSymbols] = useState<GraphSymbols[]>([]);
-  const [finalSymbols, setFinalSymbols] = useState([]);
-  const [nonReduced, setNonReduced] = useState([]);
-  const [basePower, setBasePower] = useState(0);
-  const [targetPower, setTargetPower] = useState(0);
+  const [unmergedSymbols, setUnmergedSymbols] = useState<UnmergedSymbols[]>([]);
+  const [currentPower, setCurrentPower] = useState(NaN);
+  const [targetPower, setTargetPower] = useState(NaN);
   const [dateToPower, setDateToPower] = useState("");
+
+  const symbolNames = [...new Set(graphSymbols.map((entry) => entry.name))];
+  const enabledSymbols = symbols.filter((symbol) => symbol.level > 0).length;
+  const maxPower = graphSymbols[graphSymbols.length - 1]?.power;
 
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
   // Calculate the base arcane power of the character
   useEffect(() => {
-    let tempBasePower = 0;
+    let tempCurrentPower = 0;
 
     for (const symbol of symbols) {
-      if (
-        !isValid(symbol.level) ||
-        !isValid(symbol.experience) ||
-        (!symbol.daily && !symbol.weekly)
-      )
-        continue;
-      tempBasePower += symbol.level * 10 + 20;
+      if (!isValid(symbol.level)) continue;
+      tempCurrentPower += symbol.level * 10 + 20;
     }
 
-    setBasePower(tempBasePower);
+    setCurrentPower(tempCurrentPower);
   }, [symbols]);
 
   // Calculate the date in which the target power will be reached
@@ -80,7 +96,7 @@ const Graph = ({ symbols, swapped }: Props) => {
     // Merge all symbol level up dates into one array and sort them
     const mergedDates = [];
 
-    for (const symbol of graphSymbols) {
+    for (const symbol of dateSymbols) {
       for (const level of symbol.progress) {
         mergedDates.push(level.date);
       }
@@ -90,22 +106,22 @@ const Graph = ({ symbols, swapped }: Props) => {
 
     // Add 10 to the character's power until they reach the target power
     let tempDate = "";
-    let tempPower = basePower;
+    let tempPower = currentPower;
 
     for (const date of mergedDates) {
-      if (tempPower <= targetPower) {
+      if (tempPower < targetPower) {
         tempDate = date;
         tempPower += 10;
       }
     }
 
     setDateToPower(tempDate);
-  }, [targetPower, basePower, graphSymbols]);
+  }, [targetPower, currentPower, dateSymbols]);
 
   // Calculate and store every symbol's date needed to reach future levels
   useLayoutEffect(() => {
     try {
-      const tempGraphSymbols = symbols // ! THERES LAG PROLLY CAUSE OF ALL THE CALLS
+      const tempDateSymbols = symbols // ! THERES LAG PROLLY CAUSE OF ALL THE CALLS
         .filter(
           (currentSymbol) =>
             (currentSymbol.weekly || currentSymbol.daily) &&
@@ -170,20 +186,20 @@ const Graph = ({ symbols, swapped }: Props) => {
           };
         });
 
-      console.log(tempGraphSymbols);
-      setGraphSymbols(tempGraphSymbols);
+      console.log(tempDateSymbols);
+      setDateSymbols(tempDateSymbols);
     } catch (e) {
       console.error(e);
-      setGraphSymbols([]);
+      setDateSymbols([]);
     }
   }, [symbols, swapped]);
 
   useEffect(() => {
-    // Assuming graphSymbols is your state and setFinalSymbols is your state setter
-    let tempPower = basePower;
+    // Assuming dateSymbols is your state and setGraphSymbols is your state setter
+    let tempPower = currentPower;
     const maxPowerByDate = {};
 
-    const graphSymbols2 = graphSymbols
+    const dateSymbols2 = dateSymbols
       .flatMap((symbol) =>
         symbol.progress.map((entry) => ({
           name: symbol.name,
@@ -207,7 +223,7 @@ const Graph = ({ symbols, swapped }: Props) => {
         return entry;
       });
 
-    const reduced = graphSymbols2.reduce((result, entry) => {
+    const reduced = dateSymbols2.reduce((result, entry) => {
       // Only add entries with the highest power for each date
       if (entry.power === maxPowerByDate[entry.date]) {
         result.push(entry);
@@ -218,80 +234,51 @@ const Graph = ({ symbols, swapped }: Props) => {
     // Add today's date and base power to the beginning of the graph
     reduced.unshift({
       date: dayjs().format("YYYY-MM-DD"),
-      power: basePower,
+      power: currentPower,
     });
 
-    setFinalSymbols(reduced);
-    setNonReduced(graphSymbols2);
-  }, [graphSymbols]);
+    setUnmergedSymbols(dateSymbols2);
+    setGraphSymbols(reduced);
+  }, [dateSymbols]);
 
-  console.log("reduced", finalSymbols);
-  console.log("non reduced", nonReduced);
-
-  // Get the domain and tick numbers for the Y axis
-  const getYAxisData = (option: string) => {
-    let activeSymbols = 0;
-    const ticks = [basePower];
-
-    // Check how many symbols are currently enabled
-    for (const symbol of graphSymbols) {
-      if (symbol.level > 0) {
-        activeSymbols++;
-      }
-    }
-
-    // Set the ticks to multiples of 220 (power from max level symbol)
-    for (let i = 1; i < activeSymbols + 1; i++) {
-      if (basePower < i * 220) {
-        ticks.push(i * 220);
-      }
-    }
-
-    if (option === "domain") {
-      return [basePower, activeSymbols * 220];
-    } else if (option === "ticks") {
-      return ticks;
-    }
-  };
+  console.log("graphSymbols", graphSymbols);
 
   // Render the custom tooltip for the graph
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
-      // Get the list of symbol names
-      const symbolNames = [...new Set(nonReduced.map((entry) => entry.name))];
-
       // Check if the entry is the first one (base power)
-      const isFirstEntry = payload[0].value === basePower;
+      const isFirstEntry = payload[0].value === currentPower;
 
       return (
-        <div className="flex flex-col bg-light p-4 space-y-1 rounded-lg">
+        <div className="flex flex-col bg-light rounded-lg space-y-1 p-4">
           <p>{`${label}`}</p>
           <p className={`text-accent text-sm ${!isFirstEntry && "pb-2"}`}>
             Arcane Power : {payload[0].value}
           </p>
-          {!isFirstEntry && <hr className="tooltip-divider pb-2" />}
+          {!isFirstEntry && <hr className="tooltip-divider" />}
 
           <div className="flex flex-col space-y-1">
             {symbolNames.map((symbolName) => {
               // Find the entry with the given name and date
-              const symbolEntry = nonReduced.find(
+              const symbolEntry = unmergedSymbols.find(
                 (entry) => entry.name === symbolName && entry.date === label
               );
 
-              if (symbolEntry) {
-                return (
-                  // Display the previous and next level of the given entry, if the symbol leveled up
-                  <div className="flex items-center space-x-1">
-                    <p key={symbolName} className="text-sm text-tertiary">
-                      {`${symbolName} : ${symbolEntry.entryLevel - 1}`}
-                    </p>
-                    <HiArrowSmRight fill="#8c8c8c" className="opacity-75" />
-                    <p key={symbolName} className="text-sm text-tertiary">
-                      {`${symbolEntry.entryLevel}`}
-                    </p>
-                  </div>
-                );
-              }
+              if (!isValid(symbolEntry?.entryLevel as number)) return;
+
+              return (
+                // Display the previous and next level of the given entry, if the symbol leveled up
+                <div
+                  key={symbolName}
+                  className="flex items-center text-tertiary space-x-1"
+                >
+                  <p className="text-sm">{`${symbolName} : ${
+                    symbolEntry?.entryLevel ?? 0 - 1
+                  }`}</p>
+                  <HiArrowSmRight fill="#8c8c8c" className="opacity-75" />
+                  <p className="text-sm">{`${symbolEntry?.entryLevel ?? 0}`}</p>
+                </div>
+              );
             })}
           </div>
         </div>
@@ -301,55 +288,109 @@ const Graph = ({ symbols, swapped }: Props) => {
     return null;
   };
 
-  // const getTargetPowerDate = () => {
+  // Generate 4 evenly spaced ticks for the Y axis
+  const getYAxisTicks = () => {
+    const ticks = [currentPower];
 
-  // }
+    for (let i = 1; i < 3; i++) {
+      ticks.push(
+        Math.round((currentPower + (i * (maxPower - currentPower)) / 3) / 10) *
+          10
+      );
+    }
+
+    ticks.push(maxPower);
+
+    return ticks;
+  };
+
+  // Validate the provided target power
+  const getTargetPowerDate = (target: string) => {
+    // If target is less than max power, set the value to target
+    if (Number(target) <= maxPower) {
+      setTargetPower(parseInt(target));
+    }
+
+    // If target is greater than max power, set the value to max power
+    if (Number(target) >= maxPower) {
+      setTargetPower(maxPower);
+    }
+
+    // If no target, set it to NaN instead of default 0
+    if (Number(target) < 0) {
+      setTargetPower(NaN);
+    }
+
+    // If target is 0, set it to 1
+    if (target === "0") {
+      setTargetPower(1);
+    }
+  };
 
   // Get the date or error message for the attainment date of the target power
   const getTargetPowerResponse = () => {
-    let errorMessage = "";
-
     // If a valid target is provided, return the date
     if (dateToPower) return dateToPower;
 
     // Otherwise, return an error message
-    if (isMobile) {
-      errorMessage = targetPower === 0 ? "Enter a target power" : `Target must be over ${basePower}`
-    } else {
-      errorMessage = targetPower === 0 ? "Enter a target power" : `Target must be greater than ${basePower}`
-    }
-
-    return errorMessage;
+    return !isValid(targetPower)
+      ? "Enter a target power"
+      : `Target must
+      ${isMobile ? " be over" : " be greater than"} ${currentPower}`;
   };
 
-  /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */ // !! check firefox
+  /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */ // !! Test on Firefox
 
   return (
     <section className="levels">
       <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
         <div className="flex flex-col items-center w-[350px] tablet:w-[700px] laptop:w-[1050px]">
-          <div className={`flex flex-col tablet:flex-row text-center tablet:space-x-8 ${isMobile && "space-y-2"}`} /* Bug. Spacing weird if this is put in responsively with Tailwind.*/ >
+          <div
+            className={`flex flex-col tablet:flex-row text-center tablet:space-x-8 ${
+              isMobile && "space-y-2"
+            }`} /* Bug. Spacing weird if this is put in responsively with Tailwind.*/
+          >
             <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
               <p>Arcane Power</p>
-              <p className="text-accent laptop:text-lg pt-2.5">{basePower} / 1320</p>
+              <p className="text-accent laptop:text-lg pt-2.5">
+                {currentPower} / {enabledSymbols * 220}
+              </p>
             </div>
 
             <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
               <div className="flex items-center space-x-3 tablet:space-x-3 pb-2.5">
                 <p>{isMobile ? "Target Arcane Power" : "When will"}</p>
-                <input
-                  type="number"
-                  className="power-input h-[30px] w-[65px]"
-                  placeholder="Target"
-                  onChange={(e) => setTargetPower(Number(e.target.value))}
-                ></input>
-                <p className={isMobile ? "hidden" : "block"}>arcane power be reached?</p>
+                <Tooltip>
+                  <TooltipTrigger asChild={true}>
+                    <input
+                      type="number"
+                      className="power-input h-[30px] w-[65px]"
+                      placeholder="Target"
+                      value={targetPower}
+                      onWheel={(e) => e.currentTarget.blur()}
+                      onChange={(e) => getTargetPowerDate(e.target.value)}
+                    ></input>
+                  </TooltipTrigger>
+                  <TooltipContent className="tooltip">
+                    Calculate the date you'll <br></br>achieve the{" "}
+                    <span>specified power</span>
+                  </TooltipContent>
+                </Tooltip>
+                <p className={isMobile ? "hidden" : "block"}>
+                  arcane power be reached?
+                </p>
               </div>
               <div className="flex space-x-1.5">
-              <p className={(isMobile && targetPower >= basePower) ? "block" : "hidden"}>Attainment Date: </p>
-              <p className="text-accent laptop:text-lg">
-                {getTargetPowerResponse()}
-              </p>
+                <p
+                  className={
+                    isMobile && targetPower >= currentPower ? "block" : "hidden"
+                  }
+                >
+                  Attainment Date:{" "}
+                </p>
+                <p className="text-accent laptop:text-lg">
+                  {getTargetPowerResponse()}
+                </p>
               </div>
             </div>
           </div>
@@ -359,11 +400,11 @@ const Graph = ({ symbols, swapped }: Props) => {
           <LineChart
             width={isMobile ? 300 : isTablet ? 600 : 950}
             height={isMobile ? 300 : 450}
-            data={finalSymbols}
+            data={graphSymbols}
             margin={{ top: 15, right: 50 }}
             className="text-xl"
           >
-            <Tooltip
+            <RechartsTooltip
               cursor={{ stroke: "#8c8c8c", strokeWidth: 1.5 }}
               content={<CustomTooltip />}
             />
@@ -391,8 +432,8 @@ const Graph = ({ symbols, swapped }: Props) => {
               dataKey="power"
               tickMargin={10}
               stroke="#8c8c8c"
-              domain={getYAxisData("domain")}
-              ticks={getYAxisData("ticks")}
+              domain={[currentPower, maxPower]}
+              ticks={getYAxisTicks()}
             />
           </LineChart>
         </div>

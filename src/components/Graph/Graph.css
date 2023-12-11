@@ -15,5 +15,5 @@
 }
 
 .tooltip-divider {
-    @apply opacity-10 my-8 w-full
+    @apply opacity-10 my-8 pb-2 w-full 
 }
