@@ -383,9 +383,17 @@ const Graph = ({ symbols, swapped }: Props) => {
       ${isMobile ? " be over" : " be greater than"} ${currentPower}`;
   };
 
+  // Reset targetPower if symbols are swapped 
   useEffect(() => {
     setTargetPower(NaN);
   }, [swapped])
+
+  // Reset targetPower if symbols are disabled
+  useEffect(() => {
+    if (currentPower === 0) {
+      setTargetPower(NaN);
+    }
+  }, [currentPower])
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
@@ -416,11 +424,15 @@ const Graph = ({ symbols, swapped }: Props) => {
                   <TooltipTrigger asChild={true}>
                     <input
                       type="number"
-                      className="power-input h-[30px] w-[65px]"
+                      className={`power-input h-[30px] w-[65px] ${
+                        currentPower === 0 &&
+                        "opacity-25 pointer-events-none select-none"
+                      }`}
                       placeholder="Target"
                       value={targetPower}
                       onWheel={(e) => e.currentTarget.blur()}
                       onChange={(e) => getTargetPowerDate(e.target.value)}
+                      tabIndex={currentPower === 0 ? -1 : 0}
                     ></input>
                   </TooltipTrigger>
                   <TooltipContent className="tooltip">
