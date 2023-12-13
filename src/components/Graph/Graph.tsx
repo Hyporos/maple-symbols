@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   LineChart,
   Line,
@@ -10,7 +10,7 @@ import {
 import {
   ValueType,
   NameType,
-} from 'recharts/types/component/DefaultTooltipContent'
+} from "recharts/types/component/DefaultTooltipContent";
 import { useMediaQuery } from "react-responsive";
 import { HiArrowSmRight } from "react-icons/hi";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
@@ -58,7 +58,7 @@ type GraphSymbols = {
   power: number;
 };
 
-type UnmergedSymbols = GraphSymbols;
+type FlatDateSymbols = GraphSymbols;
 
 const Graph = ({ symbols, swapped }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
@@ -68,61 +68,49 @@ const Graph = ({ symbols, swapped }: Props) => {
 
   const [dateSymbols, setDateSymbols] = useState<DateSymbols[]>([]);
   const [graphSymbols, setGraphSymbols] = useState<GraphSymbols[]>([]);
-  const [unmergedSymbols, setUnmergedSymbols] = useState<UnmergedSymbols[]>([]);
+  const [flatDateSymbols, setFlatDateSymbols] = useState<FlatDateSymbols[]>([]);
   const [currentPower, setCurrentPower] = useState(NaN);
   const [targetPower, setTargetPower] = useState(NaN);
   const [dateToPower, setDateToPower] = useState("");
 
-  const symbolNames = [...new Set(graphSymbols.map((entry) => entry.name))];
-  const enabledSymbols = symbols.filter((symbol) => symbol.level > 0).length;
   const maxPower = graphSymbols[graphSymbols.length - 1]?.power;
+
+  const enabledSymbols = symbols.filter(
+    (symbol) =>
+      symbol.level > 0 &&
+      (!swapped ? symbol.type === "arcane" : symbol.type === "sacred")
+  ).length;
 
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
-  // Calculate the base arcane power of the character
+  // Calculate the base power of the character
   useEffect(() => {
     let tempCurrentPower = 0;
 
     for (const symbol of symbols) {
       if (!isValid(symbol.level)) continue;
-      tempCurrentPower += symbol.level * 10 + 20;
+
+      if (
+        (!swapped && symbol.type === "arcane") ||
+        (swapped && symbol.type === "sacred")
+      ) {
+        console.log(symbol.type);
+        tempCurrentPower += !swapped
+          ? symbol.level * 10 + 20
+          : symbol.level * 10;
+      }
     }
 
     setCurrentPower(tempCurrentPower);
-  }, [symbols]);
-
-  // Calculate the date in which the target power will be reached
-  useLayoutEffect(() => {
-    // Merge all symbol level up dates into one array and sort them
-    const mergedDates = [];
-
-    for (const symbol of dateSymbols) {
-      for (const level of symbol.progress) {
-        mergedDates.push(level.date);
-      }
-    }
-
-    mergedDates.sort((a: string, b: string) => dayjs(a).diff(dayjs(b)));
-
-    // Add 10 to the character's power until they reach the target power
-    let tempDate = "";
-    let tempPower = currentPower;
-
-    for (const date of mergedDates) {
-      if (tempPower < targetPower) {
-        tempDate = date;
-        tempPower += 10;
-      }
-    }
-
-    setDateToPower(tempDate);
-  }, [targetPower, currentPower, dateSymbols]);
+    console.log("calculating base power");
+  }, [symbols, swapped]);
 
   // Calculate and store every symbol's date needed to reach future levels
   useLayoutEffect(() => {
     try {
-      const tempDateSymbols = symbols // ! THERES LAG PROLLY CAUSE OF ALL THE CALLS
+      const tempDateSymbols = symbols
         .filter(
+          // Only use symbols that have a valid level/exp/quest
           (currentSymbol) =>
             (currentSymbol.weekly || currentSymbol.daily) &&
             isValid(currentSymbol.level) &&
@@ -134,87 +122,96 @@ const Graph = ({ symbols, swapped }: Props) => {
         .map((currentSymbol) => {
           const progress = [];
           let days = 0;
-          let count = 0;
-          let resets = 0;
+          let dailyResets = 0;
+          let weeklyResets = 0;
           let mondayReached = false;
 
+          // Get the daily symbol count of the symbol
           const dailySymbols = getDailySymbols(currentSymbol);
 
+          // Loop through the next symbol levels
           for (
-            let symbolLevel = 0;
-            symbolLevel <= (!swapped ? 20 : 11);
-            symbolLevel++
+            let nextLevel = currentSymbol.level + 1;
+            nextLevel <= (!swapped ? 20 : 11);
+            nextLevel++
           ) {
-            for (let i = 0; i < 1000; i++) {
-              const remainingSymbols = getRemainingSymbols(
-                symbolLevel,
-                currentSymbol
-              );
+            // Get the symobls needed to get from the current iterated level to the next level
+            const remainingSymbols = getRemainingSymbols(
+              nextLevel,
+              currentSymbol
+            );
 
-              if (
-                days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
+            // Calculate the number of days needed to reach the level (up to 1000 days, but the loop will break before then)
+            for (let i = 0; i <= 1000; i++) {
+              while (
+                days * dailySymbols +
+                  (currentSymbol.weekly ? weeklyResets * 45 : 0) <
                 remainingSymbols
               ) {
+                // If the day isn't a monday, add 1 day
                 if (
                   mondayReached === false &&
-                  dayjs().add(count, "day").isBefore(dayjs().day(8))
+                  dayjs().add(dailyResets, "day").isBefore(dayjs().day(8))
                 ) {
-                  count++;
-                  if (dayjs().add(count, "day").isSame(dayjs().day(8))) {
+                  dailyResets++;
+                  // If the day is a monday, set the flag to true
+                  if (dayjs().add(dailyResets, "day").isSame(dayjs().day(8))) {
                     mondayReached = true;
                   }
-                } else if ((days - count) % 7 === 0) {
-                  resets++;
+                } else if ((days - dailyResets) % 7 === 0) {
+                  // If the monday flag is true, increment weeklyResets (adds 45 symbols)
+                  weeklyResets++;
                 }
                 days++;
               }
             }
 
-            // Only push data for levels that have not yet been reached
-            if (days > 0) {
-              progress.push({
-                level: symbolLevel,
-                date: dayjs().add(days, "day").format("YYYY-MM-DD"),
-              });
-            }
+            // Store the dates needed to reach the next levels
+            progress.push({
+              level: nextLevel,
+              date: dayjs().add(days, "day").format("YYYY-MM-DD"),
+            });
           }
 
+          // Return the new tempDateSymbols object
           return {
             name: currentSymbol.name,
             level: currentSymbol.level,
-            progress,
+            progress: progress,
           };
         });
 
-      console.log(tempDateSymbols);
-      setDateSymbols(tempDateSymbols);
+      setDateSymbols(tempDateSymbols as DateSymbols[]);
+      console.log("calculating level dates");
     } catch (e) {
       console.error(e);
       setDateSymbols([]);
     }
   }, [symbols, swapped]);
 
+  // Get and store the individual entries for the graph
   useEffect(() => {
-    // Assuming dateSymbols is your state and setGraphSymbols is your state setter
     let tempPower = currentPower;
-    const maxPowerByDate = {};
+    const maxPowerByDate: Record<string, number> = {};
 
-    const dateSymbols2 = dateSymbols
+    // Create a flat (merged) version of the dateSymbols array.
+    const tempFlatDateSymbols = dateSymbols
       .flatMap((symbol) =>
         symbol.progress.map((entry) => ({
           name: symbol.name,
           level: symbol.level,
           entryLevel: entry.level,
           date: entry.date,
-          power: 0,
+          power: NaN,
         }))
       )
-      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
+      // If there is more than one entry on the same date, merge them and combine the power gain (+10)
       .map((entry) => {
         tempPower += 10;
         entry.power = tempPower;
 
-        // Update the maximum power for the date
+        // Update the maximum power for the specific date
         maxPowerByDate[entry.date] = Math.max(
           maxPowerByDate[entry.date] || 0,
           entry.power
@@ -223,73 +220,100 @@ const Graph = ({ symbols, swapped }: Props) => {
         return entry;
       });
 
-    const reduced = dateSymbols2.reduce((result, entry) => {
-      // Only add entries with the highest power for each date
-      if (entry.power === maxPowerByDate[entry.date]) {
-        result.push(entry);
-      }
-      return result;
-    }, []);
+    // Create a new array with only entries with the highest power for each date
+    const tempGraphSymbols = tempFlatDateSymbols.reduce(
+      (result: GraphSymbols[], entry) => {
+        if (entry.power === maxPowerByDate[entry.date]) {
+          result.push(entry);
+        }
+        return result;
+      },
+      []
+    );
 
     // Add today's date and base power to the beginning of the graph
-    reduced.unshift({
+    tempGraphSymbols.unshift({
+      name: "",
+      level: NaN,
+      entryLevel: NaN,
       date: dayjs().format("YYYY-MM-DD"),
       power: currentPower,
     });
 
-    setUnmergedSymbols(dateSymbols2);
-    setGraphSymbols(reduced);
+    setFlatDateSymbols(tempFlatDateSymbols);
+    setGraphSymbols(tempGraphSymbols);
+    console.log("storing graph data");
   }, [dateSymbols]);
 
-  console.log("graphSymbols", graphSymbols);
-
   // Render the custom tooltip for the graph
-  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
-    if (active && payload && payload.length) {
-      // Check if the entry is the first one (base power)
-      const isFirstEntry = payload[0].value === currentPower;
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: TooltipProps<ValueType, NameType>) => {
+    // If props do not exist, return null
+    if (!active || !payload || payload.length === 0) {
+      return null;
+    }
 
-      return (
-        <div className="flex flex-col bg-light rounded-lg space-y-1 p-4">
-          <p>{`${label}`}</p>
-          <p className={`text-accent text-sm ${!isFirstEntry && "pb-2"}`}>
-            Arcane Power : {payload[0].value}
-          </p>
-          {!isFirstEntry && <hr className="tooltip-divider" />}
+    // Check if the entry is the first one (for base power)
+    const isFirstEntry = payload[0].value === currentPower;
 
-          <div className="flex flex-col space-y-1">
-            {symbolNames.map((symbolName) => {
-              // Find the entry with the given name and date
-              const symbolEntry = unmergedSymbols.find(
-                (entry) => entry.name === symbolName && entry.date === label
+    return (
+      <div className="flex flex-col bg-light rounded-lg space-y-1 p-4">
+        <p>{`${label}`}</p>
+        <p className={`text-accent text-sm ${!isFirstEntry && "pb-2"}`}>
+          {!swapped ? "Arcane" : "Sacred"} Power : {payload[0].value}
+        </p>
+        {!isFirstEntry && <hr className="tooltip-divider" />}
+
+        <div className="flex flex-col space-y-1">
+          {symbols
+            .filter((symbol) => symbol.level > 0)
+            .map((symbol) => {
+              // Find all entries with the given name and date
+              const symbolEntries = flatDateSymbols.filter(
+                (entry) => entry.name === symbol.name && entry.date === label
               );
 
-              if (!isValid(symbolEntry?.entryLevel as number)) return;
+              if (symbolEntries.length === 0 || isFirstEntry) return;
+
+              // Increment the final level if the symbol leveled up more than once on the same day
+              const occurrences = symbolEntries.length - 1;
+
+              // Check if the entry is the second one (for upgrade message)
+              const isSecondEntry = label === dayjs().format("YYYY-MM-DD");
+
+              // If the symbol is ready to upgrade
+              const upgradeReady =
+                symbol.experience >= symbol.symbolsRequired[symbol.level];
 
               return (
-                // Display the previous and next level of the given entry, if the symbol leveled up
-                <div
-                  key={symbolName}
-                  className="flex items-center text-tertiary space-x-1"
-                >
-                  <p className="text-sm">{`${symbolName} : ${
-                    symbolEntry?.entryLevel ?? 0 - 1
-                  }`}</p>
-                  <HiArrowSmRight fill="#8c8c8c" className="opacity-75" />
-                  <p className="text-sm">{`${symbolEntry?.entryLevel ?? 0}`}</p>
+                <div key={symbol.name} className="flex flex-col text-tertiary">
+                  <div className="flex items-center space-x-1">
+                    <p className="text-sm">{`${symbol.name} : ${
+                      symbolEntries[0].entryLevel - 1
+                    }`}</p>
+                    <HiArrowSmRight fill="#8c8c8c" className="opacity-75" />
+                    <p className="text-sm">{`${
+                      symbolEntries[0].entryLevel + occurrences
+                    }`}</p>
+                  </div>
+                  <p className="text-xs text-accent/75">
+                    {isSecondEntry && upgradeReady && "Ready for upgrade"}
+                  </p>
                 </div>
               );
             })}
-          </div>
         </div>
-      );
-    }
-
-    return null;
+      </div>
+    );
   };
 
   // Generate 4 evenly spaced ticks for the Y axis
   const getYAxisTicks = () => {
+    if (currentPower === 0) return;
+
     const ticks = [currentPower];
 
     for (let i = 1; i < 3; i++) {
@@ -301,7 +325,11 @@ const Graph = ({ symbols, swapped }: Props) => {
 
     ticks.push(maxPower);
 
-    return ticks;
+    if (ticks[0] !== ticks[2]) {
+      // ! Bandaid bug fix | ticks[1] sacred would be stuck in middle of Y axis (arcane)
+      console.log(ticks);
+      return ticks;
+    }
   };
 
   // Validate the provided target power
@@ -327,6 +355,22 @@ const Graph = ({ symbols, swapped }: Props) => {
     }
   };
 
+  // Get the date in which the target power will be reached
+  useLayoutEffect(() => {
+    // Additional checks. If currentPower is changed, make sure the date is updated accordingly
+    if (Math.ceil(targetPower / 10) * 10 <= currentPower) {
+      setDateToPower("");
+      return;
+    }
+
+    // Find the first graphSymbol entry that matches or is closest to the provided power
+    const tempDateToPower = graphSymbols.find(
+      (entry) => entry.power >= Math.ceil(targetPower / 10) * 10
+    )?.date;
+
+    setDateToPower(tempDateToPower as string);
+  }, [currentPower, targetPower, graphSymbols]);
+
   // Get the date or error message for the attainment date of the target power
   const getTargetPowerResponse = () => {
     // If a valid target is provided, return the date
@@ -339,7 +383,11 @@ const Graph = ({ symbols, swapped }: Props) => {
       ${isMobile ? " be over" : " be greater than"} ${currentPower}`;
   };
 
-  /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */ // !! Test on Firefox
+  useEffect(() => {
+    setTargetPower(NaN);
+  }, [swapped])
+
+  /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
     <section className="levels">
@@ -348,18 +396,22 @@ const Graph = ({ symbols, swapped }: Props) => {
           <div
             className={`flex flex-col tablet:flex-row text-center tablet:space-x-8 ${
               isMobile && "space-y-2"
-            }`} /* Bug. Spacing weird if this is put in responsively with Tailwind.*/
+            }`} // ! Bug. Spacing weird if this is put in responsively with Tailwind.
           >
             <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
-              <p>Arcane Power</p>
+              <p>{!swapped ? "Arcane" : "Sacred"} Power</p>
               <p className="text-accent laptop:text-lg pt-2.5">
-                {currentPower} / {enabledSymbols * 220}
+                {currentPower} / {enabledSymbols * (!swapped ? 220 : 110)}
               </p>
             </div>
 
             <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
               <div className="flex items-center space-x-3 tablet:space-x-3 pb-2.5">
-                <p>{isMobile ? "Target Arcane Power" : "When will"}</p>
+                <p>
+                  {isMobile
+                    ? `Target ${!swapped ? "Arcane" : "Sacred"} Power`
+                    : "When will"}
+                </p>
                 <Tooltip>
                   <TooltipTrigger asChild={true}>
                     <input
@@ -377,7 +429,7 @@ const Graph = ({ symbols, swapped }: Props) => {
                   </TooltipContent>
                 </Tooltip>
                 <p className={isMobile ? "hidden" : "block"}>
-                  arcane power be reached?
+                  {!swapped ? "arcane" : "sacred"} power be reached?
                 </p>
               </div>
               <div className="flex space-x-1.5">
@@ -398,10 +450,14 @@ const Graph = ({ symbols, swapped }: Props) => {
           <hr className="horizontal-divider" />
 
           <LineChart
-            width={isMobile ? 300 : isTablet ? 600 : 950}
+            width={isMobile ? 290 : isTablet ? 600 : 950}
             height={isMobile ? 300 : 450}
             data={graphSymbols}
-            margin={{ top: 15, right: 50 }}
+            margin={{
+              top: 15,
+              right: isMobile ? 6 : 50,
+              left: isMobile ? -12 : 0,
+            }}
             className="text-xl"
           >
             <RechartsTooltip
@@ -411,26 +467,29 @@ const Graph = ({ symbols, swapped }: Props) => {
             <Line
               type="monotone"
               dataKey="power"
-              name="Arcane Power"
+              name={`${!swapped ? "Arcane" : "Sacred"} Power`}
               stroke="#b18bd0"
               strokeWidth={1.5}
               dot={{
                 stroke: "#b18bd0",
-                r: isMobile ? 2 : isTablet ? 2.5 : 3,
+                r: isMobile ? 1.75 : isTablet ? 2.5 : 3,
                 fill: "#b18bd0",
               }}
-              activeDot={{ stroke: "#b18bd0", strokeWidth: 10, r: 1 }}
+              activeDot={{
+                stroke: "#b18bd0",
+                strokeWidth: isMobile ? 7.5 : 10,
+                r: 1,
+              }}
             />
             <XAxis
               dataKey="date"
-              tickMargin={10}
-              minTickGap={15}
+              tickMargin={isMobile ? 5 : 10}
+              minTickGap={isMobile ? 50 : 15}
               stroke="#8c8c8c"
-              padding={{ left: 0 }}
             />
             <YAxis
               dataKey="power"
-              tickMargin={10}
+              tickMargin={isMobile ? 5 : 10}
               stroke="#8c8c8c"
               domain={[currentPower, maxPower]}
               ticks={getYAxisTicks()}

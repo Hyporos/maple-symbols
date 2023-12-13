@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://img.shields.io/badge/update-savior-red" alt="Updated-Savior"/>
+  <img src="https://img.shields.io/badge/update-new_age-red" alt="Updated-New-Age"/>
   &nbsp; &nbsp;
   <a target="_blank" href="https://discord.com/invite/FTMgy2ZKPK">
     <img src="https://discordapp.com/api/guilds/1126041321816203374/widget.png?style=shield" alt="Discord"/>
@@ -40,4 +40,10 @@
 
 <div align="center">
   <img src="/public/main/levels.png" alt="Overview UI"/>
+</div>
+
+<h2 align="center">Graph</h2>
+
+<div align="center">
+  <img src="/public/main/graph.png" alt="Graph UI"/>
 </div>

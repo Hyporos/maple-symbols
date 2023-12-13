@@ -46,7 +46,7 @@ const Levels = ({ symbols, swapped }: Props) => {
     : 0;
 
     const targetSymbols =
-    currentSymbol.symbolsRequired
+    currentSymbol?.symbolsRequired
       .slice(currentSymbol.level, targetLevel)
       .reduce((accumulator, experience) => accumulator + experience, 0) -
     currentSymbol.experience;

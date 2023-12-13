@@ -53,7 +53,7 @@ const Calculator = ({
   const [overflowLevel, setOverflowLevel] = useState(NaN);
   const [overflowExperience, setOverflowExperience] = useState(NaN);
 
-  const nextExperience = currentSymbol.symbolsRequired[currentSymbol.level];
+  const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
 
   /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
