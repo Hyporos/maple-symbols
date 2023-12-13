@@ -70,10 +70,10 @@ const Graph = ({ symbols, swapped }: Props) => {
   const [graphSymbols, setGraphSymbols] = useState<GraphSymbols[]>([]);
   const [flatDateSymbols, setFlatDateSymbols] = useState<FlatDateSymbols[]>([]);
   const [currentPower, setCurrentPower] = useState(NaN);
+  const [maxPower, setMaxPower] = useState(NaN);
   const [targetPower, setTargetPower] = useState(NaN);
   const [dateToPower, setDateToPower] = useState("");
-
-  const maxPower = graphSymbols[graphSymbols.length - 1]?.power;
+  const [yAxisTicks, setYAxisTicks] = useState<number[]>([]);
 
   const enabledSymbols = symbols.filter(
     (symbol) =>
@@ -94,7 +94,6 @@ const Graph = ({ symbols, swapped }: Props) => {
         (!swapped && symbol.type === "arcane") ||
         (swapped && symbol.type === "sacred")
       ) {
-        console.log(symbol.type);
         tempCurrentPower += !swapped
           ? symbol.level * 10 + 20
           : symbol.level * 10;
@@ -102,7 +101,6 @@ const Graph = ({ symbols, swapped }: Props) => {
     }
 
     setCurrentPower(tempCurrentPower);
-    console.log("calculating base power");
   }, [symbols, swapped]);
 
   // Calculate and store every symbol's date needed to reach future levels
@@ -182,7 +180,6 @@ const Graph = ({ symbols, swapped }: Props) => {
         });
 
       setDateSymbols(tempDateSymbols as DateSymbols[]);
-      console.log("calculating level dates");
     } catch (e) {
       console.error(e);
       setDateSymbols([]);
@@ -242,7 +239,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
     setFlatDateSymbols(tempFlatDateSymbols);
     setGraphSymbols(tempGraphSymbols);
-    console.log("storing graph data");
+    setMaxPower(tempGraphSymbols[tempGraphSymbols.length - 1]?.power);
   }, [dateSymbols]);
 
   // Render the custom tooltip for the graph
@@ -311,8 +308,15 @@ const Graph = ({ symbols, swapped }: Props) => {
   };
 
   // Generate 4 evenly spaced ticks for the Y axis
-  const getYAxisTicks = () => {
-    if (currentPower === 0) return;
+  useEffect(() => {
+    if (
+      !isValid(currentPower) ||
+      !isValid(maxPower) ||
+      currentPower === 0 ||
+      maxPower === 0
+    ) {
+      setYAxisTicks([]);
+    }
 
     const ticks = [currentPower];
 
@@ -325,12 +329,17 @@ const Graph = ({ symbols, swapped }: Props) => {
 
     ticks.push(maxPower);
 
+    ////console.log(ticks.length);
+
     if (ticks[0] !== ticks[2]) {
+      ////console.log(currentPower, maxPower);
       // ! Bandaid bug fix | ticks[1] sacred would be stuck in middle of Y axis (arcane)
-      console.log(ticks);
-      return ticks;
+      ////console.log(ticks);
+      setYAxisTicks(ticks);
+    } else {
+      setYAxisTicks([]);
     }
-  };
+  }, [graphSymbols]);
 
   // Validate the provided target power
   const getTargetPowerDate = (target: string) => {
@@ -425,14 +434,14 @@ const Graph = ({ symbols, swapped }: Props) => {
                     <input
                       type="number"
                       className={`power-input h-[30px] w-[65px] ${
-                        currentPower === 0 &&
+                        graphSymbols.length === 1 &&
                         "opacity-25 pointer-events-none select-none"
                       }`}
                       placeholder="Target"
                       value={targetPower}
                       onWheel={(e) => e.currentTarget.blur()}
                       onChange={(e) => getTargetPowerDate(e.target.value)}
-                      tabIndex={currentPower === 0 ? -1 : 0}
+                      tabIndex={graphSymbols.length === 1 ? -1 : 0}
                     ></input>
                   </TooltipTrigger>
                   <TooltipContent className="tooltip">
@@ -447,7 +456,7 @@ const Graph = ({ symbols, swapped }: Props) => {
               <div className="flex space-x-1.5">
                 <p
                   className={
-                    isMobile && targetPower >= currentPower ? "block" : "hidden"
+                    isMobile && targetPower > currentPower ? "block" : "hidden"
                   }
                 >
                   Attainment Date:{" "}
@@ -504,7 +513,7 @@ const Graph = ({ symbols, swapped }: Props) => {
               tickMargin={isMobile ? 5 : 10}
               stroke="#8c8c8c"
               domain={[currentPower, maxPower]}
-              ticks={getYAxisTicks()}
+              ticks={yAxisTicks}
             />
           </LineChart>
         </div>
