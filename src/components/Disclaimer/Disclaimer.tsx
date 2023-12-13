@@ -40,14 +40,13 @@ const Disclaimer = () => {
             isOpen && !isMobile && (isFirefox ? "mr-[8px]" : "mr-[15px]") // Accomodate for the thinner scroll bar width on Firefox
           }`}
         >
-          <Dialog.Panel className="flex shadow-level shadow-[#b18bd0] flex-col justify-between items-center bg-card text-center rounded-lg p-10 w-[350px] tablet:w-[500px] h-[600px] tablet:h-[500px]">
+          <Dialog.Panel className="flex shadow-level shadow-[#b18bd0] flex-col justify-between items-center bg-card text-center rounded-lg p-10 w-[350px] tablet:w-[500px] h-[550px] tablet:h-[500px]">
             <Dialog.Title className="text-white text-2xl font-semibold">
-              Welcome to {isMobile && <br></br>} <span>Maple Symbols</span>!
+              Welcome to {isMobile && <br></br>} <span>Maple Symbols</span>!{" "}
             </Dialog.Title>
             <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[250px] tablet:w-[400px]" />
             <Dialog.Description>
-              This tool is currently in a <span>beta</span> state which makes it
-              prone to bugs and other issues.
+              As of version 1.2, the <span>graph</span> has now been released! Visualize your symbol progress intuitively along with a <span>new feature</span> which allows you to calculate the date you'll reach a certain power.
             </Dialog.Description>
             <Dialog.Description>
               If you encounter any problems or wish to submit any suggestions,
@@ -58,13 +57,8 @@ const Disclaimer = () => {
                 href="https://discord.gg/FTMgy2ZKPK"
               >
                 Discord
-              </a>{" "}
-              server.
+              </a>.
             </Dialog.Description>
-            <Dialog.Description>
-                Updates will be consistent and big things are planned such as{" "}
-                <span>graphs</span> and <span>guides</span>.
-              </Dialog.Description>
             <hr className="bg-gradient-to-r via-white/10 border-0 h-px w-[250px] tablet:w-[400px]" />
             <div
               className="flex items-center space-x-4 cursor-pointer select-none"

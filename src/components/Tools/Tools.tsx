@@ -40,7 +40,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const [catalystExp, setcatalystExp] = useState(NaN);
 
   const currentSymbol = symbols[selectedSymbol];
-  const nextExperience = currentSymbol.symbolsRequired[currentSymbol.level];
+  const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
 
   const [selectorLevel, setSelectorLevel] = useState(currentSymbol.level);
   const [catalystLevel, setCatalystLevel] = useState(NaN);
@@ -49,7 +49,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
 
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
-  // Check if the specified value is valid (not empty)
+  // Check if the provided value is valid (not empty)
   const isValid = (value: number) => {
     return !isNaN(value) && value !== null;
   };
