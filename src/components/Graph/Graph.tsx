@@ -199,8 +199,6 @@ const Graph = ({ symbols, swapped }: Props) => {
     // Create a flat (merged) version of the dateSymbols array.
     const tempFlatDateSymbols = dateSymbols
       .flatMap((symbol) =>
-          level: symbol.level,
-          entryLevel: entry.level,
         symbol.progress.map((entry) => {
           // Find the difference of days between today and the entry date (days).
           // If they both land on today, make sure it's set to 0 and not 1
@@ -548,11 +546,11 @@ const Graph = ({ symbols, swapped }: Props) => {
           <hr className="horizontal-divider" />
 
           <div className="flex space-x-12 tablet:space-x-24 pb-6 tablet:pb-4">
-            <div className="flex items-center space-x-4" onClick={() => setGraphType("linear")}>
+            <div className="flex items-center space-x-4 cursor-pointer" onClick={() => setGraphType("linear")}>
               <div className={`${graphType === "linear" && "bg-accent"} border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}></div>
               <p>Linear</p>
             </div>
-            <div className="flex items-center space-x-4" onClick={() => setGraphType("exponential")}>
+            <div className="flex items-center space-x-4 cursor-pointer" onClick={() => setGraphType("exponential")}>
               <div className={`${graphType === "exponential" && "bg-accent"} border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}></div>
               <p>Exponential</p>
             </div>
