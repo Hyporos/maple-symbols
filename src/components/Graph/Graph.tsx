@@ -487,73 +487,102 @@ const Graph = ({ symbols, swapped }: Props) => {
               isMobile && "space-y-2"
             }`} // ! Bug. Spacing weird if this is put in responsively with Tailwind.
           >
-              <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
-                <p>{!swapped ? "Arcane" : "Sacred"} Power</p>
-                <p className="text-accent laptop:text-lg pt-2.5">
-                  {currentPower} / {enabledSymbols * (!swapped ? 220 : 110)}
+            <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
+              <p>{!swapped ? "Arcane" : "Sacred"} Power</p>
+              <p className="text-accent laptop:text-lg pt-2.5">
+                {currentPower} / {enabledSymbols * (!swapped ? 220 : 110)}
+              </p>
+            </div>
+
+            <div
+              className={`flex flex-col justify-center items-center bg-dark rounded-lg tablet:mb-2 mb-1 py-4 px-6 laptop:px-8`}
+            >
+              <div className="flex items-center space-x-3 tablet:space-x-3 pb-2.5">
+                <p>
+                  {isMobile
+                    ? `Target ${!swapped ? "Arcane" : "Sacred"} Power`
+                    : "When will"}
+                </p>
+                <Tooltip>
+                  <TooltipTrigger asChild={true}>
+                    <input
+                      type="number"
+                      className={`power-input h-[30px] w-[65px] ${
+                        graphSymbols.length === 1 &&
+                        "opacity-25 pointer-events-none select-none"
+                      }`}
+                      placeholder="Target"
+                      value={targetPower}
+                      onWheel={(e) => e.currentTarget.blur()}
+                      onChange={(e) => getTargetPowerDate(e.target.value)}
+                      tabIndex={graphSymbols.length === 1 ? -1 : 0}
+                    ></input>
+                  </TooltipTrigger>
+                  <TooltipContent className="tooltip">
+                    Calculate the date you'll <br></br>achieve the{" "}
+                    <span>provided power</span>
+                  </TooltipContent>
+                </Tooltip>
+                <p className={isMobile ? "hidden" : "block"}>
+                  {!swapped ? "arcane" : "sacred"} power be reached?
                 </p>
               </div>
-
-              <div className={`flex flex-col justify-center items-center bg-dark rounded-lg tablet:mb-2 mb-1 py-4 px-6 laptop:px-8`}>
-                <div className="flex items-center space-x-3 tablet:space-x-3 pb-2.5">
-                  <p>
-                    {isMobile
-                      ? `Target ${!swapped ? "Arcane" : "Sacred"} Power`
-                      : "When will"}
-                  </p>
-                  <Tooltip>
-                    <TooltipTrigger asChild={true}>
-                      <input
-                        type="number"
-                        className={`power-input h-[30px] w-[65px] ${
-                          graphSymbols.length === 1 &&
-                          "opacity-25 pointer-events-none select-none"
-                        }`}
-                        placeholder="Target"
-                        value={targetPower}
-                        onWheel={(e) => e.currentTarget.blur()}
-                        onChange={(e) => getTargetPowerDate(e.target.value)}
-                        tabIndex={graphSymbols.length === 1 ? -1 : 0}
-                      ></input>
-                    </TooltipTrigger>
-                    <TooltipContent className="tooltip">
-                      Calculate the date you'll <br></br>achieve the{" "}
-                      <span>specified power</span>
-                    </TooltipContent>
-                  </Tooltip>
-                  <p className={isMobile ? "hidden" : "block"}>
-                    {!swapped ? "arcane" : "sacred"} power be reached?
-                  </p>
-                </div>
-                <div className="flex space-x-1.5">
-                  <p
-                    className={
-                      isMobile && targetPower > currentPower
-                        ? "block"
-                        : "hidden"
-                    }
-                  >
-                    Attainment Date:{" "}
-                  </p>
-                  <p className="text-accent laptop:text-lg">
-                    {getTargetPowerResponse()}
-                  </p>
-                </div>
+              <div className="flex space-x-1.5">
+                <p
+                  className={
+                    isMobile && targetPower > currentPower ? "block" : "hidden"
+                  }
+                >
+                  Attainment Date:{" "}
+                </p>
+                <p className="text-accent laptop:text-lg">
+                  {getTargetPowerResponse()}
+                </p>
               </div>
-            
+            </div>
           </div>
 
           <hr className="horizontal-divider" />
 
           <div className="flex space-x-12 tablet:space-x-24 pb-6 tablet:pb-4">
-            <div className="flex items-center space-x-4 cursor-pointer" onClick={() => setGraphType("linear")}>
-              <div className={`${graphType === "linear" && "bg-accent"} border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}></div>
-              <p>Linear</p>
-            </div>
-            <div className="flex items-center space-x-4 cursor-pointer" onClick={() => setGraphType("exponential")}>
-              <div className={`${graphType === "exponential" && "bg-accent"} border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}></div>
-              <p>Exponential</p>
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <div
+                  className="flex items-center space-x-4 cursor-pointer"
+                  onClick={() => setGraphType("linear")}
+                >
+                  <div
+                    className={`${
+                      graphType === "linear" && "bg-accent"
+                    } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
+                  ></div>
+                  <p>Linear</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                Each point on the X axis <br></br>represents a{" "}
+                <span>symbol level up</span> date
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <div
+                  className="flex items-center space-x-4 cursor-pointer"
+                  onClick={() => setGraphType("exponential")}
+                >
+                  <div
+                    className={`${
+                      graphType === "exponential" && "bg-accent"
+                    } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
+                  ></div>
+                  <p>Exponential</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                Each point on the X axis represents a<br></br> date{" "}
+                <span>between now</span> and the <span>final date</span>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <LineChart
