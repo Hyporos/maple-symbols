@@ -12,7 +12,8 @@ import {
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { useMediaQuery } from "react-responsive";
-import { HiArrowSmRight } from "react-icons/hi";
+import { FaArrowRight } from "react-icons/fa6";
+
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
 import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
 
@@ -319,12 +320,12 @@ const Graph = ({ symbols, swapped }: Props) => {
 
               return (
                 <div key={symbol.name} className="flex flex-col text-tertiary">
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-1.5">
                     <p className={isMobile ? "text-xs" : "text-sm"}>{`${
                       symbol.name
                     } : ${symbolEntries[0].entryLevel - 1}`}</p>
-                    <HiArrowSmRight
-                      size={isMobile ? 14 : 16}
+                    <FaArrowRight
+                      size={isMobile ? 10 : 12}
                       fill="#8c8c8c"
                       className="opacity-75"
                     />
@@ -544,7 +545,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
           <hr className="horizontal-divider" />
 
-          <div className="flex space-x-12 tablet:space-x-24 pb-6 tablet:pb-4">
+          <div className="flex space-x-[75px] tablet:space-x-32 pb-6 tablet:pb-4">
             <Tooltip>
               <TooltipTrigger asChild={true}>
                 <div
