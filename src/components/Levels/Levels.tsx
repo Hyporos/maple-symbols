@@ -134,11 +134,22 @@ const Levels = ({ symbols, swapped }: Props) => {
       <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[350px] tablet:w-[700px] laptop:w-[1050px] p-10 mt-16 tablet:mt-28">
         <div className="flex flex-col w-[350px] tablet:w-[700px] laptop:w-[1050px]">
           <div className="hidden items-center text-center text-tertiary tablet:flex">
-            <HiOutlineQuestionMarkCircle size={30} className="w-1/4" />
-            <p className="w-1/4 tracking-wider">Symbol</p>
-            <p className="w-1/4 tracking-wider">Target Level</p>
-            <p className="w-1/4 tracking-wider">Completion Date</p>
-            <p className="w-1/4 tracking-wider">Symbols Remaining</p>
+            <div className="w-1/5 flex justify-center">
+            <Tooltip>
+              <TooltipTrigger asChild={true} >
+              {" "}
+                  <HiOutlineQuestionMarkCircle size={30} className="cursor-default transition-all hover:stroke-white"/>
+              </TooltipTrigger>
+              <TooltipContent className="tooltip">
+                View the <span>individual level</span> requirements <br></br>and dates
+                for each symbol
+              </TooltipContent>
+            </Tooltip>
+            </div>
+            <p className="w-1/5 tracking-wider">Symbol</p>
+            <p className="w-1/5 tracking-wider">Target Level</p>
+            <p className="w-1/5 tracking-wider">Completion Date</p>
+            <p className="w-1/5 tracking-wider">Symbols Remaining</p>
           </div>
           <div className="flex justify-center items-center text-center text-tertiary tablet:hidden">
             <h1 className="tracking-wider">Symbol Overview</h1>
@@ -167,7 +178,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                     className={`flex justify-between px-4 tablet:px-0 tablet:justify-normal items-center text-center hover:bg-dark cursor-pointer py-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
-                    } ${symbol.level === (!swapped ? 20 : 11) && "pointer-events-none"} ${
+                    } ${
+                      symbol.level === (!swapped ? 20 : 11) &&
+                      "pointer-events-none"
+                    } ${
                       targetSymbol === index &&
                       selectedNone === false &&
                       symbol.level < (!swapped ? 20 : 11)
@@ -307,7 +321,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                     className={`flex items-center flex-col tablet:flex-row px-4 tablet:px-0 text-center rounded-b-3xl bg-dark pt-2 pb-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
-                    } ${symbol.level === (!swapped ? 20 : 11) && "pointer-events-none"} ${
+                    } ${
+                      symbol.level === (!swapped ? 20 : 11) &&
+                      "pointer-events-none"
+                    } ${
                       targetSymbol === index &&
                       selectedNone === false &&
                       symbol.level < (!swapped ? 20 : 11)

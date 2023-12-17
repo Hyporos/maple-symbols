@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { HiArrowSmRight } from "react-icons/hi";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { FaArrowRight } from "react-icons/fa6";
 import { TbSlash } from "react-icons/tb";
 import { MdOutlineInfo } from "react-icons/md";
 import "./Calculator.css";
@@ -650,7 +650,7 @@ const Calculator = ({
           <div className="text-secondary text-center space-y-1.5">
             <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
               <div
-                className={`text-secondary text-center space-y-1.5 ${
+                className={`text-secondary text-center space-y-1.5 pt-0.5 ${
                   isNaN(currentSymbol.level) ||
                   currentSymbol.level === null ||
                   currentSymbol.level === (!swapped ? 20 : 11)
@@ -668,14 +668,14 @@ const Calculator = ({
                         String(currentSymbol.level) != "NaN")
                     ) {
                       return (
-                        <div className="flex space-x-2 items-center justify-center text-primary font-semibold tracking-wider">
+                        <div className="flex space-x-3 items-center justify-center text-primary font-semibold tracking-wider">
                           <h1 className="text-xl">
                             Level{" "}
                             <span className="text-xl">
                               {currentSymbol.level}
                             </span>
                           </h1>
-                          <HiArrowSmRight size={30} className="fill-basic" />
+                          <FaArrowRight size={20} className="fill-basic" />
                           <h1 className="text-xl">
                             Level{" "}
                             <span className="text-xl">
@@ -837,7 +837,7 @@ const Calculator = ({
                         ].toLocaleString()}
                       </span>{" "}
                       mesos required
-                      <div className="flex justify-center items-center space-x-1.5 pt-10">
+                      <div className="flex justify-center items-center space-x-1.5 pt-[41px]">
                         <p>
                           <span>{!swapped ? "+100" : "+200"}</span> main stat
                         </p>

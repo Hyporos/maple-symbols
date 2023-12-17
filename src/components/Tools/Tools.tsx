@@ -7,7 +7,8 @@ import {
 } from "react";
 import { useMediaQuery } from "react-responsive";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
-import { HiArrowSmRight } from "react-icons/hi";
+import { FaArrowRight } from "react-icons/fa6";
+
 import "./Tools.css";
 
 interface Props {
@@ -36,7 +37,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
-  const [selectorExp, setselectorExp] = useState(NaN);
+  const [selectorExp, setSelectorExp] = useState(NaN);
   const [catalystExp, setcatalystExp] = useState(NaN);
 
   const currentSymbol = symbols[selectedSymbol];
@@ -71,7 +72,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         totalExp += currentSymbol.symbolsRequired[indexLevel];
         setSelectorLevel(currentSymbol.level + totalLevels);
       }
-      setselectorExp(
+      setSelectorExp(
         selectorCount
           ? selectorCount - totalExp + currentSymbol.experience
           : currentSymbol.experience
@@ -268,7 +269,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               <div className="flex items-center justify-around tablet:w-1/3">
                 <Tooltip>
                   <TooltipTrigger
-                    className="flex items-center space-x-4 cursor-default"
+                    className="flex items-center space-x-5 cursor-default"
                     tabIndex={
                       disabled ||
                       (currentSymbol.level < (!swapped ? 20 : 11) &&
@@ -286,7 +287,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                       </p>
                     </div>
                     <div>
-                      <HiArrowSmRight size={25} className="fill-basic" />
+                      <FaArrowRight size={16} className="fill-basic" />
                     </div>
                     <div>
                       <p className="text-secondary">
@@ -297,9 +298,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     </div>
                   </TooltipTrigger>
                   <TooltipContent className="tooltip">
-                    <div className="flex justify-center items-center text-accent space-x-1">
+                    <div className="flex justify-center items-center text-accent space-x-2">
                       <p className="text-sm">[Before</p>{" "}
-                      <HiArrowSmRight size={19} className="fill-accent" />{" "}
+                      <FaArrowRight size={13} className="fill-accent" />{" "}
                       <p className="text-sm">After]</p>
                     </div>{" "}
                     Level / Experience
@@ -309,7 +310,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               <button
                 tabIndex={
                   disabled ||
-                  isNaN(selectorExp) ||
+                  isNaN(selectorExp) || !isValid(selectorCount) ||
                   currentSymbol.level === (!swapped ? 20 : 11) ||
                   (currentSymbol.level < (!swapped ? 20 : 11) &&
                     currentSymbol.experience > nextExperience)
@@ -371,7 +372,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           <div className="flex items-center justify-around tablet:w-1/3">
             <Tooltip>
               <TooltipTrigger
-                className="flex items-center space-x-4 cursor-default"
+                className="flex items-center space-x-5 cursor-default"
                 tabIndex={
                   disabled ||
                   (currentSymbol.level < (!swapped ? 20 : 11) &&
@@ -389,7 +390,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   </p>
                 </div>
                 <div>
-                  <HiArrowSmRight size={25} className="fill-basic" />
+                  <FaArrowRight size={16} className="fill-basic" />
                 </div>
                 <div>
                   <p className="text-secondary">
@@ -398,9 +399,9 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                 </div>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                <div className="flex justify-center items-center text-accent space-x-1">
+                <div className="flex justify-center items-center text-accent space-x-2">
                   <p className="text-sm">[Before</p>{" "}
-                  <HiArrowSmRight size={19} className="fill-accent" />{" "}
+                  <FaArrowRight size={13} className="fill-accent" />{" "}
                   <p className="text-sm">After]</p>
                 </div>{" "}
                 Symbol Level / Exp
