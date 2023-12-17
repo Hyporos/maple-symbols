@@ -37,7 +37,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
-  const [selectorExp, setselectorExp] = useState(NaN);
+  const [selectorExp, setSelectorExp] = useState(NaN);
   const [catalystExp, setcatalystExp] = useState(NaN);
 
   const currentSymbol = symbols[selectedSymbol];
@@ -72,7 +72,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
         totalExp += currentSymbol.symbolsRequired[indexLevel];
         setSelectorLevel(currentSymbol.level + totalLevels);
       }
-      setselectorExp(
+      setSelectorExp(
         selectorCount
           ? selectorCount - totalExp + currentSymbol.experience
           : currentSymbol.experience
@@ -310,7 +310,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               <button
                 tabIndex={
                   disabled ||
-                  isNaN(selectorExp) ||
+                  isNaN(selectorExp) || !isValid(selectorCount) ||
                   currentSymbol.level === (!swapped ? 20 : 11) ||
                   (currentSymbol.level < (!swapped ? 20 : 11) &&
                     currentSymbol.experience > nextExperience)
