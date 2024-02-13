@@ -12,8 +12,6 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
 function App() {
-  // TODO: Replace the following with your app's Firebase project configuration
-  // See: https://firebase.google.com/docs/web/learn-more#config-object
   const firebaseConfig = {
     apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
     authDomain: "maple-symbols.firebaseapp.com",
@@ -30,9 +28,9 @@ function App() {
   // Initialize Analytics and get a reference to the service
   const analytics = getAnalytics(app);
 
-  if (localStorage.getItem("clearStorage") === "1.1.4" || localStorage.getItem("clearStorage") === "1.1.3") {
+  if (localStorage.getItem("clearStorage") !== "1.3") {
     localStorage.clear();
-    localStorage.setItem("clearStorage", "1.2.1");
+    localStorage.setItem("clearStorage", "1.3");
   }
 
   const [swapped, setSwapped] = useState(false);
@@ -278,7 +276,7 @@ function App() {
       alt: "Shangri-La",
       img: "/symbols/shangri-symbol.webp",
       type: "sacred",
-      dailyName: "TBA",
+      dailyName: "Shangri-La Contamination Purification",
       level: NaN,
       experience: NaN,
       daily: false,
@@ -300,7 +298,7 @@ function App() {
       alt: "Arteria",
       img: "/symbols/arteria-symbol.webp",
       type: "sacred",
-      dailyName: "TBA",
+      dailyName: "Defeat the Arteria Remnants",
       level: NaN,
       experience: NaN,
       daily: false,
@@ -322,7 +320,7 @@ function App() {
       alt: "Carcion",
       img: "/symbols/carcion-symbol.webp",
       type: "sacred",
-      dailyName: "TBA",
+      dailyName: "Carcion Recovery Support",
       level: NaN,
       experience: NaN,
       daily: false,
