@@ -32,6 +32,9 @@ dependencies:
   firebase-tools:
     specifier: ^12.5.2
     version: 12.5.2
+  framer-motion:
+    specifier: ^11.0.5
+    version: 11.0.5(react-dom@18.2.0)(react@18.2.0)
   immer:
     specifier: ^10.0.2
     version: 10.0.2
@@ -3347,6 +3350,20 @@ packages:
       kuler: 2.0.0
     dev: false
 
+  /@emotion/is-prop-valid@0.8.8:
+    resolution: {integrity: sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==}
+    requiresBuild: true
+    dependencies:
+      '@emotion/memoize': 0.7.4
+    dev: false
+    optional: true
+
+  /@emotion/memoize@0.7.4:
+    resolution: {integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /@esbuild/android-arm64@0.17.19:
     resolution: {integrity: sha512-KBMWvEZooR7+kzY0BtbTQn0OAYY7CsiydT63pVEaPtVYF0hXbUaOyZog37DKxK7NF3XacBJOpYT4adIJh+avxA==}
     engines: {node: '>=12'}
@@ -3593,7 +3610,7 @@ packages:
       '@firebase/app-compat': 0.2.15
       '@firebase/component': 0.6.4
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3612,7 +3629,7 @@ packages:
       '@firebase/installations': 0.6.4(@firebase/app@0.9.15)
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/app-check-compat@0.3.7(@firebase/app-compat@0.2.15)(@firebase/app@0.9.15):
@@ -3626,7 +3643,7 @@ packages:
       '@firebase/component': 0.6.4
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3648,7 +3665,7 @@ packages:
       '@firebase/component': 0.6.4
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/app-compat@0.2.15:
@@ -3658,7 +3675,7 @@ packages:
       '@firebase/component': 0.6.4
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/app-types@0.9.0:
@@ -3672,7 +3689,7 @@ packages:
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
       idb: 7.1.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/auth-compat@0.4.4(@firebase/app-compat@0.2.15)(@firebase/app-types@0.9.0)(@firebase/app@0.9.15)(react-native@0.72.7):
@@ -3686,7 +3703,7 @@ packages:
       '@firebase/component': 0.6.4
       '@firebase/util': 1.9.3
       node-fetch: 2.6.7
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
@@ -3719,7 +3736,7 @@ packages:
       '@firebase/util': 1.9.3
       '@react-native-async-storage/async-storage': 1.19.1(react-native@0.72.7)
       node-fetch: 2.6.7
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
       - react-native
@@ -3729,7 +3746,7 @@ packages:
     resolution: {integrity: sha512-rLMyrXuO9jcAUCaQXCMjCMUsWrba5fzHlNK24xz5j2W6A/SRmK8mZJ/hn7V0fViLbxC0lPMtrK1eYzk6Fg03jA==}
     dependencies:
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/database-compat@1.0.1:
@@ -3740,7 +3757,7 @@ packages:
       '@firebase/database-types': 1.0.0
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/database-types@1.0.0:
@@ -3758,7 +3775,7 @@ packages:
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
       faye-websocket: 0.11.4
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/firestore-compat@0.3.14(@firebase/app-compat@0.2.15)(@firebase/app-types@0.9.0)(@firebase/app@0.9.15):
@@ -3771,7 +3788,7 @@ packages:
       '@firebase/firestore': 4.1.0(@firebase/app@0.9.15)
       '@firebase/firestore-types': 3.0.0(@firebase/app-types@0.9.0)(@firebase/util@1.9.3)
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
@@ -3802,7 +3819,7 @@ packages:
       '@grpc/grpc-js': 1.8.19
       '@grpc/proto-loader': 0.6.13
       node-fetch: 2.6.7
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -3817,7 +3834,7 @@ packages:
       '@firebase/functions': 0.10.0(@firebase/app@0.9.15)
       '@firebase/functions-types': 0.6.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - encoding
@@ -3839,7 +3856,7 @@ packages:
       '@firebase/messaging-interop-types': 0.2.0
       '@firebase/util': 1.9.3
       node-fetch: 2.6.7
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -3854,7 +3871,7 @@ packages:
       '@firebase/installations': 0.6.4(@firebase/app@0.9.15)
       '@firebase/installations-types': 0.5.0(@firebase/app-types@0.9.0)
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
@@ -3877,13 +3894,13 @@ packages:
       '@firebase/component': 0.6.4
       '@firebase/util': 1.9.3
       idb: 7.0.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/logger@0.4.0:
     resolution: {integrity: sha512-eRKSeykumZ5+cJPdxxJRgAC3G5NknY2GwEbKfymdnXtnT0Ucm4pspfR6GT4MUQEDuJwRVbVcSx85kgJulMoFFA==}
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/messaging-compat@0.2.4(@firebase/app-compat@0.2.15)(@firebase/app@0.9.15):
@@ -3895,7 +3912,7 @@ packages:
       '@firebase/component': 0.6.4
       '@firebase/messaging': 0.12.4(@firebase/app@0.9.15)
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3915,7 +3932,7 @@ packages:
       '@firebase/messaging-interop-types': 0.2.0
       '@firebase/util': 1.9.3
       idb: 7.0.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/performance-compat@0.2.4(@firebase/app-compat@0.2.15)(@firebase/app@0.9.15):
@@ -3929,7 +3946,7 @@ packages:
       '@firebase/performance': 0.6.4(@firebase/app@0.9.15)
       '@firebase/performance-types': 0.2.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3948,7 +3965,7 @@ packages:
       '@firebase/installations': 0.6.4(@firebase/app@0.9.15)
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/remote-config-compat@0.2.4(@firebase/app-compat@0.2.15)(@firebase/app@0.9.15):
@@ -3962,7 +3979,7 @@ packages:
       '@firebase/remote-config': 0.4.4(@firebase/app@0.9.15)
       '@firebase/remote-config-types': 0.3.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3981,7 +3998,7 @@ packages:
       '@firebase/installations': 0.6.4(@firebase/app@0.9.15)
       '@firebase/logger': 0.4.0
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/storage-compat@0.3.2(@firebase/app-compat@0.2.15)(@firebase/app-types@0.9.0)(@firebase/app@0.9.15):
@@ -3994,7 +4011,7 @@ packages:
       '@firebase/storage': 0.11.2(@firebase/app@0.9.15)
       '@firebase/storage-types': 0.8.0(@firebase/app-types@0.9.0)(@firebase/util@1.9.3)
       '@firebase/util': 1.9.3
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
@@ -4020,7 +4037,7 @@ packages:
       '@firebase/component': 0.6.4
       '@firebase/util': 1.9.3
       node-fetch: 2.6.7
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -4028,7 +4045,7 @@ packages:
   /@firebase/util@1.9.3:
     resolution: {integrity: sha512-DY02CRhOZwpzO36fHpuVysz6JZrscPiBXD0fXp6qSrL9oNOx5KWICKdR95C0lSITzxp0TZosVyHqzatE8JbcjA==}
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@firebase/webchannel-wrapper@0.10.1:
@@ -6380,7 +6397,7 @@ packages:
     resolution: {integrity: sha512-xcLxITLe2HYa1cnYnwCjkOO1PqUHQpozB8x9AR0OgWN2woOBi5kSDVxKfd0b7sb1hw5qFeJhXm9H1nu3xSfLeQ==}
     engines: {node: '>=10'}
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /aria-query@5.3.0:
@@ -6525,7 +6542,7 @@ packages:
     resolution: {integrity: sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /ast-types@0.15.2:
@@ -9790,6 +9807,24 @@ packages:
 
   /fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
+    dev: false
+
+  /framer-motion@11.0.5(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Lb0EYbQcSK/pgyQUJm+KzsQrKrJRX9sFRyzl9hSr9gFG4Mk8yP7BjhuxvRXzblOM/+JxycrJdCDVmOQBsjpYlw==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tslib: 2.6.2
+    optionalDependencies:
+      '@emotion/is-prop-valid': 0.8.8
     dev: false
 
   /fresh@0.5.2:
@@ -15745,7 +15780,7 @@ packages:
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /safe-array-concat@1.0.1:
@@ -16995,10 +17030,6 @@ packages:
 
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-
-  /tslib@2.5.3:
-    resolution: {integrity: sha512-mSxlJJwl3BMEQCUNnxXBU9jP4JBktcEGhURcPR6VQVlnP0FdDEsIaz0C35dXNGLyRfrATNofF0F5p2KPxQgB+w==}
-    dev: false
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}

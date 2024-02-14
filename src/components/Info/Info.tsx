@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Info.css";
+import changelogEntries from "../../lib/data";
 import { cn } from "../../lib/utils";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -8,7 +9,10 @@ import { cn } from "../../lib/utils";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Info = () => {
-  const [selectedInfo, setSelectedInfo] = useState(1);
+  const [selectedInfo, setSelectedInfo] = useState(1); 
+  const [selectedVersion, setSelectedVersion] = useState(
+    changelogEntries[changelogEntries.length - 1].version // Set the default entry to the newest one
+  ); 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   return (
     <section className="info">
@@ -66,59 +70,61 @@ const Info = () => {
           </div>
         </div>
         <div
-          className={cn("hidden", selectedInfo === 3 && "flex")}
+          className={cn("hidden max-h-[500px]", selectedInfo === 3 && "flex")}
         >
-          <div className="w-2/12 flex justify-center flex-col items-center space-y-6">
-            <div>v1.0</div>
-            <div>v1.1</div>
-            <div>v1.1.1</div>
-            <div>v1.1.2</div>
-            <div>v1.1.3</div>
-            <div>v1.1.4</div>
-            <div>v1.2</div>
-            <div>v1.2.1</div>
-            <div>v1.2.2</div>
-            <div>v1.3</div>
+          <div className="flex flex-col items-center overflow-auto w-2/12">
+            {changelogEntries.toReversed().map((entry, index) => {
+              return (
+                <div
+                  key={index}
+                  className={cn(
+                    "hover:bg-light hover:text-accent hover:tracking-wider text-center transition-all cursor-pointer select-none py-5 w-full",
+                    entry.version === selectedVersion && "bg-light text-accent font-semibold tracking-wider"
+                  )}
+                  onClick={() => setSelectedVersion(entry.version)}
+                >
+                  {entry.version}
+                </div>
+              );
+            })}
           </div>
-          <div className="flex justify-center items-center">
-            <div className="h-full w-px bg-gradient-to-t via-white/10"></div>
-          </div>
-          <div className="w-9/12 flex flex-col justify-center items-center mx-12">
-            <h1 className="text-2xl font-semibold">v1.1.0</h1>
-            <div className="h-px w-[500px] bg-white/10 mt-4"></div>
-            <h2 className="text-lg font-semibold py-6">New Additions</h2>
-            <div className="space-y-3 [&>*]:text-sm">
-              <p>
-                • By default, you can only enter symbol experience up to what is
-                required to reach the next level. Now, when you enter that
-                capped number, you can choose to unlock the restriction and
-                instead enter any number up to 2679 or 4565, depending on the
-                type of symbol. This will allow users who are stacking up
-                symbols without leveling them up to conveniently view them with
-                their updated level/experience.
-              </p>
-              <p>• Added a link to the GitHub repo in the footer</p>
-            </div>
-
-            <h2 className="text-lg font-semibold py-6">
-              Bug Fixes / Optimizations
-            </h2>
-            <div className="space-y-3 [&>*]:text-sm">
-              <p>
-                • Prevented tab focus on the Tools section (selector/catalyst)
-                when the respective symbol is disabled
-              </p>
-              <p>• Disabled dragging & selecting on images</p>
-              <p>
-                • Changed the default website description that shows on Google
-              </p>
-              <p>
-                • Total symbols remaining in the Levels section (tables/target
-                level) will now show 0 instead of a blank character when you
-                have enough experience to reach level 20
-              </p>
-            </div>
-          </div>
+          {changelogEntries.map((entry, index) => {
+            if (entry.version === selectedVersion) {
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col overflow-auto mx-12 w-9/12 "
+                >
+                  <h1 className="text-2xl font-semibold">{entry.version}</h1>
+                  <div className="bg-white/10 mt-4 w-[500px] h-px"></div>
+                  {entry.additions && entry.additions.length > 0 && (
+                    <>
+                      <h2 className="text-lg font-semibold py-6">
+                        New Additions
+                      </h2>
+                      <div className="[&>*]:text-sm space-y-3">
+                        {entry.additions.map((addition, index) => (
+                          <p key={index}>• {addition}</p>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {entry.fixes && entry.fixes.length > 0 && (
+                    <>
+                      <h2 className="text-lg font-semibold py-6">
+                        Bug Fixes / Optimizations
+                      </h2>
+                      <div className="[&>*]:text-sm space-y-3">
+                        {entry.fixes.map((fix, index) => (
+                          <p key={index}>• {fix}</p>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            }
+          })}
         </div>
         <div className={cn("hidden", selectedInfo === 4 && "flex")}>
           <div>
