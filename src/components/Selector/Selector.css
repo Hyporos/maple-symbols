@@ -1,5 +1,5 @@
 .selector {
-    @apply flex justify-center 
+    @apply flex justify-center pt-12
 }
 
 .selector-level {

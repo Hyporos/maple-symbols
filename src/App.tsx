@@ -10,6 +10,7 @@ import Graph from "./components/Graph/Graph";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import Info from "./components/Info/Info";
 
 function App() {
   const firebaseConfig = {
@@ -32,6 +33,8 @@ function App() {
     localStorage.clear();
     localStorage.setItem("clearStorage", "1.3");
   }
+
+  const [selectedPage, setSelectedPage] = useState(1);
 
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
@@ -349,42 +352,49 @@ function App() {
       );
     }
   }, []);
-
-  return (
-    <>
-      <Disclaimer />
-      <Header />
-      <Selector
-        symbols={symbols}
-        selectedSymbol={selectedSymbol}
-        setSelectedSymbol={setSelectedSymbol}
-        swapped={swapped}
-        setSwapped={setSwapped}
-      />
-      <Calculator
-        symbols={symbols}
-        setSymbols={setSymbols}
-        selectedSymbol={selectedSymbol}
-        swapped={swapped}
-      />
-      <Tools
-        symbols={symbols}
-        setSymbols={setSymbols}
-        selectedSymbol={selectedSymbol}
-        swapped={swapped}
-      />
-      <Levels
-        symbols={symbols}
-        selectedSymbol={selectedSymbol}
-        swapped={swapped}
-      />
-      <Graph
-        symbols={symbols}
-        swapped={swapped}
-      />
-      <Footer />
-    </>
-  );
+  {
+    return (
+      <>
+        <Disclaimer />
+        <Header
+          selectedPage={selectedPage}
+          setSelectedPage={setSelectedPage}
+        />
+        {selectedPage === 1 ? (
+          <>
+            <Selector
+              symbols={symbols}
+              selectedSymbol={selectedSymbol}
+              setSelectedSymbol={setSelectedSymbol}
+              swapped={swapped}
+              setSwapped={setSwapped}
+            />
+            <Calculator
+              symbols={symbols}
+              setSymbols={setSymbols}
+              selectedSymbol={selectedSymbol}
+              swapped={swapped}
+            />
+            <Tools
+              symbols={symbols}
+              setSymbols={setSymbols}
+              selectedSymbol={selectedSymbol}
+              swapped={swapped}
+            />
+            <Levels
+              symbols={symbols}
+              selectedSymbol={selectedSymbol}
+              swapped={swapped}
+            />
+            <Graph symbols={symbols} swapped={swapped} />
+          </>
+        ) : (
+          <Info />
+        )}
+        <Footer />
+      </>
+    );
+  }
 }
 
 export default App;

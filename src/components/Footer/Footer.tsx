@@ -3,7 +3,7 @@ import "./Footer.css";
 function Footer() {
   return (
     <section className="footer">
-      <div className="flex flex-col-reverse text-center tablet:flex-row items-center text-tertiary tablet:space-x-10 mt-28 p-5 ">
+      <div className="flex flex-col-reverse text-center tablet:flex-row items-center text-tertiary tablet:space-x-10 mt-12 p-5 ">
       <a
           target="_blank"
           href="https://github.com/Hyporos/maple-symbols"

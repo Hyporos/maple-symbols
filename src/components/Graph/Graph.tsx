@@ -481,7 +481,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
   return (
     <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mb-16 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
         <div className="flex flex-col items-center w-[350px] tablet:w-[700px] laptop:w-[1050px]">
           <div
             className={`flex flex-col tablet:flex-row text-center tablet:space-x-8 ${
