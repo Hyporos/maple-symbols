@@ -9,38 +9,74 @@ import { cn } from "../../lib/utils";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Info = () => {
-  const [selectedInfo, setSelectedInfo] = useState(1); 
+  const [selectedInfo, setSelectedInfo] = useState(1);
   const [selectedVersion, setSelectedVersion] = useState(
     changelogEntries[changelogEntries.length - 1].version // Set the default entry to the newest one
-  ); 
+  );
   const [dropdownOpen, setDropdownOpen] = useState(false);
   return (
     <section className="info">
       <div className="bg-gradient-to-t from-card-tool to-card-grad rounded-lg mt-12 w-[800px] h-[700px]">
-        <nav className="flex justify-between my-10 bg-dark shadow-input transition-all px-10">
+        <nav className="flex text-center my-10 bg-dark shadow-input transition-all ">
           <div
-            className="hover:bg-secondary transition-all py-5 cursor-pointer"
+            className={cn(
+              "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative",
+              selectedInfo === 1 && "bg-light text-white"
+            )}
             onClick={() => setSelectedInfo(1)}
           >
-            Meso Cost Table
+            <h1>Meso Cost Table</h1>
+            <div
+              className={cn(
+                "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
+                selectedInfo === 1 ? "w-full" : "group-hover:w-1/4"
+              )}
+            ></div>
           </div>
           <div
-            className="hover:bg-secondary transition-all py-5 cursor-pointer"
+            className={cn(
+              "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative",
+              selectedInfo === 2 && "bg-light text-white"
+            )}
             onClick={() => setSelectedInfo(2)}
           >
-            Experience Table
+            <h1>Experience Table</h1>
+            <div
+              className={cn(
+                "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
+                selectedInfo === 2 ? "w-full" : "group-hover:w-1/4"
+              )}
+            ></div>
           </div>
           <div
-            className="hover:bg-secondary transition-all py-5 cursor-pointer"
+            className={cn(
+              "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative",
+              selectedInfo === 3 && "bg-light text-white"
+            )}
             onClick={() => setSelectedInfo(3)}
           >
-            Changelog
+            <h1>Changelog</h1>
+            <div
+              className={cn(
+                "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
+                selectedInfo === 3 ? "w-full" : "group-hover:w-1/4"
+              )}
+            ></div>
           </div>
           <div
-            className="hover:bg-secondary transition-all py-5 cursor-pointer"
+            className={cn(
+              "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative",
+              selectedInfo === 4 && "bg-light text-white"
+            )}
             onClick={() => setSelectedInfo(4)}
           >
-            Credits
+            <h1>Credits</h1>
+            <div
+              className={cn(
+                "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
+                selectedInfo === 4 ? "w-full" : "group-hover:w-1/4"
+              )}
+            ></div>
           </div>
         </nav>
         <div className={cn("hidden", selectedInfo === 1 && "flex")}>1</div>
@@ -79,7 +115,8 @@ const Info = () => {
                   key={index}
                   className={cn(
                     "hover:bg-light hover:text-accent hover:tracking-wider text-center transition-all cursor-pointer select-none py-5 w-full",
-                    entry.version === selectedVersion && "bg-light text-accent font-semibold tracking-wider"
+                    entry.version === selectedVersion &&
+                      "bg-light text-accent font-semibold tracking-wider"
                   )}
                   onClick={() => setSelectedVersion(entry.version)}
                 >
