@@ -70,9 +70,10 @@ const changelogEntries = [
   },
   {
     version: "v1.3",
-    additions: ["Added the Information section to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol level up cost / experience tables, a log of prior updates, as well as a credits section."],
+    additions: ["Added the Information section to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol experience / level up cost tables, a log of prior updates, as well as a credits section."],
     fixes: [
       "Added names for the Shangri-La, Carcion and Arteria daily quest tooltips",
+      "Fixed an incorrect level up cost for Lachelein"
     ],
   },
 ];

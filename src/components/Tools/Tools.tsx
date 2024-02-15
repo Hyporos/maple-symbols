@@ -161,7 +161,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             <img
               src={`${
                 !swapped
-                  ? "/symbols/selector.webp"
+                  ? "/symbols/arcane-selector.webp"
                   : "/symbols/sacred-selector.webp"
               }`}
             ></img>
