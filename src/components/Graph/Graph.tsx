@@ -546,7 +546,7 @@ const Graph = ({ symbols, swapped }: Props) => {
           <hr className="horizontal-divider" />
 
           <div className="flex space-x-[75px] tablet:space-x-32 pb-6 tablet:pb-4">
-          <Tooltip>
+            <Tooltip>
               <TooltipTrigger asChild={true}>
                 <div
                   className="flex items-center space-x-4 cursor-pointer"
@@ -561,7 +561,8 @@ const Graph = ({ symbols, swapped }: Props) => {
                 </div>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-              Variable intervals based on date values
+                X-axis points will have <span>dynamic</span><br></br> spacing based on{" "}
+                <span>dates</span>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -579,7 +580,7 @@ const Graph = ({ symbols, swapped }: Props) => {
                 </div>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-              X-axis points will have consistent spacing
+                X-axis points will have <span>consistent</span> spacing
               </TooltipContent>
             </Tooltip>
           </div>

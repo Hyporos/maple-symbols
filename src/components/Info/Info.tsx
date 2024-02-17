@@ -36,9 +36,9 @@ const Info = ({ symbols, selectedSymbol, swapped }: InfoProps) => {
       <div className="bg-gradient-to-t from-card-tool to-card-grad rounded-lg py-10 w-full max-w-[800px] h-[700px]">
         <Navbar selectedInfo={selectedInfo} setSelectedInfo={setSelectedInfo} />
 
-        {selectedInfo === 1 && <ExpTable symbols={symbols} selectedSymbol={selectedSymbol} swapped={swapped} />}
+        {selectedInfo === 1 && <ExpTable symbols={symbols} swapped={swapped} />}
 
-        {selectedInfo === 2 && <CostTable symbols={symbols} selectedSymbol={selectedSymbol} swapped={swapped} />}
+        {selectedInfo === 2 && <CostTable symbols={symbols} selectedSymbol={selectedSymbol} />}
 
         {selectedInfo === 3 && <Changelog />}
 

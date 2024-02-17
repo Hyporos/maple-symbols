@@ -15,7 +15,6 @@ interface CostTableProps {
     }
   ];
   selectedSymbol: number;
-  swapped: boolean;
 }
 
 const CostTable = ({ symbols, selectedSymbol }: CostTableProps) => {
