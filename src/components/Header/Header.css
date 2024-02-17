@@ -1,5 +1,5 @@
 .header {
-    @apply flex justify-center bg-gradient-to-t from-[#202020] to-[#1c1c1c]  p-6
+    @apply flex justify-center bg-gradient-to-t from-[#202020] to-[#1c1c1c] p-6 mb-12
 }
 
 .page-select {
