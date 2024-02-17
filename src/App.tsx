@@ -356,10 +356,7 @@ function App() {
     return (
       <>
         <Disclaimer />
-        <Header
-          selectedPage={selectedPage}
-          setSelectedPage={setSelectedPage}
-        />
+        <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
         {selectedPage === 1 ? (
           <>
             <Selector
@@ -389,7 +386,20 @@ function App() {
             <Graph symbols={symbols} swapped={swapped} />
           </>
         ) : (
-          <Info symbols={symbols}/>
+          <>
+            <Selector
+              symbols={symbols}
+              selectedSymbol={selectedSymbol}
+              setSelectedSymbol={setSelectedSymbol}
+              swapped={swapped}
+              setSwapped={setSwapped}
+            />
+            <Info
+              symbols={symbols}
+              swapped={swapped}
+              selectedSymbol={selectedSymbol}
+            />
+          </>
         )}
         <Footer />
       </>

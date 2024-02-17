@@ -11,7 +11,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
     <nav className="flex text-center bg-dark shadow-input transition-all">
       <div
         className={cn(
-          "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
+          "group flex flex-col hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
           selectedInfo === 1 && "bg-light text-white"
         )}
         onClick={() => setSelectedInfo(1)}
@@ -26,7 +26,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
       </div>
       <div
         className={cn(
-          "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
+          "group flex flex-col hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
           selectedInfo === 2 && "bg-light text-white"
         )}
         onClick={() => setSelectedInfo(2)}
@@ -41,7 +41,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
       </div>
       <div
         className={cn(
-          "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
+          "group flex flex-col hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
           selectedInfo === 3 && "bg-light text-white"
         )}
         onClick={() => setSelectedInfo(3)}
@@ -56,7 +56,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
       </div>
       <div
         className={cn(
-          "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
+          "group flex flex-col hover:bg-light hover:text-white transition-colors py-5 cursor-pointer w-1/4 relative px-2",
           selectedInfo === 4 && "bg-light text-white"
         )}
         onClick={() => setSelectedInfo(4)}

@@ -19,6 +19,8 @@ interface InfoProps {
       mesosRequired: Array<number>;
     }
   ];
+  selectedSymbol: number;
+  swapped: boolean;
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -26,7 +28,7 @@ interface InfoProps {
 // * You can preview the functionality of both items by clicking their respective buttons.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const Info = ({ symbols }: InfoProps) => {
+const Info = ({ symbols, selectedSymbol, swapped }: InfoProps) => {
   const [selectedInfo, setSelectedInfo] = useState(1);
 
   return (
@@ -34,9 +36,9 @@ const Info = ({ symbols }: InfoProps) => {
       <div className="bg-gradient-to-t from-card-tool to-card-grad rounded-lg py-10 w-full max-w-[800px] h-[700px]">
         <Navbar selectedInfo={selectedInfo} setSelectedInfo={setSelectedInfo} />
 
-        {selectedInfo === 1 && <ExpTable symbols={symbols} />}
+        {selectedInfo === 1 && <ExpTable symbols={symbols} selectedSymbol={selectedSymbol} swapped={swapped} />}
 
-        {selectedInfo === 2 && <CostTable symbols={symbols} />}
+        {selectedInfo === 2 && <CostTable symbols={symbols} selectedSymbol={selectedSymbol} swapped={swapped} />}
 
         {selectedInfo === 3 && <Changelog />}
 
