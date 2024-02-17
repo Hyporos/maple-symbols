@@ -14,16 +14,12 @@ interface CostTableProps {
       mesosRequired: Array<number>;
     }
   ];
-  selectedSymbol: number;
-  setSelectedSymbol: Dispatch<SetStateAction<number>>;
 }
 
-const CostTable = ({
-  symbols,
-  selectedSymbol,
-  setSelectedSymbol,
-}: CostTableProps) => {
+const CostTable = ({ symbols }: CostTableProps) => {
+  const [selectedSymbol, setSelectedSymbol] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
   return (
     <div className={"flex pt-10 h-[555px]"}>
       {symbols.map((symbol, index) => {
