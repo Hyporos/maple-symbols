@@ -401,7 +401,7 @@ const Graph = ({ symbols, swapped }: Props) => {
     }
   }, [graphSymbols]);
 
-  // Validate the provided target power
+  // Validate the specified target power
   const getTargetPowerDate = (target: string) => {
     // If target is less than max power, set the value to target
     if (Number(target) <= maxPower) {
@@ -432,7 +432,7 @@ const Graph = ({ symbols, swapped }: Props) => {
       return;
     }
 
-    // Find the first graphSymbol entry that matches or is closest to the provided power
+    // Find the first graphSymbol entry that matches or is closest to the specified power
     let tempDateToPower = graphSymbols.find(
       (entry) => entry.power >= Math.ceil(targetPower / 10) * 10
     )?.date;
@@ -450,7 +450,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
   // Get the date or error message for the attainment date of the target power
   const getTargetPowerResponse = () => {
-    // If a valid target is provided, return the date
+    // If a valid target is specified, return the date
     if (dateToPower) return dateToPower;
 
     // Otherwise, return an error message
@@ -480,8 +480,8 @@ const Graph = ({ symbols, swapped }: Props) => {
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
-    <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mb-16 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
+    <section className="graph">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
         <div className="flex flex-col items-center w-[350px] tablet:w-[700px] laptop:w-[1050px]">
           <div
             className={`flex flex-col tablet:flex-row text-center tablet:space-x-8 ${
@@ -521,7 +521,7 @@ const Graph = ({ symbols, swapped }: Props) => {
                   </TooltipTrigger>
                   <TooltipContent className="tooltip">
                     Calculate the date you'll <br></br>achieve the{" "}
-                    <span>provided power</span>
+                    <span>specified power</span>
                   </TooltipContent>
                 </Tooltip>
                 <p className={isMobile ? "hidden" : "block"}>

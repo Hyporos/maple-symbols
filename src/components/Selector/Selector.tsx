@@ -38,7 +38,7 @@ const Selector = ({
 
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
-  // Check if the provided value is valid (not empty)
+  // Check if the specified value is valid (not empty)
   const isValid = (value: number) => {
     return !isNaN(value) && value !== null;
   };
@@ -88,33 +88,34 @@ const Selector = ({
 
   return (
     <section className="selector">
-      <div className="flex flex-col justify-center items-center tablet:items-stretch w-[350px] tablet:w-[700px]">
-        <div className="flex tablet:items-center mx-8">
-          <div className="flex flex-wrap justify-center tablet:space-x-10 w-[250px] tablet:w-full">
-            <div className="space-y-5 translate-y-[-6px]">
-            <div
-              className="flex items-center space-x-4 cursor-pointer"
-              onClick={() => handleSwap(false)}
-            >
+      <div className="flex flex-col justify-center items-center tablet:items-stretch w-[350px]  tablet:w-[700px]">
+        <div className="flex tablet:items-center bg-card py-6 rounded-3xl mb-6">
+          <div className="flex flex-wrap justify-center tablet:space-x-11 w-[250px] tablet:w-full">
+            <div className="flex flex-col space-y-5">
               <div
-                className={`${
-                  swapped ? "" : "bg-accent"
-                } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
-              ></div>
-              <p>Arcane</p>
-            </div>
-            <div
-              className="flex items-center space-x-4 cursor-pointer"
-              onClick={() => handleSwap(true)}
-            >
+                className="flex items-center space-x-4 cursor-pointer"
+                onClick={() => handleSwap(false)}
+              >
+                <div
+                  className={`${
+                    swapped ? "" : "bg-accent"
+                  } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
+                ></div>
+                <p>Arcane</p>
+              </div>
               <div
-                className={`${
-                  swapped ? "bg-accent" : ""
-                } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
-              ></div>
-              <p>Sacred</p>
+                className="flex items-center space-x-4 cursor-pointer"
+                onClick={() => handleSwap(true)}
+              >
+                <div
+                  className={`${
+                    swapped ? "bg-accent" : ""
+                  } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
+                ></div>
+                <p>Sacred</p>
+              </div>
             </div>
-            </div>
+            <div className="w-px bg-white/10"></div>
             <div className="flex flex-col">
               <div className="flex flex-wrap justify-center tablet:space-x-10 w-[250px] tablet:w-full">
                 {symbols.map(
@@ -159,7 +160,6 @@ const Selector = ({
             </div>
           </div>
         </div>
-        <hr className="horizontal-divider" />
       </div>
     </section>
   );

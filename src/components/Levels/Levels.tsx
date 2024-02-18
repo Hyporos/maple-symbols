@@ -383,7 +383,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                           Preview the remaining{" "}
                           {isMobile ? "stats" : "days and"} <br></br>{" "}
                           {!isMobile && "symbols"} for the{" "}
-                          <span>provided level</span>
+                          <span>specified level</span>
                         </TooltipContent>
                       </Tooltip>
                     </div>
