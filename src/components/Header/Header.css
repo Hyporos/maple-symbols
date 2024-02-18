@@ -3,5 +3,5 @@
 }
 
 .page-select {
-    @apply flex justify-center items-center bg-light hover:bg-secondary border-light border-b-2 transition-all w-[50px] h-[50px]
+    @apply flex justify-center items-center bg-light hover:bg-secondary border-light border-b-2 transition-all w-[100px] h-[50px]
 }

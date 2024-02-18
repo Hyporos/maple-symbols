@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
-import { FaCalculator, FaBook } from "react-icons/fa";
+import { FaDiscord, FaGithub, FaPaypal } from "react-icons/fa6";
+
 import { cn } from "../../lib/utils";
 import "./Header.css";
 
@@ -11,38 +12,32 @@ interface Props {
 const Header = ({ selectedPage, setSelectedPage }: Props) => {
   return (
     <section className="header">
-      <div className="flex items-center space-x-10 max-w-[1200px] mx-auto">
-        <img src="/main/favicon.png" className="w-[50px] tablet:w-[50px]"></img>
-        <button
-          className={cn(
-            "page-select group",
-            selectedPage === 1 && "bg-secondary border-accent"
-          )}
-          onClick={() => setSelectedPage(1)}
-        >
-          <FaCalculator
-            size={22}
-            className={cn(
-              "fill-basic group-hover:fill-hover transition-all",
-              selectedPage === 1 && "fill-hover"
-            )}
-          />
-        </button>
-        <button
-          className={cn(
-            "page-select group",
-            selectedPage === 2 && "bg-secondary border-accent"
-          )}
-          onClick={() => setSelectedPage(2)}
-        >
-          <FaBook
-            size={22}
-            className={cn(
-              "fill-basic group-hover:fill-hover transition-all",
-              selectedPage === 2 && "fill-hover"
-            )}
-          />
-        </button>
+      <div className="flex justify-between items-center mx-auto max-w-[1050px]">
+        <div className="flex gap-16">
+          <img src="/main/favicon.png" width={50} />
+          <div className="flex gap-10">
+            <button className={cn("")} onClick={() => setSelectedPage(1)}>
+              Calculator
+            </button>
+            <button className={cn("")} onClick={() => setSelectedPage(2)}>
+              Guidebook
+            </button>
+            <button className={cn("")} onClick={() => setSelectedPage(2)}>
+              Additional
+            </button>
+          </div>
+        </div>
+        <div className="flex space-x-6">
+        <a href="https://discord.gg/FTMgy2ZKPK" target="_blank" className="">
+        <FaDiscord size={25} className="hover:scale-110 hover:fill-[#7289DA] transition-all"/>
+        </a>
+        <a href="https://github.com/Hyporos/maple-symbols" target="_blank" className="">
+        <FaGithub size={25} className="hover:scale-110 hover:fill-[#B18BD0] transition-all"/>
+        </a>
+        <a href="" target="_blank" className="">
+        <FaPaypal size={25} className="hover:scale-110 hover:fill-[#009CDE] transition-all"/>
+        </a>
+        </div>
       </div>
     </section>
   );
