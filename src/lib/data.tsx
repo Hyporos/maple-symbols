@@ -4,9 +4,9 @@ const changelogEntries = [
     date: "July 25, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/2",
     fixes: [
-      "Disabled the Dark Reader plugin as it messed with colors",
-      "Made the y padding on Arcane Catalyst match the same padding as Symbol Selector",
-      "Sacred Symbol target level was defaulting to 20, now set to 11",
+      "Disabled the Dark Reader plugin as it messed with colors.",
+      "Made the y padding on Arcane Catalyst match the same padding as Symbol Selector.",
+      "Sacred Symbol target level was defaulting to 20, now set to 11.",
     ],
   },
   {
@@ -15,13 +15,13 @@ const changelogEntries = [
     link: "https://github.com/Hyporos/maple-symbols/pull/3",
     additions: [
       "By default, you can only enter symbol experience up to what is required to reach the next level. Now, when you enter that capped number, you can choose to unlock the restriction and instead enter any number up to 2679 or 4565, depending on the type of symbol. This will allow users who are stacking up symbols without leveling them up to conveniently view them with their updated level/experience.",
-      "Added a link to the GitHub repo in the footer",
+      "Added a link to the GitHub repo in the footer.",
     ],
     fixes: [
-      "Prevented tab focus on the Tools section (selector/catalyst) when the respective symbol is disabled",
-      "Disabled dragging & selecting on images",
-      "Changed the default website description that shows on Google",
-      "Total symbols remaining in the Levels section (tables/target level) will now show 0 instead of a blank character when you have enough experience to reach level 20",
+      "Prevented tab focus on the Tools section (selector/catalyst) when the respective symbol is disabled.",
+      "Disabled dragging & selecting on images.",
+      "Changed the default website description that shows on Google.",
+      "Total symbols remaining in the Levels section (tables/target level) will now show 0 instead of a blank character when you have enough experience to reach level 20.",
     ],
   },
   {
@@ -29,8 +29,8 @@ const changelogEntries = [
     date: "August 25, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/4",
     fixes: [
-      "Fixed experience fields being set to 'unlocked' by default on new sessions",
-      "Repositioned the tooltip for the lock/unlock button",
+      "Fixed experience fields being set to 'unlocked' by default on new sessions.",
+      "Repositioned the tooltip for the lock/unlock button.",
     ],
   },
   {
@@ -38,12 +38,12 @@ const changelogEntries = [
     date: "August 27, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/5",
     additions: [
-      "If a symbol is going to be maxed on Nov 15 or later (the estimated date of the New Age patch), then there will be an indicator letting you know that on this patch, the daily symbol count will be increased. (all symbols will give 20 daily)",
+      "If a symbol is going to be maxed on Nov 15 or later (the estimated date of the New Age patch), then there will be an indicator letting you know that on this patch, the daily symbol count will be increased (all symbols will give 20 daily).",
     ],
     fixes: [
-      "Re-adjusted the footer for mobile devices which was misaligned due to the new GitHub link",
-      "Fixed another bug with the locks where if you refreshed on empty values it would show the unlock button",
-      "Fixed an issue where you couldn't input max level on Sacred Symbols",
+      "Re-adjusted the footer for mobile devices which was misaligned due to the new GitHub link.",
+      "Fixed another bug with the locks where if you refreshed on empty values it would show the unlock button.",
+      "Fixed an issue where you couldn't input max level on Sacred Symbols.",
     ],
   },
   {
@@ -52,13 +52,13 @@ const changelogEntries = [
     link: "https://github.com/Hyporos/maple-symbols/pull/6",
     fixes: [
       "Adjusted the symbol upgrade costs to reflect the latest patch.",
-      "The Symbol Selector value no longer resets when you select another symbol",
-      "Catalyst is no longer 'disabled' while experience is unlocked",
-      "Fixed some issues where Catalyst would show an incorrect value at levels 20 and 2",
-      "Catalyst result now rounds dynamically instead of only down, now showing the correct number",
-      "Fixed an issue where unlocking the exp and inputting an overflowing value would interfere with the Symbol Selector tool",
-      "When applying an unlocked experience value, it will lock again instead of staying unlocked",
-      "Slightly re-positioned some elements, such as the header and some horizontal dividers",
+      "The Symbol Selector value no longer resets when you select another symbol.",
+      "Catalyst is no longer 'disabled' while experience is unlocked.",
+      "Fixed some issues where Catalyst would show an incorrect value at levels 20 and 2.",
+      "Catalyst result now rounds dynamically instead of only down, now showing the correct number.",
+      "Fixed an issue where unlocking the exp and inputting an overflowing value would interfere with the Symbol Selector tool.",
+      "When applying an unlocked experience value, it will lock again instead of staying unlocked.",
+      "Slightly re-positioned some elements, such as the header and some horizontal dividers.",
     ],
   },
   {
@@ -97,9 +97,9 @@ const changelogEntries = [
     date: "December 17, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/12",
     fixes: [
-      "Changed the arrow icon that is used across the site",
-      "Added a tooltip to the Linear/Exponential graph options",
-      "Added a tooltip to the Question Mark Icon",
+      "Changed the arrow icon that is used across the site.",
+      "Added a tooltip to the Linear/Exponential graph options.",
+      "Added a tooltip to the Question Mark Icon.",
     ],
   },
   {
@@ -108,11 +108,12 @@ const changelogEntries = [
     link: "",
     additions: [
       "Added the Information section to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol experience / level up cost tables, a log of prior updates, as well as a credits section.",
+      "Reworked the Selector component. Enjoy a smoother, more intuitive symbol selecting and swapping experience.",
     ],
     fixes: [
-      "Added names for the Shangri-La, Carcion and Arteria daily quest tooltips",
-      "Adjusted an incorrect level up cost for Lachelein",
-      "Reworded the Linear / Exponential graph variants for intuitiveness. The default option has been changed to Exponential"
+      "Added names for the Shangri-La, Carcion and Arteria daily quest tooltips.",
+      "Adjusted an incorrect level up cost for Lachelein.",
+      "Reworded the Linear / Exponential graph variants for intuitiveness. The default option has been changed to Exponential.",
     ],
   },
 ];

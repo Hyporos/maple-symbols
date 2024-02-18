@@ -24,8 +24,8 @@ export default {
         'tertiary': 'transparent',
       },
       borderColor: {
-        'unchecked': '#8c0000',
-        'checked': '#008c00',
+        'unchecked': '#ab0000',
+        'checked': '#00ab00',
         'secondary': '#333333',
       },
       outlineColor: {

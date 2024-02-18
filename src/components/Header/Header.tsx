@@ -11,7 +11,8 @@ interface Props {
 const Header = ({ selectedPage, setSelectedPage }: Props) => {
   return (
     <section className="header">
-      <div className="flex items-center space-x-14">
+      <div className="flex items-center space-x-10 max-w-[1200px] mx-auto">
+        <img src="/main/favicon.png" className="w-[50px] tablet:w-[50px]"></img>
         <button
           className={cn(
             "page-select group",
@@ -27,7 +28,6 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
             )}
           />
         </button>
-        <img src="/main/logo.png" className="w-[300px] tablet:w-[350px]"></img>
         <button
           className={cn(
             "page-select group",
@@ -44,7 +44,6 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
           />
         </button>
       </div>
-      <div className="absolute translate-y-[80px] w-[1100px] h-1 bg-gradient-to-r from-dark via-white/5 to-dark"></div>
     </section>
   );
 };

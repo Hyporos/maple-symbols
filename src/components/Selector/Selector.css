@@ -7,7 +7,7 @@
 }
 
 .selector-level > img {
-    @apply group-hover:translate-y-[-7.5px] duration-250 mb-1 w-10 h-10
+    @apply group-hover:scale-105 duration-250 mb-1 w-10 h-10
 }
 
 .swap-icon {
@@ -23,5 +23,5 @@
 }
 
 .selector .horizontal-divider {
-    @apply bg-gradient-to-r via-white/20 border-0 h-px my-8 w-[350px] tablet:w-[700px]
+    @apply bg-gradient-to-r via-white/20 border-0 h-px mb-8 mt-7 w-[350px] tablet:w-[700px]
 }

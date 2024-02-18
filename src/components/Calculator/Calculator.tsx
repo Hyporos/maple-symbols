@@ -850,9 +850,9 @@ const Calculator = ({
                             />
                           </TooltipTrigger>
                           <TooltipContent className="tooltip">
-                            <span>{!swapped ? "+2,100" : "4,200"} </span> HP
+                            <span>{!swapped ? "+2,100" : "+4,200"} </span> HP
                             (Demon Avenger)<br></br>
-                            <span>{!swapped ? "+48" : "96"}</span> All Stat
+                            <span>{!swapped ? "+48" : "+96"}</span> All Stat
                             (Xenon)
                           </TooltipContent>
                         </Tooltip>
