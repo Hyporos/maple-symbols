@@ -78,7 +78,7 @@ const Selector = ({
         <div className="flex bg-gradient-to-t from-card to-card-grad rounded-3xl py-8 tablet:py-6 mb-6">
           <div className="flex flex-col tablet:flex-row justify-center items-center tablet:items-stretch tablet:gap-11 w-[350px] tablet:w-full">
             {/* SWAP BUTTONS */}
-            <div className="flex tablet:flex-col gap-12 tablet:gap-0 tablet:gap-5 mb-5 tablet:mb-0">
+            <div className="flex tablet:flex-col gap-12 tablet:gap-0 tablet:gap-5 mb-6 tablet:mb-0">
               <RadioButton
                 label="Arcane"
                 value={false}
@@ -95,7 +95,7 @@ const Selector = ({
 
             {/* DIVIDERS */}
             {isMobile ? (
-              <div className="bg-white/10 h-px w-[250px] mb-5" />
+              <div className="bg-white/10 h-px w-[250px] mb-6" />
             ) : (
               <div className="bg-white/10 w-px" />
             )}
