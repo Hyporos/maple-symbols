@@ -46,7 +46,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
         )}
         onClick={() => setSelectedInfo(3)}
       >
-        <h1>Changelog</h1>
+        <h1>Damage Ratios</h1>
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",

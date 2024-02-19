@@ -27,7 +27,7 @@ const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
         <div className="flex justify-between">
           <div className="flex space-x-6">
             <img
-              src={`/symbols/${!swapped ? "arcane" : "sacred"}-selector.webp`}
+              src={`/symbols/empty-${!swapped ? "arcane" : "sacred"}.webp`}
               width={32.5}
               className="transition-all scale-110"
             />

@@ -17,17 +17,17 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
           <div className="cursor-pointer" onClick={() => setSelectedPage(1)}>
             <img src="/main/favicon.png" width={50} />
           </div>
-          <div className="flex gap-12">
+          <nav className="flex gap-12">
             <button className={cn("")} onClick={() => setSelectedPage(1)}>
               Calculator
             </button>
             <button className={cn("")} onClick={() => setSelectedPage(2)}>
-              Guidebook
+              Handbook
             </button>
             <button className={cn("")} onClick={() => setSelectedPage(3)}>
-              Additional
+              Extras
             </button>
-          </div>
+          </nav>
         </div>
         <div className="flex space-x-6">
           <a href="https://discord.gg/FTMgy2ZKPK" target="_blank" className="">
@@ -46,7 +46,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
               className="hover:scale-110 hover:fill-[#B18BD0] transition-all"
             />
           </a>
-          <a href="" target="_blank" className="">
+          <a href="https://www.paypal.com/donate/?hosted_button_id=RL3T3LA3QNVTU" target="_blank" className="">
             <FaPaypal
               size={25}
               className="hover:scale-110 hover:fill-[#009CDE] transition-all"

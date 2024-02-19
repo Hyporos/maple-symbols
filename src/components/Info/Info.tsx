@@ -6,6 +6,7 @@ import Changelog from "./Sections/Changelog";
 import Credits from "./Sections/Credits";
 import ExpTable from "./Sections/ExpTable";
 import Navbar from "./Sections/Navbar";
+import Ratios from "./Sections/Ratios";
 
 interface InfoProps {
   symbols: [
@@ -40,7 +41,7 @@ const Info = ({ symbols, selectedSymbol, swapped }: InfoProps) => {
 
         {selectedInfo === 2 && <CostTable symbols={symbols} selectedSymbol={selectedSymbol} />}
 
-        {selectedInfo === 3 && <Changelog />}
+        {selectedInfo === 3 && <Ratios />}
 
         {selectedInfo === 4 && <Credits />}
       </div>
