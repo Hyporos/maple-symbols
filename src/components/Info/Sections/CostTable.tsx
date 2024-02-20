@@ -33,7 +33,7 @@ const CostTable = ({ symbols, selectedSymbol }: CostTableProps) => {
                     <img
                       src={symbols[selectedSymbol].img}
                       width={32.5}
-                      className="transition-all scale-110"
+                      className="scale-110"
                     />
                     <div className="w-px bg-white/10">{"\u200e"}</div>
                     <h1 className="text-2xl font-semibold">

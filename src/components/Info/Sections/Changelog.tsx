@@ -10,7 +10,7 @@ const Changelog = () => {
 
   return (
     <div className={"flex pt-10 h-[555px]"}>
-      {/* SELECTOR*/}
+      {/* SELECTOR */}
       <div className="flex flex-col overflow-y-auto w-2/12">
         {changelogEntries.toReversed().map((entry, index) => {
           return (

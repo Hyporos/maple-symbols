@@ -116,6 +116,7 @@ const changelogEntries = [
       "Added names for the Shangri-La, Carcion and Arteria daily quest tooltips.",
       "Adjusted an incorrect level up cost for Lachelein.",
       "Reworded the Linear / Exponential graph variants for intuitiveness. The default option has been changed to Exponential.",
+      "Fixed an issue where certain symbol icons would appear blurry"
     ],
   },
 ];

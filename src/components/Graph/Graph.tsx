@@ -24,6 +24,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 import "./Graph.css";
+import RadioButton from "../RadioButton";
 
 type Props = {
   symbols: [
@@ -79,7 +80,7 @@ const Graph = ({ symbols, swapped }: Props) => {
   const [dateToPower, setDateToPower] = useState("");
   const [yAxisTicks, setYAxisTicks] = useState<number[]>([]);
   const [xAxisTicks, setXAxisTicks] = useState<number[]>([]);
-  const [graphType, setGraphType] = useState("dynamic");
+  const [graphDynamic, setGraphDynamic] = useState(true);
 
   const enabledSymbols = symbols.filter(
     (symbol) =>
@@ -190,7 +191,7 @@ const Graph = ({ symbols, swapped }: Props) => {
       console.error(e);
       setDateSymbols([]);
     }
-  }, [symbols, swapped, graphType]);
+  }, [symbols, swapped, graphDynamic]);
 
   // Get and store the individual entries for the graph
   useLayoutEffect(() => {
@@ -211,7 +212,7 @@ const Graph = ({ symbols, swapped }: Props) => {
             name: symbol.name,
             level: symbol.level,
             entryLevel: entry.level,
-            date: graphType === "dynamic" ? diffDays : entry.date,
+            date: graphDynamic ? diffDays : entry.date,
             power: NaN,
           };
         })
@@ -247,7 +248,7 @@ const Graph = ({ symbols, swapped }: Props) => {
       name: "",
       level: NaN,
       entryLevel: NaN,
-      date: graphType === "dynamic" ? 0 : dayjs().format("YYYY-MM-DD"),
+      date: graphDynamic ? 0 : dayjs().format("YYYY-MM-DD"),
       power: currentPower,
     });
 
@@ -278,7 +279,7 @@ const Graph = ({ symbols, swapped }: Props) => {
         } rounded-lg space-y-1 p-4`}
       >
         <p className={isMobile ? "text-sm" : ""}>{`${
-          graphType === "dynamic"
+          graphDynamic
             ? dayjs()
                 .add(label as number, "day")
                 .format("YYYY-MM-DD")
@@ -309,10 +310,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
               // Check if the entry is the second one (for upgrade message)
               const isSecondEntry =
-                label ===
-                (graphType === "dynamic"
-                  ? 0
-                  : dayjs().format("YYYY-MM-DD"));
+                label === (graphDynamic ? 0 : dayjs().format("YYYY-MM-DD"));
 
               // If the symbol is ready to upgrade
               const upgradeReady =
@@ -393,7 +391,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
     ticks.push(maxDays);
 
-    if (ticks[0] !== ticks[2] && graphType === "dynamic") {
+    if (ticks[0] !== ticks[2] && graphDynamic) {
       // ! Bandaid bug fix | ticks[1] sacred would be stuck in middle of Y axis (arcane)
       setXAxisTicks(ticks);
     } else {
@@ -437,7 +435,7 @@ const Graph = ({ symbols, swapped }: Props) => {
       (entry) => entry.power >= Math.ceil(targetPower / 10) * 10
     )?.date;
 
-    if (graphType === "dynamic") {
+    if (graphDynamic) {
       tempDateToPower = dayjs()
         .add(tempDateToPower as number, "day")
         .format("YYYY-MM-DD");
@@ -548,36 +546,28 @@ const Graph = ({ symbols, swapped }: Props) => {
           <div className="flex space-x-[75px] tablet:space-x-32 pb-6 tablet:pb-4">
             <Tooltip>
               <TooltipTrigger asChild={true}>
-                <div
-                  className="flex items-center space-x-4 cursor-pointer"
-                  onClick={() => setGraphType("dynamic")}
-                >
-                  <div
-                    className={`${
-                      graphType === "dynamic" && "bg-accent"
-                    } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
-                  ></div>
-                  <p>Dynamic</p>
-                </div>
+                {" "}
+                <RadioButton
+                  label="Dynamic"
+                  value={true}
+                  setValue={setGraphDynamic}
+                  toggled={graphDynamic}
+                />
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                X-axis points will have <span>dynamic</span><br></br> spacing based on{" "}
-                <span>dates</span>
+                X-axis points will have <span>dynamic</span>
+                <br></br> spacing based on <span>dates</span>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild={true}>
-                <div
-                  className="flex items-center space-x-4 cursor-pointer"
-                  onClick={() => setGraphType("linear")}
-                >
-                  <div
-                    className={`${
-                      graphType === "linear" && "bg-accent"
-                    } border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all`}
-                  ></div>
-                  <p>Linear</p>
-                </div>
+                {" "}
+                <RadioButton
+                  label="Linear"
+                  value={false}
+                  setValue={setGraphDynamic}
+                  toggled={!graphDynamic}
+                />
               </TooltipTrigger>
               <TooltipContent className="tooltip">
                 X-axis points will have <span>consistent</span> spacing
@@ -620,7 +610,7 @@ const Graph = ({ symbols, swapped }: Props) => {
             />
             <XAxis
               dataKey="date"
-              type={graphType === "dynamic" ? "number" : "category"}
+              type={graphDynamic ? "number" : "category"}
               tickMargin={isMobile ? 5 : 10}
               minTickGap={isMobile ? 50 : 15}
               domain={[
@@ -640,12 +630,10 @@ const Graph = ({ symbols, swapped }: Props) => {
                 },
               ]}
               stroke="#8c8c8c"
-              tickCount={graphType === "dynamic" ? 10 : undefined}
-              ticks={graphType === "dynamic" ? xAxisTicks : undefined}
+              tickCount={graphDynamic ? 10 : undefined}
+              ticks={graphDynamic ? xAxisTicks : undefined}
               tickFormatter={
-                graphType === "dynamic"
-                  ? (tick) => formatXAxis(tick)
-                  : undefined
+                graphDynamic ? (tick) => formatXAxis(tick) : undefined
               }
             />
             <YAxis

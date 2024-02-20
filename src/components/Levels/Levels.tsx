@@ -175,7 +175,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         ? setSelectedNone(!selectedNone)
                         : setSelectedNone(false);
                     }}
-                    className={`flex justify-between px-4 tablet:px-0 tablet:justify-normal items-center text-center hover:bg-dark cursor-pointer py-4 ${
+                    className={`flex justify-between px-4 tablet:px-0 tablet:justify-normal items-center text-center hover:bg-dark cursor-pointer py-[17px] ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
                     } ${
@@ -189,14 +189,14 @@ const Levels = ({ symbols, swapped }: Props) => {
                         : "rounded-3xl"
                     }`}
                   >
-                    <div className="hidden tablet:flex w-1/4 justify-center">
+                    <div className="hidden tablet:flex w-1/4 justify-center scale-[103.5%]">
                       <img
                         src={symbol.img}
                         alt={symbol.alt}
                         width={40}
                         className={`${
                           (isNaN(symbol.level) || symbol.level === null) &&
-                          "filter grayscale"
+                          "grayscale"
                         }`}
                       ></img>
                     </div>
@@ -207,7 +207,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                         width={37.5}
                         className={`${
                           (isNaN(symbol.level) || symbol.level === null) &&
-                          "filter grayscale"
+                          "grayscale"
                         }`}
                       ></img>
                     </div>

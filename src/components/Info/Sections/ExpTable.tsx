@@ -29,7 +29,7 @@ const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
             <img
               src={`/symbols/empty-${!swapped ? "arcane" : "sacred"}.webp`}
               width={32.5}
-              className="transition-all scale-110"
+              className="scale-110"
             />
             <div className="w-px bg-white/10">{"\u200e"}</div>
             <h1 className="text-2xl font-semibold">
