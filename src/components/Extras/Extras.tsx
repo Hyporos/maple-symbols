@@ -1,32 +1,15 @@
 import { useState } from "react";
 
 import Navbar from "./Sections/Navbar";
-import ExpTable from "./Sections/ExpTable";
-import CostTable from "./Sections/CostTable";
-import RatioTable from "./Sections/RatioTable";
-
-interface InfoProps {
-  symbols: [
-    {
-      id: number;
-      name: string;
-      img: string;
-      level: number;
-      type: string;
-      symbolsRequired: Array<number>;
-      mesosRequired: Array<number>;
-    }
-  ];
-  selectedSymbol: number;
-  swapped: boolean;
-}
+import Changelog from "./Sections/Changelog";
+import Credits from "./Sections/Credits";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Tools component is the section under the Calculator which contains the Selectors and Catalyst.
 // * You can preview the functionality of both items by clicking their respective buttons.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const Info = ({ symbols, selectedSymbol, swapped }: InfoProps) => {
+const Extras = () => {
   const [selectedInfo, setSelectedInfo] = useState(1);
 
   return (
@@ -34,15 +17,16 @@ const Info = ({ symbols, selectedSymbol, swapped }: InfoProps) => {
       <div className="bg-gradient-to-t from-card-tool to-card-grad rounded-lg py-10 w-full max-w-[800px] h-[700px]">
         <Navbar selectedInfo={selectedInfo} setSelectedInfo={setSelectedInfo} />
 
-        {selectedInfo === 1 && <ExpTable symbols={symbols} swapped={swapped} />}
+        {selectedInfo === 1 && <Changelog />}
 
-        {selectedInfo === 2 && <CostTable symbols={symbols} selectedSymbol={selectedSymbol} />}
+        {selectedInfo === 2 && <Changelog />}
 
-        {selectedInfo === 3 && <RatioTable symbols={symbols} swapped={swapped} />}
-        
+        {selectedInfo === 3 && <Credits />}
+
+        {selectedInfo === 4 && <Credits />}
       </div>
     </section>
   );
 };
 
-export default Info;
+export default Extras;

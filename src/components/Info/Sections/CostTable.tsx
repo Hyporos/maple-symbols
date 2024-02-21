@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../../Tooltip/Tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../../lib/utils";
 

@@ -18,14 +18,14 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
             <img src="/main/favicon.png" width={50} />
           </div>
           <nav className="flex gap-12">
-            <button className={cn("")} onClick={() => setSelectedPage(1)}>
+            <button className={cn("hover:text-white transition-all", selectedPage === 1 && "text-white")} onClick={() => setSelectedPage(1)}>
               Calculator
             </button>
-            <button className={cn("")} onClick={() => setSelectedPage(2)}>
+            <button className={cn("hover:text-white transition-all", selectedPage === 2 && "text-white")} onClick={() => setSelectedPage(2)}>
               Handbook
             </button>
-            <button className={cn("")} onClick={() => setSelectedPage(3)}>
-              Extras
+            <button className={cn("hover:text-white transition-all", selectedPage === 3 && "text-white")} onClick={() => setSelectedPage(3)}>
+            Miscellaneous
             </button>
           </nav>
         </div>

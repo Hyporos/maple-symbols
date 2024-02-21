@@ -16,7 +16,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
         )}
         onClick={() => setSelectedInfo(1)}
       >
-        <h1>Experience Table</h1>
+        <h1>Changelog</h1>
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
@@ -31,7 +31,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
         )}
         onClick={() => setSelectedInfo(2)}
       >
-        <h1>Meso Cost Table</h1>
+        <h1>Contact</h1>
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
@@ -46,7 +46,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
         )}
         onClick={() => setSelectedInfo(3)}
       >
-        <h1>Damage Ratio Table</h1>
+        <h1>Credits</h1>
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
@@ -54,6 +54,7 @@ const Navbar = ({ selectedInfo, setSelectedInfo }: NavbarProps) => {
           )}
         ></div>
       </div>
+
     </nav>
   );
 };

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
+import { arcaneRatioData, sacredRatioData } from "../../../lib/data";
 import { cn } from "../../../lib/utils";
 
-interface ExpTableProps {
+interface RatioTableProps {
   symbols: [
     {
       id: number;
@@ -17,9 +18,7 @@ interface ExpTableProps {
   swapped: boolean;
 }
 
-const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
-  let totalExp = 0;
-
+const RatioTable = ({ symbols, swapped }: RatioTableProps) => {
   return (
     <div className={"flex pt-10 h-[555px]"}>
       <div className="flex flex-col mx-10 w-full">
@@ -33,7 +32,7 @@ const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
             />
             <div className="w-px bg-white/10">{"\u200e"}</div>
             <h1 className="text-2xl font-semibold">
-              {!swapped ? "Arcane Symbols" : "Sacred Symbols"}
+              {!swapped ? "Arcane River" : "Grandis"}
             </h1>
           </div>
           <Tooltip placement="left">
@@ -59,38 +58,46 @@ const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
             <table className="w-[670px] mr-10">
               <thead>
                 <tr>
-                  <th className="font-semibold pb-5">Level</th>
-                  <th className="font-semibold pb-5">Symbols Required</th>
-                  <th className="font-semibold pb-5">Total Experience</th>
+                  <th className="font-semibold pb-5">{!swapped? "Arcane" : "Sacred"} Power Range</th>
+                  <th className="font-semibold pb-5">Damage Dealt</th>
+                  <th className="font-semibold pb-5">Damage Taken</th>
                 </tr>
               </thead>
               <tbody>
-                {symbols[!swapped ? 0 : 6].symbolsRequired.map(
-                  (symbols, index) => {
-                    const isFirstRow = index === 0;
-                    totalExp += symbols;
-                    return (
+                {!swapped
+                  ? arcaneRatioData.map((requirement, index) => (
                       <tr key={index}>
                         <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
-                          {index + 1}
+                          {requirement.arcanePower}
                         </td>
-                        <td className="w-[200px] text-center text-sm border border-white/5 py-[5px]">
-                          {isFirstRow ? "-" : symbols.toLocaleString()}
+                        <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
+                          {requirement.damageDealt}%
                         </td>
-                        <td className="w-[200px] text-center text-sm border border-white/5 py-[5px]">
-                          {isFirstRow ? "-" : totalExp.toLocaleString()}
+                        <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
+                          {requirement.damageTaken}%
                         </td>
                       </tr>
-                    );
-                  }
-                )}
+                    ))
+                  : sacredRatioData.map((requirement, index) => (
+                      <tr key={index}>
+                        <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
+                          {requirement.sacredPower}
+                        </td>
+                        <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
+                          {requirement.damageDealt}%
+                        </td>
+                        <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
+                          {requirement.damageTaken}%
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
 
           {/* CONDITIONAL SIDEBAR */}
           <div
-            className={cn("bg-dark ml-auto w-[10px]", !swapped && "hidden")}
+            className={cn("bg-dark ml-auto w-[10px]", swapped && "hidden")}
           ></div>
         </div>
       </div>
@@ -98,4 +105,4 @@ const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
   );
 };
 
-export default ExpTable;
+export default RatioTable;

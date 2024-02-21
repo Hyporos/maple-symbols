@@ -11,6 +11,7 @@ import Graph from "./components/Graph/Graph";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import Info from "./components/Info/Info";
+import Extras from "./components/Extras/Extras";
 
 function App() {
   const firebaseConfig = {
@@ -357,7 +358,7 @@ function App() {
       <>
         <Disclaimer />
         <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
-        {selectedPage === 1 ? (
+        {selectedPage === 1 && (
           <>
             <Selector
               symbols={symbols}
@@ -385,7 +386,9 @@ function App() {
             />
             <Graph symbols={symbols} swapped={swapped} />
           </>
-        ) : (
+        )}
+
+        {selectedPage === 2 && (
           <>
             <Selector
               symbols={symbols}
@@ -401,6 +404,7 @@ function App() {
             />
           </>
         )}
+        {selectedPage === 3 && <Extras />}
         <Footer />
       </>
     );

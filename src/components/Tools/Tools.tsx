@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { useMediaQuery } from "react-responsive";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { FaArrowRight } from "react-icons/fa6";
 
 import "./Tools.css";

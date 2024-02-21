@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -14,7 +14,7 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { FaArrowRight } from "react-icons/fa6";
 
-import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
 
 import dayjs from "dayjs";

@@ -21,6 +21,16 @@ const Credits = () => {
               </a>
             </div>
             <div className="flex items-center space-x-2">
+              <img src="/credits/strategy-wiki.webp" width={18} />
+              <a
+                href="https://strategywiki.org/wiki/MapleStory"
+                target="_blank"
+                className="text-accent hover:text-white transition-all text-sm"
+              >
+                https://strategywiki.org/wiki/MapleStory
+              </a>
+            </div>
+            <div className="flex items-center space-x-2">
               <img src="/credits/orange-mushroom.webp" width={18} />
               <a
                 href="https://orangemushroom.net/"

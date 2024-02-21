@@ -5,7 +5,7 @@ import { MdOutlineInfo } from "react-icons/md";
 import "./Calculator.css";
 import dayjs from "dayjs";
 import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 
 interface Props {
   symbols: [
