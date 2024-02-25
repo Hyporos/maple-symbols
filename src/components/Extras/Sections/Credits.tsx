@@ -57,7 +57,7 @@ const Credits = () => {
                 href="https://www.youtube.com/user/zottenkerel"
                 target="_blank"
               >
-                <FaYoutube className="hover:fill-[#FF0000] transition-all" />
+                <FaYoutube className="hover:fill-[#e00000] transition-all" />
               </a>
               <a href="https://twitter.com/scardorgaming" target="_blank">
                 <FaXTwitter className="hover:fill-white transition-all" />
@@ -73,7 +73,7 @@ const Credits = () => {
                 href="https://www.youtube.com/channel/UCvNoLyymLPSosJpOsX0SOqg"
                 target="_blank"
               >
-                <FaYoutube className="hover:fill-[#FF0000] transition-all" />
+                <FaYoutube className="hover:fill-[#e00000] transition-all" />
               </a>
             </div>
           </div>

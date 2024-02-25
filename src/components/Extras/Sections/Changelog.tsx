@@ -34,7 +34,7 @@ const Changelog = () => {
         if (entry.version === selectedVersion) {
           return (
             <div key={index} className="flex flex-col mx-10 w-9/12">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center ">
                 <h1 className="text-2xl font-semibold">{entry.version}</h1>
                 <div className="flex items-center space-x-5">
                   <h2 className="text-sm">{entry.date}</h2>
@@ -46,37 +46,46 @@ const Changelog = () => {
                   </a>
                 </div>
               </div>
-              <div className="bg-white/10 mt-4 w-full h-px"></div>
+              <div className="bg-white/10 mt-4 w-full h-px">{"\u200e"}</div>
 
-              {/* ADDITIONS */}
-              {entry.additions && entry.additions.length > 0 && (
-                <>
-                  <h2 className="text-lg font-semibold py-6">New Additions</h2>
-                  <div className="space-y-3">
-                    {entry.additions.map((addition, index) => (
-                      <p key={index} className="text-sm">
-                        • {addition}
-                      </p>
-                    ))}
-                  </div>
-                </>
-              )}
+              <div className="overflow-y-auto mt-6">
+                {/* ADDITIONS */}
+                {entry.additions && entry.additions.length > 0 && (
+                  <>
+                    <h2 className="text-lg font-semibold pb-6">
+                      New Additions
+                    </h2>
+                    <div className="space-y-4">
+                      {entry.additions.map((addition, index) => (
+                        <p key={index} className="text-sm">
+                          • {addition}
+                        </p>
+                      ))}
+                    </div>
+                  </>
+                )}
 
-              {/* FIXES */}
-              {entry.fixes && entry.fixes.length > 0 && (
-                <>
-                  <h2 className="text-lg font-semibold py-6">
-                    Bug Fixes / Optimizations
-                  </h2>
-                  <div className="space-y-3">
-                    {entry.fixes.map((fix, index) => (
-                      <p key={index} className="text-sm">
-                        • {fix}
-                      </p>
-                    ))}
-                  </div>
-                </>
-              )}
+                {/* FIXES */}
+                {entry.fixes && entry.fixes.length > 0 && (
+                  <>
+                    <h2
+                      className={cn(
+                        "text-lg font-semibold pb-6",
+                        (entry.additions?.length || 0) > 0 && "py-6"
+                      )}
+                    >
+                      Bug Fixes / Optimizations
+                    </h2>
+                    <div className="space-y-4">
+                      {entry.fixes.map((fix, index) => (
+                        <p key={index} className="text-sm">
+                          • {fix}
+                        </p>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           );
         }

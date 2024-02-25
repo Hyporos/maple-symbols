@@ -19,11 +19,8 @@ const Extras = () => {
 
         {selectedInfo === 1 && <Changelog />}
 
-        {selectedInfo === 2 && <Changelog />}
+        {selectedInfo === 2 && <Credits />}
 
-        {selectedInfo === 3 && <Credits />}
-
-        {selectedInfo === 4 && <Credits />}
       </div>
     </section>
   );
