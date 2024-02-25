@@ -123,7 +123,7 @@ const changelogEntries = [
   },
 ];
 
-export { changelogEntries };
+export default changelogEntries;
 
 // DAMAGE RATIO TABLE DATA 
 
@@ -140,7 +140,7 @@ const arcaneRatioData = [
 ];
 
 const sacredRatioData = [
-  { sacredPower: "< -95", damageDealt: 5, damageTaken: 200 },
+  { sacredPower: "< -100", damageDealt: 5, damageTaken: 200 },
   { sacredPower: -90, damageDealt: 10, damageTaken: 200 },
   { sacredPower: -80, damageDealt: 20, damageTaken: 200 },
   { sacredPower: -70, damageDealt: 30, damageTaken: 200 },
@@ -148,7 +148,7 @@ const sacredRatioData = [
   { sacredPower: -50, damageDealt: 50, damageTaken: 150 },
   { sacredPower: -40, damageDealt: 60, damageTaken: 150 },
   { sacredPower: -30, damageDealt: 70, damageTaken: 150 },
-  { sacredPower: -20, damageDealt: 90, damageTaken: 150 },
+  { sacredPower: -20, damageDealt: 80, damageTaken: 150 },
   { sacredPower: -10, damageDealt: 90, damageTaken: 150 },
   { sacredPower: 0, damageDealt: 100, damageTaken: 100 },
   { sacredPower: 10, damageDealt: 105, damageTaken: 100 },

@@ -52,6 +52,10 @@
     .focus {
         @apply rounded-lg focus-visible:outline focus:outline-2 focus:outline-accent focus-visible:border-0 
     }
+
+    input::placeholder {
+        @apply text-tertiary hover:text-secondary focus:text-secondary transition-all
+     }
     
     span {
         @apply text-accent

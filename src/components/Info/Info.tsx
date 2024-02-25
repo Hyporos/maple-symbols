@@ -38,7 +38,7 @@ const Info = ({ symbols, selectedSymbol, swapped }: InfoProps) => {
 
         {selectedInfo === 2 && <CostTable symbols={symbols} selectedSymbol={selectedSymbol} />}
 
-        {selectedInfo === 3 && <RatioTable symbols={symbols} swapped={swapped} />}
+        {selectedInfo === 3 && <RatioTable swapped={swapped} />}
         
       </div>
     </section>

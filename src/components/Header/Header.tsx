@@ -13,7 +13,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
   return (
     <section className="header">
       <div className="flex justify-between items-center mx-auto max-w-[1050px]">
-        <div className="flex gap-20">
+        <div className="flex gap-20 ml-10">
           <div className="cursor-pointer" onClick={() => setSelectedPage(1)}>
             <img src="/main/favicon.png" width={50} />
           </div>
@@ -29,7 +29,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
             </button>
           </nav>
         </div>
-        <div className="flex space-x-6">
+        <div className="flex space-x-6 mr-10">
           <a href="https://discord.gg/FTMgy2ZKPK" target="_blank" className="">
             <FaDiscord
               size={25}

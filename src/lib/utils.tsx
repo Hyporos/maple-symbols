@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import { clsx, ClassValue } from "clsx";
 
-//
+// Safer twMerge function
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -26,4 +26,22 @@ export function getDailySymbols(currentSymbol) {
   return currentSymbol.daily
     ? currentSymbol.dailySymbols * (currentSymbol.extra ? 2 : 1)
     : 0;
+}
+
+// Calculate the arcane/sacred power of the character
+export function getPower(symbols, swapped) {
+  let tempCurrentPower = 0;
+
+  for (const symbol of symbols) {
+    if (!isValid(symbol.level)) continue;
+
+    if (
+      (!swapped && symbol.type === "arcane") ||
+      (swapped && symbol.type === "sacred")
+    ) {
+      tempCurrentPower += !swapped ? symbol.level * 10 + 20 : symbol.level * 10;
+    }
+  }
+
+  return tempCurrentPower;
 }

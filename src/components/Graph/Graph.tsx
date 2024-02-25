@@ -16,6 +16,7 @@ import { FaArrowRight } from "react-icons/fa6";
 
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
+import { usePower } from "../../hooks/usePower";
 
 import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -35,7 +36,7 @@ type Props = {
       type: string;
       level: number;
       extra: boolean;
-      daily: ConstrainBooleanParameters;
+      daily: boolean;
       dailySymbols: number;
       weekly: boolean;
       experience: number;
@@ -73,7 +74,6 @@ const Graph = ({ symbols, swapped }: Props) => {
   const [dateSymbols, setDateSymbols] = useState<DateSymbols[]>([]);
   const [graphSymbols, setGraphSymbols] = useState<GraphSymbols[]>([]);
   const [flatDateSymbols, setFlatDateSymbols] = useState<FlatDateSymbols[]>([]);
-  const [currentPower, setCurrentPower] = useState(NaN);
   const [maxPower, setMaxPower] = useState(NaN);
   const [maxDays, setMaxDays] = useState(NaN);
   const [targetPower, setTargetPower] = useState(NaN);
@@ -91,24 +91,7 @@ const Graph = ({ symbols, swapped }: Props) => {
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
   // Calculate the base power of the character
-  useEffect(() => {
-    let tempCurrentPower = 0;
-
-    for (const symbol of symbols) {
-      if (!isValid(symbol.level)) continue;
-
-      if (
-        (!swapped && symbol.type === "arcane") ||
-        (swapped && symbol.type === "sacred")
-      ) {
-        tempCurrentPower += !swapped
-          ? symbol.level * 10 + 20
-          : symbol.level * 10;
-      }
-    }
-
-    setCurrentPower(tempCurrentPower);
-  }, [symbols, swapped]);
+  const currentPower = usePower(symbols, swapped);
 
   // Calculate and store every symbol's date needed to reach future levels
   useLayoutEffect(() => {

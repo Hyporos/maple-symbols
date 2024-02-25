@@ -70,7 +70,7 @@ const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
                     const isFirstRow = index === 0;
                     totalExp += symbols;
                     return (
-                      <tr key={index}>
+                      <tr key={index} className="[&>*]:hover:bg-dark">
                         <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
                           {index + 1}
                         </td>

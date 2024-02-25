@@ -16,7 +16,7 @@ interface Props {
       type: string;
       level: number;
       extra: boolean;
-      daily: ConstrainBooleanParameters;
+      daily: boolean;
       dailySymbols: number;
       weekly: boolean;
       experience: number;

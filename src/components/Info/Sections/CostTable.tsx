@@ -76,7 +76,7 @@ const CostTable = ({ symbols, selectedSymbol }: CostTableProps) => {
                           return (
                             <tr
                               key={index}
-                              className={cn(currentLevel && "text-accent")}
+                              className={cn("[&>*]:hover:bg-dark", currentLevel && "text-accent")}
                             >
                               <td className="w-[100px] text-center text-sm border border-white/5 py-[5px]">
                                 {index + 1}
