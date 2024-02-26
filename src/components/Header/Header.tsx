@@ -25,34 +25,11 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
               Handbook
             </button>
             <button className={cn("hover:text-white transition-all", selectedPage === 3 && "text-white")} onClick={() => setSelectedPage(3)}>
-            Miscellaneous
+            Extras
             </button>
           </nav>
         </div>
-        <div className="flex space-x-6 mr-10">
-          <a href="https://discord.gg/FTMgy2ZKPK" target="_blank" className="">
-            <FaDiscord
-              size={25}
-              className="hover:scale-110 hover:fill-[#7289DA] transition-all"
-            />
-          </a>
-          <a
-            href="https://github.com/Hyporos/maple-symbols"
-            target="_blank"
-            className=""
-          >
-            <FaGithub
-              size={25}
-              className="hover:scale-110 hover:fill-[#B18BD0] transition-all"
-            />
-          </a>
-          <a href="https://www.paypal.com/donate/?hosted_button_id=RL3T3LA3QNVTU" target="_blank" className="">
-            <FaPaypal
-              size={25}
-              className="hover:scale-110 hover:fill-[#009CDE] transition-all"
-            />
-          </a>
-        </div>
+       
       </div>
     </section>
   );

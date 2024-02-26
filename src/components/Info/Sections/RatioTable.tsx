@@ -92,6 +92,9 @@ const RatioTable = ({ swapped }: RatioTableProps) => {
                       </td>
                       <td className="border border-white/5 py-[5px]">
                         <div className="flex justify-center items-center gap-2">
+                          {!swapped && index === 8 && (
+                            <MdOutlineInfo size={18} className="collapse" />
+                          )}
                           <p className="text-sm text-center">
                             {requirement.damageTaken}%
                           </p>
