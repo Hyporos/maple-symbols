@@ -30,7 +30,7 @@ const CreditText = ({
       <a
         href={link}
         target="_blank"
-        className={cn("hover:text-white text-sm", link && "text-accent")}
+        className={cn("text-sm", link && "text-accent hover:text-white")}
       >
         {label}
       </a>
