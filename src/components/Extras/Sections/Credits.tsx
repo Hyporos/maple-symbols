@@ -1,43 +1,28 @@
-import { FaYoutube, FaTwitch, FaXTwitter } from "react-icons/fa6";
+import CreditText from "../../CreditText";
 
 const Credits = () => {
   return (
-    <div className="flex py-10 mx-12 h-[595px]">
+    <div className="flex py-10 mx-12 h-[596px]">
       <div className="flex flex-col w-full justify-around items-center space-y-12">
         {/* RESOURCES */}
         <div className="space-y-3">
           <h1 className="text-xl font-semibold text-center">Resources Used</h1>
-          <div className="flex flex-col space-y-1.5">
-            <div className="flex justify-center items-center space-x-2">
-              <img src="/credits/maplestory-fandom.webp" width={18} />
-              <a
-                href="https://maplestory.fandom.com/"
-                target="_blank"
-                className="text-accent hover:text-white transition-all text-sm"
-              >
-                MapleStory Fandom Wiki
-              </a>
-            </div>
-            <div className="flex justify-center items-center space-x-2">
-              <img src="/credits/strategy-wiki.webp" width={18} />
-              <a
-                href="https://strategywiki.org/wiki/MapleStory"
-                target="_blank"
-                className="text-accent hover:text-white transition-all text-sm"
-              >
-                MapleStory Strategy Wiki
-              </a>
-            </div>
-            <div className="flex justify-center items-center space-x-2">
-              <img src="/credits/orange-mushroom.webp" width={18} />
-              <a
-                href="https://orangemushroom.net/"
-                target="_blank"
-                className="text-accent hover:text-white transition-all text-sm"
-              >
-                Orange Mushroom's Blog
-              </a>
-            </div>
+          <div className="space-y-1.5">
+            <CreditText
+              label="MapleStory Fandom Wiki"
+              img="/credits/maplestory-fandom.webp"
+              link="https://maplestory.fandom.com/"
+            />
+            <CreditText
+              label="MapleStory Strategy Wiki"
+              img="/credits/strategy-wiki.webp"
+              link="https://strategywiki.org/wiki/MapleStory"
+            />
+            <CreditText
+              label="Orange Mushroom's Blog"
+              img="/credits/orange-mushroom.webp"
+              link="https://orangemushroom.net/"
+            />
           </div>
         </div>
 
@@ -45,35 +30,19 @@ const Credits = () => {
         <div className="space-y-3">
           <h1 className="text-xl font-semibold text-center">Acknowledgments</h1>
           <div className="space-y-1.5">
-            <div className="flex justify-center items-center space-x-2">
-              <img src="/credits/scardor.webp" width={18} />
-              <p className="text-sm">Scardor</p>
-              <a href="https://www.twitch.tv/scardor" target="_blank">
-                <FaTwitch className="hover:fill-[#6441a5] transition-all" />
-              </a>
-              <a
-                href="https://www.youtube.com/user/zottenkerel"
-                target="_blank"
-              >
-                <FaYoutube className="hover:fill-[#e00000] transition-all" />
-              </a>
-              <a href="https://twitter.com/scardorgaming" target="_blank">
-                <FaXTwitter className="hover:fill-white transition-all" />
-              </a>
-            </div>
-            <div className="flex justify-center items-center space-x-2">
-              <img src="/credits/gradedpeanut.webp" width={18} />
-              <p className="text-sm">GradedPeanut</p>
-              <a href="https://www.twitch.tv/gradedpeanut" target="_blank">
-                <FaTwitch className="hover:fill-[#6441a5] transition-all" />
-              </a>
-              <a
-                href="https://www.youtube.com/channel/UCvNoLyymLPSosJpOsX0SOqg"
-                target="_blank"
-              >
-                <FaYoutube className="hover:fill-[#e00000] transition-all" />
-              </a>
-            </div>
+            <CreditText
+              label="Scardor"
+              img="/credits/scardor.webp"
+              twitch="https://www.twitch.tv/scardor"
+              youtube="https://www.youtube.com/user/zottenkerel"
+              x="https://twitter.com/scardorgaming"
+            />
+            <CreditText
+              label="GradedPeanut"
+              img="/credits/gradedpeanut.webp"
+              twitch="https://www.twitch.tv/gradedpeanut"
+              youtube="https://www.youtube.com/channel/UCvNoLyymLPSosJpOsX0SOqg"
+            />
           </div>
         </div>
 
@@ -81,16 +50,11 @@ const Credits = () => {
         <div className="space-y-3">
           <h1 className="text-xl font-semibold text-center">Special Thanks</h1>
           <div className="space-y-1.5">
-            <div className="flex justify-center items-center space-x-2">
-              <img src="/credits/saku.webp" width={18} />
-              <p className="text-sm">Members of Saku</p>
-            </div>
-            <div className="flex justify-center items-center space-x-2">
-              <img src="/credits/shark-tank.webp" width={18} />
-              <p className="text-sm">
-                Members of Shark Tank
-              </p>
-            </div>
+            <CreditText label="Members of Saku" img="/credits/saku.webp" />
+            <CreditText
+              label="Members of Shark Tank"
+              img="/credits/shark-tank.webp"
+            />
           </div>
         </div>
       </div>

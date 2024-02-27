@@ -15,7 +15,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
 
   return (
-    <section className={cn("flex-col bg-gradient-to-t from-card to-card-grad p-3 mb-16", !isMobile && "px-10")}>
+    <section className={cn("flex-col bg-gradient-to-t from-card to-card-grad p-3 mb-16", !isMobile && "px-8")}>
       <div className="flex justify-between items-center mx-auto max-w-[1125px] h-[55px] ">
         <div className={cn(!isTablet && "w-1/3")}>
           {!isMobile ? (
