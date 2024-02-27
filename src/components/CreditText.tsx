@@ -23,37 +23,36 @@ const CreditText = ({
   x,
 }: CreditTextProps) => {
   return (
-    <div className="group flex justify-center items-center gap-2">
+    <div className="flex justify-center items-center gap-2">
       {/* LABEL */}
       <a
         href={link}
         target="_blank"
         className={cn(
           "flex justify-center items-center gap-2",
-          link &&
-            "text-accent group-hover:text-white group-hover:tracking-wider transition-all"
+          link && "text-accent hover:text-white"
         )}
       >
         <img src={img} width={18} />
-        <p className="text-sm">{label}</p>
+        <p className="text-sm transition-all">{label}</p>
       </a>
 
       {/* SOCIAL MEDIA */}
       {twitch && (
         <a href={twitch} target="_blank">
-          <FaTwitch className="hover:fill-[#6441a5] transition-all" />
+          <FaTwitch className="hover:fill-[#6441a5] hover:scale-110 transition-all " />
         </a>
       )}
 
       {youtube && (
         <a href={youtube} target="_blank">
-          <FaYoutube className="hover:fill-[#e00000] transition-all" />
+          <FaYoutube className="hover:fill-[#e00000] hover:scale-110 transition-all" />
         </a>
       )}
 
       {x && (
         <a href={x} target="_blank">
-          <FaXTwitter className="hover:fill-white transition-all" />
+          <FaXTwitter className="hover:fill-white hover:scale-110 transition-all" />
         </a>
       )}
     </div>

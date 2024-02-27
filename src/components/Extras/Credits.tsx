@@ -1,4 +1,4 @@
-import CreditText from "../../CreditText";
+import CreditText from "../CreditText";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Credits component will display all acknowledgments to resources, users, and communities.

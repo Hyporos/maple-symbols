@@ -3,12 +3,16 @@ import { cn } from "../lib/utils";
 
 interface RadioButtonProps {
   label: string;
-  toggled: boolean;
+  selected: boolean;
   value: boolean;
   setValue: Dispatch<SetStateAction<boolean>>;
 }
 
-const RadioButton = ({ label, toggled, value, setValue }: RadioButtonProps) => {
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The RadioButton component, when used as a set, provide the user with options to select or toggle
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+const RadioButton = ({ label, selected, value, setValue }: RadioButtonProps) => {
   return (
     <div
       className="group flex items-center space-x-4 cursor-pointer"
@@ -17,13 +21,13 @@ const RadioButton = ({ label, toggled, value, setValue }: RadioButtonProps) => {
       <div
         className={cn(
           "border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all",
-          toggled ? "border-accent" : "group-hover:border-accent/25"
+          selected ? "border-accent" : "group-hover:border-accent/25"
         )}
       />
       <p
         className={cn(
           "group-hover:text-primary transition-all",
-          toggled && "text-primary"
+          selected && "text-primary"
         )}
       >
         {label}

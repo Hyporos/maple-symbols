@@ -81,14 +81,14 @@ const Selector = ({
             <div className="flex tablet:flex-col gap-12 tablet:gap-0 tablet:gap-5 mb-6 tablet:mb-0">
               <RadioButton
                 label="Arcane"
+                selected={!swapped}
                 value={false}
-                toggled={!swapped}
                 setValue={setSwapped}
               />
               <RadioButton
                 label="Sacred"
+                selected={swapped}
                 value={true}
-                toggled={swapped}
                 setValue={setSwapped}
               />
             </div>

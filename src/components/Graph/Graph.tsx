@@ -532,9 +532,9 @@ const Graph = ({ symbols, swapped }: Props) => {
                 {" "}
                 <RadioButton
                   label="Dynamic"
+                  selected={graphDynamic}
                   value={true}
                   setValue={setGraphDynamic}
-                  toggled={graphDynamic}
                 />
               </TooltipTrigger>
               <TooltipContent className="tooltip">
@@ -547,9 +547,9 @@ const Graph = ({ symbols, swapped }: Props) => {
                 {" "}
                 <RadioButton
                   label="Linear"
+                  selected={!graphDynamic}
                   value={false}
                   setValue={setGraphDynamic}
-                  toggled={!graphDynamic}
                 />
               </TooltipTrigger>
               <TooltipContent className="tooltip">

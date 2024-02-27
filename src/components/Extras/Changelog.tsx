@@ -1,26 +1,33 @@
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
-import { cn } from "../../../lib/utils";
+import { cn } from "../../lib/utils";
 import { FaGithub, FaChevronRight } from "react-icons/fa6";
-import changelogEntries from "../../../lib/data";
+import changelogEntries from "../../lib/data";
 
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The Changelog component allows the user to view all previous Maple Symbols update details.
+// * Navigate through each version using the selector and view the entirety of the notes.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Changelog = () => {
+  /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
 
   const [open, setOpen] = useState(false);
+
   const [selectedVersion, setSelectedVersion] = useState(
     changelogEntries[changelogEntries.length - 1].version // Set the default entry to the newest version
   );
 
+  /* ―――――――――――――――――――― Output ―――――――――――――――――――――――――― */
   return (
     <div className={"flex pt-10 h-[555px]"}>
       {/* SELECTOR */}
       <div
         className={cn(
           "flex flex-col overflow-y-auto w-full max-w-[125px]",
-          (!open && isMobile) && "hidden",
-          (open && isMobile) && "max-w-[85px]"
+          !open && isMobile && "hidden",
+          open && isMobile && "max-w-[85px]"
         )}
       >
         {changelogEntries.toReversed().map((entry, index) => {
@@ -46,11 +53,27 @@ const Changelog = () => {
           return (
             <div key={index} className="flex flex-col mx-10 w-full">
               <div className="flex justify-between">
-                <div className={cn("flex items-center gap-3", isMobile && "group cursor-pointer")} onClick={() => setOpen(!open)}>
+                <div
+                  className={cn(
+                    "flex items-center gap-3",
+                    isMobile && "group cursor-pointer"
+                  )}
+                  onClick={() => setOpen(!open)}
+                >
                   <div className="flex-col">
-                  <h1 className="text-2xl group-hover:text-white font-semibold transition-all">{entry.version}</h1>
+                    <h1 className="text-2xl group-hover:text-white font-semibold transition-all">
+                      {entry.version}
+                    </h1>
                   </div>
-                  {isMobile && <FaChevronRight size={20} className={cn("group-hover:fill-hover transition-colors", open && "rotate-180")} />}
+                  {isMobile && (
+                    <FaChevronRight
+                      size={20}
+                      className={cn(
+                        "group-hover:fill-hover transition-colors",
+                        open && "rotate-180"
+                      )}
+                    />
+                  )}
                 </div>
                 <div className="flex items-center space-x-5">
                   <h2 className="text-sm">{entry.date}</h2>
