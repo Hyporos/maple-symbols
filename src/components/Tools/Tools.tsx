@@ -34,7 +34,7 @@ interface Props {
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
-  const isMobile = useMediaQuery({ query: `(max-width: 774px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
   const [selectorExp, setSelectorExp] = useState(NaN);

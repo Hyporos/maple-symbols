@@ -7,7 +7,7 @@ import "./Disclaimer.css";
 const Disclaimer = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
-  const isMobile = useMediaQuery({ query: `(max-width: 774px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   const [isOpen, setIsOpen] = useState(true);
   const [dismissed, setDismissed] = useState(
     JSON.parse(localStorage.getItem("disclaimer") || "false")

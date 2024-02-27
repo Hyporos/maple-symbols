@@ -13,7 +13,7 @@ const Extras = () => {
   const [selectedInfo, setSelectedInfo] = useState(1);
 
   return (
-    <section className="flex justify-center mx-12">
+    <section className="flex justify-center mx-8">
       <div className="bg-gradient-to-t from-card-tool to-card-grad rounded-lg py-10 w-full max-w-[800px] h-[700px]">
         <Navbar selectedInfo={selectedInfo} setSelectedInfo={setSelectedInfo} />
 

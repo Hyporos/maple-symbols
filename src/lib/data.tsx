@@ -1,9 +1,11 @@
+
+
 // CHANGE LOG ENTRIES
 
 const changelogEntries = [
   {
     version: "v1.0.1",
-    date: "July 25, 2023",
+    date: "Jul 25, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/2",
     fixes: [
       "Disabled the Dark Reader plugin as it messed with colors.",
@@ -13,7 +15,7 @@ const changelogEntries = [
   },
   {
     version: "v1.1",
-    date: "August 24, 2023",
+    date: "Aug 24, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/3",
     additions: [
       "By default, you can only enter symbol experience up to what is required to reach the next level. Now, when you enter that capped number, you can choose to unlock the restriction and instead enter any number up to 2679 or 4565, depending on the type of symbol. This will allow users who are stacking up symbols without leveling them up to conveniently view them with their updated level/experience.",
@@ -28,7 +30,7 @@ const changelogEntries = [
   },
   {
     version: "v1.1.1",
-    date: "August 25, 2023",
+    date: "Aug 25, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/4",
     fixes: [
       "Fixed experience fields being set to 'unlocked' by default on new sessions.",
@@ -37,7 +39,7 @@ const changelogEntries = [
   },
   {
     version: "v1.1.2",
-    date: "August 27, 2023",
+    date: "Aug 27, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/5",
     additions: [
       "If a symbol is going to be maxed on Nov 15 or later (the estimated date of the New Age patch), then there will be an indicator letting you know that on this patch, the daily symbol count will be increased (all symbols will give 20 daily).",
@@ -50,7 +52,7 @@ const changelogEntries = [
   },
   {
     version: "v1.1.3",
-    date: "August 31, 2023",
+    date: "Aug 31, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/6",
     fixes: [
       "Adjusted the symbol upgrade costs to reflect the latest patch.",
@@ -65,7 +67,7 @@ const changelogEntries = [
   },
   {
     version: "v1.1.4",
-    date: "November 15, 2023",
+    date: "Nov 15, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/7",
     additions: [
       "Three new symbols have been added (Shangri-La, Arteria, Carcion), all of which will be introduced during the New Age update.",
@@ -76,7 +78,7 @@ const changelogEntries = [
   },
   {
     version: "v1.2",
-    date: "December 13, 2023",
+    date: "Dec 13, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/8",
     additions: [
       "Visualize your arcane/sacred power trend with the new graph! It'll display the rate at which it grows, which includes date and power. You can hover over the graph to view more details on the current date in addition to the power, such as which symbols leveled up.",
@@ -85,7 +87,7 @@ const changelogEntries = [
   },
   {
     version: "v1.2.1",
-    date: "December 14, 2023",
+    date: "Dec 14, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/11",
     additions: [
       "You can now choose between two ways to view your progression graph. Linear (default), and exponential. Linear is the same as the previous version, where each X axis tick will be assigned to its respective date. With the exponential version, each X axis tick is set to dates in between now and the final completion date. This will give you a better idea on how long it's taking for your symbols to level up.",
@@ -96,7 +98,7 @@ const changelogEntries = [
   },
   {
     version: "v1.2.2",
-    date: "December 17, 2023",
+    date: "Dec 17, 2023",
     link: "https://github.com/Hyporos/maple-symbols/pull/12",
     fixes: [
       "Changed the arrow icon that is used across the site.",
@@ -106,7 +108,7 @@ const changelogEntries = [
   },
   {
     version: "v1.3",
-    date: "March 1, 2024",
+    date: "Mar 1, 2024",
     link: "",
     additions: [
       "Added the Information section to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol experience / level up cost tables, a log of prior updates, as well as a credits section.",
@@ -119,6 +121,7 @@ const changelogEntries = [
       "Adjusted an incorrect level up cost for Lachelein.",
       "Reworded the Linear / Exponential graph variants for intuitiveness. The default option has been changed to Exponential.",
       "Fixed an issue where certain symbol icons would appear blurry",
+      "Improved page responsivenes for smaller devices (tablets & phones)"
     ],
   },
 ];

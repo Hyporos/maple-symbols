@@ -1,9 +1,14 @@
 import { useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import { cn } from "../../../lib/utils";
-import { FaGithub } from "react-icons/fa6";
+import { FaGithub, FaChevronRight } from "react-icons/fa6";
 import changelogEntries from "../../../lib/data";
 
+
 const Changelog = () => {
+  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
+
+  const [open, setOpen] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState(
     changelogEntries[changelogEntries.length - 1].version // Set the default entry to the newest version
   );
@@ -11,7 +16,13 @@ const Changelog = () => {
   return (
     <div className={"flex pt-10 h-[555px]"}>
       {/* SELECTOR */}
-      <div className="flex flex-col overflow-y-auto w-2/12">
+      <div
+        className={cn(
+          "flex flex-col overflow-y-auto w-full max-w-[125px]",
+          (!open && isMobile) && "hidden",
+          (open && isMobile) && "max-w-[85px]"
+        )}
+      >
         {changelogEntries.toReversed().map((entry, index) => {
           return (
             <div
@@ -33,9 +44,14 @@ const Changelog = () => {
       {changelogEntries.map((entry, index) => {
         if (entry.version === selectedVersion) {
           return (
-            <div key={index} className="flex flex-col mx-10 w-9/12">
-              <div className="flex justify-between items-center ">
-                <h1 className="text-2xl font-semibold">{entry.version}</h1>
+            <div key={index} className="flex flex-col mx-10 w-full">
+              <div className="flex justify-between">
+                <div className={cn("flex items-center gap-3", isMobile && "group cursor-pointer")} onClick={() => setOpen(!open)}>
+                  <div className="flex-col">
+                  <h1 className="text-2xl group-hover:text-white font-semibold transition-all">{entry.version}</h1>
+                  </div>
+                  {isMobile && <FaChevronRight size={20} className={cn("group-hover:fill-hover transition-colors", open && "rotate-180")} />}
+                </div>
                 <div className="flex items-center space-x-5">
                   <h2 className="text-sm">{entry.date}</h2>
                   <a href={entry.link} target="_blank">
@@ -46,10 +62,13 @@ const Changelog = () => {
                   </a>
                 </div>
               </div>
-              <div className="bg-white/10 mt-4 w-full h-px">{"\u200e"}</div>
 
-              <div className="overflow-y-auto mt-6">
-                {/* ADDITIONS */}
+              <div className="bg-white/10 mt-4 h-px"></div>
+
+              {/* NOTE DETAILS */}
+              <div
+                className={cn("overflow-y-auto mt-6 pr-10", isMobile && "pr-5")}
+              >
                 {entry.additions && entry.additions.length > 0 && (
                   <>
                     <h2 className="text-lg font-semibold pb-6">
@@ -65,7 +84,6 @@ const Changelog = () => {
                   </>
                 )}
 
-                {/* FIXES */}
                 {entry.fixes && entry.fixes.length > 0 && (
                   <>
                     <h2

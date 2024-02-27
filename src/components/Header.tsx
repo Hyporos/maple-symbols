@@ -1,10 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "./Tooltip";
 import { FaGlobeAmericas, FaBars } from "react-icons/fa";
-
-import { cn } from "../../lib/utils";
+import { cn } from "../lib/utils";
 import { useMediaQuery } from "react-responsive";
-import ConditionalWrapper from "../ConditionalWrapper";
+import ConditionalWrapper from "./ConditionalWrapper";
 
 interface Props {
   selectedPage: number;
@@ -12,7 +11,7 @@ interface Props {
 }
 
 const Header = ({ selectedPage, setSelectedPage }: Props) => {
-  const isMobile = useMediaQuery({ query: `(max-width: 774px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
 
   return (
@@ -28,15 +27,15 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
 
         <ConditionalWrapper
           condition={isTablet}
-          wrapper={(children) => <div className={cn("flex gap-10 items-center", isMobile && "gap-8")}>{children}</div>}
+          wrapper={(children) => <div className={cn("flex gap-10", isMobile && "gap-8")}>{children}</div>}
         >
           {!isMobile ? (
             <nav
-              className={cn("flex gap-14 justify-center", !isTablet && "w-1/3")}
+              className={cn("flex gap-14", !isTablet && "w-1/3")}
             >
               <button
                 className={cn(
-                  "hover:text-white transition-all w-1/3",
+                  "hover:text-white  transition-all w-1/3",
                   selectedPage === 1 && "text-white"
                 )}
                 onClick={() => setSelectedPage(1)}
@@ -45,7 +44,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
               </button>
               <button
                 className={cn(
-                  "hover:text-white transition-all w-1/3",
+                  "hover:text-white  transition-all w-1/3",
                   selectedPage === 2 && "text-white"
                 )}
                 onClick={() => setSelectedPage(2)}
@@ -54,7 +53,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
               </button>
               <button
                 className={cn(
-                  "hover:text-white transition-all w-1/3",
+                  "hover:text-white  transition-all w-1/3",
                   selectedPage === 3 && "text-white"
                 )}
                 onClick={() => setSelectedPage(3)}

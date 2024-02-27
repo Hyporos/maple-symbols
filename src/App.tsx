@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import Disclaimer from "./components/Disclaimer/Disclaimer";
-import Header from "./components/Header/Header";
+import Header from "./components/Header";
 import Selector from "./components/Selector/Selector";
 import Calculator from "./components/Calculator/Calculator";
 import Tools from "./components/Tools/Tools";
 import Levels from "./components/Levels/Levels";
-import Footer from "./components/Footer/Footer";
+import Footer from "./components/Footer";
 import Graph from "./components/Graph/Graph";
 
 import { initializeApp } from "firebase/app";
