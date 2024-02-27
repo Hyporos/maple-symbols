@@ -12,7 +12,6 @@ interface CreditTextProps {
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The CreditText component is a small line of mention or acknowledgement given in the credits page.
-// * It will include an image and a label. Optionally, social media and other links could be added.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const CreditText = ({
@@ -24,32 +23,37 @@ const CreditText = ({
   x,
 }: CreditTextProps) => {
   return (
-    <div className="flex justify-center items-center space-x-2 [&>a]:transition-all">
-      <img src={img} width={18} />
-
+    <div className="group flex justify-center items-center gap-2">
+      {/* LABEL */}
       <a
         href={link}
         target="_blank"
-        className={cn("text-sm", link && "text-accent hover:text-white")}
+        className={cn(
+          "flex justify-center items-center gap-2",
+          link &&
+            "text-accent group-hover:text-white group-hover:tracking-wider transition-all"
+        )}
       >
-        {label}
+        <img src={img} width={18} />
+        <p className="text-sm">{label}</p>
       </a>
 
+      {/* SOCIAL MEDIA */}
       {twitch && (
         <a href={twitch} target="_blank">
-          <FaTwitch className="hover:fill-[#6441a5]" />
+          <FaTwitch className="hover:fill-[#6441a5] transition-all" />
         </a>
       )}
 
       {youtube && (
         <a href={youtube} target="_blank">
-          <FaYoutube className="hover:fill-[#e00000]" />
+          <FaYoutube className="hover:fill-[#e00000] transition-all" />
         </a>
       )}
 
       {x && (
         <a href={x} target="_blank">
-          <FaXTwitter className="hover:fill-white" />
+          <FaXTwitter className="hover:fill-white transition-all" />
         </a>
       )}
     </div>
