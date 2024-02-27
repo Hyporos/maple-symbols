@@ -1,5 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import { clsx, ClassValue } from "clsx";
+import { useMediaQuery } from "react-responsive";
 
 // Safer twMerge function
 export function cn(...inputs: ClassValue[]) {

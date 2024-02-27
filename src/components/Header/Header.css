@@ -1,7 +1,0 @@
-.header {
-    @apply flex-col bg-gradient-to-t from-card to-card-grad shadow-input shadow-accent/20 p-3 mb-16
-}
-
-.page-select {
-    @apply flex justify-center items-center bg-light hover:bg-secondary border-light border-b-2 transition-all w-[100px] h-[50px]
-}

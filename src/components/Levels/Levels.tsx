@@ -30,7 +30,7 @@ interface Props {
 }
 
 const Levels = ({ symbols, swapped }: Props) => {
-  const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 774px)` });
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
   const [targetSymbol, setTargetSymbol] = useState(0);
   const [targetLevel, setTargetLevel] = useState(NaN);

@@ -2,7 +2,7 @@ import { FaDiscord, FaGithub, FaPaypal } from "react-icons/fa6";
 
 function Footer() {
   return (
-    <section className="flex flex-col items-center bg-gradient-to-t from-card-grad to-card shadow-input shadow-accent/20 gap-5 p-6 mt-16">
+    <section className="flex flex-col items-center bg-gradient-to-t from-card-grad to-card gap-5 p-6 mt-16">
       <div className="flex space-x-6">
         <a
           href="https://github.com/Hyporos/maple-symbols"

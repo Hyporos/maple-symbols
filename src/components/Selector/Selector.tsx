@@ -36,7 +36,7 @@ const Selector = ({
 }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
-  const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 774px)` });
 
   const [selectedArcane, setSelectedArcane] = useState(0);
   const [selectedSacred, setSelectedSacred] = useState(6);

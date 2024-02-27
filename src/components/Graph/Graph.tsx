@@ -68,7 +68,7 @@ type FlatDateSymbols = GraphSymbols;
 const Graph = ({ symbols, swapped }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
-  const isMobile = useMediaQuery({ query: `(max-width: 799px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 774px)` });
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
 
   const [dateSymbols, setDateSymbols] = useState<DateSymbols[]>([]);

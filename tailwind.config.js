@@ -51,7 +51,7 @@ export default {
       },
       screens: {
         'laptop' : '1150px',
-        'tablet' : '800px',
+        'tablet' : '775px',
         'phone' : '550px',
       }
     },
