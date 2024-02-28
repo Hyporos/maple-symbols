@@ -1,5 +1,6 @@
 import { FaTwitch, FaYoutube, FaXTwitter } from "react-icons/fa6";
 import { cn } from "../lib/utils";
+import { useMediaQuery } from "react-responsive";
 
 interface CreditTextProps {
   label: string;
@@ -22,6 +23,8 @@ const CreditText = ({
   youtube,
   x,
 }: CreditTextProps) => {
+  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
+
   return (
     <div className="flex justify-center items-center gap-2">
       {/* LABEL */}
@@ -33,26 +36,35 @@ const CreditText = ({
           link && "text-accent hover:text-white"
         )}
       >
-        <img src={img} width={18} />
-        <p className="text-sm transition-all">{label}</p>
+        <img src={img} width={!isMobile ? 18 : 16} />
+        <p className="text-xs md:text-sm transition-all">{label}</p>
       </a>
 
       {/* SOCIAL MEDIA */}
       {twitch && (
         <a href={twitch} target="_blank">
-          <FaTwitch className="hover:fill-[#6441a5] hover:scale-110 transition-all " />
+          <FaTwitch
+            size={!isMobile ? 16 : 14}
+            className="hover:fill-[#6441a5] hover:scale-110 transition-all "
+          />
         </a>
       )}
 
       {youtube && (
         <a href={youtube} target="_blank">
-          <FaYoutube className="hover:fill-[#e00000] hover:scale-110 transition-all" />
+          <FaYoutube
+            size={!isMobile ? 16 : 14}
+            className="hover:fill-[#e00000] hover:scale-110 transition-all"
+          />
         </a>
       )}
 
       {x && (
         <a href={x} target="_blank">
-          <FaXTwitter className="hover:fill-white hover:scale-110 transition-all" />
+          <FaXTwitter
+            size={!isMobile ? 16 : 14}
+            className="hover:fill-white hover:scale-110 transition-all"
+          />
         </a>
       )}
     </div>

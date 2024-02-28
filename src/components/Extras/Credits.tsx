@@ -9,8 +9,8 @@ const Credits = () => {
     <div className="flex py-10 mx-12 h-[596px]">
       <div className="flex flex-col w-full justify-around items-center space-y-12">
         {/* RESOURCES */}
-        <div className="w-[215px] space-y-3">
-          <h1 className="text-xl font-semibold text-center">Resources Used</h1>
+        <div className="w-[195px] md:w-[215px] space-y-3">
+          <h1 className="text-lg md:text-xl font-semibold text-center">Resources Used</h1>
           <div className="h-px w-full bg-white/10"></div>
           <div className="space-y-2">
             <CreditText
@@ -32,8 +32,8 @@ const Credits = () => {
         </div>
 
         {/* ACKNOWLEDGMENTS */}
-        <div className="w-[215px] space-y-3">
-          <h1 className="text-xl font-semibold text-center">Acknowledgments</h1>
+        <div className="w-[195px] md:w-[215px] space-y-3">
+          <h1 className="text-lg md:text-xl font-semibold text-center">Acknowledgments</h1>
           <div className="h-px w-full bg-white/10"></div>
           <div className="space-y-2">
             <CreditText
@@ -53,8 +53,8 @@ const Credits = () => {
         </div>
 
         {/* SPECIAL THANKS */}
-        <div className="w-[215px] space-y-3">
-          <h1 className="text-xl font-semibold text-center">Special Thanks</h1>
+        <div className="w-[195px] md:w-[215px] space-y-3">
+          <h1 className="text-lg md:text-xl font-semibold text-center">Special Thanks</h1>
           <div className="h-px w-full bg-white/10"></div>
           <div className="space-y-2">
             <CreditText label="Members of Saku" img="/credits/saku.webp" />

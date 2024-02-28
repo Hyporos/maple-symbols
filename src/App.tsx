@@ -3,10 +3,10 @@ import Disclaimer from "./components/Disclaimer";
 import Header from "./components/Header";
 import Selector from "./components/Selector";
 import Calculator from "./components/Calculator/Calculator";
-import Tools from "./components/Tools/Tools";
-import Levels from "./components/Levels/Levels";
+import Tools from "./components/Calculator/Tools";
+import Levels from "./components/Calculator/Levels";
 import Footer from "./components/Footer";
-import Graph from "./components/Graph/Graph";
+import Graph from "./components/Calculator/Graph";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
