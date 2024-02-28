@@ -12,21 +12,26 @@ interface RadioButtonProps {
 // * The RadioButton component, when used as a set, provide the user with options to select or toggle
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const RadioButton = ({ label, selected, value, setValue }: RadioButtonProps) => {
+const RadioButton = ({
+  label,
+  selected,
+  value,
+  setValue,
+}: RadioButtonProps) => {
   return (
     <div
-      className="group flex items-center space-x-4 cursor-pointer"
+      className="group flex items-center gap-4 cursor-pointer"
       onClick={() => setValue(value)}
     >
       <div
         className={cn(
-          "border-[3px] border-secondary rounded-full h-[20px] w-[20px] transition-all",
+          "border-[3px] border-secondary rounded-full h-[17.5px] w-[17.5px] md:h-[20px] md:w-[20px] transition-all",
           selected ? "border-accent" : "group-hover:border-accent/25"
         )}
       />
       <p
         className={cn(
-          "group-hover:text-primary transition-all",
+          "text-sm md:text-base group-hover:text-primary transition-all",
           selected && "text-primary"
         )}
       >

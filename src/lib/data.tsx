@@ -111,8 +111,8 @@ const changelogEntries = [
     date: "Mar 1, 2024",
     link: "",
     additions: [
-      "Added the Information section to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol experience / level up cost tables, a log of prior updates, as well as a credits section.",
-      "Completely redesigned the header. With a more conventional style, it's easier to adapt to potential features implemented in future updates.",
+      "Added the Information section to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol experience / damage ratio / level up cost tables, a log of prior updates, as well as a credits section.",
+      "Completely redesigned the header and footer. With a more conventional style, it's easier to adapt to potential features implemented in future updates.",
       "Reworked the Selector component. Enjoy a smoother, more intuitive symbol selecting and swapping experience.",
       "Added a link to a paypal donation page on the right side of the header. The site will forever remain ad-free, however there are always costs involved with hosting. You can choose to support me and my work, I'd really appreciate it!",
     ],
@@ -121,7 +121,7 @@ const changelogEntries = [
       "Adjusted an incorrect level up cost for Lachelein.",
       "Reworded the Linear / Exponential graph variants for intuitiveness. The default option has been changed to Exponential.",
       "Fixed an issue where certain symbol icons would appear blurry",
-      "Improved page responsivenes for smaller devices (tablets & phones)"
+      "Improved responsiveness and redesigned the UI for smaller devices (tablets & phones)"
     ],
   },
 ];

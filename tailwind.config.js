@@ -52,6 +52,9 @@ export default {
       screens: {
         'laptop' : '1150px',
         'phone' : '550px',
+      },
+      transitionProperty: {
+        'height': 'height'
       }
     },
   },

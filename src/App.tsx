@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Disclaimer from "./components/Disclaimer";
 import Header from "./components/Header";
-import Selector from "./components/Selector/Selector";
+import Selector from "./components/Selector";
 import Calculator from "./components/Calculator/Calculator";
 import Tools from "./components/Tools/Tools";
 import Levels from "./components/Levels/Levels";
@@ -10,7 +10,7 @@ import Graph from "./components/Graph/Graph";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import Info from "./components/Info/Info";
+import Info from "./components/Handbook/Handbook";
 import Extras from "./components/Extras/Extras";
 
 function App() {
