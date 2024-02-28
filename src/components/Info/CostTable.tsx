@@ -63,7 +63,7 @@ const CostTable = ({ symbols, selectedSymbol }: CostTableProps) => {
                   </Tooltip>
                 </div>
 
-                <div className="bg-white/10 mt-4 mb-6 h-px"></div>
+                <div className="bg-white/10 mt-4 mb-6 h-px">{"\u200e"}</div>
 
                 {/* TABLE */}
                 <div className="flex overflow-y-auto">

@@ -29,7 +29,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
           condition={isTablet}
           wrapper={(children) => <div className={cn("flex gap-10", isMobile && "gap-8")}>{children}</div>}
         >
-          {!isMobile ? (
+          {isMobile ? (
             <nav
               className={cn("flex gap-14", !isTablet && "w-1/3")}
             >
