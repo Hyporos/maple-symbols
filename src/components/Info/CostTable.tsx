@@ -34,7 +34,7 @@ const CostTable = ({ symbols, selectedSymbol }: CostTableProps) => {
               <div key={index} className="flex flex-col mx-8 md:mx-10 w-full">
                 {/* HEADER */}
                 <div className="flex justify-between">
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-5 md:gap-6">
                     <img
                       src={symbols[selectedSymbol].img}
                       width={!isMobile ? 32.5 : 30}
@@ -60,9 +60,8 @@ const CostTable = ({ symbols, selectedSymbol }: CostTableProps) => {
                       />
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
-                      Displays <span>cost</span> to level up to the{" "}
-                      <span>specified level</span>. <br></br>Your{" "}
-                      <span>current level</span> will be highlighted in purple
+                      Displays <span>cost</span> to level up<br></br> to the{" "}
+                      <span>specified level</span>.
                     </TooltipContent>
                   </Tooltip>
                 </div>

@@ -1,14 +1,18 @@
 import { Dispatch, SetStateAction } from "react";
+import { useMediaQuery } from "react-responsive";
 import { Tooltip, TooltipTrigger, TooltipContent } from "./Tooltip";
 import { FaGlobeAmericas, FaBars } from "react-icons/fa";
 import { cn } from "../lib/utils";
-import { useMediaQuery } from "react-responsive";
 import ConditionalWrapper from "./ConditionalWrapper";
 
 interface Props {
   selectedPage: number;
   setSelectedPage: Dispatch<SetStateAction<number>>;
 }
+
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The Footer component is the top most component of the page which includes navigation and language buttons.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Header = ({ selectedPage, setSelectedPage }: Props) => {
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });

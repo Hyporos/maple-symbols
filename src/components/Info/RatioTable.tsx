@@ -21,7 +21,7 @@ const RatioTable = ({ swapped }: RatioTableProps) => {
       <div className="flex flex-col mx-8 md:mx-10 w-full">
         {/* HEADER */}
         <div className="flex justify-between">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5 md:gap-6">
             <img
               src={`/symbols/empty-${!swapped ? "arcane" : "sacred"}.webp`}
               width={!isMobile ? 32.5 : 30}
