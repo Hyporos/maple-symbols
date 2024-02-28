@@ -31,7 +31,7 @@ function Footer() {
           />
         </a>
       </div>
-      <div className="h-px bg-white/10 w-full max-w-[350px]"></div>
+      <div className="h-px bg-white/10 w-full max-w-[360px]"></div>
       <p className="text-tertiary">&copy; 2024 Maple Symbols ━ v1.3 Beta</p>
     </section>
   );

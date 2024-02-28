@@ -61,7 +61,7 @@
         @apply text-accent
     }
     .tooltip {
-        @apply bg-[#111111] px-2.5 py-1.5 text-center text-sm rounded-lg shadow-input
+        @apply bg-[#111111] px-2.5 py-1.5 text-center text-xs md:text-sm rounded-lg shadow-input
     }
 
     * :not(span) {

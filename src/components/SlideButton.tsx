@@ -21,12 +21,12 @@ const SlideButton = ({
   return (
     <div
       className={cn(
-        "group flex flex-col hover:bg-light hover:text-white transition-colors px-2 py-5 cursor-pointer w-1/2 relative",
+        "group flex flex-col justify-center hover:bg-light hover:text-white transition-colors py-4 md:py-5 cursor-pointer w-1/2 relative",
         selectedInfo === targetInfo && "bg-light text-white"
       )}
       onClick={() => setSelectedInfo(targetInfo)}
     >
-      <h1>{label}</h1>
+      <h1 className="text-sm md:text-base">{label}</h1>
       <div
         className={cn(
           "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",

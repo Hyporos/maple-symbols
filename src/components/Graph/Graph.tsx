@@ -462,10 +462,10 @@ const Graph = ({ symbols, swapped }: Props) => {
 
   return (
     <section className="graph">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 tablet:mt-28 w-[350px] tablet:w-[700px] laptop:w-[1050px]">
-        <div className="flex flex-col items-center w-[350px] tablet:w-[700px] laptop:w-[1050px]">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 md:mt-28 w-[360px] md:w-[700px] laptop:w-[1050px]">
+        <div className="flex flex-col items-center w-[360px] md:w-[700px] laptop:w-[1050px]">
           <div
-            className={`flex flex-col tablet:flex-row text-center tablet:space-x-8 ${
+            className={`flex flex-col md:flex-row text-center md:space-x-8 ${
               isMobile && "space-y-2"
             }`} // ! Bug. Spacing weird if this is put in responsively with Tailwind.
           >
@@ -477,9 +477,9 @@ const Graph = ({ symbols, swapped }: Props) => {
             </div>
 
             <div
-              className={`flex flex-col justify-center items-center bg-dark rounded-lg tablet:mb-2 mb-1 py-4 px-6 laptop:px-8`}
+              className={`flex flex-col justify-center items-center bg-dark rounded-lg md:mb-2 mb-1 py-4 px-6 laptop:px-8`}
             >
-              <div className="flex items-center space-x-3 tablet:space-x-3 pb-2.5">
+              <div className="flex items-center space-x-3 md:space-x-3 pb-2.5">
                 <p>
                   {isMobile
                     ? `Target ${!swapped ? "Arcane" : "Sacred"} Power`
@@ -526,7 +526,7 @@ const Graph = ({ symbols, swapped }: Props) => {
 
           <hr className="horizontal-divider" />
 
-          <div className="flex space-x-[75px] tablet:space-x-32 pb-6 tablet:pb-4">
+          <div className="flex space-x-[75px] md:space-x-32 pb-6 md:pb-4">
             <Tooltip>
               <TooltipTrigger asChild={true}>
                 {" "}

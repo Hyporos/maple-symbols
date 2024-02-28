@@ -3,7 +3,7 @@
 }
 
 .tool-select {
-    @apply flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl tablet:rounded-3xl select-none tablet:transition-colors px-2 tablet:px-4 py-2 w-[200px] tablet:w-[200px]
+    @apply flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl md:rounded-3xl select-none md:transition-colors px-2 md:px-4 py-2 w-[200px] md:w-[200px]
 }
 
 .tool-input {
@@ -15,5 +15,5 @@
  }
 
  .tools .horizontal-divider {
-    @apply bg-gradient-to-r via-white/20 border-0 my-8 h-px w-[350px] tablet:w-[700px]
+    @apply bg-gradient-to-r via-white/20 border-0 my-8 h-px w-[360px] md:w-[700px]
 }

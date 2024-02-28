@@ -11,5 +11,5 @@
  }
 
  .levels .horizontal-divider {
-    @apply opacity-10 my-8 w-[300px] tablet:w-[600px] laptop:w-[950px]
+    @apply opacity-10 my-8 w-[300px] md:w-[600px] laptop:w-[950px]
 }

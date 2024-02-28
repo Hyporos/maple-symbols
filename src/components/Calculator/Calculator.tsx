@@ -262,8 +262,8 @@ const Calculator = ({
 
   return (
     <section className="calculator">
-      <div className="flex pt-16 bg-gradient-to-t from-card-tool to-card-grad justify-between tablet:justify-normal rounded-t-lg flex-col tablet:flex-row w-[350px] space-y-8 tablet:space-y-0 tablet:w-[700px] h-[700px] tablet:h-[350px]">
-        <div className="px-10 space-y-6 w-[350px]">
+      <div className="flex pt-16 bg-gradient-to-t from-card-tool to-card-grad justify-between md:justify-normal rounded-t-lg flex-col md:flex-row w-[360px] space-y-8 md:space-y-0 md:w-[700px] h-[700px] md:h-[350px]">
+        <div className="px-10 space-y-6 w-[360px]">
           <div className="flex justify-center items-center space-x-4 pb-6">
             <img src={currentSymbol.img} alt={currentSymbol.alt} width={33} />
             <p className="text-xl text-primary font-semibold tracking-wider uppercase">
@@ -646,7 +646,7 @@ const Calculator = ({
 
         <div className="vertical-divider"></div>
 
-        <div className="w-[350px] space-y-10">
+        <div className="w-[360px] space-y-10">
           <div className="text-secondary text-center space-y-1.5">
             <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
               <div

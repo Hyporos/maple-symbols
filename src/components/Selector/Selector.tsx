@@ -74,11 +74,11 @@ const Selector = ({
 
   return (
     <section className="selector">
-      <div className="flex flex-col justify-center items-center tablet:items-stretch w-[350px] tablet:w-[700px]">
-        <div className="flex bg-gradient-to-t from-card to-card-grad rounded-3xl py-8 tablet:pt-6 tablet:pb-[22px] mb-6">
-          <div className="flex flex-col tablet:flex-row justify-center items-center tablet:items-stretch tablet:gap-11 w-[350px] tablet:w-full">
+      <div className="flex flex-col justify-center items-center md:items-stretch w-[360px] md:w-[700px]">
+        <div className="flex bg-gradient-to-t from-card to-card-grad rounded-3xl py-8 md:pt-6 md:pb-[22px] mb-6">
+          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch md:gap-11 w-[360px] md:w-full">
             {/* SWAP BUTTONS */}
-            <div className="flex tablet:flex-col gap-12 tablet:gap-0 tablet:gap-5 mb-6 tablet:mb-0">
+            <div className="flex md:flex-col gap-12 md:gap-0 md:gap-5 mb-6 md:mb-0">
               <RadioButton
                 label="Arcane"
                 selected={!swapped}
@@ -102,7 +102,7 @@ const Selector = ({
 
             {/* SYMBOL LIST */}
             <div className="flex flex-col">
-              <div className="flex flex-wrap justify-center tablet:gap-10 w-[250px] tablet:w-full">
+              <div className="flex flex-wrap justify-center md:gap-10 w-[250px] md:w-full">
                 {symbols.map((symbol, index) => {
                   const isSelected = selectedSymbol === index;
                   return (
@@ -110,8 +110,8 @@ const Selector = ({
                       <div
                         key={index}
                         className={cn(
-                          "group mx-4 tablet:mx-0", // Add spacing around symbols if on mobile
-                          symbol.id === (!swapped ? 1 : 7) && "mb-8 tablet:mb-0"
+                          "group mx-4 md:mx-0", // Add spacing around symbols if on mobile
+                          symbol.id === (!swapped ? 1 : 7) && "mb-8 md:mb-0"
                         )}
                       >
                         <div
@@ -146,7 +146,7 @@ const Selector = ({
               {/* SELECTION BAR */}
               {!isMobile && (
                 <div
-                  className={`bg-accent w-[40px] tablet:w-[50px] h-[3px] rounded-full mt-1 tablet:mt-3 transition-all duration-[350ms] ${barPositions[selectedSymbol]}`}
+                  className={`bg-accent w-[40px] md:w-[50px] h-[3px] rounded-full mt-1 md:mt-3 transition-all duration-[350ms] ${barPositions[selectedSymbol]}`}
                 />
               )}
             </div>

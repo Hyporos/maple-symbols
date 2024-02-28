@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Disclaimer from "./components/Disclaimer/Disclaimer";
+import Disclaimer from "./components/Disclaimer";
 import Header from "./components/Header";
 import Selector from "./components/Selector/Selector";
 import Calculator from "./components/Calculator/Calculator";

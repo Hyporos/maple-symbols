@@ -3,7 +3,7 @@
 }
 
 .vertical-divider {
-    @apply bg-gradient-to-r tablet:bg-gradient-to-t via-white opacity-20 tablet:opacity-10 w-[350px] tablet:w-px h-px tablet:h-[250px]
+    @apply bg-gradient-to-r md:bg-gradient-to-t via-white opacity-20 md:opacity-10 w-[360px] md:w-px h-px md:h-[250px]
 }
 
 .symbol-input {

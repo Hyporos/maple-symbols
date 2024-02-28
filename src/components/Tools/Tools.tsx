@@ -136,13 +136,13 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   return (
     <section className="tools">
       <div
-        className={`flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg pt-10 tablet:pt-0 tablet:h-[250px] w-[350px] tablet:w-[700px]  ${
+        className={`flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg pt-10 md:pt-0 md:h-[250px] w-[360px] md:w-[700px]  ${
           disabled && "[&>*]:opacity-25 [&>*]:pointer-events-none select-none"
         }`}
       >
         <hr className="horizontal-divider mb-9" />
 
-        <div className="flex justify-center tablet:justify-between tablet:mx-20 text-secondary space-x-4 mb-7">
+        <div className="flex justify-center md:justify-between md:mx-20 text-secondary space-x-4 mb-7">
           <button
             className={`tool-select ${
               selectedTool === 1
@@ -219,7 +219,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
             }
           >
             <div
-              className={`flex justify-center items-center bg-dark flex-col focus tablet:flex-row rounded-3xl mx-10 py-8 tablet:py-3 mb-9 tablet:space-x-10 space-y-5 tablet:space-y-0 ${
+              className={`flex justify-center items-center bg-dark flex-col focus md:flex-row rounded-3xl mx-10 py-8 md:py-3 mb-9 md:space-x-10 space-y-5 md:space-y-0 ${
                 selectedTool === 1 ? "block" : "hidden"
               } ${
                 currentSymbol.level < (!swapped ? 20 : 11) &&
@@ -227,7 +227,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                 "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
               }`}
             >
-              <div className="flex items-center space-x-10 tablet:space-x-4 tablet:w-1/4">
+              <div className="flex items-center space-x-10 md:space-x-4 md:w-1/4">
                 <img src={currentSymbol.img} width={33}></img>
                 <input
                   type="number"
@@ -266,7 +266,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   }}
                 ></input>
               </div>
-              <div className="flex items-center justify-around tablet:w-1/3">
+              <div className="flex items-center justify-around md:w-1/3">
                 <Tooltip>
                   <TooltipTrigger
                     className="flex items-center space-x-5 cursor-default"
@@ -317,7 +317,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                     ? -1
                     : 0
                 }
-                className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] tablet:w-[100px] ${
+                className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] md:w-[100px] ${
                   (!isValid(selectorCount) ||
                     currentSymbol.level === (!swapped ? 20 : 11)) && // remove this. change logic in intpu
                   "pointer-events-none opacity-25"
@@ -357,19 +357,19 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           </TooltipContent>
         </Tooltip>
         <div
-          className={`flex justify-center items-center focus bg-dark flex-col tablet:flex-row rounded-3xl mx-10 py-[31.5px] tablet:py-3 mb-9 tablet:space-x-8 space-y-6 tablet:space-y-0 ${
+          className={`flex justify-center items-center focus bg-dark flex-col md:flex-row rounded-3xl mx-10 py-[31.5px] md:py-3 mb-9 md:space-x-8 space-y-6 md:space-y-0 ${
             selectedTool === 2 ? "block" : "hidden"
           }`}
         >
-          <div className="flex items-center space-x-4 tablet:w-[70px]">
+          <div className="flex items-center space-x-4 md:w-[70px]">
             <img
               src={currentSymbol.img}
               width={33}
-              className="tablet:p-0"
+              className="md:p-0"
             ></img>
             <p>{isMobile && currentSymbol.name}</p>
           </div>
-          <div className="flex items-center justify-around tablet:w-1/3">
+          <div className="flex items-center justify-around md:w-1/3">
             <Tooltip>
               <TooltipTrigger
                 className="flex items-center space-x-5 cursor-default"
@@ -408,7 +408,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               </TooltipContent>
             </Tooltip>
           </div>
-          <p className="w-[200px] text-center tablet:text-right text-tertiary py-2">
+          <p className="w-[200px] text-center md:text-right text-tertiary py-2">
             {currentSymbol.level === 1 ||
             isNaN(currentSymbol.level) ||
             currentSymbol.level === null

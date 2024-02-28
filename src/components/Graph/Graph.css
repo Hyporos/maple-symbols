@@ -11,7 +11,7 @@
  }
 
 .graph-select {
-    @apply flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl tablet:rounded-3xl select-none tablet:transition-colors px-2 tablet:px-4 py-2 w-[200px] tablet:w-[200px]
+    @apply flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl md:rounded-3xl select-none md:transition-colors px-2 md:px-4 py-2 w-[200px] md:w-[200px]
 }
 
 .type-box {
@@ -19,7 +19,7 @@
 }
 
 .graph .horizontal-divider {
-    @apply opacity-10 my-8 w-[300px] tablet:w-[600px] laptop:w-[950px]
+    @apply opacity-10 my-8 w-[300px] md:w-[600px] laptop:w-[950px]
 }
 
 .tooltip-divider {
