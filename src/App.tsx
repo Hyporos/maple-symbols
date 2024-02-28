@@ -390,13 +390,7 @@ function App() {
 
         {selectedPage === 2 && (
           <>
-            <Selector
-              symbols={symbols}
-              selectedSymbol={selectedSymbol}
-              setSelectedSymbol={setSelectedSymbol}
-              swapped={swapped}
-              setSwapped={setSwapped}
-            />
+
             <Info
               symbols={symbols}
               swapped={swapped}

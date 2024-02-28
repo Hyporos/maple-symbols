@@ -6,7 +6,7 @@ import CreditText from "../CreditText";
 
 const Credits = () => {
   return (
-    <div className="flex py-10 mx-12 h-[596px]">
+    <div className="flex py-10 mx-12 h-[555px]">
       <div className="flex flex-col w-full justify-around items-center space-y-12">
         {/* RESOURCES */}
         <div className="w-[195px] md:w-[215px] space-y-3">

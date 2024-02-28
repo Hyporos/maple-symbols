@@ -22,7 +22,7 @@ interface InfoProps {
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-// * The Info component acts as a page for the Experience, Meso Cost, and Damage Ratio Tables.
+// * The Handbook component acts as a page for the Experience, Meso Cost, and Damage Ratio Tables.
 // * Navigate through both using the buttons provided at the top of the container.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
