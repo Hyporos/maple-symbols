@@ -9,6 +9,10 @@ interface RatioTableProps {
   swapped: boolean;
 }
 
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The RatioTable component displays Damage Dealt and Damage Taken values, based on current power.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
 const RatioTable = ({ swapped }: RatioTableProps) => {
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
 

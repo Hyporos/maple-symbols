@@ -6,6 +6,10 @@ interface ConditionalWrapperProps {
   children: ReactNode;
 }
 
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The ConditionalWrapper component conditionally renders children under a certain element.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
 const ConditionalWrapper = ({
   condition,
   wrapper,

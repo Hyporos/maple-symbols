@@ -17,6 +17,10 @@ interface CostTableProps {
   selectedSymbol: number;
 }
 
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The CostTable component displays both individual and cumulative symbol level up costs.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
 const CostTable = ({ symbols, selectedSymbol }: CostTableProps) => {
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   let totalCost = 0;

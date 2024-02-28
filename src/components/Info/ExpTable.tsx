@@ -17,6 +17,10 @@ interface ExpTableProps {
   swapped: boolean;
 }
 
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The ExpTable component displays both individual and cumulative symbol exp requirements/cost.
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
 const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   let totalExp = 0;

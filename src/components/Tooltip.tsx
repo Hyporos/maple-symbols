@@ -27,6 +27,10 @@ interface TooltipOptions {
   onOpenChange?: (open: boolean) => void;
 }
 
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * The Tooltip component is part of Floating UI. It includes Tooltip, TooltipTrigger & TooltipContent.
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
 export function useTooltip({
   initialOpen = false,
   placement = "top",
