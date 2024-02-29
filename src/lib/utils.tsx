@@ -1,6 +1,5 @@
 import { twMerge } from "tailwind-merge";
 import { clsx, ClassValue } from "clsx";
-import { useMediaQuery } from "react-responsive";
 
 // Safer twMerge function
 export function cn(...inputs: ClassValue[]) {
@@ -10,6 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 // Check if the given value is valid
 export function isValid(value: number) {
   return !isNaN(value) && value !== null;
+}
+
+export function isMaxLevel(level: number, swapped: boolean) {
+  return level === (!swapped ? 20 : 11);
 }
 
 // Get the remaining symbols needed for the next level

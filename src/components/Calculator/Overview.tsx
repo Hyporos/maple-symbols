@@ -287,7 +287,7 @@ const Overview = ({ symbols, swapped }: Props) => {
                           >
                             <MdOutlineInfo
                               size={20}
-                              className={`fill-accent hover:fill-hover cursor-default transition-all mt-0.5`}
+                              className={`fill-accent hover:fill-white cursor-default transition-all mt-0.5`}
                             />
                           </TooltipTrigger>
                           <TooltipContent className="tooltip z-10">
@@ -351,7 +351,7 @@ const Overview = ({ symbols, swapped }: Props) => {
                                 ? setTargetLevel(!swapped ? 20 : 11)
                                 : targetLevel
                             }
-                            className="h-[25px] md:h-[35px] w-[60px] md:w-[75px] p-1.5 text-sm md:text-base text-center bg-secondary hover:bg-hover focus:bg-hover outline-none focus:outline-none transition-all"
+                            className="h-[25px] md:h-[35px] w-[60px] md:w-[75px] p-1.5 text-sm md:text-base text-center bg-secondary hover:bg-hover focus:bg-hover outline-none focus:outline-none transition-colors"
                             onWheel={(e) => e.currentTarget.blur()}
                             onChange={(e) => {
                               if (
@@ -460,7 +460,7 @@ const Overview = ({ symbols, swapped }: Props) => {
                             >
                               <MdOutlineInfo
                                 size={20}
-                                className={`fill-accent hover:fill-hover cursor-default transition-all mt-0.5`}
+                                className={`fill-accent hover:fill-white cursor-default transition-all mt-0.5`}
                               />
                             </TooltipTrigger>
                             <TooltipContent className="tooltip z-10">

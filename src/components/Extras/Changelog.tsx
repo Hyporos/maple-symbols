@@ -69,7 +69,7 @@ const Changelog = () => {
                     <FaChevronRight
                       size={16}
                       className={cn(
-                        "group-hover:fill-hover transition-colors",
+                        "group-hover:fill-white transition-colors",
                         open && "rotate-180"
                       )}
                     />

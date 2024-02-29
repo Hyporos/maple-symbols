@@ -32,7 +32,6 @@ export default {
         'basic': '#444444',
       },
       fill: {
-        'hover': '#ffffff',
         'basic': '#bfbfbf',
       },
       colors: {

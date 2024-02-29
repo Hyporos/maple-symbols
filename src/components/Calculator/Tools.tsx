@@ -9,8 +9,6 @@ import { useMediaQuery } from "react-responsive";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { FaArrowRight } from "react-icons/fa6";
 
-import "./Tools.css";
-
 interface Props {
   symbols: [
     {
@@ -134,17 +132,17 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   };
 
   return (
-    <section className="tools">
+    <section className="flex justify-center">
       <div
         className={`flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg pt-10 md:pt-0 md:h-[250px] w-[360px] md:w-[700px]  ${
           disabled && "[&>*]:opacity-25 [&>*]:pointer-events-none select-none"
         }`}
       >
-        <hr className="horizontal-divider mb-9" />
+        <div className="bg-white/10 mb-8 h-px w-[360px] md:w-[700px]" />
 
         <div className="flex justify-center md:justify-between md:mx-20 text-secondary space-x-4 mb-7">
           <button
-            className={`tool-select ${
+            className={`flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl md:rounded-3xl select-none md:transition-colors px-2 md:px-4 py-2 w-[200px] md:w-[200px] ${
               selectedTool === 1
                 ? "bg-secondary text-primary space-x-2"
                 : isMobile
@@ -170,7 +168,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           <Tooltip>
             <TooltipTrigger asChild={true}>
               <button
-                className={`tool-select ${
+                className={`flex justify-center items-center bg-dark hover:bg-secondary text-secondary hover:text-primary tracking-wide focus:outline-accent rounded-2xl md:rounded-3xl select-none md:transition-colors px-2 md:px-4 py-2 w-[200px] md:w-[200px] ${
                   selectedTool === 2
                     ? "bg-secondary text-primary space-x-2"
                     : isMobile
@@ -233,7 +231,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
                   type="number"
                   placeholder="Count"
                   value={selectorCount}
-                  className="tool-input w-[100px]"
+                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-all w-1/2 p-2.5 w-[100px]"
                   tabIndex={
                     disabled ||
                     (currentSymbol.level < (!swapped ? 20 : 11) &&
@@ -310,14 +308,15 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
               <button
                 tabIndex={
                   disabled ||
-                  isNaN(selectorExp) || !isValid(selectorCount) ||
+                  isNaN(selectorExp) ||
+                  !isValid(selectorCount) ||
                   currentSymbol.level === (!swapped ? 20 : 11) ||
                   (currentSymbol.level < (!swapped ? 20 : 11) &&
                     currentSymbol.experience > nextExperience)
                     ? -1
                     : 0
                 }
-                className={`tool-select text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] md:w-[100px] ${
+                className={`flex justify-center items-center tracking-wide focus:outline-accent rounded-2xl md:rounded-3xl select-none md:transition-colors px-2 md:px-4 py-2 text-secondary hover:text-primary bg-secondary hover:bg-hover w-[175px] md:w-[100px] ${
                   (!isValid(selectorCount) ||
                     currentSymbol.level === (!swapped ? 20 : 11)) && // remove this. change logic in intpu
                   "pointer-events-none opacity-25"
@@ -362,11 +361,7 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
           }`}
         >
           <div className="flex items-center space-x-4 md:w-[70px]">
-            <img
-              src={currentSymbol.img}
-              width={33}
-              className="md:p-0"
-            ></img>
+            <img src={currentSymbol.img} width={33} className="md:p-0"></img>
             <p>{isMobile && currentSymbol.name}</p>
           </div>
           <div className="flex items-center justify-around md:w-1/3">
