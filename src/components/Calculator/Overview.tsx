@@ -29,7 +29,7 @@ interface Props {
   swapped: boolean;
 }
 
-const Levels = ({ symbols, swapped }: Props) => {
+const Overview = ({ symbols, swapped }: Props) => {
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
   const [targetSymbol, setTargetSymbol] = useState(0);
@@ -500,4 +500,4 @@ const Levels = ({ symbols, swapped }: Props) => {
   );
 };
 
-export default Levels;
+export default Overview;

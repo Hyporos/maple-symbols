@@ -4,7 +4,6 @@ import Header from "./components/Header";
 import Selector from "./components/Selector";
 import Calculator from "./components/Calculator/Calculator";
 import Tools from "./components/Calculator/Tools";
-import Levels from "./components/Calculator/Levels";
 import Footer from "./components/Footer";
 import Graph from "./components/Calculator/Graph";
 
@@ -12,6 +11,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import Info from "./components/Handbook/Handbook";
 import Extras from "./components/Extras/Extras";
+import Overview from "./components/Calculator/Overview";
 
 function App() {
   const firebaseConfig = {
@@ -380,7 +380,7 @@ function App() {
               selectedSymbol={selectedSymbol}
               swapped={swapped}
             />
-            <Levels
+            <Overview
               symbols={symbols}
               selectedSymbol={selectedSymbol}
               swapped={swapped}

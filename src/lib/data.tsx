@@ -25,7 +25,7 @@ const changelogEntries = [
       "Prevented tab focus on the Tools section (selector/catalyst) when the respective symbol is disabled.",
       "Disabled dragging & selecting on images.",
       "Changed the default website description that shows on Google.",
-      "Total symbols remaining in the Levels section (tables/target level) will now show 0 instead of a blank character when you have enough experience to reach level 20.",
+      "Total symbols remaining in the Overview section (tables/target level) will now show 0 instead of a blank character when you have enough experience to reach level 20.",
     ],
   },
   {
