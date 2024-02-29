@@ -358,15 +358,16 @@ function App() {
       <>
         <Disclaimer />
         <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
-        {selectedPage === 1 && (
-          <>
-            <Selector
+        <Selector
               symbols={symbols}
               selectedSymbol={selectedSymbol}
               setSelectedSymbol={setSelectedSymbol}
               swapped={swapped}
               setSwapped={setSwapped}
+              selectedPage={selectedPage}
             />
+        {selectedPage === 1 && (
+          <>
             <Calculator
               symbols={symbols}
               setSymbols={setSymbols}
@@ -390,13 +391,6 @@ function App() {
 
         {selectedPage === 2 && (
           <>
-            <Selector
-              symbols={symbols}
-              selectedSymbol={selectedSymbol}
-              setSelectedSymbol={setSelectedSymbol}
-              swapped={swapped}
-              setSwapped={setSwapped}
-            />
             <Info
               symbols={symbols}
               swapped={swapped}

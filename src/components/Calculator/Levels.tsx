@@ -5,7 +5,7 @@ import { useMediaQuery } from "react-responsive";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { MdOutlineInfo } from "react-icons/md";
 import dayjs from "dayjs";
-import "./Levels.css";
+import { cn } from "../../lib/utils";
 
 interface Props {
   symbols: [
@@ -45,12 +45,11 @@ const Levels = ({ symbols, swapped }: Props) => {
       (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
     : 0;
 
-    const targetSymbols =
+  const targetSymbols =
     currentSymbol?.symbolsRequired
       .slice(currentSymbol.level, targetLevel)
       .reduce((accumulator, experience) => accumulator + experience, 0) -
     currentSymbol.experience;
-      
 
   useMemo(() => {
     try {
@@ -130,21 +129,24 @@ const Levels = ({ symbols, swapped }: Props) => {
   };
 
   return (
-    <section className="levels">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg w-[360px] md:w-[700px] laptop:w-[1050px] p-10 mt-16 md:mt-28">
-        <div className="flex flex-col w-[360px] md:w-[700px] laptop:w-[1050px]">
+    <section className="flex justify-center">
+      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg px-8 md:px-10 py-8 md:py-10 mt-16 md:mt-28 mx-4 md:mx-8 w-[360px] md:w-full max-w-[1050px]">
+        <div className="flex flex-col justify-center gap-4 md:gap-0 w-full">
           <div className="hidden items-center text-center text-tertiary md:flex">
             <div className="w-1/5 flex justify-center">
-            <Tooltip>
-              <TooltipTrigger asChild={true} >
-              {" "}
-                  <HiOutlineQuestionMarkCircle size={30} className="cursor-default transition-all hover:stroke-white"/>
-              </TooltipTrigger>
-              <TooltipContent className="tooltip">
-                View the <span>individual level</span> requirements <br></br>and dates
-                for each symbol
-              </TooltipContent>
-            </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild={true}>
+                  {" "}
+                  <HiOutlineQuestionMarkCircle
+                    size={30}
+                    className="cursor-default transition-all hover:stroke-white"
+                  />
+                </TooltipTrigger>
+                <TooltipContent className="tooltip">
+                  View the <span>individual level</span> requirements <br></br>
+                  and dates for each symbol
+                </TooltipContent>
+              </Tooltip>
             </div>
             <p className="w-1/5 tracking-wider">Symbol</p>
             <p className="w-1/5 tracking-wider">Target Level</p>
@@ -154,7 +156,7 @@ const Levels = ({ symbols, swapped }: Props) => {
           <div className="flex justify-center items-center text-center text-tertiary md:hidden">
             <h1 className="tracking-wider">Symbol Overview</h1>
           </div>
-          <hr className="horizontal-divider" />
+          <hr className="opacity-10 md:my-8 h-px w-full" />
           {symbols.map(
             (symbol, index) =>
               symbol.type === (!swapped ? "arcane" : "sacred") && (
@@ -175,19 +177,11 @@ const Levels = ({ symbols, swapped }: Props) => {
                         ? setSelectedNone(!selectedNone)
                         : setSelectedNone(false);
                     }}
-                    className={`flex justify-between px-4 md:px-0 md:justify-normal items-center text-center hover:bg-dark cursor-pointer py-[17px] ${
-                      (isNaN(symbol.level) || symbol.level === null) &&
-                      "opacity-25 pointer-events-none"
-                    } ${
-                      symbol.level === (!swapped ? 20 : 11) &&
-                      "pointer-events-none"
-                    } ${
-                      targetSymbol === index &&
-                      selectedNone === false &&
-                      symbol.level < (!swapped ? 20 : 11)
-                        ? "bg-dark hover:bg-gradient-to-b hover:from-light rounded-t-3xl"
-                        : "rounded-3xl"
-                    }`}
+                    className={cn("flex justify-between px-4 md:px-0 md:justify-normal items-center text-center hover:bg-dark cursor-pointer py-3.5 md:py-[17px]",
+                    isMobile && "bg-dark",
+                    (isNaN(symbol.level) || symbol.level === null) && "opacity-25 pointer-events-none",
+                    symbol.level === (!swapped ? 20 : 11) && "pointer-events-none",
+                    targetSymbol === index && !selectedNone && symbol.level < (!swapped ? 20 : 11) ? "bg-dark hover:bg-gradient-to-b hover:from-light rounded-t-3xl" : "rounded-3xl")}
                   >
                     <div className="hidden md:flex w-1/4 justify-center scale-[103.5%]">
                       <img
@@ -204,24 +198,26 @@ const Levels = ({ symbols, swapped }: Props) => {
                       <img
                         src={symbol.img}
                         alt={symbol.alt}
-                        width={37.5}
+                        width={!isMobile ? 37.5 : 35}
                         className={`${
                           (isNaN(symbol.level) || symbol.level === null) &&
                           "grayscale"
                         }`}
                       ></img>
                     </div>
-                    <p className="md:w-1/4 tracking-wider text-center">
+                    <p className="text-sm md:text-base md:w-1/4 tracking-wider text-center">
                       {symbol.name}
                     </p>
                     <IoMdArrowDropdown
-                      size={25}
-                      className={`block md:hidden w-[37.5px] ${
+                      size={22.5}
+                      className={cn(
+                        "block md:hidden w-[37.5px]",
+                        targetSymbol === index && !selectedNone && "rotate-180",
                         symbol.level === (!swapped ? 20 : 11) && "hidden"
-                      }`}
+                      )}
                     ></IoMdArrowDropdown>
                     <p
-                      className={`w-[37.5px] text-accent ${
+                      className={`text-sm md:text-base w-[37.5px] text-accent ${
                         symbol.level === (!swapped ? 20 : 11) && isMobile
                           ? "block"
                           : "hidden"
@@ -318,7 +314,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                     </p>
                   </div>
                   <div
-                    className={`flex items-center flex-col md:flex-row px-4 md:px-0 text-center rounded-b-3xl bg-dark pt-2 pb-4 ${
+                    className={`flex items-center flex-col md:flex-row px-4 md:px-0 text-center rounded-b-3xl bg-dark pb-4 ${
                       (isNaN(symbol.level) || symbol.level === null) &&
                       "opacity-25 pointer-events-none"
                     } ${
@@ -332,13 +328,15 @@ const Levels = ({ symbols, swapped }: Props) => {
                         : "hidden"
                     }`}
                   >
-                    <div className="hidden md:block w-1/4">
-                      <hr className="ml-[60px] laptop:ml-24 w-[190px] laptop:w-[330px] border-y border-white border-opacity-5 absolute"></hr>
-                      <hr className="ml-[60px] laptop:ml-24 translate-y-level h-[40px] laptop:h-[40px] border-x border-white border-opacity-5 absolute"></hr>
+                    <div className="hidden md:block relative w-1/4">
+                      <div className="absolute bg-white/10 left-0 right-0 mx-auto translate-y-[-35px] w-px h-[35px]" />
+                      <div className="absolute bg-white/10 left-[50%] mx-auto w-full w-full h-px" />
                     </div>
-                    <div className="md:w-1/4"></div>
-                    <div className="flex md:block md:w-1/4 items-center justify-between md:justify-normal w-full md:space-x-0 mb-6 md:mb-0">
-                      <p className="block md:hidden text-accent">
+                    <div className="hidden md:block relative md:w-1/4">
+                      <div className="absolute bg-white/10 left-[50%] mx-auto w-[55%] h-px" />
+                    </div>
+                    <div className="flex md:block md:w-1/4 items-center justify-between md:justify-normal w-full md:space-x-0 mb-4 md:mb-0">
+                      <p className="block text-sm md:text-base md:hidden text-accent">
                         Target Level
                       </p>
                       <Tooltip placement="left">
@@ -353,7 +351,7 @@ const Levels = ({ symbols, swapped }: Props) => {
                                 ? setTargetLevel(!swapped ? 20 : 11)
                                 : targetLevel
                             }
-                            className="level-input"
+                            className="h-[25px] md:h-[35px] w-[60px] md:w-[75px] p-1.5 text-sm md:text-base text-center bg-secondary hover:bg-hover focus:bg-hover outline-none focus:outline-none transition-all"
                             onWheel={(e) => e.currentTarget.blur()}
                             onChange={(e) => {
                               if (
@@ -387,12 +385,16 @@ const Levels = ({ symbols, swapped }: Props) => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <hr className="bg-gradient-to-r via-white border-0 opacity-20 h-px w-[250px] mb-6 block md:hidden"></hr>
+
+                    <div className="block md:hidden bg-white/10 mb-4 h-px w-full" />
+
                     <div className="md:w-1/4 flex justify-between w-full flex-col md:flex">
                       <div className="flex md:block justify-between md:justify-normal w-full items-center md:space-x-0 mb-5 md:mb-0">
-                        <p className="block md:hidden">Completion Date</p>
+                        <p className="block md:hidden text-sm">
+                          Completion Date
+                        </p>
                         <div>
-                          <p className="text-tertiary md:text-secondary">
+                          <p className="text-tertiary md:text-secondary text-sm md:text-base">
                             {targetSymbols === 0 &&
                             currentSymbol.experience !== null &&
                             currentSymbol.experience !== 0
@@ -412,10 +414,12 @@ const Levels = ({ symbols, swapped }: Props) => {
                         </div>
                       </div>
                       <div className="flex md:block justify-between md:justify-normal w-full items-center md:space-x-0 mb-5 md:mb-0">
-                        <p className="block md:hidden">Days Remaining</p>
+                        <p className="block md:hidden text-sm">
+                          Days Remaining
+                        </p>
 
                         <div className="flex md:space-x-1 justify-center items-center flex-row-reverse md:flex-row">
-                          <p className=" text-tertiary ml-1 md:ml-0">
+                          <p className="text-tertiary ml-1 md:ml-0 text-sm md:text-base">
                             {targetSymbols === 0 &&
                             currentSymbol.experience !== null &&
                             currentSymbol.experience !== 0
@@ -470,8 +474,10 @@ const Levels = ({ symbols, swapped }: Props) => {
                       </div>
                     </div>
                     <div className="md:w-1/4 flex md:block justify-between md:justify-normal items-center w-full md:space-x-0">
-                      <p className="block md:hidden">Symbols Remaining</p>
-                      <p className="text-tertiary md:text-secondary">
+                      <p className="block md:hidden text-sm">
+                        Symbols Remaining
+                      </p>
+                      <p className="text-tertiary md:text-secondary text-sm md:text-base">
                         {isNaN(targetSymbols) ||
                         targetSymbols < 0 ||
                         currentSymbol.experience === null ||

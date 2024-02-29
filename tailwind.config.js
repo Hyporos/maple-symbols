@@ -31,9 +31,6 @@ export default {
       outlineColor: {
         'basic': '#444444',
       },
-      translate: {
-        'level': '-40px',
-      },
       fill: {
         'hover': '#ffffff',
         'basic': '#bfbfbf',

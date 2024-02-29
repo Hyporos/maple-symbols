@@ -18,6 +18,7 @@ interface Props {
   setSelectedSymbol: Dispatch<SetStateAction<number>>;
   swapped: boolean;
   setSwapped: Dispatch<SetStateAction<boolean>>;
+  selectedPage: number;
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -31,6 +32,7 @@ const Selector = ({
   setSwapped,
   selectedSymbol,
   setSelectedSymbol,
+  selectedPage,
 }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
@@ -59,19 +61,24 @@ const Selector = ({
 
   // Select a symbol
   const handleSelect = (index: number) => {
+    console.log("Symbol selected");
     setSelectedSymbol(index);
     !swapped ? setSelectedArcane(index) : setSelectedSacred(index); // Remember which symbol was selected prior to swapping
   };
 
   // Set to the symbol selected prior to swapping
   useEffect(() => {
+    console.log(selectedSacred, selectedArcane);
     setSelectedSymbol(swapped ? selectedSacred : selectedArcane);
+    console.log("Symbol set");
   }, [swapped]);
 
   /* ―――――――――――――――――――― Output ――――――――――――――――――――――――― */
 
   return (
-    <section className="flex justify-center mx-4">
+    <section
+      className={cn("flex justify-center mx-4", selectedPage === 3 && "hidden")}
+    >
       <div className="flex flex-row justify-between md:justify-center items-center md:items-stretch bg-gradient-to-t from-card to-card-grad rounded-3xl md:gap-11 px-8 py-8 md:py-6 mb-6 w-[360px] md:w-full max-w-[700px]">
         {/* SWAP BUTTONS */}
         <div className="flex flex-col justify-center md:justify-around gap-14 md:gap-5 mb-1 md:mb-0">
@@ -114,9 +121,8 @@ const Selector = ({
                       width={!isMobile ? 40 : 35}
                       height={!isMobile ? 40 : 35}
                       className={cn(
-                        "scale-[103.5%] duration-300 mb-1.5",
-                        !isValid(symbol.level) && "grayscale",
-                        isSelected && ""
+                        "scale-[103.5%] mb-1.5",
+                        !isValid(symbol.level) && "grayscale"
                       )}
                     />
                     <p className="text-[11px] md:text-xs leading-[15px] md:leading-[16px]">
