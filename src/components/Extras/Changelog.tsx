@@ -27,7 +27,7 @@ const Changelog = () => {
         className={cn(
           "flex flex-col overflow-y-auto w-full max-w-[125px]",
           !open && isMobile && "hidden",
-          open && isMobile && "max-w-[60px]"
+          open && isMobile && "max-w-[65px]"
         )}
       >
         {changelogEntries.toReversed().map((entry, index) => {

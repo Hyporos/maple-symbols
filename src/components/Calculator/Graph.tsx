@@ -6,6 +6,7 @@ import {
   YAxis,
   Tooltip as RechartsTooltip,
   TooltipProps,
+  ResponsiveContainer,
 } from "recharts";
 import {
   ValueType,
@@ -15,7 +16,7 @@ import { useMediaQuery } from "react-responsive";
 import { FaArrowRight } from "react-icons/fa6";
 
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
-import { isValid, getRemainingSymbols, getDailySymbols } from "../../lib/utils";
+import { isValid, getRemainingSymbols, getDailySymbols, cn } from "../../lib/utils";
 import { usePower } from "../../hooks/usePower";
 
 import dayjs from "dayjs";
@@ -24,7 +25,6 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-import "./Graph.css";
 import RadioButton from "../RadioButton";
 
 type Props = {
@@ -275,7 +275,7 @@ const Graph = ({ symbols, swapped }: Props) => {
         >
           {!swapped ? "Arcane" : "Sacred"} Power : {payload[0].value}
         </p>
-        {!isFirstEntry && <hr className="tooltip-divider" />}
+        {!isFirstEntry && <hr className="opacity-10 pb-2 my-8 w-full" />}
 
         <div className="flex flex-col space-y-1">
           {symbols
@@ -437,6 +437,8 @@ const Graph = ({ symbols, swapped }: Props) => {
     // Otherwise, return an error message
     return !isValid(targetPower)
       ? "Enter a target power"
+      : isMobile
+      ? "Target power too low"
       : `Target must
       ${isMobile ? " be over" : " be greater than"} ${currentPower}`;
   };
@@ -461,113 +463,119 @@ const Graph = ({ symbols, swapped }: Props) => {
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
-    <section className="graph">
-      <div className="flex justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg p-10 mt-16 md:mt-28 w-[360px] md:w-[700px] laptop:w-[1050px]">
-        <div className="flex flex-col items-center w-[360px] md:w-[700px] laptop:w-[1050px]">
-          <div
-            className={`flex flex-col md:flex-row text-center md:space-x-8 ${
-              isMobile && "space-y-2"
-            }`} // ! Bug. Spacing weird if this is put in responsively with Tailwind.
-          >
-            <div className="flex flex-col justify-center items-center bg-dark rounded-lg mb-2 py-4 px-6 laptop:px-8">
-              <p>{!swapped ? "Arcane" : "Sacred"} Power</p>
-              <p className="text-accent laptop:text-lg pt-2.5">
-                {currentPower} / {enabledSymbols * (!swapped ? 220 : 110)}
+    <section className="flex justify-center">
+      <div className="flex flex-col justify-center items-center bg-gradient-to-t from-card to-card-grad rounded-lg px-8 md:px-10 py-8 md:py-10 mt-16 md:mt-28 mx-4 md:mx-8 w-[360px] md:w-full max-w-[1050px]">
+        {/* POWER OVERVIEW */}
+        <div className="flex flex-col md:flex-row justify-center md:space-x-8 gap-4 md:gap-0 w-full">
+          <div className="flex md:flex-col justify-between md:justify-center items-center bg-dark rounded-lg gap-3 py-4 px-8">
+            <p className="text-sm md:text-base">
+              {!swapped ? "Arcane" : "Sacred"} Power
+            </p>
+            <p className="text-sm md:text-base text-accent">
+              {currentPower} / {enabledSymbols * (!swapped ? 220 : 110)}
+            </p>
+          </div>
+
+          {/* TARGET POWER */}
+          <div className="flex flex-col justify-center items-center bg-dark rounded-lg gap-3 py-4 px-8 w-full max-w-[325px]">
+            <div className="flex justify-between items-center w-full">
+              <p className="text-sm md:text-base">
+                {isMobile
+                  ? `Target Power`
+                  : !swapped
+                  ? "Target Arcane Power"
+                  : "Target Sacred Power"}
+              </p>
+              <Tooltip>
+                <TooltipTrigger asChild={true}>
+                  <input
+                    type="number"
+                    className={cn(
+                      "bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors h-[25px] md:h-[30px] w-[65px]",
+                      graphSymbols.length === 1 &&
+                        "opacity-25 pointer-events-none select-none"
+                    )}
+                    placeholder="Target"
+                    value={targetPower}
+                    onWheel={(e) => e.currentTarget.blur()}
+                    onChange={(e) => getTargetPowerDate(e.target.value)}
+                    tabIndex={graphSymbols.length === 1 ? -1 : 0}
+                  />
+                </TooltipTrigger>
+                <TooltipContent className="tooltip">
+                  Calculate the date you'll <br></br>achieve the{" "}
+                  <span>specified power</span>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <div
+              className={cn(
+                "flex justify-between w-full",
+                (!targetPower || targetPower < currentPower) &&
+                  !isMobile &&
+                  "justify-center"
+              )}
+            >
+              <p className="text-sm md:hidden">Date:</p>
+              <p
+                className={
+                  !isMobile && targetPower > currentPower ? "block" : "hidden"
+                }
+              >
+                Attainment Date:{" "}
+              </p>
+              <p className="text-sm md:text-base text-accent">
+                {getTargetPowerResponse()}
               </p>
             </div>
-
-            <div
-              className={`flex flex-col justify-center items-center bg-dark rounded-lg md:mb-2 mb-1 py-4 px-6 laptop:px-8`}
-            >
-              <div className="flex items-center space-x-3 md:space-x-3 pb-2.5">
-                <p>
-                  {isMobile
-                    ? `Target ${!swapped ? "Arcane" : "Sacred"} Power`
-                    : "When will"}
-                </p>
-                <Tooltip>
-                  <TooltipTrigger asChild={true}>
-                    <input
-                      type="number"
-                      className={`power-input h-[30px] w-[65px] ${
-                        graphSymbols.length === 1 &&
-                        "opacity-25 pointer-events-none select-none"
-                      }`}
-                      placeholder="Target"
-                      value={targetPower}
-                      onWheel={(e) => e.currentTarget.blur()}
-                      onChange={(e) => getTargetPowerDate(e.target.value)}
-                      tabIndex={graphSymbols.length === 1 ? -1 : 0}
-                    ></input>
-                  </TooltipTrigger>
-                  <TooltipContent className="tooltip">
-                    Calculate the date you'll <br></br>achieve the{" "}
-                    <span>specified power</span>
-                  </TooltipContent>
-                </Tooltip>
-                <p className={isMobile ? "hidden" : "block"}>
-                  {!swapped ? "arcane" : "sacred"} power be reached?
-                </p>
-              </div>
-              <div className="flex space-x-1.5">
-                <p
-                  className={
-                    isMobile && targetPower > currentPower ? "block" : "hidden"
-                  }
-                >
-                  Attainment Date:{" "}
-                </p>
-                <p className="text-accent laptop:text-lg">
-                  {getTargetPowerResponse()}
-                </p>
-              </div>
-            </div>
           </div>
+        </div>
 
-          <hr className="horizontal-divider" />
+        {/* DIVIDER */}
+        <hr className="opacity-10 my-8 h-px w-full" />
 
-          <div className="flex space-x-[75px] md:space-x-32 pb-6 md:pb-4">
-            <Tooltip>
-              <TooltipTrigger asChild={true}>
-                {" "}
-                <RadioButton
-                  label="Dynamic"
-                  selected={graphDynamic}
-                  value={true}
-                  setValue={setGraphDynamic}
-                />
-              </TooltipTrigger>
-              <TooltipContent className="tooltip">
-                X-axis points will have <span>dynamic</span>
-                <br></br> spacing based on <span>dates</span>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild={true}>
-                {" "}
-                <RadioButton
-                  label="Linear"
-                  selected={!graphDynamic}
-                  value={false}
-                  setValue={setGraphDynamic}
-                />
-              </TooltipTrigger>
-              <TooltipContent className="tooltip">
-                X-axis points will have <span>consistent</span> spacing
-              </TooltipContent>
-            </Tooltip>
-          </div>
+        {/* RADIO BUTTONS */}
+        <div className="flex space-x-[75px] md:space-x-32 pb-6 md:pb-4">
+          <Tooltip>
+            <TooltipTrigger asChild={true}>
+              {" "}
+              <RadioButton
+                label="Dynamic"
+                selected={graphDynamic}
+                value={true}
+                setValue={setGraphDynamic}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="tooltip">
+              X-axis points will have <span>dynamic</span>
+              <br></br> spacing based on <span>dates</span>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild={true}>
+              {" "}
+              <RadioButton
+                label="Linear"
+                selected={!graphDynamic}
+                value={false}
+                setValue={setGraphDynamic}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="tooltip">
+              X-axis points will have <span>consistent</span> spacing
+            </TooltipContent>
+          </Tooltip>
+        </div>
 
+        {/* GRAPH */}
+        <ResponsiveContainer width="100%" height={isMobile ? 250 : 450}>
           <LineChart
-            width={isMobile ? 290 : isTablet ? 600 : 950}
-            height={isMobile ? 300 : 450}
             data={graphSymbols}
             margin={{
               top: 15,
-              right: isMobile ? 6 : 50,
+              right: isMobile ? 12 : 50,
               left: isMobile ? -12 : 0,
             }}
-            className="text-xl"
           >
             <RechartsTooltip
               cursor={{ stroke: "#8c8c8c", strokeWidth: 1.5 }}
@@ -595,7 +603,7 @@ const Graph = ({ symbols, swapped }: Props) => {
               dataKey="date"
               type={graphDynamic ? "number" : "category"}
               tickMargin={isMobile ? 5 : 10}
-              minTickGap={isMobile ? 50 : 15}
+              minTickGap={isMobile ? 50 : 35}
               domain={[
                 (min: number) => {
                   if (isFinite(min)) {
@@ -615,6 +623,7 @@ const Graph = ({ symbols, swapped }: Props) => {
               stroke="#8c8c8c"
               tickCount={graphDynamic ? 10 : undefined}
               ticks={graphDynamic ? xAxisTicks : undefined}
+              tick={{ fontSize: !isMobile ? 16 : 12 }}
               tickFormatter={
                 graphDynamic ? (tick) => formatXAxis(tick) : undefined
               }
@@ -625,9 +634,10 @@ const Graph = ({ symbols, swapped }: Props) => {
               stroke="#8c8c8c"
               domain={[currentPower, maxPower]}
               ticks={yAxisTicks}
+              tick={{ fontSize: !isMobile ? 16 : 12 }}
             />
           </LineChart>
-        </div>
+        </ResponsiveContainer>
       </div>
     </section>
   );

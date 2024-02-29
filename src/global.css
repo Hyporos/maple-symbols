@@ -54,18 +54,15 @@
     }
 
     input::placeholder {
-        @apply text-tertiary hover:text-secondary focus:text-secondary transition-all
+        @apply text-tertiary hover:text-secondary focus:text-secondary transition-all 
      }
     
     span {
         @apply text-accent
     }
+    
     .tooltip {
         @apply bg-[#111111] px-2.5 py-1.5 text-center text-xs md:text-sm rounded-lg shadow-input
-    }
-
-    * :not(span) {
-        @apply text-[16px]
     }
 
     img {

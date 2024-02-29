@@ -25,13 +25,13 @@ const RadioButton = ({
     >
       <div
         className={cn(
-          "border-[3px] border-secondary rounded-full h-[17.5px] w-[17.5px] md:h-[20px] md:w-[20px] transition-all",
+          "border-[3px] border-secondary rounded-full h-[17.5px] w-[17.5px] md:h-[20px] md:w-[20px] transition-colors",
           selected ? "border-accent" : "group-hover:border-accent/25"
         )}
       />
       <p
         className={cn(
-          "text-sm md:text-base group-hover:text-primary transition-all",
+          "text-sm md:text-base group-hover:text-primary transition-colors",
           selected && "text-primary"
         )}
       >

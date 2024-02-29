@@ -54,7 +54,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
               <nav className={cn("flex gap-14", !isTablet && "w-1/3")}>
                 <button
                   className={cn(
-                    "hover:text-white  transition-all w-1/3",
+                    "hover:text-white transition-all w-1/3",
                     selectedPage === 1 && "text-white"
                   )}
                   onClick={() => setSelectedPage(1)}
@@ -63,7 +63,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
                 </button>
                 <button
                   className={cn(
-                    "hover:text-white  transition-all w-1/3",
+                    "hover:text-white transition-all w-1/3",
                     selectedPage === 2 && "text-white"
                   )}
                   onClick={() => setSelectedPage(2)}
@@ -72,7 +72,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
                 </button>
                 <button
                   className={cn(
-                    "hover:text-white  transition-all w-1/3",
+                    "hover:text-white transition-all w-1/3",
                     selectedPage === 3 && "text-white"
                   )}
                   onClick={() => setSelectedPage(3)}
