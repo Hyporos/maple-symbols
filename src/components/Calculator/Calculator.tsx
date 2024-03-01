@@ -540,7 +540,7 @@ const Calculator = ({
           </Tooltip>
 
           {/* DAILY / WEEKLY BUTTONS */}
-          <div className="flex gap-3 md:gap-2 pb-4">
+          <div className="flex gap-3 md:gap-2.5 pb-4">
             <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
