@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { cn, getDailySymbols, isMaxLevel, isValid } from "../../lib/utils";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {
   symbols: [
@@ -47,6 +48,8 @@ const Calculator = ({
 }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
+  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
+  
   const currentSymbol = symbols[selectedSymbol];
   const [daysToNextLevel, setDaysToNextLevel] = useState(NaN);
 
@@ -264,20 +267,20 @@ const Calculator = ({
 
   return (
     <section className="flex justify-center">
-      <div className="flex flex-col md:flex-row bg-gradient-to-t from-card-tool to-card-grad justify-between rounded-t-lg gap-8 md:gap-0 py-16 mx-4 w-[360px] md:w-full md:max-w-[700px]">
+      <div className="flex flex-col md:flex-row bg-gradient-to-t from-card-tool to-card-grad justify-between rounded-t-lg gap-8 md:gap-0 py-8 md:py-10 md:py-16 mx-4 w-[360px] md:w-full md:max-w-[700px]">
         {/* SYMBOL INPUTS */}
-        <div className="flex flex-col justify-between px-10 w-full max-w-[360px] h-[250px]">
-          <div className="flex justify-center items-center gap-4 pb-6">
+        <div className="flex flex-col justify-between px-10 w-full max-w-[360px] md:h-[250px]">
+          <div className="flex justify-center items-center gap-4 pb-5 md:pb-6">
             {/* SYMBOL TITLE */}
             <img src={currentSymbol.img} alt={currentSymbol.alt} width={33} />
-            <p className="text-xl text-primary font-semibold tracking-wider uppercase">
+            <p className="text-lg md:text-xl text-primary font-semibold tracking-wider uppercase">
               {currentSymbol.name}
             </p>
           </div>
 
           <Tooltip>
             <TooltipTrigger className="cursor-default">
-              <div className="flex justify-center items-center gap-2">
+              <div className="flex justify-center items-center gap-2 pt-4 pb-6">
                 {/* LEVEL INPUT */}
                 <input
                   type="number"
@@ -285,7 +288,7 @@ const Calculator = ({
                   value={
                     currentSymbol.level === null ? "NaN" : currentSymbol.level
                   }
-                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2.5 w-1/2"
+                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2 md:p-2.5 w-1/2"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
                     if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
@@ -331,7 +334,7 @@ const Calculator = ({
                   }}
                 ></input>
 
-                <TbSlash size={30} color="#B2B2B2" />
+                <TbSlash size={30} color="#B2B2B2" className="mx-2 md:mx-0" />
 
                 {/* LOCK FUNCTIONALITY */}
                 <div className="absolute translate-x-[111px]">
@@ -438,7 +441,7 @@ const Calculator = ({
                       ? "NaN"
                       : currentSymbol.experience
                   }
-                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2.5 w-1/2"
+                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2 md:p-2.5 w-1/2"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
                     if (
@@ -537,13 +540,13 @@ const Calculator = ({
           </Tooltip>
 
           {/* DAILY / WEEKLY BUTTONS */}
-          <div className="flex gap-2">
+          <div className="flex gap-3 md:gap-2 pb-4">
             <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "bg-secondary hover:bg-hover text-secondary hover:text-primary tracking-wider border-b-[2px] border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
-                    currentSymbol.daily && "border-checked"
+                    "bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
+                    currentSymbol.daily && "border-checked/80 md:border-checked"
                   )}
                   onClick={() =>
                     setSymbols(
@@ -571,8 +574,9 @@ const Calculator = ({
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary tracking-wider border-b-[2px] border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
-                    currentSymbol.weekly && "border-checked",
+                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
+                    currentSymbol.weekly &&
+                      "border-checked/80 md:border-checked",
                     typeof currentSymbol.weekly === "undefined" && "hidden"
                   )}
                   onClick={() =>
@@ -601,8 +605,9 @@ const Calculator = ({
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary tracking-wider border-b-[2px] border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
-                    currentSymbol.extra && "border-checked",
+                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
+                    currentSymbol.extra &&
+                      "border-checked/80 md:border-checked",
                     typeof currentSymbol.extra === "undefined" && "hidden"
                   )}
                   onClick={() =>
@@ -631,7 +636,7 @@ const Calculator = ({
           {/* DAILY / WEEKLY COUNT */}
           <div
             className={cn(
-              "flex flex-row justify-between text-sm text-tertiary text-center pt-6",
+              "flex flex-row justify-between text-xs md:text-sm text-tertiary text-center pt-5 md:pt-6",
               currentSymbol.type === "sacred" && "justify-center"
             )}
           >
@@ -647,12 +652,12 @@ const Calculator = ({
         </div>
 
         {/* DIVIDER */}
-        <div className="bg-white/10 mx-auto w-full md:w-px h-px md:h-[250px]" />
+        <div className="bg-white/10 mx-auto w-full md:w-px h-px md:h-full" />
 
         {/* LEVEL DETAILS */}
         <div
           className={cn(
-            "flex flex-col justify-between items-center text-center px-10 w-full max-w-[360px] h-[100px] md:h-[250px]",
+            "flex flex-col justify-between items-center text-center px-8 md:px-10 w-full max-w-[360px]",
             !isValid(currentSymbol.level) && "justify-center",
             isMaxLevel(currentSymbol.level, swapped) && "justify-center",
             currentSymbol.symbolsRequired.length <= 10 && "hidden"
@@ -663,11 +668,11 @@ const Calculator = ({
             !isMaxLevel(currentSymbol.level, swapped) &&
             currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
               <div className="flex gap-3 items-center pt-0.5">
-                <h1 className="text-xl text-primary font-semibold tracking-wider">
+                <h1 className="text-base md:text-xl text-primary font-semibold tracking-wider">
                   Level <span>{currentSymbol.level}</span>
                 </h1>
-                <FaArrowRight size={20} />
-                <h1 className="text-xl text-primary font-semibold tracking-wider">
+                <FaArrowRight size={!isMobile ? 20 : 15} />
+                <h1 className="text-base md:text-xl text-primary font-semibold tracking-wider">
                   Level <span>{currentSymbol.level + 1}</span>
                 </h1>
               </div>
@@ -677,7 +682,7 @@ const Calculator = ({
           {isValid(currentSymbol.level) &&
             !isMaxLevel(currentSymbol.level, swapped) &&
             currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
-              <div className="flex flex-col justify-between pt-10 h-full">
+              <div className="flex flex-col justify-between [&_*]:text-sm [&_*]:md:text-base gap-2 md:gap-0 pt-5 md:pt-10 h-full">
                 {!readyForUpgrade &&
                   (currentSymbol.daily || currentSymbol.weekly) &&
                   isValid(currentSymbol.experience) && (
@@ -691,7 +696,7 @@ const Calculator = ({
                           {" "}
                           <MdOutlineInfo
                             size={20}
-                            className="fill-accent hover:fill-white cursor-default transition-colors mt-0.5"
+                            className="fill-accent hover:fill-white cursor-default transition-colors md:mt-0.5"
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip">
@@ -740,7 +745,7 @@ const Calculator = ({
                   </p>
                 )}
 
-                <p className="pt-8">
+                <p className="pt-2.5 md:pt-8">
                   <span>
                     {currentSymbol.mesosRequired[
                       currentSymbol.level
@@ -749,7 +754,7 @@ const Calculator = ({
                   mesos required
                 </p>
 
-                <div className="flex justify-center gap-1.5 pt-8">
+                <div className="flex justify-center gap-1.5 pt-2.5 md:pt-8">
                   <p>
                     <span>{!swapped ? "+100" : "+200"}</span> main stat
                   </p>
@@ -758,7 +763,7 @@ const Calculator = ({
                       {" "}
                       <MdOutlineInfo
                         size={20}
-                        className="fill-accent hover:fill-white cursor-default transition-colors mt-0.5"
+                        className="fill-accent hover:fill-white cursor-default transition-colors md:mt-0.5"
                       />
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
@@ -774,13 +779,13 @@ const Calculator = ({
           {/* MAX LEVEL / DISABLED LEVEL */}
           <div className="flex justify-center text-center">
             {isMaxLevel(currentSymbol.level, swapped) && (
-              <p className="text-2xl text-accent font-semibold tracking-widest">
+              <p className="text-lg md:text-2xl text-accent font-semibold tracking-widest">
                 MAX LEVEL
               </p>
             )}
             {!isValid(currentSymbol.level) && (
-              <div className="gap-4">
-                <p className="text-secondary text-2xl font-semibold tracking-widest">
+              <div className="space-y-1.5 md:space-y-3">
+                <p className="text-secondary text-lg md:text-2xl font-semibold tracking-widest">
                   DISABLED
                 </p>
                 <p className="text-secondary text-xs font-light tracking-widest">

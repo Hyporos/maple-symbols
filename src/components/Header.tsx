@@ -132,7 +132,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
         {menuOpen && isMobile && (
           <>
             <div className="w-full h-px bg-white/10 my-3"></div>
-            <div className="flex items-center justify-around">
+            <div className="flex items-center justify-around text-sm">
               <p
                 className="hover:text-white cursor-pointer transition-all"
                 onClick={() => setSelectedPage(1)}

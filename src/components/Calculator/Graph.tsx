@@ -275,7 +275,7 @@ const Graph = ({ symbols, swapped }: Props) => {
         >
           {!swapped ? "Arcane" : "Sacred"} Power : {payload[0].value}
         </p>
-        {!isFirstEntry && <hr className="opacity-10 pb-2 my-8 w-full" />}
+        {!isFirstEntry && <hr className="opacity-20 pb-2 my-8 w-full" />}
 
         <div className="flex flex-col space-y-1">
           {symbols

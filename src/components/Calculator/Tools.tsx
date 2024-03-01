@@ -8,6 +8,7 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { FaArrowRight } from "react-icons/fa6";
+import { cn } from "../../lib/utils";
 
 interface Props {
   symbols: [
@@ -134,11 +135,16 @@ const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
   return (
     <section className="flex justify-center">
       <div
-        className={`flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg pt-10 md:pt-0 md:h-[250px] w-[360px] md:w-[700px]  ${
+        className={`flex flex-col justify-between bg-gradient-to-t from-card to-card-tool rounded-b-lg md:h-[250px] w-[360px] md:w-[700px]  ${
           disabled && "[&>*]:opacity-25 [&>*]:pointer-events-none select-none"
         }`}
       >
-        <div className="bg-white/10 mb-8 h-px w-[360px] md:w-[700px]" />
+        <div
+          className={cn(
+            "bg-white/10 mb-8 h-px w-full",
+            disabled && "bg-white/40"
+          )}
+        />
 
         <div className="flex justify-center md:justify-between md:mx-20 text-secondary space-x-4 mb-7">
           <button
