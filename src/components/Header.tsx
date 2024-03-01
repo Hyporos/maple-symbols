@@ -27,7 +27,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
       <div
         className={cn(
           "flex flex-col transition-height overflow-hidden",
-          menuOpen && isMobile && "h-[115px]"
+          menuOpen && isMobile && "h-[110px]"
         )}
       >
         <div className="flex justify-between items-center mx-auto w-full max-w-[1125px] h-[55px]">
@@ -131,22 +131,31 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
         </div>
         {menuOpen && isMobile && (
           <>
-            <div className="w-full h-px bg-white/10 my-3"></div>
-            <div className="flex items-center justify-around text-sm">
+            <div className="w-full h-px bg-white/10 my-2" />
+            <div className="flex justify-around items-center my-auto text-sm">
               <p
-                className="hover:text-white cursor-pointer transition-all"
+                className={cn(
+                  "hover:text-white cursor-pointer transition-all",
+                  selectedPage === 1 && "text-white"
+                )}
                 onClick={() => setSelectedPage(1)}
               >
                 Calculator
               </p>
               <p
-                className="hover:text-white cursor-pointer transition-all"
+                className={cn(
+                  "hover:text-white cursor-pointer transition-all",
+                  selectedPage === 2 && "text-white"
+                )}
                 onClick={() => setSelectedPage(2)}
               >
                 Handbook
               </p>
               <p
-                className="hover:text-white cursor-pointer transition-all"
+                className={cn(
+                  "hover:text-white cursor-pointer transition-all",
+                  selectedPage === 3 && "text-white"
+                )}
                 onClick={() => setSelectedPage(3)}
               >
                 Extras
