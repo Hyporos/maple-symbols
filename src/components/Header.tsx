@@ -36,14 +36,14 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
               <img
                 src="/main/logo-lg.webp"
                 className="cursor-pointer pointer-events-auto"
-                width={175}
+                width={180}
                 onClick={() => setSelectedPage(1)}
               />
             ) : (
               <img
                 src="/main/logo-sm.webp"
                 className="cursor-pointer pointer-events-auto"
-                width={45}
+                width={48}
                 onClick={() => setSelectedPage(1)}
               />
             )}
