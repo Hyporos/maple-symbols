@@ -121,7 +121,7 @@ const changelogEntries = [
       "Added names for the Shangri-La, Carcion and Arteria daily quest tooltips.",
       "Reworded the Linear / Exponential graph variants for intuitiveness. The default option has been changed to Exponential.",
       "Improved responsiveness and redesigned the UI for smaller devices (tablets & phones).",
-      "Increased the visibility of the bottom borders on the Daily/Weekly/Extra buttons",
+      "Increased the visibility of the bottom borders on the Daily/Weekly/Extra buttons.",
       "Adjusted an incorrect level up cost for Lachelein.",
       "Made the footer now stick to the bottom of the window, regardless of height.",
       "Fixed an issue where certain symbol icons would appear blurry.",
