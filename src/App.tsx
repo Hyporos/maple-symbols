@@ -355,8 +355,7 @@ function App() {
   }, []);
   {
     return (
-      <>
-        <Disclaimer />
+      <div className="flex flex-col min-h-screen">
         <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
         <Selector
               symbols={symbols}
@@ -400,7 +399,7 @@ function App() {
         )}
         {selectedPage === 3 && <Extras />}
         <Footer />
-      </>
+      </div>
     );
   }
 }
