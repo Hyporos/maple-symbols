@@ -115,7 +115,6 @@ const changelogEntries = [
       "Completely redesigned the header and footer. With a more conventional style, it's easier to adapt to potential features implemented in future updates.",
       "Reworked the Selector component. Enjoy a smoother, more intuitive symbol selecting and swapping experience.",
       "Added a link to a paypal donation page on the right side of the header. The site will forever remain ad-free, however there are always costs involved with hosting. You can choose to support me and my work, I'd really appreciate it!",
-      "Added a small indicator letting first time users know that they can scroll down to view the rest of the page.",
     ],
     fixes: [
       "Removed the disclaimer upon loading the page.",
@@ -124,6 +123,7 @@ const changelogEntries = [
       "Improved responsiveness and redesigned the UI for smaller devices (tablets & phones).",
       "Increased the visibility of the bottom borders on the Daily/Weekly/Extra buttons",
       "Adjusted an incorrect level up cost for Lachelein.",
+      "Made the footer now stick to the bottom of the window, regardless of height.",
       "Fixed an issue where certain symbol icons would appear blurry.",
       "Fixed an issue where swapping from Arcane to Sacred symbols would cause flickering text on the Calculator.",
     ],
