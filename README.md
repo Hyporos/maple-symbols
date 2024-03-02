@@ -10,7 +10,7 @@
 </div>
 
 <div align="center">
-  <img src="/public/main/logo-lg.png" alt="Maple Symbols Logo"/>
+  <img src="/public/main/logo-lg.webp" alt="Maple Symbols Logo"/>
 </div>
 
 <div id="user-content-toc">
@@ -39,7 +39,7 @@
 <h2 align="center">Overview</h2>
 
 <div align="center">
-  <img src="/public/github/levels.png" alt="Overview UI"/>
+  <img src="/public/github/overview.png" alt="Overview UI"/>
 </div>
 
 <h2 align="center">Graph</h2>
