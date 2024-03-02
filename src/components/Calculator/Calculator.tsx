@@ -280,7 +280,7 @@ const Calculator = ({
 
           <Tooltip>
             <TooltipTrigger className="cursor-default">
-              <div className="flex justify-center items-center gap-2 pt-4 pb-6">
+              <div className="relative flex justify-center items-center gap-2 pt-4 pb-6">
                 {/* LEVEL INPUT */}
                 <input
                   type="number"
@@ -337,9 +337,9 @@ const Calculator = ({
                 <TbSlash size={30} color="#B2B2B2" className="mx-2 md:mx-0" />
 
                 {/* LOCK FUNCTIONALITY */}
-                <div className="absolute translate-x-[111px]">
+                <div className="absolute right-0">
                   <div
-                    className={`w-[40px] h-[40px] pl-2 ${
+                    className={`w-[40px] h-[40px] ${
                       (!readyForUpgrade ||
                         isNaN(currentSymbol.experience) ||
                         currentSymbol.experience === 0 ||
@@ -394,7 +394,7 @@ const Calculator = ({
                     </Tooltip>
                   </div>
                   <div
-                    className={`absolute translate-x-[46px] ${
+                    className={`absolute translate-x-[47.5px] ${
                       currentSymbol.experience <= nextExperience &&
                       "pointer-events-none"
                     }`}

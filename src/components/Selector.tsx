@@ -111,7 +111,7 @@ const Selector = ({
                     className={cn(
                       "flex flex-col items-center text-accent hover:text-primary font-semibold cursor-pointer select-none transition-all",
                       !isValid(symbol.level) && "text-secondary",
-                      isSelected && "text-primary"
+                      isSelected && "text-primary transition-none"
                     )}
                     onClick={() => handleSelect(index)}
                   >
@@ -135,9 +135,14 @@ const Selector = ({
           </div>
 
           {/* SELECTION BAR */}
-          {!isMobile && (
+          {!isMobile && !swapped && (
             <div
-              className={`bg-accent w-[40px] md:w-[50px] h-[3px] rounded-full mt-1 md:mt-3 transition-all duration-[350ms] ${barPositions[selectedSymbol]}`}
+              className={`bg-accent w-[40px] md:w-[50px] h-[3px] rounded-full mt-1 md:mt-3 transition-all duration-[350ms] ${barPositions[selectedArcane]}`}
+            />
+          )}
+          {!isMobile && swapped && (
+            <div
+              className={`bg-accent w-[40px] md:w-[50px] h-[3px] rounded-full mt-1 md:mt-3 transition-all duration-[350ms] ${barPositions[selectedSacred]}`}
             />
           )}
         </div>

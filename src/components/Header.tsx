@@ -26,11 +26,11 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
     <section className="bg-gradient-to-t from-card to-card-grad p-1.5 md:p-3 px-4 md:px-8 mb-16">
       <div
         className={cn(
-          "flex flex-col transition-height overflow-hidden",
+          "flex flex-col transition-height overflow-hidden h-[55px]",
           menuOpen && isMobile && "h-[110px]"
         )}
       >
-        <div className="flex justify-between items-center mx-auto w-full max-w-[1125px] h-[55px]">
+        <div className="flex justify-between items-center mx-auto w-full max-w-[1125px] my-2.5 md:my-auto">
           <div
             className={cn("cursor-pointer", !isTablet && "w-1/3")}
             onClick={() => setSelectedPage(1)}
@@ -109,7 +109,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
               )}
             >
               <Tooltip placement="bottom">
-                <TooltipTrigger>
+                <TooltipTrigger tabIndex={-1}>
                   <button
                     className={cn(
                       "flex justify-center items-center gap-3 bg-dark h-[40px] w-[80px] group cursor-default",
@@ -129,7 +129,7 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
             </div>
           </ConditionalWrapper>
         </div>
-        {menuOpen && isMobile && (
+        {isMobile && (
           <>
             <div className="w-full h-px bg-white/10 my-2" />
             <div className="flex justify-around items-center my-auto text-sm">
