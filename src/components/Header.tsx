@@ -31,14 +31,21 @@ const Header = ({ selectedPage, setSelectedPage }: Props) => {
         )}
       >
         <div className="flex justify-between items-center mx-auto w-full max-w-[1125px] my-2.5 md:my-auto">
-          <div
-            className={cn(!isTablet && "w-1/3")}
-            onClick={() => setSelectedPage(1)}
-          >
+          <div className={cn(!isTablet && "w-1/3")}>
             {!isMobile ? (
-              <img src="/main/logo-lg.webp" className="cursor-pointer pointer-events-auto" width={175} />
+              <img
+                src="/main/logo-lg.webp"
+                className="cursor-pointer pointer-events-auto"
+                width={175}
+                onClick={() => setSelectedPage(1)}
+              />
             ) : (
-              <img src="/main/logo-sm.webp" className="cursor-pointer pointer-events-auto" width={45} />
+              <img
+                src="/main/logo-sm.webp"
+                className="cursor-pointer pointer-events-auto"
+                width={45}
+                onClick={() => setSelectedPage(1)}
+              />
             )}
           </div>
 
