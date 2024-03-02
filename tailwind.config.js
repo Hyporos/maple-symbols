@@ -5,9 +5,6 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        'maven-pro': ['Maven Pro', 'sans-serif'],
-      },
       boxShadow: {
         'input': '0 0 9px 0px rgb(0 0 0 / 0.25)',
         'level': '0 0 2.5px 0px rgb(0 0 0 / 0.1)',
@@ -24,18 +21,14 @@ export default {
         'tertiary': 'transparent',
       },
       borderColor: {
-        'unchecked': '#8c0000',
-        'checked': '#008c00',
+        'unchecked': '#ab0000',
+        'checked': '#00a500',
         'secondary': '#333333',
       },
       outlineColor: {
         'basic': '#444444',
       },
-      translate: {
-        'level': '-40px',
-      },
       fill: {
-        'hover': '#ffffff',
         'basic': '#bfbfbf',
       },
       colors: {
@@ -46,13 +39,12 @@ export default {
         'card-tool': '#1c1c1c',
         'light': '#262626',
       },
-      transitionDuration: {
-        '250': '250ms'
-      },
       screens: {
         'laptop' : '1150px',
-        'tablet' : '800px',
         'phone' : '550px',
+      },
+      transitionProperty: {
+        'height': 'height'
       }
     },
   },

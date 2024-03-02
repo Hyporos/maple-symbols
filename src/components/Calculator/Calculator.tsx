@@ -2,10 +2,11 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import { TbSlash } from "react-icons/tb";
 import { MdOutlineInfo } from "react-icons/md";
-import "./Calculator.css";
 import dayjs from "dayjs";
 import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip/Tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
+import { cn, getDailySymbols, isMaxLevel, isValid } from "../../lib/utils";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {
   symbols: [
@@ -47,13 +48,17 @@ const Calculator = ({
 }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
+  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
+  
   const currentSymbol = symbols[selectedSymbol];
-  const [symbolsToNext, setSymbolsToNext] = useState(NaN);
+  const [daysToNextLevel, setDaysToNextLevel] = useState(NaN);
 
   const [overflowLevel, setOverflowLevel] = useState(NaN);
   const [overflowExperience, setOverflowExperience] = useState(NaN);
 
   const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
+
+  const readyForUpgrade = currentSymbol.experience >= nextExperience;
 
   /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
@@ -117,7 +122,7 @@ const Calculator = ({
         }
       }
 
-      setSymbolsToNext(days);
+      setDaysToNextLevel(days);
 
       let days2 = 0;
       let count2 = 0; //TODO: TONS OF HALF ASS DUPLICTED GARABGE CODE PLEASE FIX.
@@ -229,7 +234,7 @@ const Calculator = ({
 
   useMemo(() => {
     try {
-      if (currentSymbol.experience >= nextExperience && currentSymbol.locked) {
+      if (readyForUpgrade && currentSymbol.locked) {
         setSymbols(
           symbols.map((symbol) =>
             symbol.id === selectedSymbol + 1
@@ -246,7 +251,7 @@ const Calculator = ({
   useEffect(() => {
     if (
       currentSymbol.experience === 0 &&
-      currentSymbol.level === (!swapped ? 20 : 11)
+      isMaxLevel(currentSymbol.level, swapped)
     ) {
       setSymbols(
         symbols.map((symbol) =>
@@ -261,26 +266,29 @@ const Calculator = ({
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
-    <section className="calculator">
-      <div className="flex pt-16 bg-gradient-to-t from-card-tool to-card-grad justify-between tablet:justify-normal rounded-t-lg flex-col tablet:flex-row w-[350px] space-y-8 tablet:space-y-0 tablet:w-[700px] h-[700px] tablet:h-[350px]">
-        <div className="px-10 space-y-6 w-[350px]">
-          <div className="flex justify-center items-center space-x-4 pb-6">
+    <section className="flex justify-center">
+      <div className="flex flex-col md:flex-row bg-gradient-to-t from-card-tool to-card-grad justify-between rounded-t-lg gap-8 md:gap-0 py-8 md:py-10 md:py-16 mx-4 w-[360px] md:w-full md:max-w-[700px]">
+        {/* SYMBOL INPUTS */}
+        <div className="flex flex-col justify-between px-10 w-full max-w-[360px] md:h-[250px]">
+          <div className="flex justify-center items-center gap-4 pb-5 md:pb-6">
+            {/* SYMBOL TITLE */}
             <img src={currentSymbol.img} alt={currentSymbol.alt} width={33} />
-            <p className="text-xl text-primary font-semibold tracking-wider uppercase">
+            <p className="text-lg md:text-xl text-primary font-semibold tracking-wider uppercase">
               {currentSymbol.name}
             </p>
           </div>
 
           <Tooltip>
             <TooltipTrigger className="cursor-default">
-              <div className="flex justify-center items-center space-x-2">
+              <div className="relative flex justify-center items-center gap-2 pt-4 pb-6">
+                {/* LEVEL INPUT */}
                 <input
                   type="number"
                   placeholder="Level"
                   value={
                     currentSymbol.level === null ? "NaN" : currentSymbol.level
                   }
-                  className="symbol-input"
+                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2 md:p-2.5 w-1/2"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
                     if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
@@ -325,11 +333,14 @@ const Calculator = ({
                     }
                   }}
                 ></input>
-                <TbSlash size={30} color="#B2B2B2" />
-                <div className="absolute translate-x-[111px]">
+
+                <TbSlash size={30} color="#B2B2B2" className="mx-2 md:mx-0" />
+
+                {/* LOCK FUNCTIONALITY */}
+                <div className="absolute right-0">
                   <div
-                    className={`w-[40px] h-[40px] pl-2 ${
-                      (currentSymbol.experience < nextExperience ||
+                    className={`w-[40px] h-[40px] ${
+                      (!readyForUpgrade ||
                         isNaN(currentSymbol.experience) ||
                         currentSymbol.experience === 0 ||
                         !currentSymbol.level) &&
@@ -353,7 +364,7 @@ const Calculator = ({
                           }}
                           className={`cursor-pointer ${
                             (!currentSymbol.locked ||
-                              currentSymbol.experience < nextExperience ||
+                              !readyForUpgrade ||
                               isNaN(currentSymbol.experience) ||
                               currentSymbol.experience === 0) &&
                             "hidden"
@@ -383,7 +394,7 @@ const Calculator = ({
                     </Tooltip>
                   </div>
                   <div
-                    className={`absolute translate-x-[46px] ${
+                    className={`absolute translate-x-[47.5px] ${
                       currentSymbol.experience <= nextExperience &&
                       "pointer-events-none"
                     }`}
@@ -420,6 +431,8 @@ const Calculator = ({
                     />
                   </div>
                 </div>
+
+                {/* EXP INPUT */}
                 <input
                   type="number"
                   placeholder={currentSymbol.locked ? "Experience" : "Exp"}
@@ -428,7 +441,7 @@ const Calculator = ({
                       ? "NaN"
                       : currentSymbol.experience
                   }
-                  className="symbol-input"
+                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2 md:p-2.5 w-1/2"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
                     if (
@@ -526,13 +539,15 @@ const Calculator = ({
             </TooltipContent>
           </Tooltip>
 
-          <div className="flex space-x-2">
+          {/* DAILY / WEEKLY BUTTONS */}
+          <div className="flex gap-3 md:gap-2.5 pb-4">
             <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
-                  className={`daily-box ${
-                    currentSymbol.daily && "border-checked"
-                  }`}
+                  className={cn(
+                    "bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
+                    currentSymbol.daily && "border-checked/80 md:border-checked"
+                  )}
                   onClick={() =>
                     setSymbols(
                       symbols.map((symbol) =>
@@ -558,9 +573,12 @@ const Calculator = ({
             <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
-                  className={`daily-box ${
-                    currentSymbol.weekly && "border-checked"
-                  } ${currentSymbol.type === "arcane" ? "block" : "hidden"}`}
+                  className={cn(
+                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
+                    currentSymbol.weekly &&
+                      "border-checked/80 md:border-checked",
+                    typeof currentSymbol.weekly === "undefined" && "hidden"
+                  )}
                   onClick={() =>
                     setSymbols(
                       symbols.map((symbol) =>
@@ -586,14 +604,12 @@ const Calculator = ({
             <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
-                  className={`daily-box ${
-                    currentSymbol.extra && "border-checked"
-                  } ${
-                    typeof currentSymbol.extra !== "undefined"
-                      ? "block"
-                      : "hidden"
-                  }
-                }`}
+                  className={cn(
+                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
+                    currentSymbol.extra &&
+                      "border-checked/80 md:border-checked",
+                    typeof currentSymbol.extra === "undefined" && "hidden"
+                  )}
                   onClick={() =>
                     setSymbols(
                       symbols.map((symbol) =>
@@ -617,145 +633,70 @@ const Calculator = ({
             </Tooltip>
           </div>
 
+          {/* DAILY / WEEKLY COUNT */}
           <div
-            className={`flex flex-row text-center text-sm  pt-6 text-tertiary ${
-              currentSymbol.type === "arcane"
-                ? "justify-between"
-                : "justify-center"
-            }`}
+            className={cn(
+              "flex flex-row justify-between text-xs md:text-sm text-tertiary text-center pt-5 md:pt-6",
+              currentSymbol.type === "sacred" && "justify-center"
+            )}
           >
-            <p className="text-sm">
-              {currentSymbol.daily && currentSymbol.extra
-                ? currentSymbol.name != "Cernium"
-                  ? currentSymbol.dailySymbols * 2
-                  : currentSymbol.dailySymbols + 5
-                : currentSymbol.daily
-                ? currentSymbol.dailySymbols
-                : 0}{" "}
-              symbols / day
-            </p>
-            <p className="text-sm">
-              {currentSymbol.type === "arcane"
-                ? currentSymbol.weekly
+            <p>{getDailySymbols(currentSymbol)} symbols / day</p>
+            {currentSymbol.type === "arcane" && (
+              <p>
+                {currentSymbol.weekly
                   ? 45 + " symbols / week"
-                  : 0 + " symbols / week"
-                : ""}{" "}
-            </p>
+                  : 0 + " symbols / week"}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="vertical-divider"></div>
+        {/* DIVIDER */}
+        <div className="bg-white/10 mx-auto w-full md:w-px h-px md:h-full" />
 
-        <div className="w-[350px] space-y-10">
-          <div className="text-secondary text-center space-y-1.5">
-            <div className="flex justify-center items-center text-primary text-xl font-semibold tracking-wider">
-              <div
-                className={`text-secondary text-center space-y-1.5 pt-0.5 ${
-                  isNaN(currentSymbol.level) ||
-                  currentSymbol.level === null ||
-                  currentSymbol.level === (!swapped ? 20 : 11)
-                    ? "hidden"
-                    : "block"
-                }`}
-              >
-                {(() => {
-                  try {
-                    //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
-                    if (
-                      currentSymbol.type === (!swapped ? "arcane" : "sacred") ||
-                      (currentSymbol.level != (!swapped ? 20 : 11) &&
-                        currentSymbol.level != (!swapped && 11) &&
-                        String(currentSymbol.level) != "NaN")
-                    ) {
-                      return (
-                        <div className="flex space-x-3 items-center justify-center text-primary font-semibold tracking-wider">
-                          <h1 className="text-xl">
-                            Level{" "}
-                            <span className="text-xl">
-                              {currentSymbol.level}
-                            </span>
-                          </h1>
-                          <FaArrowRight size={20} className="fill-basic" />
-                          <h1 className="text-xl">
-                            Level{" "}
-                            <span className="text-xl">
-                              {currentSymbol.level + 1}
-                            </span>
-                          </h1>
-                        </div>
-                      );
-                    }
-                  } catch (e) {
-                    //console.log((e as Error).message);
-                  }
-                })()}
+        {/* LEVEL DETAILS */}
+        <div
+          className={cn(
+            "flex flex-col justify-between items-center text-center px-8 md:px-10 w-full max-w-[360px]",
+            !isValid(currentSymbol.level) && "justify-center",
+            isMaxLevel(currentSymbol.level, swapped) && "justify-center",
+            currentSymbol.symbolsRequired.length <= 10 && "hidden"
+          )}
+        >
+          {/* BEFORE > AFTER LEVEL */}
+          {isValid(currentSymbol.level) &&
+            !isMaxLevel(currentSymbol.level, swapped) &&
+            currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
+              <div className="flex gap-3 items-center pt-0.5">
+                <h1 className="text-base md:text-xl text-primary font-semibold tracking-wider">
+                  Level <span>{currentSymbol.level}</span>
+                </h1>
+                <FaArrowRight size={!isMobile ? 20 : 15} />
+                <h1 className="text-base md:text-xl text-primary font-semibold tracking-wider">
+                  Level <span>{currentSymbol.level + 1}</span>
+                </h1>
               </div>
-              <div>
-                {(() => {
-                  try {
-                    if (
-                      currentSymbol.level === (!swapped ? 20 : 11) &&
-                      currentSymbol.type === (!swapped ? "arcane" : "sacred")
-                    ) {
-                      //TODO: BANDAID FIX. HORRIBLE LOGIC UPDATE ASAP
-                      return (
-                        <div className="py-[72.5%]">
-                          <p className="text-accent text-2xl tracking-widest uppercase">
-                            Max Level
-                          </p>
-                        </div>
-                      );
-                    } else if (
-                      isNaN(currentSymbol.level) ||
-                      currentSymbol.level === null
-                    ) {
-                      return (
-                        <div className="space-y-4 py-[40%]">
-                          <p className="text-secondary text-2xl tracking-widest uppercase">
-                            Disabled
-                          </p>
-                          <p className="text-secondary text-xs lowercase font-light tracking-widest">
-                            Enter a level to enable this symbol
-                          </p>
-                        </div>
-                      );
-                    }
-                  } catch (e) {
-                    //console.log((e as Error).message);
-                  }
-                })()}
-              </div>
-            </div>
-          </div>
+            )}
 
-          <div
-            className={`text-secondary text-center space-y-1.5 ${
-              isNaN(currentSymbol.level) ||
-              currentSymbol.level === null ||
-              currentSymbol.level === (!swapped ? 20 : 11)
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            {(() => {
-              try {
-                if (
-                  currentSymbol.experience < nextExperience &&
+          {/* NEXT LEVEL STATS */}
+          {isValid(currentSymbol.level) &&
+            !isMaxLevel(currentSymbol.level, swapped) &&
+            currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
+              <div className="flex flex-col justify-between [&_*]:text-sm [&_*]:md:text-base gap-2 md:gap-0 pt-5 md:pt-10 h-full">
+                {!readyForUpgrade &&
                   (currentSymbol.daily || currentSymbol.weekly) &&
-                  currentSymbol.experience !== null
-                ) {
-                  return (
-                    <div className="flex justify-center space-x-1.5">
+                  isValid(currentSymbol.experience) && (
+                    <div className="flex justify-center gap-1.5">
                       <p>
-                        <span>{symbolsToNext > 0 ? symbolsToNext : 0}</span>{" "}
-                        {symbolsToNext > 1 ? "days to go" : "day to go"}
+                        <span>{daysToNextLevel}</span>{" "}
+                        {daysToNextLevel > 1 ? "days to go" : "day to go"}
                       </p>
                       <Tooltip placement={"top"}>
                         <TooltipTrigger asChild={true}>
                           {" "}
                           <MdOutlineInfo
                             size={20}
-                            className="fill-accent hover:fill-hover cursor-default transition-all mt-0.5"
+                            className="fill-accent hover:fill-white cursor-default transition-colors md:mt-0.5"
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip">
@@ -765,105 +706,93 @@ const Calculator = ({
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                  );
-                } else if (nextExperience - currentSymbol.experience <= 0) {
-                  return (
-                    <p>
-                      <span>Ready</span> for upgrade
-                    </p>
-                  );
-                } else if (
-                  isNaN(currentSymbol.experience) ||
-                  currentSymbol.experience === null
-                ) {
-                  return (
-                    <p>
-                      <span>Experience</span> is not set
-                    </p>
-                  );
-                } else {
-                  return (
+                  )}
+
+                {readyForUpgrade && (
+                  <p>
+                    <span>Ready</span> for upgrade
+                  </p>
+                )}
+
+                {!isValid(currentSymbol.experience) ? (
+                  <p>
+                    <span>Experience</span> is not set
+                  </p>
+                ) : (
+                  !currentSymbol.daily &&
+                  !currentSymbol.weekly &&
+                  !readyForUpgrade && (
                     <p>
                       <span>Quests</span> are not set
                     </p>
-                  );
-                }
-              } catch (e) {
-                //console.log((e as Error).message);
-              }
-            })()}
-            {(() => {
-              try {
-                if (
-                  currentSymbol.experience < nextExperience &&
-                  currentSymbol.experience !== null
-                ) {
-                  return (
-                    <p>
-                      <span>{nextExperience - currentSymbol.experience}</span>{" "}
-                      {nextExperience - currentSymbol.experience > 1
-                        ? "symbols remaining"
-                        : "symbol remaining"}
-                    </p>
-                  );
-                } else if (nextExperience - currentSymbol.experience <= 0) {
-                  return (
-                    <p>
-                      <span>Sufficient</span> symbols reached
-                    </p>
-                  );
-                } else {
-                  return (
-                    <p>
-                      <span>Unknown</span> symbols remaining
-                    </p>
-                  );
-                }
-              } catch (e) {
-                //console.log((e as Error).message);
-              }
-            })()}
-            {(() => {
-              try {
-                if (
-                  currentSymbol.level <= (!swapped ? 19 : 10) &&
-                  currentSymbol.level > 0
-                ) {
-                  return (
-                    <p className="pt-8">
-                      <span>
-                        {currentSymbol.mesosRequired[
-                          currentSymbol.level
-                        ].toLocaleString()}
-                      </span>{" "}
-                      mesos required
-                      <div className="flex justify-center items-center space-x-1.5 pt-[41px]">
-                        <p>
-                          <span>{!swapped ? "+100" : "+200"}</span> main stat
-                        </p>
-                        <Tooltip placement={"right"}>
-                          <TooltipTrigger asChild={true}>
-                            {" "}
-                            <MdOutlineInfo
-                              size={20}
-                              className="fill-accent hover:fill-hover cursor-default transition-all mt-0.5"
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent className="tooltip">
-                            <span>{!swapped ? "+2,100" : "4,200"} </span> HP
-                            (Demon Avenger)<br></br>
-                            <span>{!swapped ? "+48" : "96"}</span> All Stat
-                            (Xenon)
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </p>
-                  );
-                }
-              } catch (e) {
-                //console.log((e as Error).message);
-              }
-            })()}
+                  )
+                )}
+
+                {readyForUpgrade ? (
+                  <p>
+                    <span>Sufficient</span> symbols reached
+                  </p>
+                ) : isValid(currentSymbol.experience) ? (
+                  <p>
+                    <span>{nextExperience - currentSymbol.experience}</span>{" "}
+                    {nextExperience - currentSymbol.experience > 1
+                      ? "symbols remaining"
+                      : "symbol remaining"}
+                  </p>
+                ) : (
+                  <p>
+                    <span>Unknown</span> symbols remaining
+                  </p>
+                )}
+
+                <p className="pt-2.5 md:pt-8">
+                  <span>
+                    {currentSymbol.mesosRequired[
+                      currentSymbol.level
+                    ]?.toLocaleString()}
+                  </span>{" "}
+                  mesos required
+                </p>
+
+                <div className="flex justify-center gap-1.5 pt-2.5 md:pt-8">
+                  <p>
+                    <span>{!swapped ? "+100" : "+200"}</span> main stat
+                  </p>
+                  <Tooltip placement={"right"}>
+                    <TooltipTrigger asChild={true}>
+                      {" "}
+                      <MdOutlineInfo
+                        size={20}
+                        className="fill-accent hover:fill-white cursor-default transition-colors md:mt-0.5"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className="tooltip">
+                      <span>{!swapped ? "+2,100" : "+4,200"} </span> HP (Demon
+                      Avenger)<br></br>
+                      <span>{!swapped ? "+48" : "+96"}</span> All Stat (Xenon)
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </div>
+            )}
+
+          {/* MAX LEVEL / DISABLED LEVEL */}
+          <div className="flex justify-center text-center">
+            {isMaxLevel(currentSymbol.level, swapped) && (
+              <p className="text-lg md:text-2xl text-accent font-semibold tracking-widest">
+                MAX LEVEL
+              </p>
+            )}
+            {!isValid(currentSymbol.level) && (
+              <div className="space-y-1.5 md:space-y-3">
+                <p className="text-secondary text-lg md:text-2xl font-semibold tracking-widest">
+                  DISABLED
+                </p>
+                <p className="text-secondary text-xs font-light tracking-widest">
+                  enter a level to enable this symbol
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

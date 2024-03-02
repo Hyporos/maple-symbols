@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import Disclaimer from "./components/Disclaimer/Disclaimer";
-import Header from "./components/Header/Header";
-import Selector from "./components/Selector/Selector";
+import Disclaimer from "./components/Disclaimer";
+import Header from "./components/Header";
+import Selector from "./components/Selector";
 import Calculator from "./components/Calculator/Calculator";
-import Tools from "./components/Tools/Tools";
-import Levels from "./components/Levels/Levels";
-import Footer from "./components/Footer/Footer";
-import Graph from "./components/Graph/Graph";
+import Tools from "./components/Calculator/Tools";
+import Footer from "./components/Footer";
+import Graph from "./components/Calculator/Graph";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import Info from "./components/Handbook/Handbook";
+import Extras from "./components/Extras/Extras";
+import Overview from "./components/Calculator/Overview";
 
 function App() {
-  // TODO: Replace the following with your app's Firebase project configuration
-  // See: https://firebase.google.com/docs/web/learn-more#config-object
   const firebaseConfig = {
     apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
     authDomain: "maple-symbols.firebaseapp.com",
@@ -30,10 +30,12 @@ function App() {
   // Initialize Analytics and get a reference to the service
   const analytics = getAnalytics(app);
 
-  if (localStorage.getItem("clearStorage") === "1.1.4" || localStorage.getItem("clearStorage") === "1.1.3") {
+  if (localStorage.getItem("clearStorage") !== "1.3") {
     localStorage.clear();
-    localStorage.setItem("clearStorage", "1.2.1");
+    localStorage.setItem("clearStorage", "1.3");
   }
+
+  const [selectedPage, setSelectedPage] = useState(1);
 
   const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
@@ -125,7 +127,7 @@ function App() {
       mesosRequired: [
         0, 1450000, 1830000, 2460000, 3340000, 4500000, 5920000, 7620000,
         9600000, 11860000, 14430000, 17290000, 20460000, 23940000, 27730000,
-        31860000, 36310000, 41000000, 46230000, 51700000,
+        31860000, 36310000, 41100000, 46230000, 51700000,
       ],
     },
     {
@@ -278,7 +280,7 @@ function App() {
       alt: "Shangri-La",
       img: "/symbols/shangri-symbol.webp",
       type: "sacred",
-      dailyName: "TBA",
+      dailyName: "Shangri-La Contamination Purification",
       level: NaN,
       experience: NaN,
       daily: false,
@@ -300,7 +302,7 @@ function App() {
       alt: "Arteria",
       img: "/symbols/arteria-symbol.webp",
       type: "sacred",
-      dailyName: "TBA",
+      dailyName: "Defeat the Arteria Remnants",
       level: NaN,
       experience: NaN,
       daily: false,
@@ -322,7 +324,7 @@ function App() {
       alt: "Carcion",
       img: "/symbols/carcion-symbol.webp",
       type: "sacred",
-      dailyName: "TBA",
+      dailyName: "Carcion Recovery Support",
       level: NaN,
       experience: NaN,
       daily: false,
@@ -351,42 +353,55 @@ function App() {
       );
     }
   }, []);
+  {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+        <Selector
+              symbols={symbols}
+              selectedSymbol={selectedSymbol}
+              setSelectedSymbol={setSelectedSymbol}
+              swapped={swapped}
+              setSwapped={setSwapped}
+              selectedPage={selectedPage}
+            />
+        {selectedPage === 1 && (
+          <>
+            <Calculator
+              symbols={symbols}
+              setSymbols={setSymbols}
+              selectedSymbol={selectedSymbol}
+              swapped={swapped}
+            />
+            <Tools
+              symbols={symbols}
+              setSymbols={setSymbols}
+              selectedSymbol={selectedSymbol}
+              swapped={swapped}
+            />
+            <Overview
+              symbols={symbols}
+              selectedSymbol={selectedSymbol}
+              swapped={swapped}
+            />
+            <Graph symbols={symbols} swapped={swapped} />
+          </>
+        )}
 
-  return (
-    <>
-      <Disclaimer />
-      <Header />
-      <Selector
-        symbols={symbols}
-        selectedSymbol={selectedSymbol}
-        setSelectedSymbol={setSelectedSymbol}
-        swapped={swapped}
-        setSwapped={setSwapped}
-      />
-      <Calculator
-        symbols={symbols}
-        setSymbols={setSymbols}
-        selectedSymbol={selectedSymbol}
-        swapped={swapped}
-      />
-      <Tools
-        symbols={symbols}
-        setSymbols={setSymbols}
-        selectedSymbol={selectedSymbol}
-        swapped={swapped}
-      />
-      <Levels
-        symbols={symbols}
-        selectedSymbol={selectedSymbol}
-        swapped={swapped}
-      />
-      <Graph
-        symbols={symbols}
-        swapped={swapped}
-      />
-      <Footer />
-    </>
-  );
+        {selectedPage === 2 && (
+          <>
+            <Info
+              symbols={symbols}
+              swapped={swapped}
+              selectedSymbol={selectedSymbol}
+            />
+          </>
+        )}
+        {selectedPage === 3 && <Extras />}
+        <Footer />
+      </div>
+    );
+  }
 }
 
 export default App;

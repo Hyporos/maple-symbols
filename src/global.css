@@ -44,7 +44,7 @@
 
 @layer base {
     body {
-        @apply font-maven-pro text-secondary tracking-wide bg-gradient-to-t from-dark to-[#202020] overflow-x-hidden
+        @apply font-['Maven_Pro'] text-secondary tracking-wide bg-gradient-to-t from-dark to-[#202020] overflow-x-hidden
     }
 
     button,
@@ -52,16 +52,17 @@
     .focus {
         @apply rounded-lg focus-visible:outline focus:outline-2 focus:outline-accent focus-visible:border-0 
     }
+
+    input::placeholder {
+        @apply text-tertiary hover:text-secondary focus:text-secondary transition-all 
+     }
     
     span {
         @apply text-accent
     }
+    
     .tooltip {
-        @apply bg-[#111111] px-2.5 py-1.5 text-center text-sm rounded-lg shadow-input
-    }
-
-    * :not(span) {
-        @apply text-[16px]
+        @apply bg-[#111111] px-2.5 py-1.5 text-center text-xs md:text-sm rounded-lg shadow-input
     }
 
     img {
