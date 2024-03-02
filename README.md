@@ -30,12 +30,6 @@
   <img src="/public/github/calculator.png" alt="Calculator UI"/>
 </div>
 
-<h2 align="center">Tools</h2>
-
-<div align="center">
-  <img src="/public/github/tools.png" alt="Tools UI"/>
-</div>
-
 <h2 align="center">Overview</h2>
 
 <div align="center">
