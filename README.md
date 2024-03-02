@@ -10,7 +10,7 @@
 </div>
 
 <div align="center">
-  <img src="/public/main/logo-lg.webp" alt="Maple Symbols Logo" width="700" />
+  <img src="/public/main/logo-lg.webp" alt="Maple Symbols Logo" width="600" />
 </div>
 
 <div id="user-content-toc">
