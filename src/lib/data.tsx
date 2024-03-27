@@ -109,7 +109,7 @@ const changelogEntries = [
   {
     version: "v1.3",
     date: "Mar 1, 2024",
-    link: "",
+    link: "https://github.com/Hyporos/maple-symbols/pull/13",
     additions: [
       "Added the Handbook and Extras sections to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol experience / damage ratio / level up cost tables, a log of prior updates, as well as a credits section.",
       "Completely redesigned the header and footer. With a more conventional style, it's easier to adapt to potential features implemented in future updates.",

@@ -7,6 +7,8 @@ import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { cn, getDailySymbols, isMaxLevel, isValid } from "../../lib/utils";
 import { useMediaQuery } from "react-responsive";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
 interface Props {
   symbols: [
@@ -37,16 +39,16 @@ interface Props {
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
   selectedSymbol: number;
-  swapped: boolean;
 }
 
 const Calculator = ({
   symbols,
   setSymbols,
   selectedSymbol,
-  swapped,
 }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const swapped = useSelector((state: RootState) => state.selector.swapped);
 
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   

@@ -2,6 +2,8 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { useMediaQuery } from "react-responsive";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
 interface ExpTableProps {
   symbols: [
@@ -14,14 +16,15 @@ interface ExpTableProps {
       symbolsRequired: Array<number>;
     }
   ];
-  swapped: boolean;
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The ExpTable component displays both individual and cumulative symbol exp requirements/cost.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const ExpTable = ({ symbols, swapped }: ExpTableProps) => {
+const ExpTable = ({ symbols }: ExpTableProps) => {
+  const swapped = useSelector((state: RootState) => state.selector.swapped);
+
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   let totalExp = 0;
 

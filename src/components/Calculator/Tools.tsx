@@ -9,6 +9,8 @@ import { useMediaQuery } from "react-responsive";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { FaArrowRight } from "react-icons/fa6";
 import { cn } from "../../lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
 interface Props {
   symbols: [
@@ -24,7 +26,6 @@ interface Props {
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
   selectedSymbol: number;
-  swapped: boolean;
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -32,7 +33,9 @@ interface Props {
 // * You can preview the functionality of both items by clicking their respective buttons.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const Tools = ({ symbols, setSymbols, selectedSymbol, swapped }: Props) => {
+const Tools = ({ symbols, setSymbols, selectedSymbol }: Props) => {
+  const swapped = useSelector((state: RootState) => state.selector.swapped);
+  
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   const [selectedTool, setSelectedTool] = useState(1);
   const [selectorCount, setSelectorCount] = useState(NaN);
