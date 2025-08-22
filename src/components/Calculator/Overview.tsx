@@ -62,7 +62,7 @@ const Overview = ({ symbols }: Props) => {
       let mondayReached = false;
       for (let i = 0; i < 1000; i++) {
         if (
-          days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
+          days * dailySymbols + (currentSymbol.weekly ? resets * 120 : 0) <
           targetSymbols
         ) {
           if (

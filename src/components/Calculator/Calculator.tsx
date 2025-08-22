@@ -104,7 +104,7 @@ const Calculator = ({
       let mondayReached = false;
       for (let i = 0; i < 1000; i++) {
         if (
-          days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
+          days * dailySymbols + (currentSymbol.weekly ? resets * 120 : 0) <
           nextExperience - currentSymbol.experience
         ) {
           if (
@@ -132,7 +132,7 @@ const Calculator = ({
       let mondayReached2 = false;
       for (let i = 0; i < 1000; i++) {
         if (
-          days2 * dailySymbols + (currentSymbol.weekly ? resets2 * 45 : 0) <
+          days2 * dailySymbols + (currentSymbol.weekly ? resets2 * 120 : 0) <
           remainingSymbols
         ) {
           if (
@@ -646,7 +646,7 @@ const Calculator = ({
             {currentSymbol.type === "arcane" && (
               <p>
                 {currentSymbol.weekly
-                  ? 45 + " symbols / week"
+                  ? 120 + " symbols / week"
                   : 0 + " symbols / week"}
               </p>
             )}

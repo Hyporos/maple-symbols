@@ -136,7 +136,7 @@ const Graph = ({ symbols }: Props) => {
             for (let i = 0; i <= 1000; i++) {
               while (
                 days * dailySymbols +
-                  (currentSymbol.weekly ? weeklyResets * 45 : 0) <
+                  (currentSymbol.weekly ? weeklyResets * 120 : 0) <
                 remainingSymbols
               ) {
                 // If the day isn't a monday, add 1 day
@@ -150,7 +150,7 @@ const Graph = ({ symbols }: Props) => {
                     mondayReached = true;
                   }
                 } else if ((days - dailyResets) % 7 === 0) {
-                  // If the monday flag is true, increment weeklyResets (adds 45 symbols)
+                  // If the monday flag is true, increment weeklyResets (adds 120 symbols)
                   weeklyResets++;
                 }
                 days++;
