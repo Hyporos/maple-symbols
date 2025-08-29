@@ -1,10 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { cn } from "../lib/utils";
+import { useDispatch } from "react-redux";
 
 interface RadioButtonProps {
   label: string;
   selected: boolean;
-  value: boolean;
+  value?: boolean;
   setValue: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -18,10 +19,21 @@ const RadioButton = ({
   value,
   setValue,
 }: RadioButtonProps) => {
+  const dispatch = useDispatch();
+
+  // Handle the click differently based on whether Redux or useState is used
+  const handleClick = () => {
+    if (value === undefined) {
+      dispatch(setValue);
+    } else {
+      setValue(value);
+    }
+  };
+
   return (
     <div
       className="group flex items-center gap-4 cursor-pointer"
-      onClick={() => setValue(value)}
+      onClick={() => handleClick()}
     >
       <div
         className={cn(

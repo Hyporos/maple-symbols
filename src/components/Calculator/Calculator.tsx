@@ -7,6 +7,8 @@ import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { cn, getDailySymbols, isMaxLevel, isValid } from "../../lib/utils";
 import { useMediaQuery } from "react-responsive";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
 interface Props {
   symbols: [
@@ -37,16 +39,16 @@ interface Props {
   ];
   setSymbols: Dispatch<SetStateAction<object>>;
   selectedSymbol: number;
-  swapped: boolean;
 }
 
 const Calculator = ({
   symbols,
   setSymbols,
   selectedSymbol,
-  swapped,
 }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const swapped = useSelector((state: RootState) => state.selector.swapped);
 
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   
@@ -102,7 +104,7 @@ const Calculator = ({
       let mondayReached = false;
       for (let i = 0; i < 1000; i++) {
         if (
-          days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
+          days * dailySymbols + (currentSymbol.weekly ? resets * 120 : 0) <
           nextExperience - currentSymbol.experience
         ) {
           if (
@@ -130,7 +132,7 @@ const Calculator = ({
       let mondayReached2 = false;
       for (let i = 0; i < 1000; i++) {
         if (
-          days2 * dailySymbols + (currentSymbol.weekly ? resets2 * 45 : 0) <
+          days2 * dailySymbols + (currentSymbol.weekly ? resets2 * 120 : 0) <
           remainingSymbols
         ) {
           if (
@@ -644,7 +646,7 @@ const Calculator = ({
             {currentSymbol.type === "arcane" && (
               <p>
                 {currentSymbol.weekly
-                  ? 45 + " symbols / week"
+                  ? 120 + " symbols / week"
                   : 0 + " symbols / week"}
               </p>
             )}

@@ -26,6 +26,8 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 import RadioButton from "../RadioButton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
 type Props = {
   symbols: [
@@ -46,7 +48,6 @@ type Props = {
       symbolsRequired: Array<number>;
     }
   ];
-  swapped: boolean;
 };
 
 type DateSymbols = {
@@ -65,8 +66,10 @@ type GraphSymbols = {
 
 type FlatDateSymbols = GraphSymbols;
 
-const Graph = ({ symbols, swapped }: Props) => {
+const Graph = ({ symbols }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const swapped = useSelector((state: RootState) => state.selector.swapped);
 
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
@@ -133,7 +136,7 @@ const Graph = ({ symbols, swapped }: Props) => {
             for (let i = 0; i <= 1000; i++) {
               while (
                 days * dailySymbols +
-                  (currentSymbol.weekly ? weeklyResets * 45 : 0) <
+                  (currentSymbol.weekly ? weeklyResets * 120 : 0) <
                 remainingSymbols
               ) {
                 // If the day isn't a monday, add 1 day
@@ -147,7 +150,7 @@ const Graph = ({ symbols, swapped }: Props) => {
                     mondayReached = true;
                   }
                 } else if ((days - dailyResets) % 7 === 0) {
-                  // If the monday flag is true, increment weeklyResets (adds 45 symbols)
+                  // If the monday flag is true, increment weeklyResets (adds 120 symbols)
                   weeklyResets++;
                 }
                 days++;

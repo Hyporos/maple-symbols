@@ -109,7 +109,7 @@ const changelogEntries = [
   {
     version: "v1.3",
     date: "Mar 1, 2024",
-    link: "",
+    link: "https://github.com/Hyporos/maple-symbols/pull/13",
     additions: [
       "Added the Handbook and Extras sections to the page. If you're reading this from the changelogs, then it's working! This new part of the site will provide with information regarding symbol experience / damage ratio / level up cost tables, a log of prior updates, as well as a credits section.",
       "Completely redesigned the header and footer. With a more conventional style, it's easier to adapt to potential features implemented in future updates.",
@@ -126,6 +126,17 @@ const changelogEntries = [
       "Made the footer now stick to the bottom of the window, regardless of height.",
       "Fixed an issue where certain symbol icons would appear blurry.",
       "Fixed an issue where swapping from Arcane to Sacred symbols would cause flickering text on the Calculator.",
+    ],
+  },
+  {
+    version: "v1.3.0.1",
+    date: "Aug 22, 2025",
+    link: "https://github.com/Hyporos/maple-symbols/pull/14",
+    additions: [
+      "Updated Weekly Quests to provide 120 instead of 40 symbols per week.",
+    ],
+    fixes: [
+      "Optimized SEO for the webapp. Let's see if it brings it higher up on google!",
     ],
   },
 ];

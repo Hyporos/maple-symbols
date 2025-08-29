@@ -2,7 +2,10 @@ import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { isValid } from "../lib/utils";
 import { cn } from "../lib/utils";
+import { useDispatch, useSelector } from "react-redux";
 import RadioButton from "./RadioButton";
+import { RootState } from "../state/store";
+import { setSwapped } from "../state/selector/selectorSlice";
 
 interface Props {
   symbols: [
@@ -16,8 +19,6 @@ interface Props {
   ];
   selectedSymbol: number;
   setSelectedSymbol: Dispatch<SetStateAction<number>>;
-  swapped: boolean;
-  setSwapped: Dispatch<SetStateAction<boolean>>;
   selectedPage: number;
 }
 
@@ -28,13 +29,15 @@ interface Props {
 
 const Selector = ({
   symbols,
-  swapped,
-  setSwapped,
   selectedSymbol,
   setSelectedSymbol,
   selectedPage,
 }: Props) => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const dispatch = useDispatch();
+
+  const swapped = useSelector((state: RootState) => state.selector.swapped);
 
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
 
@@ -85,14 +88,12 @@ const Selector = ({
           <RadioButton
             label="Arcane"
             selected={!swapped}
-            value={false}
-            setValue={setSwapped}
+            setValue={setSwapped(false)}
           />
           <RadioButton
             label="Sacred"
             selected={swapped}
-            value={true}
-            setValue={setSwapped}
+            setValue={setSwapped(true)}
           />
         </div>
 

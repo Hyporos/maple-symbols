@@ -37,7 +37,6 @@ function App() {
 
   const [selectedPage, setSelectedPage] = useState(1);
 
-  const [swapped, setSwapped] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(0);
 
   const arcaneData = [
@@ -358,33 +357,28 @@ function App() {
       <div className="flex flex-col min-h-screen">
         <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
         <Selector
-              symbols={symbols}
-              selectedSymbol={selectedSymbol}
-              setSelectedSymbol={setSelectedSymbol}
-              swapped={swapped}
-              setSwapped={setSwapped}
-              selectedPage={selectedPage}
-            />
+          symbols={symbols}
+          selectedSymbol={selectedSymbol}
+          setSelectedSymbol={setSelectedSymbol}
+          selectedPage={selectedPage}
+        />
         {selectedPage === 1 && (
           <>
             <Calculator
               symbols={symbols}
               setSymbols={setSymbols}
               selectedSymbol={selectedSymbol}
-              swapped={swapped}
             />
             <Tools
               symbols={symbols}
               setSymbols={setSymbols}
               selectedSymbol={selectedSymbol}
-              swapped={swapped}
             />
             <Overview
               symbols={symbols}
               selectedSymbol={selectedSymbol}
-              swapped={swapped}
             />
-            <Graph symbols={symbols} swapped={swapped} />
+            <Graph symbols={symbols} />
           </>
         )}
 
@@ -392,7 +386,6 @@ function App() {
           <>
             <Info
               symbols={symbols}
-              swapped={swapped}
               selectedSymbol={selectedSymbol}
             />
           </>

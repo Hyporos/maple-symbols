@@ -13,6 +13,7 @@
     "@craco/craco": "^7.1.0",
     "@floating-ui/react": "^0.24.3",
     "@headlessui/react": "^1.7.15",
+    "@reduxjs/toolkit": "^2.2.1",
     "clsx": "^2.1.0",
     "dayjs": "^1.11.9",
     "depcheck": "^1.4.5",
@@ -25,7 +26,9 @@
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
+    "react-helmet-async": "^2.0.5",
     "react-icons": "^4.12.0",
+    "react-redux": "^9.1.0",
     "react-responsive": "^9.0.2",
     "recharts": "^2.10.3",
     "tailwind-merge": "^2.2.1"

@@ -6,6 +6,8 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { MdOutlineInfo } from "react-icons/md";
 import dayjs from "dayjs";
 import { cn } from "../../lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
 interface Props {
   symbols: [
@@ -26,10 +28,11 @@ interface Props {
       symbolsRequired: Array<number>;
     }
   ];
-  swapped: boolean;
 }
 
-const Overview = ({ symbols, swapped }: Props) => {
+const Overview = ({ symbols }: Props) => {
+  const swapped = useSelector((state: RootState) => state.selector.swapped);
+
   const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
   const isTablet = useMediaQuery({ query: `(max-width: 1149px)` });
   const [targetSymbol, setTargetSymbol] = useState(0);
@@ -59,7 +62,7 @@ const Overview = ({ symbols, swapped }: Props) => {
       let mondayReached = false;
       for (let i = 0; i < 1000; i++) {
         if (
-          days * dailySymbols + (currentSymbol.weekly ? resets * 45 : 0) <
+          days * dailySymbols + (currentSymbol.weekly ? resets * 120 : 0) <
           targetSymbols
         ) {
           if (
