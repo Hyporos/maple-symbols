@@ -128,6 +128,17 @@ const changelogEntries = [
       "Fixed an issue where swapping from Arcane to Sacred symbols would cause flickering text on the Calculator.",
     ],
   },
+  {
+    version: "v1.3.0.1",
+    date: "Aug 22, 2025",
+    link: "https://github.com/Hyporos/maple-symbols/pull/14",
+    additions: [
+      "Updated Weekly Quests to provide 120 instead of 40 symbols per week.",
+    ],
+    fixes: [
+      "Optimized SEO for the webapp. Let's see if it brings it higher up on google!",
+    ],
+  },
 ];
 
 export default changelogEntries;

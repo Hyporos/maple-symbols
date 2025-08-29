@@ -36,7 +36,7 @@ function Footer() {
         </div>
         <div className="h-px bg-white/10 w-full max-w-[260px] md:max-w-[360px]"></div>
         <p className="text-sm md:text-base text-tertiary">
-          &copy; 2024 Maple Symbols ━ v1.3 Beta
+          &copy; 2025 Maple Symbols ━ v1.3.0.1 Beta
         </p>
       </section>
     </section>
