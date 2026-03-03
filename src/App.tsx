@@ -1,35 +1,42 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Disclaimer from "./components/Disclaimer";
 import Header from "./components/Header";
 import Selector from "./components/Selector";
-import Calculator from "./components/Calculator/Calculator";
-import Tools from "./components/Calculator/Tools";
 import Footer from "./components/Footer";
-import Graph from "./components/Calculator/Graph";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import Info from "./components/Handbook/Handbook";
-import Extras from "./components/Extras/Extras";
-import Overview from "./components/Calculator/Overview";
+
+// Lazily load page-specific components so they are only downloaded when needed
+const Calculator = lazy(() => import("./components/Calculator/Calculator"));
+const Tools = lazy(() => import("./components/Calculator/Tools"));
+const Overview = lazy(() => import("./components/Calculator/Overview"));
+const Graph = lazy(() => import("./components/Calculator/Graph"));
+const Info = lazy(() => import("./components/Handbook/Handbook"));
+const Extras = lazy(() => import("./components/Extras/Extras"));
+
+// Initialize Firebase once at module level, not inside the component
+const firebaseConfig = {
+  apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
+  authDomain: "maple-symbols.firebaseapp.com",
+  projectId: "maple-symbols",
+  storageBucket: "maple-symbols.appspot.com",
+  messagingSenderId: "1034069866026",
+  appId: "1:1034069866026:web:f7d7f1d55054339039b553",
+  measurementId: "G-5EGQQS4DDK",
+};
+const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+
+// Static data arrays — defined once at module level so they are never reallocated
+const arcaneData = [
+  0, 12, 15, 20, 27, 36, 47, 60, 75, 92, 111, 132, 155, 180, 207, 236, 267,
+  300, 335, 372,
+];
+
+const sacredData = [0, 29, 76, 141, 224, 325, 444, 581, 736, 909, 1100];
 
 function App() {
-  const firebaseConfig = {
-    apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
-    authDomain: "maple-symbols.firebaseapp.com",
-    projectId: "maple-symbols",
-    storageBucket: "maple-symbols.appspot.com",
-    messagingSenderId: "1034069866026",
-    appId: "1:1034069866026:web:f7d7f1d55054339039b553",
-    measurementId: "G-5EGQQS4DDK",
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-
-  // Initialize Analytics and get a reference to the service
-  const analytics = getAnalytics(app);
-
   if (localStorage.getItem("clearStorage") !== "1.3") {
     localStorage.clear();
     localStorage.setItem("clearStorage", "1.3");
@@ -38,13 +45,6 @@ function App() {
   const [selectedPage, setSelectedPage] = useState(1);
 
   const [selectedSymbol, setSelectedSymbol] = useState(0);
-
-  const arcaneData = [
-    0, 12, 15, 20, 27, 36, 47, 60, 75, 92, 111, 132, 155, 180, 207, 236, 267,
-    300, 335, 372,
-  ];
-
-  const sacredData = [0, 29, 76, 141, 224, 325, 444, 581, 736, 909, 1100];
 
   const [symbols, setSymbols] = useState([
     {
@@ -362,35 +362,37 @@ function App() {
           setSelectedSymbol={setSelectedSymbol}
           selectedPage={selectedPage}
         />
-        {selectedPage === 1 && (
-          <>
-            <Calculator
-              symbols={symbols}
-              setSymbols={setSymbols}
-              selectedSymbol={selectedSymbol}
-            />
-            <Tools
-              symbols={symbols}
-              setSymbols={setSymbols}
-              selectedSymbol={selectedSymbol}
-            />
-            <Overview
-              symbols={symbols}
-              selectedSymbol={selectedSymbol}
-            />
-            <Graph symbols={symbols} />
-          </>
-        )}
+        <Suspense fallback={null}>
+          {selectedPage === 1 && (
+            <>
+              <Calculator
+                symbols={symbols}
+                setSymbols={setSymbols}
+                selectedSymbol={selectedSymbol}
+              />
+              <Tools
+                symbols={symbols}
+                setSymbols={setSymbols}
+                selectedSymbol={selectedSymbol}
+              />
+              <Overview
+                symbols={symbols}
+                selectedSymbol={selectedSymbol}
+              />
+              <Graph symbols={symbols} />
+            </>
+          )}
 
-        {selectedPage === 2 && (
-          <>
-            <Info
-              symbols={symbols}
-              selectedSymbol={selectedSymbol}
-            />
-          </>
-        )}
-        {selectedPage === 3 && <Extras />}
+          {selectedPage === 2 && (
+            <>
+              <Info
+                symbols={symbols}
+                selectedSymbol={selectedSymbol}
+              />
+            </>
+          )}
+          {selectedPage === 3 && <Extras />}
+        </Suspense>
         <Footer />
       </div>
     );

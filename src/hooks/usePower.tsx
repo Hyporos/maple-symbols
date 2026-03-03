@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { isValid } from "../lib/utils";
 
 interface Symbols {
@@ -8,9 +8,7 @@ interface Symbols {
 
 // Calculate the current arcane/sacred power of the character
 export function usePower(symbols: Array<Symbols>, swapped: boolean) {
-  const [currentPower, setCurrentPower] = useState(0);
-
-  useEffect(() => {
+  return useMemo(() => {
     let tempCurrentPower = 0;
 
     for (const symbol of symbols) {
@@ -23,8 +21,6 @@ export function usePower(symbols: Array<Symbols>, swapped: boolean) {
       }
     }
 
-    setCurrentPower(tempCurrentPower);
+    return tempCurrentPower;
   }, [symbols, swapped]);
-
-  return currentPower;
 }

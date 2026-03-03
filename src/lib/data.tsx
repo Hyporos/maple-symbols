@@ -139,6 +139,14 @@ const changelogEntries = [
       "Optimized SEO for the webapp. Let's see if it brings it higher up on google!",
     ],
   },
+    {
+    version: "v1.3.0.2",
+    date: "Mar 3, 2025",
+    link: "https://github.com/Hyporos/maple-symbols/pull/15",
+    fixes: [
+      "Improved general performance and load time around the web app. (Also, our previous SEO change did work!)",
+    ],
+  },
 ];
 
 export default changelogEntries;
