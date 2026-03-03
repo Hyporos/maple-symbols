@@ -131,12 +131,20 @@ const changelogEntries = [
   {
     version: "v1.3.0.1",
     date: "Aug 22, 2025",
-    link: "https://github.com/Hyporos/maple-symbols/pull/14",
+    link: "https://github.com/Hyporos/maple-symbols/pull/15",
     additions: [
       "Updated Weekly Quests to provide 120 instead of 40 symbols per week.",
     ],
     fixes: [
       "Optimized SEO for the webapp. Let's see if it brings it higher up on google!",
+    ],
+  },
+    {
+    version: "v1.3.0.2",
+    date: "Mar 3, 2025",
+    link: "https://github.com/Hyporos/maple-symbols/pull/16",
+    fixes: [
+      "Improved general performance and load time around the web app. (Also, our previous SEO change did work!)",
     ],
   },
 ];
