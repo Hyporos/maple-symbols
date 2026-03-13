@@ -1,20 +1,25 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import compression from "vite-plugin-compression";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Pre-compress assets with Brotli/gzip — Vercel and other CDNs serve the
+    // pre-compressed file to supporting browsers, reducing transfer size.
+    compression({ algorithm: "brotliCompress", ext: ".br" }),
+    compression({ algorithm: "gzip", ext: ".gz" }),
+  ],
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-redux'],
-          'recharts-vendor': ['recharts'],
-          'firebase-vendor': ['firebase/app', 'firebase/analytics'],
-          'framer-vendor': ['framer-motion'],
-          'dayjs-vendor': ['dayjs'],
+          "react-vendor": ["react", "react-dom", "zustand"],
+          "recharts-vendor": ["recharts"],
+          "dayjs-vendor": ["dayjs"],
         },
       },
     },
   },
-})
+});

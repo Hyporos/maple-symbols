@@ -1,336 +1,186 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import { TbSlash } from "react-icons/tb";
 import { MdOutlineInfo } from "react-icons/md";
-import dayjs from "dayjs";
+import { dayjs } from "../../lib/dayjs";
 import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
-import { cn, getDailySymbols, isMaxLevel, isValid } from "../../lib/utils";
-import { useMediaQuery } from "react-responsive";
-import { useSelector } from "react-redux";
-import { RootState } from "../../state/store";
+import {
+  calculateDaysRemaining,
+  cn,
+  getDailySymbols,
+  isMaxLevel,
+  isValid,
+  updateSymbol,
+} from "../../lib/utils";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useAppStore } from "../../state/store";
 
-interface Props {
-  symbols: [
-    {
-      id: number;
-      name: string;
-      alt: string;
-      img: string;
-      type: string;
-      dailyName: string;
-      weeklyName: string;
-      extraName: string;
-      level: number;
-      experience: number;
-      daily: boolean;
-      weekly: boolean;
-      extra: boolean;
-      dailySymbols: number;
-      daysRemaining: number;
-      totalDaysRemaining: number;
-      symbolsRemaining: number;
-      mondayCount: number;
-      completion: string;
-      locked: boolean;
-      symbolsRequired: Array<number>;
-      mesosRequired: Array<number>;
-    }
-  ];
-  setSymbols: Dispatch<SetStateAction<object>>;
-  selectedSymbol: number;
-}
+const Calculator = () => {
+  /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */
 
-const Calculator = ({
-  symbols,
-  setSymbols,
-  selectedSymbol,
-}: Props) => {
-  /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+  const symbols = useAppStore((s) => s.symbols);
+  const setSymbols = useAppStore((s) => s.setSymbols);
+  const selectedSymbol = useAppStore((s) => s.selectedSymbol);
+  const swapped = useAppStore((s) => s.swapped);
 
-  const swapped = useSelector((state: RootState) => state.selector.swapped);
+  const { isMobile } = useBreakpoint();
 
-  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
-  
   const currentSymbol = symbols[selectedSymbol];
-  const [daysToNextLevel, setDaysToNextLevel] = useState(NaN);
-
-  const [overflowLevel, setOverflowLevel] = useState(NaN);
-  const [overflowExperience, setOverflowExperience] = useState(NaN);
 
   const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
 
   const readyForUpgrade = currentSymbol.experience >= nextExperience;
 
-  /* | ―――――――――――――――――――― Calculations ――――――――――――――――――― */
+  /* ―――――――――――――――――――― Calculations ――――――――――――――――――― */
 
-  // Calculate Daily/Weekly Symbols
-  const dailySymbols = currentSymbol.daily
-    ? currentSymbol.dailySymbols *
-      (currentSymbol.extra ? (currentSymbol.type === "arcane" ? 2 : 1.5) : 1)
-    : 0;
+  const dailySymbols = getDailySymbols(currentSymbol);
+
+  // Derived: days remaining until the next level upgrade.
+  const daysToNextLevel = useMemo(() => {
+    try {
+      return calculateDaysRemaining(
+        nextExperience - currentSymbol.experience,
+        dailySymbols,
+        !!currentSymbol.weekly
+      );
+    } catch {
+      return NaN;
+    }
+  }, [nextExperience, currentSymbol.experience, dailySymbols, currentSymbol.weekly]);
 
   /*
    | Calculate Total Symbols Remaining
    ――――――――――――――――――――――――――――――――
   */
 
-  const remainingSymbols =
-    currentSymbol.symbolsRequired
-      .slice(currentSymbol.level, !swapped ? 20 : 11)
-      .reduce((accumulator, experience) => accumulator + experience, 0) -
-    currentSymbol.experience;
-
+  // Single effect: compute and persist symbolsRemaining, daysRemaining, and
+  // completion date in one atomic store update — replacing three previous effects
+  // and a useMemo that caused cascading re-renders via intermediate store writes.
   useEffect(() => {
-    setSymbols(
-      symbols.map((symbol) =>
-        symbol.id === selectedSymbol + 1
-          ? { ...symbol, symbolsRemaining: remainingSymbols }
-          : symbol
-      )
-    );
-  }, [currentSymbol.completion, currentSymbol.level, currentSymbol.experience]);
-
-  /*
-   | Calculate Remaining Days
-   ―――――――――――――――――――――――――――
-   */
-
-  useMemo(() => {
     try {
-      let days = 0;
-      let count = 0;
-      let resets = 0;
-      let mondayReached = false;
-      for (let i = 0; i < 1000; i++) {
-        if (
-          days * dailySymbols + (currentSymbol.weekly ? resets * 120 : 0) <
-          nextExperience - currentSymbol.experience
-        ) {
-          if (
-            // ? Should this be a while loop? while monday false
-            mondayReached === false &&
-            dayjs().add(count, "day").isBefore(dayjs().day(8))
-          ) {
-            count++;
-            if (dayjs().add(count, "day").isSame(dayjs().day(8))) {
-              //resets++; // ? Should the 'Weekly Done' toggle be included?
-              mondayReached = true;
-            }
-          } else if ((days - count) % 7 === 0) {
-            resets++;
-          }
-          days++;
-        }
+      const remaining =
+        currentSymbol.symbolsRequired
+          .slice(currentSymbol.level, !swapped ? 20 : 11)
+          .reduce((acc, exp) => acc + exp, 0) - currentSymbol.experience;
+
+      const daysTotal = calculateDaysRemaining(remaining, dailySymbols, !!currentSymbol.weekly);
+      const completionDate = dayjs().add(daysTotal, "day").format("YYYY-MM-DD");
+
+      // Object.is is NaN-safe (Object.is(NaN, NaN) === true), preventing the
+      // infinite re-render loop caused by `NaN !== NaN` always being true.
+      // Functional updater removes `symbols` from the dep array, which was the
+      // feedback path that made the loop possible.
+      if (
+        !Object.is(remaining, currentSymbol.symbolsRemaining) ||
+        !Object.is(daysTotal, currentSymbol.daysRemaining) ||
+        completionDate !== currentSymbol.completion
+      ) {
+        setSymbols(
+          updateSymbol(useAppStore.getState().symbols, selectedSymbol, {
+            symbolsRemaining: remaining,
+            daysRemaining: daysTotal,
+            completion: completionDate,
+          })
+        );
       }
-
-      setDaysToNextLevel(days);
-
-      let days2 = 0;
-      let count2 = 0; //TODO: TONS OF HALF ASS DUPLICTED GARABGE CODE PLEASE FIX.
-      let resets2 = 0;
-      let mondayReached2 = false;
-      for (let i = 0; i < 1000; i++) {
-        if (
-          days2 * dailySymbols + (currentSymbol.weekly ? resets2 * 120 : 0) <
-          remainingSymbols
-        ) {
-          if (
-            // ? Should this be a while loop? while monday false
-            mondayReached2 === false &&
-            dayjs().add(count2, "day").isBefore(dayjs().day(8))
-          ) {
-            count2++;
-            if (dayjs().add(count2, "day").isSame(dayjs().day(8))) {
-              //resets++; // ? Should the 'Weekly Done' toggle be included?
-              mondayReached2 = true;
-            }
-          } else if ((days2 - count2) % 7 === 0) {
-            resets2++;
-          }
-          days2++;
-        }
-      }
-
-      setSymbols(
-        symbols.map((symbol) =>
-          symbol.id === selectedSymbol + 1
-            ? { ...symbol, daysRemaining: days2 }
-            : symbol
-        )
-      );
-    } catch (e) {
-      //console.log(e as Error);
+    } catch {
+      // Invalid input (e.g. NaN level/exp) — silently skip.
     }
   }, [
-    currentSymbol.completion,
     currentSymbol.daily,
     currentSymbol.extra,
     currentSymbol.weekly,
-    currentSymbol.name,
     currentSymbol.level,
     currentSymbol.experience,
+    swapped,
+    selectedSymbol,
   ]);
 
-  // Calculate Completion Date
-  const completion = dayjs()
-    .add(currentSymbol.daysRemaining, "day")
-    .format("YYYY-MM-DD")
-    .toString();
-
-  useMemo(() => {
-    setSymbols(
-      symbols.map((symbol) =>
-        symbol.id === selectedSymbol + 1
-          ? { ...symbol, completion: completion }
-          : symbol
-      )
-    );
-  }, [currentSymbol.daysRemaining]);
-
-  const symbolData = JSON.parse(localStorage.getItem("symbolData") || "[]");
-
-  useEffect(() => {
-    localStorage.setItem("symbolData", JSON.stringify(symbols));
-  }, [
-    currentSymbol.level,
-    currentSymbol.experience,
-    currentSymbol.daily,
-    currentSymbol.weekly,
-    currentSymbol.extra,
-    currentSymbol.daysRemaining,
-    currentSymbol.symbolsRemaining,
-    currentSymbol.completion,
-    currentSymbol.locked,
-  ]);
-
-  // Load data only if data exists.
-  useEffect(() => {
-    try {
-      for (let i = 0; i < symbols.length; i++) {
-        if (symbolData[i].level !== null || symbolData[i].experience !== null)
-          setSymbols(symbolData);
-      }
-    } catch (e) {
-      console.log("Data Not Detected");
-    }
-  }, []);
-
-  useEffect(() => {
-    setOverflowLevel(currentSymbol.level);
+  // Derived overflow state: if the stored experience exceeds the next-level
+  // requirement, compute how many levels would be gained and the leftover exp.
+  // Using useMemo avoids the extra render cycle from a useState+useEffect pair.
+  const { overflowLevel, overflowExperience } = useMemo(() => {
     let totalLevels = 0;
     let totalExp = 0;
-    currentSymbol.symbolsRequired.forEach((symbol, indexLevel) => {
+    let oLevel = currentSymbol.level;
+    currentSymbol.symbolsRequired.forEach((_, indexLevel) => {
       if (
         indexLevel >= currentSymbol.level &&
-        currentSymbol.experience >=
-          currentSymbol.symbolsRequired[indexLevel] + totalExp
+        currentSymbol.experience >= currentSymbol.symbolsRequired[indexLevel] + totalExp
       ) {
         totalLevels++;
         totalExp += currentSymbol.symbolsRequired[indexLevel];
-        setOverflowLevel(currentSymbol.level + totalLevels);
+        oLevel = currentSymbol.level + totalLevels;
       }
-      setOverflowExperience(currentSymbol.experience - totalExp);
     });
-  }, [currentSymbol.level, currentSymbol.experience]);
+    return { overflowLevel: oLevel, overflowExperience: currentSymbol.experience - totalExp };
+  }, [currentSymbol.level, currentSymbol.experience, currentSymbol.symbolsRequired]);
 
-  useMemo(() => {
-    try {
-      if (readyForUpgrade && currentSymbol.locked) {
-        setSymbols(
-          symbols.map((symbol) =>
-            symbol.id === selectedSymbol + 1
-              ? { ...symbol, experience: nextExperience }
-              : symbol
-          )
-        );
-      }
-    } catch (e) {
-      ////console.log((e as Error).message);
+  useEffect(() => {
+    if (readyForUpgrade && currentSymbol.locked) {
+      setSymbols(
+        updateSymbol(useAppStore.getState().symbols, selectedSymbol, { experience: nextExperience })
+      );
     }
-  }, [currentSymbol.locked]);
+  }, [currentSymbol.locked, readyForUpgrade, nextExperience, selectedSymbol]);
 
   useEffect(() => {
     if (
       currentSymbol.experience === 0 &&
-      isMaxLevel(currentSymbol.level, swapped)
+      isMaxLevel(currentSymbol.level, swapped) &&
+      !currentSymbol.locked
     ) {
-      setSymbols(
-        symbols.map((symbol) =>
-          symbol.id === selectedSymbol + 1
-            ? { ...symbol, locked: true }
-            : symbol
-        )
-      );
+      setSymbols(updateSymbol(useAppStore.getState().symbols, selectedSymbol, { locked: true }));
     }
-  }, [currentSymbol.experience]);
+  }, [
+    currentSymbol.experience,
+    currentSymbol.level,
+    currentSymbol.locked,
+    swapped,
+    selectedSymbol,
+  ]);
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
   return (
     <section className="flex justify-center">
-      <div className="flex flex-col md:flex-row bg-gradient-to-t from-card-tool to-card-grad justify-between rounded-t-lg gap-8 md:gap-0 py-8 md:py-10 md:py-16 mx-4 w-[360px] md:w-full md:max-w-[700px]">
+      <div className="mx-4 flex w-[360px] flex-col justify-between gap-8 rounded-t-lg bg-gradient-to-t from-card-tool to-card-grad py-8 md:w-full md:max-w-[700px] md:flex-row md:gap-0 md:py-16">
         {/* SYMBOL INPUTS */}
-        <div className="flex flex-col justify-between px-10 w-full max-w-[360px] md:h-[250px]">
-          <div className="flex justify-center items-center gap-4 pb-5 md:pb-6">
+        <div className="flex w-full max-w-[360px] flex-col justify-between px-10 md:h-[250px]">
+          <div className="flex items-center justify-center gap-4 pb-5 md:pb-6">
             {/* SYMBOL TITLE */}
-            <img src={currentSymbol.img} alt={currentSymbol.alt} width={33} />
-            <p className="text-lg md:text-xl text-primary font-semibold tracking-wider uppercase">
+            <img src={currentSymbol.img} alt={currentSymbol.name} width={33} />
+            <p className="text-lg font-semibold uppercase tracking-wider text-primary md:text-xl">
               {currentSymbol.name}
             </p>
           </div>
 
-          <Tooltip>
+          <Tooltip placement="bottom">
             <TooltipTrigger className="cursor-default">
-              <div className="relative flex justify-center items-center gap-2 pt-4 pb-6">
+              <div className="relative flex items-center justify-center gap-2 pb-6 pt-4">
                 {/* LEVEL INPUT */}
                 <input
                   type="number"
                   placeholder="Level"
-                  value={
-                    currentSymbol.level === null ? "NaN" : currentSymbol.level
-                  }
-                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2 md:p-2.5 w-1/2"
+                  value={isNaN(currentSymbol.level) ? "" : currentSymbol.level}
+                  className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
-                    if (Number(e.target.value) <= (!swapped ? 20 : 11)) {
-                      setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? { ...symbol, level: parseInt(e.target.value) }
-                            : symbol
-                        )
-                      );
-                    }
-                    if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
-                      setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? {
-                                ...symbol,
-                                level: !swapped ? 20 : 11,
-                                experience: 0,
-                              }
-                            : symbol
-                        )
-                      );
-                    }
                     if (Number(e.target.value) < 0) {
+                      setSymbols(updateSymbol(symbols, selectedSymbol, { level: NaN }));
+                    } else if (e.target.value === "0") {
+                      setSymbols(updateSymbol(symbols, selectedSymbol, { level: 1 }));
+                    } else if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
                       setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? { ...symbol, level: NaN }
-                            : symbol
-                        )
+                        updateSymbol(symbols, selectedSymbol, {
+                          level: !swapped ? 20 : 11,
+                          experience: 0,
+                        })
                       );
-                    }
-                    if (e.target.value === "0") {
+                    } else {
                       setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? { ...symbol, level: 1 }
-                            : symbol
-                        )
+                        updateSymbol(symbols, selectedSymbol, { level: parseInt(e.target.value) })
                       );
                     }
                   }}
@@ -341,7 +191,7 @@ const Calculator = ({
                 {/* LOCK FUNCTIONALITY */}
                 <div className="absolute right-0">
                   <div
-                    className={`w-[40px] h-[40px] ${
+                    className={`h-[40px] w-[40px] ${
                       (!readyForUpgrade ||
                         isNaN(currentSymbol.experience) ||
                         currentSymbol.experience === 0 ||
@@ -355,15 +205,14 @@ const Calculator = ({
                         <FiUnlock
                           size={18}
                           color="#718571"
-                          onClick={() => {
+                          aria-label="Unlock experience cap"
+                          onClick={() =>
                             setSymbols(
-                              symbols.map((symbol) =>
-                                symbol.id === selectedSymbol + 1
-                                  ? { ...symbol, locked: !currentSymbol.locked }
-                                  : symbol
-                              )
-                            );
-                          }}
+                              updateSymbol(symbols, selectedSymbol, {
+                                locked: !currentSymbol.locked,
+                              })
+                            )
+                          }
                           className={`cursor-pointer ${
                             (!currentSymbol.locked ||
                               !readyForUpgrade ||
@@ -375,59 +224,41 @@ const Calculator = ({
                         <FiLock
                           size={18}
                           color="#857871"
-                          onClick={() => {
+                          aria-label="Lock experience cap"
+                          onClick={() =>
                             setSymbols(
-                              symbols.map((symbol) =>
-                                symbol.id === selectedSymbol + 1
-                                  ? { ...symbol, locked: !currentSymbol.locked }
-                                  : symbol
-                              )
-                            );
-                          }}
-                          className={`cursor-pointer ${
-                            currentSymbol.locked && "hidden"
-                          }`}
+                              updateSymbol(symbols, selectedSymbol, {
+                                locked: !currentSymbol.locked,
+                              })
+                            )
+                          }
+                          className={`cursor-pointer ${currentSymbol.locked && "hidden"}`}
                         />
                       </TooltipTrigger>
                       <TooltipContent className="tooltip">
-                        <span>{currentSymbol.locked ? "Unlock" : "Lock"}</span>{" "}
-                        experience cap
+                        <span>{currentSymbol.locked ? "Unlock" : "Lock"}</span> experience cap
                       </TooltipContent>
                     </Tooltip>
                   </div>
                   <div
                     className={`absolute translate-x-[47.5px] ${
-                      currentSymbol.experience <= nextExperience &&
-                      "pointer-events-none"
+                      currentSymbol.experience <= nextExperience && "pointer-events-none"
                     }`}
                   >
                     <FiCheck
                       size={20}
-                      color={
-                        currentSymbol.experience > nextExperience
-                          ? "#718571"
-                          : "#857871"
-                      }
+                      color={currentSymbol.experience > nextExperience ? "#718571" : "#857871"}
                       onClick={() =>
                         setSymbols(
-                          symbols.map((symbol) =>
-                            symbol.id === selectedSymbol + 1
-                              ? {
-                                  ...symbol,
-                                  level: overflowLevel,
-                                  experience:
-                                    currentSymbol.experience <
-                                    currentSymbol.symbolsRemaining +
-                                      currentSymbol.experience
-                                      ? overflowExperience
-                                      : 0,
-                                  locked: true,
-                                }
-                              : symbol
-                          )
+                          updateSymbol(symbols, selectedSymbol, {
+                            level: overflowLevel,
+                            experience:
+                              overflowLevel > currentSymbol.level ? overflowExperience : 0,
+                            locked: true,
+                          })
                         )
                       }
-                      className={`cursor-pointer translate-y-[-29.5px] ${
+                      className={`translate-y-[-29.5px] cursor-pointer ${
                         currentSymbol.locked && "hidden"
                       }`}
                     />
@@ -438,95 +269,30 @@ const Calculator = ({
                 <input
                   type="number"
                   placeholder={currentSymbol.locked ? "Experience" : "Exp"}
-                  value={
-                    currentSymbol.experience === null
-                      ? "NaN"
-                      : currentSymbol.experience
-                  }
-                  className="bg-secondary text-secondary hover:text-primary text-center text-sm tracking-wider hover:bg-hover focus:bg-hover focus:text-primary outline-none focus:outline-none transition-colors p-2 md:p-2.5 w-1/2"
+                  value={isNaN(currentSymbol.experience) ? "" : currentSymbol.experience}
+                  className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
-                    if (
-                      isNaN(currentSymbol.level) ||
-                      currentSymbol.level === null
-                    ) {
-                      setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? { ...symbol, experience: NaN }
-                            : symbol
-                        )
-                      );
-                    }
-                    if (
-                      Number(e.target.value) <=
-                      (currentSymbol.locked
-                        ? nextExperience
-                        : !swapped
-                        ? 2679
-                        : 4565)
-                    ) {
-                      setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? {
-                                ...symbol,
-                                experience: parseInt(e.target.value),
-                              }
-                            : symbol
-                        )
-                      );
-                    }
-                    if (
-                      Number(e.target.value) >=
-                      (currentSymbol.locked
-                        ? nextExperience
-                        : !swapped
-                        ? 2679
-                        : 4565)
-                    ) {
-                      setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? {
-                                ...symbol,
-                                experience: currentSymbol.locked
-                                  ? nextExperience
-                                  : !swapped
-                                  ? 2679
-                                  : 4565,
-                              }
-                            : symbol
-                        )
-                      );
-                    }
-                    if (e.target.value === "0" && currentSymbol.level === 1) {
-                      setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? { ...symbol, experience: 1 }
-                            : symbol
-                        )
-                      );
-                    }
-                    if (e.target.value === "00" || e.target.value === "000") {
+                    const expCap = currentSymbol.locked
+                      ? nextExperience
+                      : currentSymbol.symbolsRequired.reduce((a, b) => a + b, 0);
+                    if (!isValid(currentSymbol.level)) {
+                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: NaN }));
+                    } else if (Number(e.target.value) >= expCap) {
+                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: expCap }));
+                    } else if (Number(e.target.value) < 0) {
+                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: NaN }));
+                    } else if (e.target.value === "0" && currentSymbol.level === 1) {
+                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: 1 }));
+                    } else if (e.target.value === "00" || e.target.value === "000") {
                       currentSymbol.level === 1
-                        ? setSymbols(
-                            symbols.map((symbol) =>
-                              symbol.id === selectedSymbol + 1
-                                ? { ...symbol, experience: 1 }
-                                : symbol
-                            )
-                          )
+                        ? setSymbols(updateSymbol(symbols, selectedSymbol, { experience: 1 }))
                         : (e.target.value = "0");
-                    }
-                    if (Number(e.target.value) < 0) {
+                    } else {
                       setSymbols(
-                        symbols.map((symbol) =>
-                          symbol.id === selectedSymbol + 1
-                            ? { ...symbol, experience: NaN }
-                            : symbol
-                        )
+                        updateSymbol(symbols, selectedSymbol, {
+                          experience: parseInt(e.target.value),
+                        })
                       );
                     }
                     if (e.target.value.startsWith("0")) {
@@ -542,24 +308,17 @@ const Calculator = ({
           </Tooltip>
 
           {/* DAILY / WEEKLY BUTTONS */}
-          <div className="flex gap-3 md:gap-2.5 pb-4">
+          <div className="flex gap-3 pb-4 md:gap-2.5">
             <Tooltip placement="bottom">
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
+                    "w-full select-none border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
                     currentSymbol.daily && "border-checked/80 md:border-checked"
                   )}
                   onClick={() =>
                     setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? {
-                              ...symbol,
-                              daily: !currentSymbol.daily,
-                            }
-                          : symbol
-                      )
+                      updateSymbol(symbols, selectedSymbol, { daily: !currentSymbol.daily })
                     )
                   }
                 >
@@ -576,21 +335,13 @@ const Calculator = ({
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
-                    currentSymbol.weekly &&
-                      "border-checked/80 md:border-checked",
+                    "block w-full select-none border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
+                    currentSymbol.weekly && "border-checked/80 md:border-checked",
                     typeof currentSymbol.weekly === "undefined" && "hidden"
                   )}
                   onClick={() =>
                     setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? {
-                              ...symbol,
-                              weekly: !currentSymbol.weekly,
-                            }
-                          : symbol
-                      )
+                      updateSymbol(symbols, selectedSymbol, { weekly: !currentSymbol.weekly })
                     )
                   }
                 >
@@ -607,21 +358,13 @@ const Calculator = ({
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "block bg-secondary hover:bg-hover text-secondary hover:text-primary text-sm md:text-base tracking-wider border-b-[2px] border-unchecked/80 md:border-unchecked focus:outline-accent select-none transition-[background-color] py-1.5 w-full",
-                    currentSymbol.extra &&
-                      "border-checked/80 md:border-checked",
+                    "block w-full select-none border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
+                    currentSymbol.extra && "border-checked/80 md:border-checked",
                     typeof currentSymbol.extra === "undefined" && "hidden"
                   )}
                   onClick={() =>
                     setSymbols(
-                      symbols.map((symbol) =>
-                        symbol.id === selectedSymbol + 1
-                          ? {
-                              ...symbol,
-                              extra: !currentSymbol.extra,
-                            }
-                          : symbol
-                      )
+                      updateSymbol(symbols, selectedSymbol, { extra: !currentSymbol.extra })
                     )
                   }
                 >
@@ -638,28 +381,24 @@ const Calculator = ({
           {/* DAILY / WEEKLY COUNT */}
           <div
             className={cn(
-              "flex flex-row justify-between text-xs md:text-sm text-tertiary text-center pt-5 md:pt-6",
+              "flex flex-row justify-between pt-5 text-center text-xs text-tertiary md:pt-6 md:text-sm",
               currentSymbol.type === "sacred" && "justify-center"
             )}
           >
-            <p>{getDailySymbols(currentSymbol)} symbols / day</p>
+            <p>{dailySymbols} symbols / day</p>
             {currentSymbol.type === "arcane" && (
-              <p>
-                {currentSymbol.weekly
-                  ? 120 + " symbols / week"
-                  : 0 + " symbols / week"}
-              </p>
+              <p>{currentSymbol.weekly ? 120 + " symbols / week" : 0 + " symbols / week"}</p>
             )}
           </div>
         </div>
 
         {/* DIVIDER */}
-        <div className="bg-white/10 mx-auto w-full md:w-px h-px md:h-full" />
+        <div className="mx-auto h-px w-full bg-white/10 md:h-full md:w-px" />
 
         {/* LEVEL DETAILS */}
         <div
           className={cn(
-            "flex flex-col justify-between items-center text-center px-8 md:px-10 w-full max-w-[360px]",
+            "flex w-full max-w-[360px] flex-col items-center justify-between px-8 text-center md:px-10",
             !isValid(currentSymbol.level) && "justify-center",
             isMaxLevel(currentSymbol.level, swapped) && "justify-center",
             currentSymbol.symbolsRequired.length <= 10 && "hidden"
@@ -669,12 +408,12 @@ const Calculator = ({
           {isValid(currentSymbol.level) &&
             !isMaxLevel(currentSymbol.level, swapped) &&
             currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
-              <div className="flex gap-3 items-center pt-0.5">
-                <h1 className="text-base md:text-xl text-primary font-semibold tracking-wider">
+              <div className="flex items-center gap-3 pt-0.5">
+                <h1 className="text-base font-semibold tracking-wider text-primary md:text-xl">
                   Level <span>{currentSymbol.level}</span>
                 </h1>
                 <FaArrowRight size={!isMobile ? 20 : 15} />
-                <h1 className="text-base md:text-xl text-primary font-semibold tracking-wider">
+                <h1 className="text-base font-semibold tracking-wider text-primary md:text-xl">
                   Level <span>{currentSymbol.level + 1}</span>
                 </h1>
               </div>
@@ -684,7 +423,7 @@ const Calculator = ({
           {isValid(currentSymbol.level) &&
             !isMaxLevel(currentSymbol.level, swapped) &&
             currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
-              <div className="flex flex-col justify-between [&_*]:text-sm [&_*]:md:text-base gap-2 md:gap-0 pt-5 md:pt-10 h-full">
+              <div className="flex h-full flex-col justify-between gap-2 pt-5 md:gap-0 md:pt-10 [&_*]:text-sm [&_*]:md:text-base">
                 {!readyForUpgrade &&
                   (currentSymbol.daily || currentSymbol.weekly) &&
                   isValid(currentSymbol.experience) && (
@@ -698,13 +437,12 @@ const Calculator = ({
                           {" "}
                           <MdOutlineInfo
                             size={20}
-                            className="fill-accent hover:fill-white cursor-default transition-colors md:mt-0.5"
+                            className="cursor-default fill-accent transition-colors hover:fill-white md:mt-0.5"
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip">
-                          The completion date assumes that <br></br> you have{" "}
-                          <span>completed</span> both your <br></br>{" "}
-                          <span>daily</span> and <span>weekly</span> quests
+                          The completion date assumes that <br></br> you have <span>completed</span>{" "}
+                          both your <br></br> <span>daily</span> and <span>weekly</span> quests
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -748,11 +486,7 @@ const Calculator = ({
                 )}
 
                 <p className="pt-2.5 md:pt-8">
-                  <span>
-                    {currentSymbol.mesosRequired[
-                      currentSymbol.level
-                    ]?.toLocaleString()}
-                  </span>{" "}
+                  <span>{currentSymbol.mesosRequired[currentSymbol.level]?.toLocaleString()}</span>{" "}
                   mesos required
                 </p>
 
@@ -765,12 +499,11 @@ const Calculator = ({
                       {" "}
                       <MdOutlineInfo
                         size={20}
-                        className="fill-accent hover:fill-white cursor-default transition-colors md:mt-0.5"
+                        className="cursor-default fill-accent transition-colors hover:fill-white md:mt-0.5"
                       />
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
-                      <span>{!swapped ? "+2,100" : "+4,200"} </span> HP (Demon
-                      Avenger)<br></br>
+                      <span>{!swapped ? "+2,100" : "+4,200"} </span> HP (Demon Avenger)<br></br>
                       <span>{!swapped ? "+48" : "+96"}</span> All Stat (Xenon)
                     </TooltipContent>
                   </Tooltip>
@@ -781,16 +514,16 @@ const Calculator = ({
           {/* MAX LEVEL / DISABLED LEVEL */}
           <div className="flex justify-center text-center">
             {isMaxLevel(currentSymbol.level, swapped) && (
-              <p className="text-lg md:text-2xl text-accent font-semibold tracking-widest">
+              <p className="text-lg font-semibold tracking-widest text-accent md:text-2xl">
                 MAX LEVEL
               </p>
             )}
             {!isValid(currentSymbol.level) && (
               <div className="space-y-1.5 md:space-y-3">
-                <p className="text-secondary text-lg md:text-2xl font-semibold tracking-widest">
+                <p className="text-lg font-semibold tracking-widest text-secondary md:text-2xl">
                   DISABLED
                 </p>
-                <p className="text-secondary text-xs font-light tracking-widest">
+                <p className="text-xs font-light tracking-widest text-secondary">
                   enter a level to enable this symbol
                 </p>
               </div>

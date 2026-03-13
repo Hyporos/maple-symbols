@@ -41,7 +41,7 @@ export function useTooltip({
 
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
-  
+
   const arrowRef = React.useRef(null);
 
   const ARROW_HEIGHT = 7;
@@ -105,18 +105,11 @@ export const useTooltipState = () => {
   return context;
 };
 
-export function Tooltip({
-  children,
-  ...options
-}: { children: React.ReactNode } & TooltipOptions) {
+export function Tooltip({ children, ...options }: { children: React.ReactNode } & TooltipOptions) {
   // This can accept any props as options, e.g. `placement`,
   // or other positioning options.
   const tooltip = useTooltip(options);
-  return (
-    <TooltipContext.Provider value={tooltip}>
-      {children}
-    </TooltipContext.Provider>
-  );
+  return <TooltipContext.Provider value={tooltip}>{children}</TooltipContext.Provider>;
 }
 
 export const TooltipTrigger = React.forwardRef<
@@ -125,6 +118,8 @@ export const TooltipTrigger = React.forwardRef<
 >(function TooltipTrigger({ children, asChild = false, ...props }, propRef) {
   const state = useTooltipState();
 
+  // ReactElement doesn't expose .ref in its public type — this cast is intentional
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const childrenRef = (children as any).ref;
   const ref = useMergeRefs([state.refs.setReference, propRef, childrenRef]);
 
@@ -153,47 +148,46 @@ export const TooltipTrigger = React.forwardRef<
   );
 });
 
-export const TooltipContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLProps<HTMLDivElement>
->(function TooltipContent(props, propRef) {
-  const state = useTooltipState();
-  const id = useId();
-  const { isInstantPhase, currentId } = useDelayGroupContext();
-  const ref = useMergeRefs([state.refs.setFloating, propRef]);
+export const TooltipContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
+  function TooltipContent(props, propRef) {
+    const state = useTooltipState();
+    const id = useId();
+    const { isInstantPhase, currentId } = useDelayGroupContext();
+    const ref = useMergeRefs([state.refs.setFloating, propRef]);
 
-  useDelayGroup(state.context, { id });
+    useDelayGroup(state.context, { id });
 
-  const instantDuration = 0;
-  const duration = 250;
+    const instantDuration = 0;
+    const duration = 250;
 
-  const { isMounted, styles } = useTransitionStyles(state.context, {
-    duration: isInstantPhase
-      ? {
-          open: instantDuration,
-          // `id` is this component's `id`
-          // `currentId` is the current group's `id`
-          close: currentId === id ? duration : instantDuration,
-        }
-      : duration,
-    initial: {
-      opacity: 0,
-    },
-  });
+    const { isMounted, styles } = useTransitionStyles(state.context, {
+      duration: isInstantPhase
+        ? {
+            open: instantDuration,
+            // `id` is this component's `id`
+            // `currentId` is the current group's `id`
+            close: currentId === id ? duration : instantDuration,
+          }
+        : duration,
+      initial: {
+        opacity: 0,
+      },
+    });
 
-  if (!isMounted) return null;
+    if (!isMounted) return null;
 
-  return (
-    <FloatingPortal>
-      <div
-        ref={ref}
-        style={{
-          ...state.floatingStyles,
-          ...props.style,
-          ...styles,
-        }}
-        {...state.getFloatingProps(props)}
-      />
-    </FloatingPortal>
-  );
-});
+    return (
+      <FloatingPortal>
+        <div
+          ref={ref}
+          style={{
+            ...state.floatingStyles,
+            ...props.style,
+            ...styles,
+          }}
+          {...state.getFloatingProps(props)}
+        />
+      </FloatingPortal>
+    );
+  }
+);

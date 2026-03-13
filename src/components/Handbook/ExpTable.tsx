@@ -1,36 +1,31 @@
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
-import { useMediaQuery } from "react-responsive";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
-import { useSelector } from "react-redux";
-import { RootState } from "../../state/store";
-
-interface ExpTableProps {
-  symbols: [
-    {
-      id: number;
-      name: string;
-      img: string;
-      level: number;
-      type: string;
-      symbolsRequired: Array<number>;
-    }
-  ];
-}
+import { useAppStore } from "../../state/store";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
+import symbolsJson from "../../lib/symbols.json";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The ExpTable component displays both individual and cumulative symbol exp requirements/cost.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const ExpTable = ({ symbols }: ExpTableProps) => {
-  const swapped = useSelector((state: RootState) => state.selector.swapped);
+const ExpTable = () => {
+  const swapped = useAppStore((s) => s.swapped);
+  const symbols = useAppStore((s) => s.symbols);
+  const selectedSymbol = useAppStore((s) => s.selectedSymbol);
 
-  const isMobile = useMediaQuery({ query: `(max-width: 767px)` });
+  const { isMobile } = useBreakpoint();
   let totalExp = 0;
 
+  const symbol = symbols[selectedSymbol];
+  const isMatchingType = swapped ? symbol?.type === "sacred" : symbol?.type === "arcane";
+  const currentLevel = isMatchingType && !isNaN(symbol?.level) ? symbol.level : null;
+
+  const expData = !swapped ? symbolsJson.arcaneExpRequired : symbolsJson.sacredExpRequired;
+
   return (
-    <div className="flex pt-10 h-[535px] md:h-[555px]">
-      <div className="flex flex-col mx-8 md:mx-10 w-full">
+    <div className="flex h-[535px] pt-10 md:h-[555px]">
+      <div className="mx-8 flex w-full flex-col md:mx-10">
         {/* HEADER */}
         <div className="flex justify-between">
           <div className="flex items-center gap-5 md:gap-6">
@@ -39,8 +34,8 @@ const ExpTable = ({ symbols }: ExpTableProps) => {
               width={!isMobile ? 32.5 : 30}
               className="scale-110"
             />
-            <div className="bg-white/10 w-px h-full"></div>
-            <h1 className="text-lg md:text-2xl font-semibold">
+            <div className="h-full w-px bg-white/10"></div>
+            <h1 className="text-lg font-semibold md:text-2xl">
               {!swapped ? "Arcane Symbols" : "Sacred Symbols"}
             </h1>
           </div>
@@ -50,7 +45,7 @@ const ExpTable = ({ symbols }: ExpTableProps) => {
               {" "}
               <HiOutlineQuestionMarkCircle
                 size={!isMobile ? 30 : 27.5}
-                className="hover:stroke-white cursor-default transition-all"
+                className="cursor-default transition-all hover:stroke-white"
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
@@ -60,21 +55,19 @@ const ExpTable = ({ symbols }: ExpTableProps) => {
           </Tooltip>
         </div>
 
-        <div className="bg-white/10 mt-4 mb-6 h-px">{"\u200e"}</div>
+        <div className="mb-6 mt-4 h-px bg-white/10" aria-hidden="true" />
 
         {/* TABLE */}
         <div className="flex overflow-y-auto">
-          <table className="w-full mb-1 md:mr-10">
+          <table className="mb-1 w-full md:mr-10">
             {/* TABLE HEADER */}
             <thead>
               <tr>
-                <th className="text-sm md:text-base font-semibold pb-5">
-                  Level
-                </th>
-                <th className="text-sm md:text-base font-semibold pb-5">
+                <th className="pb-5 text-sm font-semibold md:text-base">Level</th>
+                <th className="pb-5 text-sm font-semibold md:text-base">
                   {!isMobile ? "Symbols Required" : "Exp Required"}
                 </th>
-                <th className="text-sm md:text-base font-semibold pb-5">
+                <th className="pb-5 text-sm font-semibold md:text-base">
                   {!isMobile ? "Total Experience" : "Total Symbols"}
                 </th>
               </tr>
@@ -82,37 +75,40 @@ const ExpTable = ({ symbols }: ExpTableProps) => {
 
             {/* TABLE BODY */}
             <tbody>
-              {symbols[!swapped ? 0 : (6 | 0)]?.symbolsRequired.map(
-                (symbols, index) => {
-                  const isFirstRow = index === 0;
-                  totalExp += symbols;
+              {expData.map((exp, index) => {
+                const isFirstRow = index === 0;
+                totalExp += exp;
 
-                  return (
-                    <tr key={index} className="hover:bg-dark">
-                      <td className="text-center text-xs md:text-sm border border-white/5 py-[5px]">
+                return (
+                  <tr
+                    key={index}
+                    className={cn(
+                      "hover:bg-dark",
+                      currentLevel === index + 1 && "bg-dark text-accent"
+                    )}
+                  >
+                    <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
+                      <div className="flex items-center justify-center gap-2">
+                        {currentLevel === index + 1 && (
+                          <img src={symbol.img} className="h-3 w-3 md:h-4 md:w-4" />
+                        )}
                         {index + 1}
-                      </td>
-                      <td className="text-center text-xs md:text-sm border border-white/5 py-[5px]">
-                        {isFirstRow ? "-" : symbols.toLocaleString()}
-                      </td>
-                      <td className="text-center text-xs md:text-sm border border-white/5 py-[5px]">
-                        {isFirstRow ? "-" : totalExp.toLocaleString()}
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
+                      </div>
+                    </td>
+                    <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
+                      {isFirstRow ? "-" : exp.toLocaleString()}
+                    </td>
+                    <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
+                      {isFirstRow ? "-" : totalExp.toLocaleString()}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 
           {/* CONDITIONAL SIDEBAR */}
-          <div
-            className={cn(
-              "bg-dark w-[11px]",
-              !swapped && "hidden",
-              isMobile && "hidden"
-            )}
-          ></div>
+          <div className={cn("w-[11px] bg-dark", !swapped && "hidden", isMobile && "hidden")}></div>
         </div>
       </div>
     </div>

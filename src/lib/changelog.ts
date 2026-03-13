@@ -1,8 +1,16 @@
+// ---------------------------------------------------------------------------
+// changelog.ts — Version history entries displayed in the Changelog component.
+// ---------------------------------------------------------------------------
 
+export interface ChangelogEntry {
+  version: string;
+  date: string;
+  link: string;
+  additions?: string[];
+  fixes?: string[];
+}
 
-// CHANGE LOG ENTRIES
-
-const changelogEntries = [
+export const changelogEntries: ChangelogEntry[] = [
   {
     version: "v1.0.1",
     date: "Jul 25, 2023",
@@ -132,56 +140,27 @@ const changelogEntries = [
     version: "v1.3.0.1",
     date: "Aug 22, 2025",
     link: "https://github.com/Hyporos/maple-symbols/pull/15",
-    additions: [
-      "Updated Weekly Quests to provide 120 instead of 40 symbols per week.",
-    ],
-    fixes: [
-      "Optimized SEO for the webapp. Let's see if it brings it higher up on google!",
-    ],
+    additions: ["Updated Weekly Quests to provide 120 instead of 40 symbols per week."],
+    fixes: ["Optimized SEO for the webapp. Let's see if it brings it higher up on google!"],
   },
-    {
+  {
     version: "v1.3.0.2",
-    date: "Mar 3, 2025",
+    date: "Mar 3, 2026",
     link: "https://github.com/Hyporos/maple-symbols/pull/16",
     fixes: [
       "Improved general performance and load time around the web app. (Also, our previous SEO change did work!)",
     ],
   },
+  {
+    version: "v1.4.0",
+    date: "Mar 17, 2026",
+    link: "https://github.com/Hyporos/maple-symbols/pull/17",
+    additions: [
+      "Enhanced the visibility for current-level table rows (Experience & Meso Cost Tables) on the Handbook.",
+    ],
+    fixes: [
+      "Used AI to refactor, reorganize and optimize the entire codebase. This should improve performance, readability and maintainability across the board. If you notice any bugs or issues, please report them on the Discord (linked in footer) so I can fix them as soon as possible!",
+      "Further optimized the SEO and added URLs for certain sections of the page. This should help with search rankings and make it easier for users to find Maple Symbols.",
+    ],
+  },
 ];
-
-export default changelogEntries;
-
-// DAMAGE RATIO TABLE DATA 
-
-const arcaneRatioData = [
-  { arcanePower: "0% - 9%", damageDealt: 10, damageTaken: 280 },
-  { arcanePower: '10% - 29%', damageDealt: 30, damageTaken: 240 },
-  { arcanePower: '30% - 49%', damageDealt: 60, damageTaken: 180 },
-  { arcanePower: '50% - 69%', damageDealt: 70, damageTaken: 160 },
-  { arcanePower: '70% - 99%', damageDealt: 80, damageTaken: 140 },
-  { arcanePower: '100% - 109%', damageDealt: 100, damageTaken: 100 },
-  { arcanePower: '110% - 129%', damageDealt: 110, damageTaken: 80 },
-  { arcanePower: '130% - 149%', damageDealt: 130, damageTaken: 40 },
-  { arcanePower: '150% +', damageDealt: 150, damageTaken: 0 },
-];
-
-const sacredRatioData = [
-  { sacredPower: "< -100", damageDealt: 5, damageTaken: 200 },
-  { sacredPower: -90, damageDealt: 10, damageTaken: 200 },
-  { sacredPower: -80, damageDealt: 20, damageTaken: 200 },
-  { sacredPower: -70, damageDealt: 30, damageTaken: 200 },
-  { sacredPower: -60, damageDealt: 40, damageTaken: 200 },
-  { sacredPower: -50, damageDealt: 50, damageTaken: 150 },
-  { sacredPower: -40, damageDealt: 60, damageTaken: 150 },
-  { sacredPower: -30, damageDealt: 70, damageTaken: 150 },
-  { sacredPower: -20, damageDealt: 80, damageTaken: 150 },
-  { sacredPower: -10, damageDealt: 90, damageTaken: 150 },
-  { sacredPower: 0, damageDealt: 100, damageTaken: 100 },
-  { sacredPower: 10, damageDealt: 105, damageTaken: 100 },
-  { sacredPower: 20, damageDealt: 110, damageTaken: 100 },
-  { sacredPower: 30, damageDealt: 115, damageTaken: 100 },
-  { sacredPower: 40, damageDealt: 120, damageTaken: 100 },
-  { sacredPower: "50 +", damageDealt: 125, damageTaken: 100 },
-];
-
-export { arcaneRatioData, sacredRatioData };
