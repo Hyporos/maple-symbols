@@ -12,7 +12,15 @@ Checked with `curl` on the audit date. **The domain is not serving the current c
 - Result: `/` returns 200 with the old title ("… | Level Up Planner"); **`/handbook`, `/changelog`, `/credits` return 404**; the live `sitemap.xml` lists `/calculator`, `/tools`, `/graph` (all 404) and not `/changelog` or `/credits`. The 1.4.0 work (routes, metadata, `vercel.json`) has never reached users.
 - No `www` record exists (`www.maplesymbols.com` does not resolve); `http://` redirects to `https://` correctly.
 
-Nothing in §2 moves a ranking until this is fixed. The order is: decide the host (Vercel as planned, or keep Firebase and add its rewrites), release `development → main`, point DNS, then confirm the four `ROUTES` URLs return 200 and `/sitemap.xml` matches `ROUTES` on the live host. That check is rule SEO-25 and belongs in `/release`. Until it is done, AGENTS.md's deploy sentence describes the intent, not the site.
+Nothing in §2 moves a ranking until this is fixed, and the order matters. `main` still carries two auto-generated GitHub Actions that deploy to Firebase Hosting on every push to `main` and on every pull request; `development` deletes them along with the rest of the Firebase config. A push runs the workflow files of the resulting commit, so merging `development` into `main` stops the Firebase deploys rather than triggering one, and the live site stays frozen on the March build until DNS moves. That is no worse than today, so the safe sequence is:
+
+1. Merge `development` into `main` (Firebase deploys stop; nothing live changes yet).
+2. Create the Vercel project from the repo on `main` and let it build. `vercel.json` supplies the SPA rewrite that makes the sub-pages resolve.
+3. Verify the four routes and `/sitemap.xml` on the `*.vercel.app` URL **before** touching DNS.
+4. Point the apex record at Vercel, and decide then whether a `www` record with a 308 to the apex is wanted (SEO-2).
+5. Run the SEO-25 live check, then resubmit the sitemap in Search Console and request indexing for the three sub-pages.
+
+Until that is done, AGENTS.md's deploy sentence describes the intent, not the site.
 
 ## 1. Where SEO lives in this repo
 
