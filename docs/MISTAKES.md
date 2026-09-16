@@ -14,6 +14,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Check peer ranges before proposing an upgrade version**; `pnpm outdated`'s latest column is not a compatibility claim (M-006).
 - **Claims about hosting or search-engine behaviour get checked against the live site and the platform's current docs, not memory**; a second, independent review pass before shipping a reference doc pays for itself (M-007).
 - **Platform config is validated by the platform, not by reading it.** `vercel.json` passed lint, tests and two reviews, and Vercel still rejected the deployment. Check syntax against the platform's docs before shipping config that CI cannot run, and deploy a preview before DNS moves (M-008).
+- **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
 
 ## Log
 
@@ -74,3 +75,17 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Treated the config as reviewed because it had been read. Nothing in lint, typecheck, tests or CI runs Vercel's own parser, so the error could only surface on a real deployment.
 - **Rule**: Config that only the hosting platform parses gets checked against that platform's documented syntax before release, and a new host gets a preview deployment before DNS moves.
 - **Where**: `vercel.json` (hotfix 99a926f on `main`).
+
+### M-009 · 2026-09-16 · ui
+
+- **What**: The Tailwind 4 upgrade was signed off on identical before/after screenshots, but v4's preflight gives buttons `cursor: default`, so every toggle, tab and pill lost its pointer cursor. Separately, the global `button, input` rule drew the accent outline on `:focus`, so a mouse click left an outline; the KI-011 fix patched only `RadioButton` instead of the global rule. Brian caught both on the live site.
+- **Root cause**: Screenshots cannot show cursor or focus state, and the upgrade guide's "buttons use the default cursor" note was not checked against the app.
+- **Rule**: A CSS framework upgrade gets its migration guide's behaviour changes checked one by one, plus a hover and click pass, not only screenshots. Fix a styling bug at the global rule that causes it, not in the one component that showed it.
+- **Where**: `src/global.css` (`:focus-visible` outline, `button:not(:disabled)` pointer rule; 2e5a7c1).
+
+### M-010 · 2026-09-16 · copy
+
+- **What**: The v1.4.1 changelog listed internal work (test-build visits no longer counted in analytics, build-tool advisories) next to the one change players could notice. Brian: players don't care about those.
+- **Root cause**: Wrote the entry from the commit list instead of from what a player sees.
+- **Rule**: Changelog entries describe only what a player can see or feel; internal, tooling and analytics work stays in commits and PRs.
+- **Where**: `src/lib/changelog.ts`.
