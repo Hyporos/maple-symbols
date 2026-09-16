@@ -75,3 +75,27 @@ describe("page metadata is consistent across index.html, sitemap.xml and the Rea
     20_000
   );
 });
+
+// Google Search Console found these paths, which were never pages. They 308 to the home
+// page so they drop out of the index instead of lingering as duplicates of "/".
+describe("vercel.json redirects", () => {
+  const vercel = JSON.parse(readFileSync("vercel.json", "utf8")) as {
+    redirects?: { source: string; destination: string; permanent: boolean }[];
+  };
+
+  it("permanently redirects the stray section URLs to the home page", () => {
+    expect(vercel.redirects).toEqual(
+      ["/calculator", "/graph", "/tools"].map((source) => ({
+        source,
+        destination: "/",
+        permanent: true,
+      }))
+    );
+  });
+
+  it("never redirects a real page", () => {
+    for (const { source } of vercel.redirects ?? []) {
+      expect(sitemap).not.toContain(`<loc>https://maplesymbols.com${source}</loc>`);
+    }
+  });
+});
