@@ -7,7 +7,7 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 - **Scope**: everything: visual redesign, state/data model and persistence, routing/pages/new features, framework and major dependencies.
 - **Branch**: a long-lived `v2` branch off `development`, created once the dependency upgrades are in; `development`/`main` stay releasable for 1.x fixes. Merge when 2.0 is ready.
 - **Known issues** (`docs/KNOWN_ISSUES.md`): folded into 2.0. Current behaviour is pinned by tests marked with the `KI-` id; each fix is a deliberate test change plus a move to **Resolved**.
-- **Preparations chosen**: characterization tests (done), extract logic seams into `src/lib` (done), dependency upgrades first and separately (done 2026-09-16 on `development`: tooling minors, React 19, Tailwind 4 with before/after screenshots identical; pending: Node to the latest 22 LTS, then jsdom 30 and an `engines` field). Not chosen: a persistence migration up front (part of the 2.0 data-model work), tagging 1.4.0 first, `noUncheckedIndexedAccess` (apply on the v2 code as it is written).
+- **Preparations chosen**: characterization tests (done), extract logic seams into `src/lib` (done), dependency upgrades first and separately (done 2026-09-16 on `development`: tooling minors, React 19, Tailwind 4 with before/after screenshots identical; then Vite 8, Node 26.8.2, jsdom 30 and an `engines` field). Not chosen: a persistence migration up front (part of the 2.0 data-model work), tagging 1.4.0 first, `noUncheckedIndexedAccess` (apply on the v2 code as it is written).
 
 ## Progress on `v2`
 
@@ -29,7 +29,7 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 
 ## Dependency upgrades (first, on the old code, one commit each)
 
-Done on `development` (commits `0778e4f`, `5fbee93`, and the Tailwind 4 commit after them): tooling minors; React 18.3 → 19 (+ `@types/react*` 19; `@vitejs/plugin-react` 6 and Vite 8 (rolldown; chunking via `codeSplitting`)); Tailwind 3 → 4 via `@tailwindcss/upgrade` (tokens moved to the `@theme` block in `src/global.css`, `bg-linear-to-*`, `outline-hidden`, `*:` variants, `@tailwindcss/postcss`, `prettier-plugin-tailwindcss` 0.8 with `tailwindStylesheet`); desktop and phone screenshots identical before/after. Pending: jsdom 30 and an `engines` field once Node is on the latest 22 LTS. Peer check on 2026-09-16: recharts 3, @testing-library/react 16, react-error-boundary, zustand and @floating-ui/react 0.24 all accept React 19.
+Done on `development` (commits `0778e4f`, `5fbee93`, and the Tailwind 4 commit after them): tooling minors; React 18.3 → 19 (+ `@types/react*` 19; `@vitejs/plugin-react` 6 and Vite 8 (rolldown; chunking via `codeSplitting`)); Tailwind 3 → 4 via `@tailwindcss/upgrade` (tokens moved to the `@theme` block in `src/global.css`, `bg-linear-to-*`, `outline-hidden`, `*:` variants, `@tailwindcss/postcss`, `prettier-plugin-tailwindcss` 0.8 with `tailwindStylesheet`); desktop and phone screenshots identical before/after. jsdom 30 and the `engines` field landed the same day once Node moved to 26.8.2. Peer check on 2026-09-16: recharts 3, @testing-library/react 16, react-error-boundary, zustand and @floating-ui/react 0.24 all accept React 19.
 
 After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; log surprises in `docs/MISTAKES.md`.
 
