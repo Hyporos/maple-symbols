@@ -7,36 +7,48 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "preview": "vite preview",
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "@floating-ui/react": "^0.24.3",
     "clsx": "^2.1.0",
+    "dayjs": "^1.11.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.13",
-    "tailwind-merge": "^2.2.1"
+    "react-icons": "^5.0.1",
+    "recharts": "^3.8.0",
+    "tailwind-merge": "^2.2.1",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^22.20.3",
     "@types/react": "^18.2.7",
     "@types/react-dom": "^18.2.4",
     "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/coverage-v8": "^5.0.1",
     "autoprefixer": "^10.4.14",
-    "dayjs": "^1.11.19",
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "jsdom": "^28.1.0",
     "lint-staged": "^15.2.2",
     "postcss": "^8.4.24",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.12",
-    "react-icons": "^5.0.1",
-    "recharts": "^3.8.0",
     "simple-git-hooks": "^2.11.1",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4",
@@ -44,13 +56,16 @@
     "vite": "^7.3.1",
     "vite-plugin-checker": "^0.12.0",
     "vite-plugin-compression": "^0.5.1",
-    "zustand": "^5.0.11"
+    "vitest": "^5.0.1"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "npx lint-staged && node scripts/docs-drift.mjs"
   },
   "lint-staged": {
-    "*.{ts,tsx}": "eslint --max-warnings 0",
+    "*.{ts,tsx}": [
+      "eslint --max-warnings 0",
+      "vitest related --run --passWithNoTests"
+    ],
     "*.{ts,tsx,css,json}": "prettier --write"
   }
 }
