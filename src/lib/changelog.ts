@@ -153,7 +153,7 @@ export const changelogEntries: ChangelogEntry[] = [
   },
   {
     version: "v1.4.0",
-    date: "Mar 17, 2026",
+    date: "Sep 16, 2026",
     link: "https://github.com/Hyporos/maple-symbols/pull/17",
     additions: [
       "Enhanced the visibility for current-level table rows (Experience & Meso Cost Tables) on the Handbook.",
@@ -161,6 +161,8 @@ export const changelogEntries: ChangelogEntry[] = [
     fixes: [
       "Used AI to refactor, reorganize and optimize the entire codebase. This should improve performance, readability and maintainability across the board. If you notice any bugs or issues, please report them on the Discord (linked in footer) so I can fix them as soon as possible!",
       "Further optimized the SEO and added URLs for certain sections of the page. This should help with search rankings and make it easier for users to find Maple Symbols.",
+      "Rebuilt the site on the current versions of React, Tailwind and Vite, and added an automated test suite that runs on every change. Nothing should look or behave differently; the point is that future updates can ship faster and with fewer regressions.",
+      "Moved hosting so that the Handbook, Changelog and Credits pages load directly from their own web addresses instead of returning a Not Found error.",
     ],
   },
 ];
