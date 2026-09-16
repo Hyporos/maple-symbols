@@ -6,8 +6,8 @@ Brian chose Umami over Plausible on 2026-09-16 because Plausible is paid and Uma
 
 ## 0. Current state (2026-09-16)
 
-- `index.html` loads the Umami Cloud script with a `data-website-id` and **no `data-domains`**, so `pnpm dev`, `vite preview` and every Vercel preview deployment are counted as production traffic (KI-009).
-- No custom events exist, so nothing is known about what people do once they land.
+- **Done:** the Umami script in `index.html` carries `data-domains`, `data-performance` and `data-exclude-search` (AN-6), so dev and preview traffic is no longer counted and Web Vitals are collected. The typed wrapper exists in `src/lib/` (AN-8) with its tests, including the scan that keeps `window.umami` out of every other file.
+- **Not done yet:** no component calls `track` so far; the §3 events are wired in a follow-up, after the accessibility and i18n work on the same components merges. `outbound` attributes are not on the anchors yet.
 - Search Console's verification method is not recorded in the repo. The site moved from Firebase to Vercel on 2026-09-16 (`docs/SEO.md` §0), so confirm the property is still verified.
 
 ## 1. The rules that keep this useful
@@ -45,24 +45,24 @@ Pageviews, referrers, entry pages, countries, devices and Core Web Vitals come f
 
 The one funnel that matters: land, enter a level, toggle a quest, see an answer. A big gap between the first and second step is a first-run UX problem, not a traffic problem.
 
-| Event           | Data                                          | The decision it informs                                                                                             |
-| --------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `symbol_input`  | `field`: `level` \| `experience`; `mode`      | Fires once per session per field. The activation rate. If most visitors never type, the empty state is the problem. |
-| `quest_toggle`  | `quest`: `daily` \| `weekly` \| `extra`; `on` | Whether the extra-quest multiplier is understood and used, or whether it needs explaining.                          |
-| `mode_switch`   | `to`: `arcane` \| `sacred`                    | The arcane/sacred split, which decides whose bugs and content get priority.                                         |
-| `symbol_select` | `symbol` (name), `mode`                       | Which regions people are actually grinding. Drives which symbol gets attention when game data changes.              |
+| Event           | Data                                                            | The decision it informs                                                                                             |
+| --------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `symbol_input`  | `field`: `level` \| `experience`; `mode`                        | Fires once per session per field. The activation rate. If most visitors never type, the empty state is the problem. |
+| `quest_toggle`  | `quest`: `daily` \| `weekly` \| `extra`; `state`: `on` \| `off` | Whether the extra-quest multiplier is understood and used, or whether it needs explaining.                          |
+| `mode_switch`   | `to`: `arcane` \| `sacred`                                      | The arcane/sacred split, which decides whose bugs and content get priority.                                         |
+| `symbol_select` | `symbol` (name), `mode`                                         | Which regions people are actually grinding. Drives which symbol gets attention when game data changes.              |
 
 ### Feature usage — what to invest in, and what to cut
 
-| Event             | Data                                                             | The decision it informs                                                                                                                                                     |
-| ----------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tool_used`       | `tool`: `selector` \| `catalyst`; `action`: `preview` \| `apply` | Whether the Tools card earns its space, and whether people trust Apply or just look.                                                                                        |
-| `cap_unlocked`    | —                                                                | How many people use the experience-cap unlock. It caused two bugs fixed on `v2` (KI-004, KI-005) and is the most intricate input rule; low usage argues for simplifying it. |
-| `overview_target` | `target_level` bucketed (`2-5`, `6-10`, `11-15`, `16-20`)        | Whether the target-level panel is used at all, and whether people aim for max or for a next milestone.                                                                      |
-| `graph_mode`      | `mode`: `linear` \| `exponential`                                | Whether the exponential mode (a 1.3.0 feature) was worth building and should be the default.                                                                                |
-| `handbook_tab`    | `tab`: `exp` \| `cost` \| `ratio`                                | Which table earns the Handbook's traffic, which is also the page's SEO target (`docs/SEO.md` §3).                                                                           |
-| `extras_tab`      | `tab`: `changelog` \| `credits`                                  | Whether anyone reads the changelog, which decides how much effort each release entry deserves.                                                                              |
-| `language_switch` | `to`: locale                                                     | After `docs/I18N.md` ships: which locales are worth the translation cost, and which to add next.                                                                            |
+| Event             | Data                                                                | The decision it informs                                                                                                                                                     |
+| ----------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tool_used`       | `tool`: `selector` \| `catalyst`; `action`: `preview` \| `apply`    | Whether the Tools card earns its space, and whether people trust Apply or just look.                                                                                        |
+| `cap_unlocked`    | —                                                                   | How many people use the experience-cap unlock. It caused two bugs fixed on `v2` (KI-004, KI-005) and is the most intricate input rule; low usage argues for simplifying it. |
+| `overview_target` | `target_level` bucketed (`2-5`, `6-10`, `11-15`, `16-20`)           | Whether the target-level panel is used at all, and whether people aim for max or for a next milestone.                                                                      |
+| `graph_mode`      | `mode`: `linear` \| `exponential`                                   | Whether the exponential mode (a 1.3.0 feature) was worth building and should be the default.                                                                                |
+| `handbook_tab`    | `tab`: `exp` \| `cost` \| `ratio`                                   | Which table earns the Handbook's traffic, which is also the page's SEO target (`docs/SEO.md` §3).                                                                           |
+| `extras_tab`      | `tab`: `changelog` \| `credits`                                     | Whether anyone reads the changelog, which decides how much effort each release entry deserves.                                                                              |
+| `language_switch` | `to`: locale (not in the wrapper's union until the selector exists) | After `docs/I18N.md` ships: which locales are worth the translation cost, and which to add next.                                                                            |
 
 ### Quality — is anything broken in the field?
 
@@ -83,7 +83,7 @@ Listing this is part of the doc's job: it is the answer when someone proposes ad
 
 ## 5. Implementation notes
 
-- The wrapper module holds the event-name union, a `track()` that checks `typeof window.umami?.track === "function"` first, and nothing else. Declare `window.umami` in a `.d.ts` rather than casting at call sites.
+- The wrapper module holds `EventData` (name → data shape), `track(name, data)` which checks `typeof window.umami?.track === "function"` first, `trackOnce(key, name, data)` for once-per-session events, and the two bucketing helpers `targetBucket` and `notFoundPath`. `window.umami` is declared in `src/vite-env.d.ts`. All data values are strings, because attribute-sent data is always stored as strings and one representation keeps dashboard filters consistent.
 - Test it the way the SEO rules are tested: a source scan asserting no component references `window.umami` directly, and type-checking for event names if the signature is `track(name: EventName, data?: DataFor<EventName>)`.
 - Fire-and-forget: a blocked script must not break a click handler. Never await it, never branch on it.
 - Once-per-session events (`symbol_input`) need a module-level flag, not React state; a reload is a new session.
