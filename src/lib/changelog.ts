@@ -169,10 +169,6 @@ export const changelogEntries: ChangelogEntry[] = [
     version: "v1.4.1",
     date: "Sep 16, 2026",
     link: "https://github.com/Hyporos/maple-symbols/pull/19",
-    fixes: [
-      "Old links to /calculator, /graph and /tools now take you straight to the calculator.",
-      "Visits from test builds are no longer counted in the site's analytics, so the numbers reflect real players only.",
-      "Updated the site's build tools and patched their security advisories. Nothing should look or behave differently.",
-    ],
+    fixes: ["Old links to /calculator, /graph and /tools now take you straight to the calculator."],
   },
 ];
