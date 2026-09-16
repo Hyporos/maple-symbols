@@ -147,8 +147,7 @@ A new toggle also needs the checklist in ARCHITECTURE §9 (effect deps, `getDail
 
 ```tsx
 <Tooltip placement="bottom">
-  <TooltipTrigger asChild>
-    {" "}
+  <TooltipTrigger>
     <MdOutlineInfo
       size={20}
       className="cursor-default fill-accent transition-colors hover:fill-white md:mt-0.5"
@@ -161,7 +160,7 @@ A new toggle also needs the checklist in ARCHITECTURE §9 (effect deps, `getDail
 </Tooltip>
 ```
 
-`.tooltip` = `bg-[#111111] px-2.5 py-1.5 text-center text-xs md:text-sm rounded-lg shadow-input`. Conventions: bracketed label in a `<span>` on the first line, `<br></br>` line breaks, accent words as bare `<span>`s. The help icon on card headers is `HiOutlineQuestionMarkCircle size={!isMobile ? 30 : 27.5} className="cursor-default transition-all hover:stroke-white"`. Keep the `{" "}` before an icon or `RadioButton` child; give a `<button>`/`<div>` child directly, with no `{" "}` (AGENTS.md gotcha 4). Without `asChild` the trigger renders a `<button>`.
+`.tooltip` = `bg-[#111111] px-2.5 py-1.5 text-center text-xs md:text-sm rounded-lg shadow-input`. Conventions: bracketed label in a `<span>` on the first line, `<br></br>` line breaks, accent words as bare `<span>`s. The help icon on card headers is `HiOutlineQuestionMarkCircle size={!isMobile ? 30 : 27.5} className="cursor-default transition-all hover:stroke-white"`. Pick the trigger form by child (AGENTS.md gotcha 4): a single DOM element (`<button>`, `<input>`, `<div>`) goes in with `asChild`; an icon or `RadioButton` goes in without `asChild`, and the trigger renders its own `<button>`; content that holds inputs or buttons uses `as="div"` so nothing interactive is nested in a button. The Handbook tables still use the older `asChild` + `{" "}` form, which renders the same `<button>`; don't copy it.
 
 **RadioButton** (`ui/RadioButton.tsx`): wrapper `group flex cursor-pointer items-center gap-4`; dot `h-[17.5px] w-[17.5px] rounded-full border-[3px] border-secondary transition-colors md:h-[20px] md:w-[20px]` + `selected ? "border-accent" : "group-hover:border-accent/25"`; label `text-sm transition-colors group-hover:text-primary md:text-base` + `selected && "text-primary"`.
 
@@ -247,7 +246,7 @@ export default Thing;
 
 3. Store via selectors, not props, for feature components; props only for `ui/` primitives.
 4. Every conditional class through `cn()`; tokens only; `md:` before `useBreakpoint()`.
-5. Tooltips with `className="tooltip"` and `<span>` accent words; keep `{" "}` before icon children of `asChild` triggers.
+5. Tooltips with `className="tooltip"` and `<span>` accent words; icon children go in a trigger without `asChild`, and triggers around inputs or buttons use `as="div"`.
 6. Respect the fixed geometry (360 px phone width, pane heights); content scrolls inside.
 7. Colocated `Thing.test.tsx` from `docs/TESTING.md`; then `pnpm lint && pnpm test`.
 8. Run `/new-component` to have this scaffolded for you.

@@ -52,12 +52,12 @@ describe("Tooltip", () => {
     expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
-  it('with asChild and the {" "} + icon convention, falls back to a wrapper button that anchors the tooltip', () => {
-    // Pins the load-bearing quirk described in AGENTS.md gotcha 4 / ARCHITECTURE D12.
+  it("without asChild, wraps an icon in a button that anchors the tooltip", () => {
+    // The convention that replaced the {" "} hack (AGENTS.md gotcha 4 / ARCHITECTURE D12):
+    // an icon is a function component, so the trigger renders its own anchor element.
     render(
       <Tooltip>
-        <TooltipTrigger asChild>
-          {" "}
+        <TooltipTrigger>
           <MdOutlineInfo size={20} />
         </TooltipTrigger>
         <TooltipContent>info</TooltipContent>
@@ -67,5 +67,25 @@ describe("Tooltip", () => {
     expect(wrapper.querySelector("svg")).not.toBeNull();
     fireEvent.focus(wrapper);
     expect(screen.getByRole("tooltip")).toHaveTextContent("info");
+  });
+
+  it('with as="div", wraps interactive content without nesting it in a button', () => {
+    render(
+      <Tooltip>
+        <TooltipTrigger as="div" className="cursor-default">
+          <input placeholder="Level" />
+          <button>inner</button>
+        </TooltipTrigger>
+        <TooltipContent>level</TooltipContent>
+      </Tooltip>
+    );
+    const input = screen.getByPlaceholderText("Level");
+    const wrapper = input.parentElement!;
+    expect(wrapper.tagName).toBe("DIV");
+    expect(wrapper).toHaveClass("cursor-default");
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    // Focus bubbles out of the input, so the wrapper still anchors and opens the tooltip.
+    fireEvent.focus(input);
+    expect(screen.getByRole("tooltip")).toHaveTextContent("level");
   });
 });

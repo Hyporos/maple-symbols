@@ -77,8 +77,7 @@ const Overview = () => {
           <div className="hidden items-center text-center text-tertiary md:flex">
             <div className="flex w-1/5 justify-center">
               <Tooltip>
-                <TooltipTrigger asChild={true}>
-                  {" "}
+                <TooltipTrigger>
                   <HiOutlineQuestionMarkCircle
                     size={30}
                     className="cursor-default transition-all hover:stroke-white"
@@ -200,7 +199,7 @@ const Overview = () => {
                         Target Level
                       </p>
                       <Tooltip placement="left">
-                        <TooltipTrigger>
+                        <TooltipTrigger asChild={true}>
                           <input
                             type="number"
                             placeholder="Level"

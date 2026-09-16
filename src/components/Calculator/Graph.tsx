@@ -278,8 +278,7 @@ const Graph = () => {
         {/* RADIO BUTTONS */}
         <div className="flex space-x-[75px] pb-6 md:space-x-32 md:pb-4">
           <Tooltip>
-            <TooltipTrigger asChild={true}>
-              {" "}
+            <TooltipTrigger>
               <RadioButton
                 label="Dynamic"
                 selected={graphDynamic}
@@ -292,8 +291,7 @@ const Graph = () => {
             </TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger asChild={true}>
-              {" "}
+            <TooltipTrigger>
               <RadioButton
                 label="Linear"
                 selected={!graphDynamic}

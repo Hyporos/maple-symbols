@@ -11,12 +11,8 @@ import {
   useRole,
   useInteractions,
   FloatingPortal,
-  useDelayGroup,
-  useDelayGroupContext,
   useMergeRefs,
-  useId,
   useTransitionStyles,
-  arrow,
 } from "@floating-ui/react";
 import type { Placement } from "@floating-ui/react";
 
@@ -26,6 +22,9 @@ interface TooltipOptions {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
+
+/** Elements `TooltipTrigger` can render when it has to provide its own wrapper. */
+type TriggerElement = "button" | "div" | "span";
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Tooltip component is part of Floating UI. It includes Tooltip, TooltipTrigger & TooltipContent.
@@ -42,24 +41,15 @@ export function useTooltip({
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
-  const arrowRef = React.useRef(null);
-
-  const ARROW_HEIGHT = 7;
-  const GAP = 5;
+  // No arrow is rendered, so this is the whole gap between trigger and tooltip.
+  const GAP = 12;
 
   const data = useFloating({
     placement,
     open,
     onOpenChange: setOpen,
     whileElementsMounted: autoUpdate,
-    middleware: [
-      offset(ARROW_HEIGHT + GAP),
-      flip(),
-      shift(),
-      arrow({
-        element: arrowRef,
-      }),
-    ],
+    middleware: [offset(GAP), flip(), shift()],
   });
 
   const context = data.context;
@@ -114,8 +104,8 @@ export function Tooltip({ children, ...options }: { children: React.ReactNode } 
 
 export const TooltipTrigger = React.forwardRef<
   HTMLElement,
-  React.HTMLProps<HTMLElement> & { asChild?: boolean }
->(function TooltipTrigger({ children, asChild = false, ...props }, propRef) {
+  React.HTMLProps<HTMLElement> & { asChild?: boolean; as?: TriggerElement }
+>(function TooltipTrigger({ children, asChild = false, as = "button", ...props }, propRef) {
   const state = useTooltipState();
 
   // React 19 exposes an element's ref as a regular prop (element.ref is gone).
@@ -137,39 +127,27 @@ export const TooltipTrigger = React.forwardRef<
     );
   }
 
-  return (
-    <button
-      ref={ref}
+  // Otherwise the trigger provides its own anchor element. `as` picks the tag so a
+  // trigger wrapping inputs or buttons does not nest interactive content (KI-007).
+  return React.createElement(
+    as,
+    {
+      ref,
       // The user can style the trigger based on the state
-      data-state={state.open ? "open" : "closed"}
-      {...state.getReferenceProps(props)}
-    >
-      {children}
-    </button>
+      "data-state": state.open ? "open" : "closed",
+      ...state.getReferenceProps(props),
+    } as React.HTMLProps<HTMLElement>,
+    children
   );
 });
 
 export const TooltipContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
   function TooltipContent(props, propRef) {
     const state = useTooltipState();
-    const id = useId();
-    const { isInstantPhase, currentId } = useDelayGroupContext();
     const ref = useMergeRefs([state.refs.setFloating, propRef]);
 
-    useDelayGroup(state.context, { id });
-
-    const instantDuration = 0;
-    const duration = 250;
-
     const { isMounted, styles } = useTransitionStyles(state.context, {
-      duration: isInstantPhase
-        ? {
-            open: instantDuration,
-            // `id` is this component's `id`
-            // `currentId` is the current group's `id`
-            close: currentId === id ? duration : instantDuration,
-          }
-        : duration,
+      duration: 250,
       initial: {
         opacity: 0,
       },

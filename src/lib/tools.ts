@@ -29,7 +29,7 @@ export function selectorPreview(symbol: SymbolData, count: number): Preview {
 /**
  * Level/experience after a catalyst transfer that keeps `retention` (0.8 arcane / 0.6 sacred)
  * of the cumulative experience. Level is re-derived with a strict `>` per step, so an exact
- * threshold does not level (the first iteration compares against `undefined`, see KI-008).
+ * threshold does not level, and a level-1 symbol keeps its unset (NaN) level.
  */
 export function catalystPreview(symbol: SymbolData, retention: number): Preview {
   const table = symbol.symbolsRequired;
@@ -41,12 +41,13 @@ export function catalystPreview(symbol: SymbolData, retention: number): Preview 
 
   let experience = (invested + (symbol.experience > next ? next : symbol.experience)) * retention;
   let level = NaN;
-  table.forEach((_, index) => {
+  // From 1: reaching level N costs table[N - 1], so index 0 has no requirement to spend.
+  for (let index = 1; index < table.length; index++) {
     if (experience > table[index - 1]) {
       experience -= table[index - 1];
       level = index;
     }
-  });
+  }
   return { level, experience };
 }
 
