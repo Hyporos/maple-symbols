@@ -118,13 +118,14 @@ export const TooltipTrigger = React.forwardRef<
 >(function TooltipTrigger({ children, asChild = false, ...props }, propRef) {
   const state = useTooltipState();
 
-  // ReactElement doesn't expose .ref in its public type — this cast is intentional
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const childrenRef = (children as any).ref;
+  // React 19 exposes an element's ref as a regular prop (element.ref is gone).
+  const childrenRef = React.isValidElement<{ ref?: React.Ref<HTMLElement> }>(children)
+    ? children.props.ref
+    : undefined;
   const ref = useMergeRefs([state.refs.setReference, propRef, childrenRef]);
 
   // `asChild` allows the user to pass any element as the anchor
-  if (asChild && React.isValidElement(children)) {
+  if (asChild && React.isValidElement<Record<string, unknown>>(children)) {
     return React.cloneElement(
       children,
       state.getReferenceProps({
@@ -132,7 +133,7 @@ export const TooltipTrigger = React.forwardRef<
         ...props,
         ...children.props,
         "data-state": state.open ? "open" : "closed",
-      })
+      } as React.HTMLProps<Element>)
     );
   }
 

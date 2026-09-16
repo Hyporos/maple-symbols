@@ -11,6 +11,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Config files may be JSONC.** `tsconfig.json`, `jsconfig.json`, and VS Code settings can contain comments; don't `JSON.parse` them, use the Edit tool (M-003).
 - **`pnpm test <filter>`, never `pnpm test -- <filter>`.** pnpm forwards the `--` literally and Vitest then ignores the filter and runs everything (M-004).
 - **lint-staged hides the output of tasks that exit 0.** A warn-only step must run outside lint-staged or nobody sees it (M-005).
+- **Check peer ranges before proposing an upgrade version**; `pnpm outdated`'s latest column is not a compatibility claim (M-006).
 
 ## Log
 
@@ -50,3 +51,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Tested the script by running it directly, never through the hook that would actually invoke it.
 - **Rule**: Test automation through the real entry point (the hook, the CI step), not just the script in isolation. Warn-only steps run outside lint-staged: `pre-commit: npx lint-staged && node scripts/docs-drift.mjs`.
 - **Where**: `package.json` (`simple-git-hooks`), `scripts/docs-drift.mjs`.
+
+### M-006 · 2026-09-16 · tooling
+
+- **What**: Proposed and installed `@vitejs/plugin-react` 6 as part of the React 19 upgrade; its peer range is Vite `^8`, and the build failed on `vite/internal`. Pinned to 5.2 (supports Vite 7).
+- **Root cause**: Read the "latest" column of `pnpm outdated` as "compatible" without checking the package's peer dependencies against the installed Vite.
+- **Rule**: Before proposing an upgrade version, check `pnpm view <pkg>@<ver> peerDependencies` against what is installed; "latest" is not "compatible".
+- **Where**: `package.json` (`@vitejs/plugin-react` ^5.2.0).
