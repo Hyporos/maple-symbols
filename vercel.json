@@ -2,6 +2,23 @@
   "buildCommand": "pnpm build",
   "trailingSlash": false,
   "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/calculator",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/graph",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tools",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

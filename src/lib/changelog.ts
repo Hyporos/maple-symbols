@@ -169,4 +169,14 @@ export const changelogEntries: ChangelogEntry[] = [
       "Moved hosting so that the Handbook, Changelog and Credits pages load directly from their own web addresses instead of returning a Not Found error.",
     ],
   },
+  {
+    version: "v1.4.1",
+    date: "2026-09-16",
+    link: "https://github.com/Hyporos/maple-symbols/pull/19",
+    fixes: [
+      "Old links to /calculator, /graph and /tools now take you straight to the calculator.",
+      "Visits from test builds are no longer counted in the site's analytics, so the numbers reflect real players only.",
+      "Updated the site's build tools and patched their security advisories. Nothing should look or behave differently.",
+    ],
+  },
 ];
