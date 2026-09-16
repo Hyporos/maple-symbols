@@ -10,8 +10,14 @@ import { maxLevelFor } from "../../lib/game";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { targetBucket, trackOnce } from "../../lib/analytics";
+import { useLocale, useMessages } from "../../i18n";
+import { symbolNames } from "../../i18n/gameNames";
+import Message from "../../i18n/Message";
 
 const Overview = () => {
+  const m = useMessages().overview;
+  const locale = useLocale();
+
   const symbols = useAppStore((s) => s.symbols);
   const mode = useAppStore((s) => s.mode);
 
@@ -46,7 +52,7 @@ const Overview = () => {
   const maxLevel = maxLevelFor(mode);
 
   // Row strings (collapsed line and target panel) are pure functions of state; see lib/overview.
-  const rowLabels = symbols.map((symbol) => collapsedRowLabels(symbol, maxLevel));
+  const rowLabels = symbols.map((symbol) => collapsedRowLabels(symbol, maxLevel, m));
   const panelLabels = symbols.map((symbol) =>
     targetPanelLabels({
       rowLevel: symbol.level,
@@ -56,6 +62,7 @@ const Overview = () => {
       targetDays,
       targetDate,
       isTablet,
+      m,
     })
   );
 
@@ -85,18 +92,17 @@ const Overview = () => {
                   />
                 </TooltipTrigger>
                 <TooltipContent className="tooltip">
-                  View the <span>individual level</span> requirements <br></br>
-                  and dates for each symbol
+                  <Message text={m.headerTooltip} />
                 </TooltipContent>
               </Tooltip>
             </div>
-            <p className="w-1/5 tracking-wider">Symbol</p>
-            <p className="w-1/5 tracking-wider">Target Level</p>
-            <p className="w-1/5 tracking-wider">Completion Date</p>
-            <p className="w-1/5 tracking-wider">Symbols Remaining</p>
+            <p className="w-1/5 tracking-wider">{m.symbol}</p>
+            <p className="w-1/5 tracking-wider">{m.targetLevel}</p>
+            <p className="w-1/5 tracking-wider">{m.completionDate}</p>
+            <p className="w-1/5 tracking-wider">{m.symbolsRemaining}</p>
           </div>
           <div className="flex items-center justify-center text-center text-tertiary md:hidden">
-            <h1 className="tracking-wider">Symbol Overview</h1>
+            <h1 className="tracking-wider">{m.mobileTitle}</h1>
           </div>
           <hr className="h-px w-full opacity-10 md:my-8" />
           {symbols.map(
@@ -133,7 +139,7 @@ const Overview = () => {
                     <div className="hidden w-1/4 scale-[103.5%] justify-center md:flex">
                       <img
                         src={symbol.img}
-                        alt={symbol.name}
+                        alt={symbolNames(symbol, locale).name}
                         width={40}
                         className={`${isNaN(symbol.level) && "grayscale"}`}
                       ></img>
@@ -141,13 +147,13 @@ const Overview = () => {
                     <div className="flex justify-center md:hidden">
                       <img
                         src={symbol.img}
-                        alt={symbol.name}
+                        alt={symbolNames(symbol, locale).name}
                         width={!isMobile ? 37.5 : 35}
                         className={`${isNaN(symbol.level) && "grayscale"}`}
                       ></img>
                     </div>
                     <p className="text-center text-sm tracking-wider md:w-1/4 md:text-base">
-                      {symbol.name}
+                      {symbolNames(symbol, locale).name}
                     </p>
                     <IoMdArrowDropdown
                       size={22.5}
@@ -162,7 +168,7 @@ const Overview = () => {
                         symbol.level === maxLevel && isMobile ? "block" : "hidden"
                       }`}
                     >
-                      MAX
+                      {m.max}
                     </p>
                     <p
                       className={`hidden md:block md:w-1/4 ${
@@ -197,13 +203,13 @@ const Overview = () => {
                     </div>
                     <div className="mb-4 flex w-full items-center justify-between md:mb-0 md:block md:w-1/4 md:justify-normal md:space-x-0">
                       <p className="block text-sm text-accent md:hidden md:text-base">
-                        Target Level
+                        {m.targetLevel}
                       </p>
                       <Tooltip placement="left">
                         <TooltipTrigger asChild={true}>
                           <input
                             type="number"
-                            placeholder="Level"
+                            placeholder={m.levelPlaceholder}
                             value={
                               Number.isNaN(targetLevel)
                                 ? levelSet === false && isMobile
@@ -228,8 +234,7 @@ const Overview = () => {
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip z-10">
-                          Preview the remaining {isMobile ? "stats" : "days and"} <br></br>{" "}
-                          {!isMobile && "symbols"} for the <span>specified level</span>
+                          <Message text={isMobile ? m.targetTooltipShort : m.targetTooltip} />
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -238,7 +243,7 @@ const Overview = () => {
 
                     <div className="flex w-full flex-col justify-between md:flex md:w-1/4">
                       <div className="mb-5 flex w-full items-center justify-between md:mb-0 md:block md:justify-normal md:space-x-0">
-                        <p className="block text-sm md:hidden">Completion Date</p>
+                        <p className="block text-sm md:hidden">{m.completionDate}</p>
                         <div>
                           <p className="text-sm text-tertiary md:text-base md:text-secondary">
                             {panelLabels[index].completion}
@@ -246,7 +251,7 @@ const Overview = () => {
                         </div>
                       </div>
                       <div className="mb-5 flex w-full items-center justify-between md:mb-0 md:block md:justify-normal md:space-x-0">
-                        <p className="block text-sm md:hidden">Days Remaining</p>
+                        <p className="block text-sm md:hidden">{m.daysRemaining}</p>
 
                         <div className="flex flex-row-reverse items-center justify-center md:flex-row md:space-x-1">
                           <p className="ml-1 text-sm text-tertiary md:ml-0 md:text-base">
@@ -256,7 +261,7 @@ const Overview = () => {
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between md:block md:w-1/4 md:justify-normal md:space-x-0">
-                      <p className="block text-sm md:hidden">Symbols Remaining</p>
+                      <p className="block text-sm md:hidden">{m.symbolsRemaining}</p>
                       <p className="text-sm text-tertiary md:text-base md:text-secondary">
                         {panelLabels[index].remaining}
                       </p>

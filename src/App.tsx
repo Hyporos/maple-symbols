@@ -8,6 +8,7 @@ import { BreakpointProvider } from "./contexts/BreakpointContext";
 import { useRouter } from "./contexts/RouterContext";
 import { ROUTES, routeFor, urlFor } from "./lib/routes";
 import { notFoundPath, track } from "./lib/analytics";
+import { useMessages } from "./i18n";
 
 // Heavy calculator sections are lazily loaded to keep initial parse cost low.
 const Calculator = lazy(() => import("./components/Calculator/Calculator"));
@@ -61,6 +62,8 @@ function PageContent() {
 }
 
 function App() {
+  const m = useMessages().shell;
+
   // Warn Samsung Internet users that its built-in dark theme will break colors.
   useEffect(() => {
     if (navigator.userAgent.match(/samsung/i)) {
@@ -82,7 +85,7 @@ function App() {
           onError={() => track("error_shown", { route: routeFor(window.location.pathname).path })}
           fallback={
             <div className="flex flex-1 items-center justify-center text-tertiary">
-              Something went wrong. Please refresh.
+              {m.errorFallback}
             </div>
           }
         >

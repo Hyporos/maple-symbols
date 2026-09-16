@@ -49,7 +49,7 @@ Tailwind built-ins that are part of the palette: `bg-white/10` (dividers, ≈21 
 - **Brand hexes** on social icons are intentional: Discord `#7289DA`, PayPal `#009CDE`, Twitch `#6441a5`, YouTube `#e00000` (`hover:fill-[…]` in `Footer.tsx`, `CreditText.tsx`).
 - **Recharts props** take raw strings: `#b18bd0` (accent) for the line/dots, `#8c8c8c` (tertiary) for axes and cursor, in `Graph.tsx`. Keep them equal to the token values. The chart tooltip's `FaArrowRight` also uses `fill="#8c8c8c"` (there is no `fill-tertiary` token).
 - **Calculator icon colours** via `color=`: `#718571` (green-grey, "can apply"), `#857871` (warm grey, inactive), `#B2B2B2` (the slash). No token equivalents.
-- `.tooltip` background `#111111` and the body gradient top stop `#202020` live in `global.css`.
+- `.tooltip` background `#111111` and the body gradient top stop `#202020` live in `global.css`. `.tooltip` is capped at `max-w-[260px] md:max-w-[300px]` with `text-balance`: tooltip copy never contains `<br>` (I18N-11), so width decides where lines break in every language.
 - `Footer.tsx` uses `hover:fill-[#B18BD0]` where `hover:fill-accent` would do (see §10).
 
 ## 4. Typography
@@ -125,17 +125,16 @@ Inputs opt out of the global accent focus ring and show focus with `bg-hover` in
       )}
       onClick={() => setSymbols(updateSymbol(symbols, selectedId, { bonus: !currentSymbol.bonus }))}
     >
-      Bonus
+      {m.bonus}
     </button>
   </TooltipTrigger>
   <TooltipContent className="tooltip">
-    <span>[Bonus Quest]</span>
-    <br></br> {currentSymbol.bonusName}
+    <Message text={m.bonusTooltip} values={{ quest: currentSymbol.bonusName }} />
   </TooltipContent>
 </Tooltip>
 ```
 
-A new toggle also needs the checklist in ARCHITECTURE §9 (effect deps, `getDailySymbols`, tests).
+Its copy goes in the catalogue (`bonus: "Bonus"`, `bonusTooltip: "<b>[Bonus Quest]</b> {quest}"` in `src/i18n/en/calculator.ts`), read with `const m = useMessages().calculator;`. A new toggle also needs the checklist in ARCHITECTURE §9 (effect deps, `getDailySymbols`, tests).
 
 **Pill button** (Tools tool switcher): `flex max-w-[200px] select-none items-center justify-center rounded-2xl bg-dark px-3 py-2 tracking-wide text-secondary hover:bg-secondary hover:text-primary focus:outline-accent md:w-full md:max-w-[215px] md:gap-4 md:rounded-3xl md:px-4 md:transition-colors`, selected adds `gap-2 bg-secondary text-primary md:gap-4`; on mobile the unselected pill shows only its icon plus `shadow-accent shadow-level`. **Action button** (Apply): `flex w-[175px] select-none items-center justify-center rounded-2xl bg-secondary px-2 py-1.5 tracking-wide text-secondary hover:bg-hover hover:text-primary focus:outline-accent md:w-[100px] md:rounded-3xl md:px-4 md:py-2 md:transition-colors`, disabled adds `pointer-events-none opacity-25`.
 

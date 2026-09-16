@@ -1,2 +1,23 @@
 // Overview card: the per-symbol target table.
-export const overview = {} as const;
+export const overview = {
+  headerTooltip: "View the <b>individual level</b> requirements and dates for each symbol",
+  symbol: "Symbol",
+  targetLevel: "Target Level",
+  completionDate: "Completion Date",
+  daysRemaining: "Days Remaining",
+  symbolsRemaining: "Symbols Remaining",
+  mobileTitle: "Symbol Overview",
+  max: "MAX",
+  levelPlaceholder: "Level",
+  targetTooltip: "Preview the remaining days and symbols for the <b>specified level</b>",
+  targetTooltipShort: "Preview the remaining stats for the <b>specified level</b>",
+  indefinite: "Indefinite",
+  complete: "Complete",
+  readyForUpgrade: "Ready for upgrade",
+  unknownDays: "? days",
+  days: { one: "{count} day", other: "{count} days" },
+  levelTooLow: "Level too low",
+  levelMustBeOver: "Level must be over {level}",
+  enterLevel: "Enter a level",
+  enterTargetLevel: "Enter a target level",
+} as const;

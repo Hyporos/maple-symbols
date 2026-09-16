@@ -4,6 +4,8 @@ import { useAppStore } from "../state/store";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import { track } from "../lib/analytics";
 import type { SymbolType } from "../lib/types";
+import { interpolate, useLocale, useMessages } from "../i18n";
+import { symbolNames } from "../i18n/gameNames";
 
 // Indicator-bar translation per position within the six symbols of a type
 // (80 px pitch = 40 px icon + md:gap-10). Static so Tailwind can see the classes.
@@ -23,6 +25,9 @@ const BAR_POSITIONS = [
 
 const Selector = () => {
   /* ―――――――――――――――――――― Declarations ―――――――――――――――――――― */
+
+  const m = useMessages().shell;
+  const locale = useLocale();
 
   const symbols = useAppStore((s) => s.symbols);
   const mode = useAppStore((s) => s.mode);
@@ -51,16 +56,16 @@ const Selector = () => {
         {/* MODE BUTTONS */}
         <div
           role="radiogroup"
-          aria-label="Symbol type"
+          aria-label={m.symbolType}
           className="mb-1 flex flex-col justify-center gap-14 md:mb-0 md:justify-around md:gap-5"
         >
           <RadioButton
-            label="Arcane"
+            label={m.arcane}
             selected={mode === "arcane"}
             onClick={() => switchMode("arcane")}
           />
           <RadioButton
-            label="Sacred"
+            label={m.sacred}
             selected={mode === "sacred"}
             onClick={() => switchMode("sacred")}
           />
@@ -89,13 +94,15 @@ const Selector = () => {
                 >
                   <img
                     src={symbol.img}
-                    alt={symbol.name}
+                    alt={symbolNames(symbol, locale).name}
                     width={!isMobile ? 40 : 35}
                     height={!isMobile ? 40 : 35}
                     className={cn("mb-1.5 scale-[103.5%]", !isValid(symbol.level) && "grayscale")}
                   />
                   <p className="text-[11px] leading-[15px] md:text-xs md:leading-[16px]">
-                    Lv. {isValid(symbol.level) ? symbol.level : "0"}
+                    {interpolate(m.symbolLevel, {
+                      level: isValid(symbol.level) ? symbol.level : 0,
+                    })}
                   </p>
                 </button>
               );

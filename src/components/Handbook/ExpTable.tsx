@@ -5,12 +5,17 @@ import { formatNumber } from "../../lib/format";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import symbolsJson from "../../lib/symbols.json";
+import { interpolate, useLocale, useMessages } from "../../i18n";
+import { symbolNames } from "../../i18n/gameNames";
+import Message from "../../i18n/Message";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The ExpTable component displays both individual and cumulative symbol exp requirements/cost.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const ExpTable = () => {
+  const m = useMessages().handbook;
+  const locale = useLocale();
   const mode = useAppStore((s) => s.mode);
 
   const { isMobile } = useBreakpoint();
@@ -35,9 +40,7 @@ const ExpTable = () => {
               className="scale-110"
             />
             <div className="h-full w-px bg-white/10"></div>
-            <h1 className="text-lg font-semibold md:text-2xl">
-              {mode === "arcane" ? "Arcane Symbols" : "Sacred Symbols"}
-            </h1>
+            <h1 className="text-lg font-semibold md:text-2xl">{m.symbolsHeading[mode]}</h1>
           </div>
 
           <Tooltip placement="left">
@@ -48,8 +51,7 @@ const ExpTable = () => {
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
-              Displays <span>symbols required</span> to level up <br></br>to the{" "}
-              <span>specified level</span>.
+              <Message text={m.expTooltip} />
             </TooltipContent>
           </Tooltip>
         </div>
@@ -62,12 +64,12 @@ const ExpTable = () => {
             {/* TABLE HEADER */}
             <thead>
               <tr>
-                <th className="pb-5 text-sm font-semibold md:text-base">Level</th>
+                <th className="pb-5 text-sm font-semibold md:text-base">{m.level}</th>
                 <th className="pb-5 text-sm font-semibold md:text-base">
-                  {!isMobile ? "Symbols Required" : "Exp Required"}
+                  {!isMobile ? m.symbolsRequired : m.expRequired}
                 </th>
                 <th className="pb-5 text-sm font-semibold md:text-base">
-                  {!isMobile ? "Total Experience" : "Total Symbols"}
+                  {!isMobile ? m.totalExperience : m.totalSymbols}
                 </th>
               </tr>
             </thead>
@@ -91,7 +93,9 @@ const ExpTable = () => {
                         {currentLevel === index + 1 && (
                           <img
                             src={symbol.img}
-                            alt={`${symbol.name}: current level`}
+                            alt={interpolate(m.currentLevelAlt, {
+                              symbol: symbolNames(symbol, locale).name,
+                            })}
                             className="h-3 w-3 md:h-4 md:w-4"
                           />
                         )}

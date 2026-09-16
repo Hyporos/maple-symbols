@@ -6,6 +6,8 @@ import { cn } from "../lib/utils";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import { useRouter } from "../contexts/RouterContext";
 import { NAV } from "../lib/routes";
+import { useMessages } from "../i18n";
+import Message from "../i18n/Message";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Header component is the top most component of the page which includes navigation and language buttons.
@@ -13,6 +15,7 @@ import { NAV } from "../lib/routes";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Header = () => {
+  const m = useMessages().shell;
   const { isMobile, isTablet } = useBreakpoint();
   const { path: pathname, navigate } = useRouter();
 
@@ -37,7 +40,7 @@ const Header = () => {
         <div className="mx-auto my-2.5 flex w-full max-w-[1125px] items-center justify-between md:my-auto">
           <div className={cn(!isTablet && "w-1/3")}>
             {!isMobile ? (
-              <a href="/" aria-label="Go to calculator" onClick={(e) => handleNav(e, "/")}>
+              <a href="/" aria-label={m.goToCalculator} onClick={(e) => handleNav(e, "/")}>
                 <img
                   src="/main/logo-lg.webp"
                   alt="Maple Symbols"
@@ -47,7 +50,7 @@ const Header = () => {
                 />
               </a>
             ) : (
-              <a href="/" aria-label="Go to calculator" onClick={(e) => handleNav(e, "/")}>
+              <a href="/" aria-label={m.goToCalculator} onClick={(e) => handleNav(e, "/")}>
                 <img
                   src="/main/logo-sm.webp"
                   alt="Maple Symbols"
@@ -80,7 +83,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+                  aria-label={menuOpen ? m.closeMenu : m.openMenu}
                 >
                   <HiOutlineMenu
                     size={35}
@@ -95,7 +98,7 @@ const Header = () => {
                 <Tooltip placement="bottom">
                   <TooltipTrigger asChild={true}>
                     <button
-                      aria-label="Language selector (coming soon)"
+                      aria-label={m.languageSelector}
                       className={cn(
                         "group flex h-[40px] w-[80px] cursor-default items-center justify-center gap-3 bg-dark",
                         isMobile && "h-[45px] w-[45px]"
@@ -106,7 +109,7 @@ const Header = () => {
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="tooltip">
-                    <span>[Coming Soon]</span>
+                    <Message text={m.comingSoon} />
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -133,7 +136,7 @@ const Header = () => {
                 <Tooltip placement="bottom">
                   <TooltipTrigger asChild={true}>
                     <button
-                      aria-label="Language selector (coming soon)"
+                      aria-label={m.languageSelector}
                       className="group flex h-[40px] w-[80px] cursor-default items-center justify-center gap-3 bg-dark"
                     >
                       <FaEarthAmericas size={23} className="fill-basic/75" />
@@ -141,7 +144,7 @@ const Header = () => {
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="tooltip">
-                    <span>[Coming Soon]</span>
+                    <Message text={m.comingSoon} />
                   </TooltipContent>
                 </Tooltip>
               </div>

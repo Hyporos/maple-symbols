@@ -4,6 +4,7 @@ import { cn } from "../../lib/utils";
 import { FaGithub, FaChevronRight } from "react-icons/fa6";
 import { changelogEntries, type ChangelogEntry } from "../../lib/changelog";
 import { formatDate } from "../../lib/format";
+import { interpolate, useMessages } from "../../i18n";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Changelog component allows the user to view all previous Maple Symbols update details.
@@ -12,6 +13,7 @@ import { formatDate } from "../../lib/format";
 
 const Changelog = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+  const m = useMessages().extras;
   const { isMobile } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
@@ -84,7 +86,7 @@ const Changelog = () => {
                     href={entry.link}
                     target="_blank"
                     rel="noopener"
-                    aria-label={`${entry.version} pull request on GitHub`}
+                    aria-label={interpolate(m.pullRequestLink, { version: entry.version })}
                   >
                     <FaGithub
                       size={!isMobile ? 18 : 16}
@@ -100,7 +102,7 @@ const Changelog = () => {
               <div className={cn("mt-6 overflow-y-auto", !isMobile && "pr-10")}>
                 {entry.additions && entry.additions.length > 0 && (
                   <>
-                    <h2 className="pb-6 font-semibold md:text-lg">New Additions</h2>
+                    <h2 className="pb-6 font-semibold md:text-lg">{m.newAdditions}</h2>
                     <div className="space-y-4">
                       {entry.additions.map((addition, index) => (
                         <p key={index} className="text-xs md:text-sm">
@@ -122,7 +124,7 @@ const Changelog = () => {
                         (entry.additions?.length || 0) > 0 && "py-6"
                       )}
                     >
-                      Bug Fixes / Optimizations
+                      {m.bugFixes}
                     </h2>
                     <div className="space-y-4">
                       {entry.fixes.map((fix, index) => (

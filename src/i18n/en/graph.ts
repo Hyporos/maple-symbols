@@ -1,2 +1,21 @@
 // Graph card: the power-over-time chart and its controls.
-export const graph = {} as const;
+export const graph = {
+  power: { arcane: "Arcane Power", sacred: "Sacred Power" },
+  targetPower: "Target Power",
+  targetPowerFull: { arcane: "Target Arcane Power", sacred: "Target Sacred Power" },
+  targetPlaceholder: "Target",
+  targetTooltip: "Calculate the date you'll achieve the <b>specified power</b>",
+  dateLabel: "Date:",
+  attainmentDateLabel: "Attainment Date:",
+  enterTarget: "Enter a target power",
+  targetTooLow: "Target power too low",
+  targetMustBeGreater: "Target must be greater than {power}",
+  xAxisSpacing: "X-axis spacing",
+  dynamic: "Dynamic",
+  linear: "Linear",
+  dynamicTooltip: "X-axis points will have <b>dynamic</b> spacing based on <b>dates</b>",
+  linearTooltip: "X-axis points will have <b>consistent</b> spacing",
+  tooltipPower: "{power} : {value}",
+  tooltipSymbolLevel: "{symbol} : {level}",
+  readyForUpgrade: "Ready for upgrade",
+} as const;

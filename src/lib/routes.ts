@@ -7,7 +7,13 @@
 // the routes plugin in vite.config.ts, which fills the __PLACEHOLDER__ tokens
 // in index.html and emits sitemap.xml at build time and in dev.
 // Add or change a page here and nowhere else.
+//
+// Titles, descriptions and nav labels are English catalogue messages (I18N-4). This
+// file imports the English area directly, never ../i18n (whose index imports this
+// file), and nothing it imports may contain JSX: vite.config.ts loads it at build time.
 // ---------------------------------------------------------------------------
+
+import { pages } from "../i18n/en/pages";
 
 export const SITE_URL = "https://maplesymbols.com";
 export const SITE_NAME = "Maple Symbols";
@@ -42,7 +48,7 @@ export const ogLocaleFor = (locale: string): string => {
 };
 export const OG_IMAGE = {
   url: `${SITE_URL}/main/og-image.png`,
-  alt: "Maple Symbols — MapleStory Symbol Calculator",
+  alt: pages.ogImageAlt,
 } as const;
 
 export type RoutePath = "/" | "/handbook" | "/changelog" | "/credits";
@@ -60,33 +66,29 @@ export interface Route {
 export const ROUTES: readonly Route[] = [
   {
     path: "/",
-    title: "MapleStory Arcane & Sacred Symbol Calculator | Maple Symbols",
-    description:
-      "MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quests, estimate completion dates, and plan your leveling.",
-    nav: { label: "Calculator" },
+    title: pages.calculator.title,
+    description: pages.calculator.description,
+    nav: { label: pages.calculator.nav },
     sitemap: { lastmod: "2026-09-16", changefreq: "weekly", priority: 1.0 },
   },
   {
     path: "/handbook",
-    title: "Symbol Handbook | Maple Symbols",
-    description:
-      "Complete Arcane and Sacred Symbol reference: experience tables, meso upgrade costs, and daily/weekly quest ratios for every MapleStory region.",
-    nav: { label: "Handbook" },
+    title: pages.handbook.title,
+    description: pages.handbook.description,
+    nav: { label: pages.handbook.nav },
     sitemap: { lastmod: "2026-03-11", changefreq: "monthly", priority: 0.8 },
   },
   {
     path: "/changelog",
-    title: "Changelog | Maple Symbols",
-    description:
-      "Full version history and feature updates for Maple Symbols, the MapleStory Arcane and Sacred Symbol calculator.",
-    nav: { label: "Extras", activeFor: ["/changelog", "/credits"] },
+    title: pages.changelog.title,
+    description: pages.changelog.description,
+    nav: { label: pages.changelog.nav, activeFor: ["/changelog", "/credits"] },
     sitemap: { lastmod: "2026-09-16", changefreq: "monthly", priority: 0.6 },
   },
   {
     path: "/credits",
-    title: "Credits | Maple Symbols",
-    description:
-      "Credits for Maple Symbols: the resources, creators and community members behind the MapleStory Arcane and Sacred symbol calculator.",
+    title: pages.credits.title,
+    description: pages.credits.description,
     sitemap: { lastmod: "2025-08-22", changefreq: "yearly", priority: 0.4 },
   },
 ];

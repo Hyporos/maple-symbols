@@ -4,12 +4,17 @@ import { cn } from "../../lib/utils";
 import { formatNumber } from "../../lib/format";
 import { useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { interpolate, useLocale, useMessages } from "../../i18n";
+import { symbolNames } from "../../i18n/gameNames";
+import Message from "../../i18n/Message";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The CostTable component displays both individual and cumulative symbol level up costs.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const CostTable = () => {
+  const m = useMessages().handbook;
+  const locale = useLocale();
   const { isMobile } = useBreakpoint();
   const symbol = useSelectedSymbol();
   let totalCost = 0;
@@ -23,7 +28,7 @@ const CostTable = () => {
             <div className="flex items-center gap-5 md:gap-6">
               <img
                 src={symbol.img}
-                alt={symbol.name}
+                alt={symbolNames(symbol, locale).name}
                 width={!isMobile ? 32.5 : 30}
                 className="scale-110"
               />
@@ -34,7 +39,7 @@ const CostTable = () => {
                   symbol.name === "Vanishing Journey" && "text-base"
                 )}
               >
-                {symbol.name}
+                {symbolNames(symbol, locale).name}
               </h1>
             </div>
 
@@ -46,7 +51,7 @@ const CostTable = () => {
                 />
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                Displays <span>cost</span> to level up<br></br> to the <span>specified level</span>.
+                <Message text={m.costTooltip} />
               </TooltipContent>
             </Tooltip>
           </div>
@@ -59,9 +64,9 @@ const CostTable = () => {
               {/* TABLE HEADER */}
               <thead>
                 <tr>
-                  <th className="pb-5 text-sm font-semibold md:text-base">Level</th>
-                  <th className="pb-5 text-sm font-semibold md:text-base">Mesos Required</th>
-                  <th className="pb-5 text-sm font-semibold md:text-base">Total Cost</th>
+                  <th className="pb-5 text-sm font-semibold md:text-base">{m.level}</th>
+                  <th className="pb-5 text-sm font-semibold md:text-base">{m.mesosRequired}</th>
+                  <th className="pb-5 text-sm font-semibold md:text-base">{m.totalCost}</th>
                 </tr>
               </thead>
 
@@ -82,7 +87,9 @@ const CostTable = () => {
                           {currentLevel && (
                             <img
                               src={symbol.img}
-                              alt={`${symbol.name}: current level`}
+                              alt={interpolate(m.currentLevelAlt, {
+                                symbol: symbolNames(symbol, locale).name,
+                              })}
                               className="h-3 w-3 md:h-4 md:w-4"
                             />
                           )}

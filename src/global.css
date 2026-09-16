@@ -136,7 +136,8 @@
   }
 
   .tooltip {
-    @apply rounded-lg bg-[#111111] px-2.5 py-1.5 text-center text-xs shadow-input md:text-sm;
+    /* Copy has no <br> (I18N-11): the width limit and balanced wrapping decide the line breaks. */
+    @apply max-w-[260px] rounded-lg bg-[#111111] px-2.5 py-1.5 text-center text-xs text-balance shadow-input md:max-w-[300px] md:text-sm;
   }
 
   img {

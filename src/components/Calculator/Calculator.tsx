@@ -19,7 +19,8 @@ import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inpu
 import { track, trackOnce } from "../../lib/analytics";
 import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
 import { formatNumber } from "../../lib/format";
-import { useMessages } from "../../i18n";
+import { useLocale, useMessages } from "../../i18n";
+import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
 // Class-specific stat gains per symbol level, shown in the main stat tooltip.
@@ -30,6 +31,7 @@ const Calculator = () => {
   /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */
 
   const m = useMessages().calculator;
+  const locale = useLocale();
 
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
@@ -95,9 +97,9 @@ const Calculator = () => {
         <div className="flex w-full max-w-[360px] flex-col justify-between px-10 md:h-[250px]">
           <div className="flex items-center justify-center gap-4 pb-5 md:pb-6">
             {/* SYMBOL TITLE */}
-            <img src={currentSymbol.img} alt={currentSymbol.name} width={33} />
+            <img src={currentSymbol.img} alt={symbolNames(currentSymbol, locale).name} width={33} />
             <p className="text-lg font-semibold tracking-wider text-primary uppercase md:text-xl">
-              {currentSymbol.name}
+              {symbolNames(currentSymbol, locale).name}
             </p>
           </div>
 
@@ -266,7 +268,10 @@ const Calculator = () => {
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                <Message text={m.dailyTooltip} values={{ quest: currentSymbol.dailyName }} />
+                <Message
+                  text={m.dailyTooltip}
+                  values={{ quest: symbolNames(currentSymbol, locale).dailyName }}
+                />
               </TooltipContent>
             </Tooltip>
 
@@ -294,7 +299,7 @@ const Calculator = () => {
               <TooltipContent className="tooltip">
                 <Message
                   text={m.weeklyTooltip}
-                  values={{ quest: currentSymbol.weeklyName ?? "" }}
+                  values={{ quest: symbolNames(currentSymbol, locale).weeklyName ?? "" }}
                 />
               </TooltipContent>
             </Tooltip>
@@ -319,7 +324,10 @@ const Calculator = () => {
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                <Message text={m.extraTooltip} values={{ quest: currentSymbol.extraName ?? "" }} />
+                <Message
+                  text={m.extraTooltip}
+                  values={{ quest: symbolNames(currentSymbol, locale).extraName ?? "" }}
+                />
               </TooltipContent>
             </Tooltip>
           </div>

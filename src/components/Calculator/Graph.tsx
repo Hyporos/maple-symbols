@@ -31,6 +31,9 @@ import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
 import type { SymbolData, SymbolType } from "../../lib/types";
+import { interpolate, useLocale, useMessages } from "../../i18n";
+import { symbolNames } from "../../i18n/gameNames";
+import Message from "../../i18n/Message";
 
 interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
   currentPower: number;
@@ -54,6 +57,9 @@ const CustomTooltip = ({
   symbols,
   flatDateSymbols,
 }: CustomTooltipProps) => {
+  const m = useMessages().graph;
+  const locale = useLocale();
+
   if (!active || !payload || payload.length === 0) {
     return null;
   }
@@ -73,7 +79,7 @@ const CustomTooltip = ({
           : label
       }`}</p>
       <p className={`text-accent ${isMobile ? "text-xs" : "text-sm"} ${!isFirstEntry && "pb-2"}`}>
-        {mode === "arcane" ? "Arcane" : "Sacred"} Power : {payload[0].value}
+        {interpolate(m.tooltipPower, { power: m.power[mode], value: String(payload[0].value) })}
       </p>
       {!isFirstEntry && <hr className="my-8 w-full pb-2 opacity-20" />}
 
@@ -96,16 +102,19 @@ const CustomTooltip = ({
             return (
               <div key={symbol.name} className="flex flex-col text-tertiary">
                 <div className="flex items-center space-x-1.5">
-                  <p className={isMobile ? "text-xs" : "text-sm"}>{`${
-                    symbol.name
-                  } : ${symbolEntries[0].entryLevel - 1}`}</p>
+                  <p className={isMobile ? "text-xs" : "text-sm"}>
+                    {interpolate(m.tooltipSymbolLevel, {
+                      symbol: symbolNames(symbol, locale).name,
+                      level: String(symbolEntries[0].entryLevel - 1),
+                    })}
+                  </p>
                   <FaArrowRight size={isMobile ? 10 : 12} fill="#8c8c8c" className="opacity-75" />
                   <p className={isMobile ? "text-xs" : "text-sm"}>{`${
                     symbolEntries[0].entryLevel + occurrences
                   }`}</p>
                 </div>
                 <p className="text-xs text-accent/75">
-                  {isSecondEntry && upgradeReady && "Ready for upgrade"}
+                  {isSecondEntry && upgradeReady && m.readyForUpgrade}
                 </p>
               </div>
             );
@@ -117,6 +126,8 @@ const CustomTooltip = ({
 
 const Graph = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const m = useMessages().graph;
 
   const symbols = useAppStore((s) => s.symbols);
   const mode = useAppStore((s) => s.mode);
@@ -191,10 +202,10 @@ const Graph = () => {
 
     // Otherwise, return an error message
     return !isValid(targetPower)
-      ? "Enter a target power"
+      ? m.enterTarget
       : isMobile
-        ? "Target power too low"
-        : `Target must be greater than ${currentPower}`;
+        ? m.targetTooLow
+        : interpolate(m.targetMustBeGreater, { power: String(currentPower) });
   };
 
   // Reset targetPower if symbols are mode
@@ -222,7 +233,7 @@ const Graph = () => {
         {/* POWER OVERVIEW */}
         <div className="flex w-full flex-col justify-center gap-4 md:flex-row md:gap-0 md:space-x-8">
           <div className="flex items-center justify-between gap-3 rounded-lg bg-dark px-8 py-4 md:flex-col md:justify-center">
-            <p className="text-sm md:text-base">{mode === "arcane" ? "Arcane" : "Sacred"} Power</p>
+            <p className="text-sm md:text-base">{m.power[mode]}</p>
             <p className="text-sm text-accent md:text-base">
               {currentPower} / {enabledSymbols * MAX_POWER_PER_SYMBOL[mode]}
             </p>
@@ -232,11 +243,7 @@ const Graph = () => {
           <div className="flex w-full max-w-[325px] flex-col items-center justify-center gap-3 rounded-lg bg-dark px-8 py-4">
             <div className="flex w-full items-center justify-between">
               <p className="text-sm md:text-base">
-                {isMobile
-                  ? `Target Power`
-                  : mode === "arcane"
-                    ? "Target Arcane Power"
-                    : "Target Sacred Power"}
+                {isMobile ? m.targetPower : m.targetPowerFull[mode]}
               </p>
               <Tooltip>
                 <TooltipTrigger asChild={true}>
@@ -246,7 +253,7 @@ const Graph = () => {
                       "h-[25px] w-[65px] bg-secondary text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:h-[30px]",
                       graphSymbols.length === 1 && "pointer-events-none opacity-25 select-none"
                     )}
-                    placeholder="Target"
+                    placeholder={m.targetPlaceholder}
                     value={isNaN(targetPower) ? "" : targetPower}
                     onWheel={(e) => e.currentTarget.blur()}
                     onChange={(e) => getTargetPowerDate(e.target.value)}
@@ -254,7 +261,7 @@ const Graph = () => {
                   />
                 </TooltipTrigger>
                 <TooltipContent className="tooltip">
-                  Calculate the date you'll <br></br>achieve the <span>specified power</span>
+                  <Message text={m.targetTooltip} />
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -264,9 +271,9 @@ const Graph = () => {
                 (!targetPower || targetPower < currentPower) && !isMobile && "justify-center"
               )}
             >
-              <p className="text-sm md:hidden">Date:</p>
+              <p className="text-sm md:hidden">{m.dateLabel}</p>
               <p className={!isMobile && targetPower > currentPower ? "block" : "hidden"}>
-                Attainment Date:{" "}
+                {m.attainmentDateLabel}{" "}
               </p>
               <p className="text-sm text-accent md:text-base">{getTargetPowerResponse()}</p>
             </div>
@@ -279,13 +286,13 @@ const Graph = () => {
         {/* RADIO BUTTONS */}
         <div
           role="radiogroup"
-          aria-label="X-axis spacing"
+          aria-label={m.xAxisSpacing}
           className="flex space-x-[75px] pb-6 md:space-x-32 md:pb-4"
         >
           <Tooltip>
             <TooltipTrigger as="div">
               <RadioButton
-                label="Dynamic"
+                label={m.dynamic}
                 selected={graphDynamic}
                 onClick={() => {
                   if (!graphDynamic) track("graph_mode", { mode: "dynamic" });
@@ -294,14 +301,13 @@ const Graph = () => {
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
-              X-axis points will have <span>dynamic</span>
-              <br></br> spacing based on <span>dates</span>
+              <Message text={m.dynamicTooltip} />
             </TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger as="div">
               <RadioButton
-                label="Linear"
+                label={m.linear}
                 selected={!graphDynamic}
                 onClick={() => {
                   if (graphDynamic) track("graph_mode", { mode: "linear" });
@@ -310,7 +316,7 @@ const Graph = () => {
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
-              X-axis points will have <span>consistent</span> spacing
+              <Message text={m.linearTooltip} />
             </TooltipContent>
           </Tooltip>
         </div>
@@ -333,7 +339,7 @@ const Graph = () => {
               type="linear"
               isAnimationActive={false}
               dataKey="power"
-              name={`${mode === "arcane" ? "Arcane" : "Sacred"} Power`}
+              name={m.power[mode]}
               stroke="#b18bd0"
               strokeWidth={1.5}
               dot={{

@@ -9,6 +9,9 @@ import { CATALYST_RETENTION, maxLevelFor } from "../../lib/game";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
+import { useLocale, useMessages } from "../../i18n";
+import { symbolNames } from "../../i18n/gameNames";
+import Message from "../../i18n/Message";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Tools component is the section under the Calculator which contains the Selectors and Catalyst.
@@ -16,6 +19,9 @@ import { track } from "../../lib/analytics";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Tools = () => {
+  const m = useMessages().tools;
+  const locale = useLocale();
+
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
   const selectedId = useAppStore((s) => s.selectedId);
@@ -85,11 +91,11 @@ const Tools = () => {
                     ? "/symbols/arcane-selector.webp"
                     : "/symbols/sacred-selector.webp"
                 }`}
-                alt={`${mode === "arcane" ? "Arcane" : "Sacred"} Symbol Selector`}
+                alt={mode === "arcane" ? m.arcaneSelectorAlt : m.sacredSelectorAlt}
                 width={!isMobile ? 33 : 30}
               />
               <p className="text-sm md:text-base">
-                {(selectedTool === "selector" || !isMobile) && "Symbol Selector"}
+                {(selectedTool === "selector" || !isMobile) && m.symbolSelector}
               </p>
             </button>
             <Tooltip>
@@ -111,19 +117,19 @@ const Tools = () => {
                         ? "/symbols/arcane-catalyst.webp"
                         : "/symbols/sacred-catalyst.webp"
                     }`}
-                    alt={`${mode === "arcane" ? "Arcane" : "Sacred"} Catalyst`}
+                    alt={mode === "arcane" ? m.arcaneCatalyst : m.sacredCatalyst}
                     width={!isMobile ? 33 : 30}
                   />
                   <p className="text-sm md:text-base">
                     {(selectedTool === "catalyst" || !isMobile) &&
-                      (mode === "arcane" ? "Arcane Catalyst" : "Sacred Catalyst")}
+                      (mode === "arcane" ? m.arcaneCatalyst : m.sacredCatalyst)}
                   </p>
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                <span>[Regular Server Only]</span> <br></br> Transfer{" "}
-                {mode === "arcane" ? "an Arcane Symbol" : "a Sacred Symbol"} once <br></br> within
-                the same world
+                <Message
+                  text={mode === "arcane" ? m.arcaneCatalystTooltip : m.sacredCatalystTooltip}
+                />
               </TooltipContent>
             </Tooltip>
           </div>
@@ -152,12 +158,12 @@ const Tools = () => {
                 <div className="flex items-center space-x-10 md:w-1/4 md:space-x-4">
                   <img
                     src={currentSymbol.img}
-                    alt={currentSymbol.name}
+                    alt={symbolNames(currentSymbol, locale).name}
                     width={!isMobile ? 33 : 30}
                   ></img>
                   <input
                     type="number"
-                    placeholder="Count"
+                    placeholder={m.countPlaceholder}
                     value={isNaN(selectorCount) ? "" : selectorCount}
                     className="w-1/2 w-[80px] bg-secondary py-1 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:w-[100px] md:p-2.5"
                     tabIndex={
@@ -209,11 +215,11 @@ const Tools = () => {
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
                       <div className="flex items-center justify-center space-x-2 text-accent">
-                        <p className="text-sm">[Before</p>{" "}
+                        <p className="text-sm">[{m.before}</p>{" "}
                         <FaArrowRight size={13} className="fill-accent" />{" "}
-                        <p className="text-sm">After]</p>
+                        <p className="text-sm">{m.after}]</p>
                       </div>{" "}
-                      Level / Experience
+                      {m.selectorPreviewTooltip}
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -244,7 +250,7 @@ const Tools = () => {
                     setSelectorCount(NaN);
                   }}
                 >
-                  <p className="text-sm md:text-base">Apply</p>
+                  <p className="text-sm md:text-base">{m.apply}</p>
                 </button>
               </div>
             </TooltipTrigger>
@@ -256,7 +262,7 @@ const Tools = () => {
                   : "hidden"
               }`}
             >
-              This feature is <span>disabled</span> while <br></br> experience is unlocked
+              <Message text={m.disabledWhileUnlocked} />
             </TooltipContent>
           </Tooltip>
           <div
@@ -267,11 +273,13 @@ const Tools = () => {
             <div className="flex items-center space-x-4 md:w-[70px]">
               <img
                 src={currentSymbol.img}
-                alt={currentSymbol.name}
+                alt={symbolNames(currentSymbol, locale).name}
                 width={!isMobile ? 33 : 30}
                 className="md:p-0"
               ></img>
-              <p className="text-sm md:text-base">{isMobile && currentSymbol.name}</p>
+              <p className="text-sm md:text-base">
+                {isMobile && symbolNames(currentSymbol, locale).name}
+              </p>
             </div>
             <div className="flex items-center justify-around md:w-1/3">
               <Tooltip>
@@ -302,20 +310,20 @@ const Tools = () => {
                 </TooltipTrigger>
                 <TooltipContent className="tooltip">
                   <div className="flex items-center justify-center space-x-2 text-accent">
-                    <p className="text-sm">[Before</p>{" "}
+                    <p className="text-sm">[{m.before}</p>{" "}
                     <FaArrowRight size={13} className="fill-accent" />{" "}
-                    <p className="text-sm">After]</p>
+                    <p className="text-sm">{m.after}]</p>
                   </div>{" "}
-                  Symbol Level / Exp
+                  {m.catalystPreviewTooltip}
                 </TooltipContent>
               </Tooltip>
             </div>
             <p className="w-[200px] py-[6px] text-center text-sm text-tertiary md:py-[8px] md:text-right md:text-base">
               {currentSymbol.level === 1 || isNaN(currentSymbol.level)
-                ? "Must be level 2 or higher"
+                ? m.catalystLevelTooLow
                 : mode === "arcane"
-                  ? "-20% EXP upon use"
-                  : "-40% EXP upon use"}
+                  ? m.arcaneExpLoss
+                  : m.sacredExpLoss}
             </p>
           </div>
         </div>

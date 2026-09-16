@@ -4,6 +4,7 @@ import Credits from "./Credits";
 import { useRouter } from "../../contexts/RouterContext";
 import { EXTRAS_TABS } from "../../lib/routes";
 import { track } from "../../lib/analytics";
+import { useMessages } from "../../i18n";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Extras component acts as a page for the Changelog and Credits components.
@@ -13,6 +14,7 @@ import { track } from "../../lib/analytics";
 const TAB_PATHS: readonly string[] = EXTRAS_TABS;
 
 const Extras = () => {
+  const m = useMessages().extras;
   const { path: pathname, navigate } = useRouter();
 
   const activeTab = TAB_PATHS.indexOf(pathname) + 1 || 1;
@@ -20,8 +22,8 @@ const Extras = () => {
   return (
     <TabLayout
       tabs={[
-        { label: "Changelog", content: <Changelog /> },
-        { label: "Credits", content: <Credits /> },
+        { label: m.changelogTab, content: <Changelog /> },
+        { label: m.creditsTab, content: <Credits /> },
       ]}
       activeTab={activeTab}
       onSelect={(index) => track("extras_tab", { tab: index === 2 ? "credits" : "changelog" })}

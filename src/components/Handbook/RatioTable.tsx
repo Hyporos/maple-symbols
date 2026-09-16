@@ -5,12 +5,18 @@ import { cn } from "../../lib/utils";
 import { arcaneRatioData, sacredRatioData } from "../../lib/ratioData";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useMessages } from "../../i18n";
+import Message from "../../i18n/Message";
+
+// Region names are game names, kept out of the catalogue with the other symbols.json names.
+const REGION = { arcane: "Arcane River", sacred: "Grandis" } as const;
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The RatioTable component displays Damage Dealt and Damage Taken values, based on current power.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const RatioTable = () => {
+  const m = useMessages().handbook;
   const mode = useAppStore((s) => s.mode);
 
   const { isMobile } = useBreakpoint();
@@ -28,9 +34,7 @@ const RatioTable = () => {
               className="scale-110"
             />
             <div className="h-full w-px bg-white/10"></div>
-            <h1 className="text-lg font-semibold md:text-2xl">
-              {mode === "arcane" ? "Arcane River" : "Grandis"}
-            </h1>
+            <h1 className="text-lg font-semibold md:text-2xl">{REGION[mode]}</h1>
           </div>
 
           <Tooltip placement="left">
@@ -41,9 +45,10 @@ const RatioTable = () => {
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
-              Displays <span>damage ratios</span> for{" "}
-              {mode === "arcane" ? "Arcane River" : "Grandis"} <br></br>maps, <span>depending</span>{" "}
-              on your {mode === "arcane" ? "Arcane Power" : "Sacred Power"}.
+              <Message
+                text={m.ratioTooltip}
+                values={{ region: REGION[mode], power: m.power[mode] }}
+              />
             </TooltipContent>
           </Tooltip>
         </div>
@@ -57,9 +62,7 @@ const RatioTable = () => {
             <thead>
               <tr>
                 <th className="flex items-center justify-center px-3 pb-5 md:gap-2 md:px-0">
-                  <h2 className="text-sm font-semibold md:text-base">
-                    {mode === "arcane" ? "Arcane Power" : "Sacred Power"}
-                  </h2>
+                  <h2 className="text-sm font-semibold md:text-base">{m.power[mode]}</h2>
                   {!isMobile && (
                     <Tooltip>
                       <TooltipTrigger>
@@ -69,23 +72,15 @@ const RatioTable = () => {
                         />
                       </TooltipTrigger>
                       <TooltipContent className="tooltip">
-                        {mode === "arcane" ? (
-                          <>
-                            The current <span>Arcane Power range</span> you meet, <br></br> compared
-                            to the <span>map requirement</span>
-                          </>
-                        ) : (
-                          <>
-                            The difference between <span>your Sacred Power</span>
-                            <br></br>and the <span>map requirement</span>
-                          </>
-                        )}
+                        <Message
+                          text={mode === "arcane" ? m.arcanePowerTooltip : m.sacredPowerTooltip}
+                        />
                       </TooltipContent>
                     </Tooltip>
                   )}
                 </th>
-                <th className="pb-5 text-sm font-semibold md:text-base">Damage Dealt</th>
-                <th className="pb-5 text-sm font-semibold md:text-base">Damage Taken</th>
+                <th className="pb-5 text-sm font-semibold md:text-base">{m.damageDealt}</th>
+                <th className="pb-5 text-sm font-semibold md:text-base">{m.damageTaken}</th>
               </tr>
             </thead>
 
@@ -117,8 +112,7 @@ const RatioTable = () => {
                                 />
                               </TooltipTrigger>
                               <TooltipContent className="tooltip">
-                                Monsters will deal <span>1 damage</span> <br></br>
-                                to your character
+                                <Message text={m.oneDamageTooltip} />
                               </TooltipContent>
                             </Tooltip>
                           )}

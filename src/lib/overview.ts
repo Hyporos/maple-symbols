@@ -1,13 +1,20 @@
 // ---------------------------------------------------------------------------
 // overview.ts — The status strings shown in the Overview table.
 // Pure functions over symbol state, so the wording is testable without a render.
+// The wording itself comes from the caller's catalogue area (`m`, src/i18n/en/overview.ts).
 // ---------------------------------------------------------------------------
 
 import type { Dayjs } from "dayjs";
 import { dayjs } from "./dayjs";
 import { progressToMax } from "./calculator";
-import { plural } from "./format";
+import { interpolate, pluralMessage } from "../i18n/interpolate";
+import type { Messages } from "../i18n";
 import type { SymbolData } from "./types";
+
+type OverviewMessages = Messages["overview"];
+
+const dayCount = (m: OverviewMessages, count: number): string =>
+  interpolate(pluralMessage(m.days, count), { count });
 
 /** Invisible placeholder that keeps a row's height when there is nothing to show. */
 export const BLANK = "‎";
@@ -26,6 +33,7 @@ export interface CollapsedRowLabels {
 export function collapsedRowLabels(
   symbol: SymbolData,
   maxLevel: number,
+  m: OverviewMessages,
   now: Dayjs = dayjs()
 ): CollapsedRowLabels {
   const { symbolsRemaining, daysRemaining, completion: date } = progressToMax(symbol, now);
@@ -34,23 +42,23 @@ export function collapsedRowLabels(
   const noQuests = !symbol.daily && !symbol.weekly;
   const blank = atMax || unset;
 
-  const target = atMax ? "MAX" : unset ? "0" : String(maxLevel);
+  const target = atMax ? m.max : unset ? "0" : String(maxLevel);
 
   const completion = blank
     ? BLANK
     : date === "Invalid Date" || noQuests || isNaN(symbol.experience)
-      ? "Indefinite"
+      ? m.indefinite
       : daysRemaining === 0
-        ? "Complete"
+        ? m.complete
         : date;
 
   const days = blank
     ? BLANK
     : !isFinite(daysRemaining) || noQuests || isNaN(symbol.experience)
-      ? "? days"
+      ? m.unknownDays
       : daysRemaining === 0
-        ? "Ready for upgrade"
-        : `${daysRemaining} ${plural(daysRemaining, "day", "days")}`;
+        ? m.readyForUpgrade
+        : dayCount(m, daysRemaining);
 
   const remaining = blank
     ? BLANK
@@ -73,6 +81,8 @@ export interface TargetPanelInput {
   targetDays: number;
   targetDate: string;
   isTablet: boolean;
+  /** The Overview catalogue area the labels are worded from. */
+  m: OverviewMessages;
 }
 
 export interface TargetPanelLabels {
@@ -83,43 +93,44 @@ export interface TargetPanelLabels {
 
 /** The expanded target-level panel: completion date, days remaining, symbols remaining. */
 export function targetPanelLabels(input: TargetPanelInput): TargetPanelLabels {
-  const { rowLevel, current, targetLevel, targetSymbols, targetDays, targetDate, isTablet } = input;
+  const { rowLevel, current, targetLevel, targetSymbols, targetDays, targetDate, isTablet, m } =
+    input;
   const noQuests = !current.daily && !current.weekly;
   const alreadyThere = targetSymbols === 0 && current.experience !== 0;
 
   const completion = alreadyThere
-    ? "Complete"
+    ? m.complete
     : targetLevel <= rowLevel ||
         isNaN(current.experience) ||
         isNaN(targetLevel) ||
         noQuests ||
         targetDate === "Invalid Date"
-      ? "Indefinite"
+      ? m.indefinite
       : targetDays <= 0
-        ? "Complete"
+        ? m.complete
         : targetDate;
 
   const days = alreadyThere
-    ? "Ready for upgrade"
+    ? m.readyForUpgrade
     : targetLevel <= rowLevel
       ? isTablet
-        ? "Level too low"
-        : `Level must be over ${rowLevel}`
+        ? m.levelTooLow
+        : interpolate(m.levelMustBeOver, { level: rowLevel })
       : isNaN(targetLevel)
         ? isTablet
-          ? "Enter a level"
-          : "Enter a target level"
+          ? m.enterLevel
+          : m.enterTargetLevel
         : String(targetDays) === "Infinity" ||
             String(targetDays) === "-Infinity" ||
             isNaN(targetDays) ||
             noQuests ||
             isNaN(current.experience)
-          ? "? days"
+          ? m.unknownDays
           : // `targetDays` is a whole day count from advanceDayCount, so testing
             // "<= 0" before the plural reads the same as the old "> 1" chain did.
             targetDays <= 0
-            ? "Ready for upgrade"
-            : `${targetDays} ${plural(targetDays, "day", "days")}`;
+            ? m.readyForUpgrade
+            : dayCount(m, targetDays);
 
   const remaining =
     isNaN(targetSymbols) ||

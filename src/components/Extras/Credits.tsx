@@ -1,16 +1,19 @@
 import CreditText from "../CreditText";
+import { interpolate, useMessages } from "../../i18n";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Credits component will display all acknowledgments to resources, users, and communities.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Credits = () => {
+  const m = useMessages().extras;
+
   return (
     <div className="mx-12 flex h-[555px] py-10">
       <div className="flex w-full flex-col items-center justify-around space-y-12">
         {/* RESOURCES */}
         <div className="w-[195px] space-y-3 md:w-[215px]">
-          <h1 className="text-center text-lg font-semibold md:text-xl">Resources Used</h1>
+          <h1 className="text-center text-lg font-semibold md:text-xl">{m.resourcesUsed}</h1>
           <div className="h-px w-full bg-white/10"></div>
           <div className="space-y-2">
             <CreditText
@@ -33,7 +36,7 @@ const Credits = () => {
 
         {/* ACKNOWLEDGMENTS */}
         <div className="w-[195px] space-y-3 md:w-[215px]">
-          <h1 className="text-center text-lg font-semibold md:text-xl">Acknowledgments</h1>
+          <h1 className="text-center text-lg font-semibold md:text-xl">{m.acknowledgments}</h1>
           <div className="h-px w-full bg-white/10"></div>
           <div className="space-y-2">
             <CreditText
@@ -54,11 +57,17 @@ const Credits = () => {
 
         {/* SPECIAL THANKS */}
         <div className="w-[195px] space-y-3 md:w-[215px]">
-          <h1 className="text-center text-lg font-semibold md:text-xl">Special Thanks</h1>
+          <h1 className="text-center text-lg font-semibold md:text-xl">{m.specialThanks}</h1>
           <div className="h-px w-full bg-white/10"></div>
           <div className="space-y-2">
-            <CreditText label="Members of Saku" img="/credits/saku.webp" />
-            <CreditText label="Members of Shark Tank" img="/credits/shark-tank.webp" />
+            <CreditText
+              label={interpolate(m.membersOf, { group: "Saku" })}
+              img="/credits/saku.webp"
+            />
+            <CreditText
+              label={interpolate(m.membersOf, { group: "Shark Tank" })}
+              img="/credits/shark-tank.webp"
+            />
           </div>
         </div>
       </div>
