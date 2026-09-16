@@ -12,8 +12,13 @@ describe("clampNumberInput", () => {
     ["25", 20, 20],
     ["7", 20, 7],
     ["", 20, NaN],
-    ["00", 20, 0], // KI-010: only the literal "0" is remapped
-    ["0.5", 20, 0],
+    ["   ", 20, NaN],
+    ["abc", 20, NaN],
+    ["00", 20, 1], // KI-010: every value that resolves to zero or less floors to 1
+    ["000", 20, 1],
+    ["0.5", 20, 1],
+    ["-0", 20, 1],
+    ["7.9", 20, 7], // non-integers floor
   ])("%s with max %i → %s", (raw, max, expected) => {
     const result = clampNumberInput(raw, max);
     if (Number.isNaN(expected)) expect(result).toBeNaN();
@@ -37,8 +42,9 @@ describe("expCapFor", () => {
     expect(expCapFor(vj({ level: 5, locked: false }))).toBe(2679);
   });
 
-  it("is undefined at max level while locked (KI-004: the cap is effectively off)", () => {
-    expect(expCapFor(vj({ level: 20, locked: true }))).toBeUndefined();
+  it("is 0 at max level, locked or not (KI-004: there is no next level to save toward)", () => {
+    expect(expCapFor(vj({ level: 20, locked: true }))).toBe(0);
+    expect(expCapFor(vj({ level: 20, locked: false }))).toBe(0);
   });
 });
 
@@ -62,7 +68,7 @@ describe("experienceInputValue", () => {
     expect(experienceInputValue("00", 5, 36)).toBeNull(); // handler rewrites the field instead
   });
 
-  it("accepts anything when the cap is undefined (max level, KI-004)", () => {
-    expect(experienceInputValue("999", 20, undefined as unknown as number)).toBe(999);
+  it("stores 0 at max level, where the cap is 0 (KI-004)", () => {
+    expect(experienceInputValue("999", 20, expCapFor(vj({ level: 20, locked: true })))).toBe(0);
   });
 });

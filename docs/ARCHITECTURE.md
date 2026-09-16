@@ -70,7 +70,7 @@ Field origins:
 - **User-controlled**: `level, experience, daily, weekly?, extra?, locked`.
 - **Derived, never stored** (v2): symbols/days remaining and the completion date come from `progressToMax` (`lib/calculator.ts`) at read time; power from `usePower`.
 
-Identity: symbols are addressed by `id` (arcane 1–6, sacred 7–12; `updateSymbol(symbols, id, patch)`, `useSelectedSymbol()`); array position is only display order. `symbolsRequired[L]` and `mesosRequired[L]` are the cost of the L→L+1 step (`[0]` is 0, level 0 does not exist); Handbook rows print "Level N" with value `[N-1]`. `symbolsRequired[max]` is `undefined`, which several comparisons rely on (KI-004).
+Identity: symbols are addressed by `id` (arcane 1–6, sacred 7–12; `updateSymbol(symbols, id, patch)`, `useSelectedSymbol()`); array position is only display order. `symbolsRequired[L]` and `mesosRequired[L]` are the cost of the L→L+1 step (`[0]` is 0, level 0 does not exist); Handbook rows print "Level N" with value `[N-1]`. `symbolsRequired[max]` is `undefined`; anything that compares against it must special-case max level first, as `expCapFor` and `getOverflow` now do (KI-004, KI-005).
 
 Who computes what:
 

@@ -70,18 +70,18 @@ describe("Calculator — level and experience inputs", () => {
     expect(vj()).toMatchObject({ level: 4, experience: 3, locked: true }); // 12+15+20 = 47
   });
 
-  it("applying overflow that reaches max keeps the leftover experience (KI-005, current behaviour)", () => {
+  it("applying overflow that reaches max drops the leftover experience (KI-005)", () => {
     seedSymbol(1, { level: 19, experience: 2679, locked: false });
     render(<Calculator />);
     fireEvent.click(screen.getByLabelText("Apply overflow experience"));
-    expect(vj()).toMatchObject({ level: 20, experience: 2307, locked: true });
+    expect(vj()).toMatchObject({ level: 20, experience: 0, locked: true });
   });
 
-  it("at max level with the cap locked, any experience is accepted (KI-004, current behaviour)", () => {
+  it("at max level the experience field is capped at 0 (KI-004)", () => {
     seedSymbol(1, { level: 20, experience: 0 });
     render(<Calculator />);
     fireEvent.change(expInput(), { target: { value: "999" } });
-    expect(vj().experience).toBe(999);
+    expect(vj().experience).toBe(0);
   });
 
   it("re-locks automatically at max level with 0 exp", () => {

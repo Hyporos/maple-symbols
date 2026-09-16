@@ -84,38 +84,37 @@ export function getRemainingSymbols(nextLevel: number, symbol: SymbolData): numb
 // ---------------------------------------------------------------------------
 
 /**
- * Mutable state snapshot used by the day-counting algorithm.
- * Exporting this lets Graph.tsx call advanceDayCount level-by-level,
- * accumulating state across iterations instead of resetting each time.
+ * Progress of the day-counting walk. Exported so Graph can thread one walk across a
+ * symbol's levels instead of restarting it per level.
  */
 export interface DayCountState {
+  /** Days counted forward from `now`. */
   days: number;
-  countToMonday: number;
-  weeklyResets: number;
-  mondayReached: boolean;
+  /** Symbols credited over those days. */
+  credited: number;
 }
 
-/** Fresh starting state for a new calculation starting from today. */
-export const INITIAL_DAY_COUNT: DayCountState = {
-  days: 0,
-  countToMonday: 0,
-  weeklyResets: 0,
-  mondayReached: false,
-};
+/** Fresh starting state for a walk that begins today. */
+export const INITIAL_DAY_COUNT: DayCountState = { days: 0, credited: 0 };
+
+/** dayjs weekday index for Monday (0 is Sunday). */
+const MONDAY = 1;
 
 /**
- * Advances an existing DayCountState until the cumulative symbol total
- * reaches `symbolsNeeded` (absolute, not relative to the current state).
+ * Advances an existing DayCountState until `credited` reaches `symbolsNeeded`, which is
+ * an absolute cumulative target rather than a delta. Graph relies on that: it passes the
+ * running total from `getRemainingSymbols` for each level and threads the state through.
  *
- * This design lets Graph.tsx thread a single state across level iterations:
- * each call passes the cumulative symbols needed since today (from
- * getRemainingSymbols), and the shared Monday/weekly tracking carries over.
+ * The walk starts tomorrow, because the Calculator's tooltip promises the estimate assumes
+ * today's quests are already done. Each counted day pays the daily rate, and a counted
+ * Monday also pays the weekly reset.
  *
- * For a fresh calculation, start with INITIAL_DAY_COUNT (days=0, etc.),
- * which makes `symbolsNeeded` behave as a simple absolute target.
+ * KI-003 was the previous version: it located "next Monday" with `dayjs().day(8)`, which is
+ * Monday of the *following* week in dayjs's Sunday-start weeks, and credited the reset one
+ * iteration late. A single weekly took 9 days from a Sunday (skipping tomorrow's Monday
+ * entirely) and 6 from a Wednesday; it now takes 1 and 5.
  *
- * @returns A new state object with updated `days`, `countToMonday`,
- *          `weeklyResets`, and `mondayReached`.
+ * @returns A new state object; the input is never mutated.
  */
 export function advanceDayCount(
   state: DayCountState,
@@ -128,29 +127,16 @@ export function advanceDayCount(
   if (symbolsNeeded <= 0) return state;
   if (dailySymbols === 0 && !hasWeekly) return { ...state, days: Infinity };
 
-  let { days, countToMonday, weeklyResets, mondayReached } = state;
-  // `symbolsNeeded` is the absolute cumulative target from today.
-  const target = symbolsNeeded;
+  let { days, credited } = state;
 
   // Safety cap: 1000 iterations covers ~2.7 years of daily progress.
-  for (let i = 0; i < 1000; i++) {
-    if (days * dailySymbols + (hasWeekly ? weeklyResets * WEEKLY_SYMBOLS : 0) >= target) break;
-
-    // "Next Monday" is dayjs().day(8): Monday of NEXT week in Sunday-start weeks (KI-003).
-    const nextMonday = now.day(8);
-    if (!mondayReached && now.add(countToMonday, "day").isBefore(nextMonday)) {
-      countToMonday++;
-      if (now.add(countToMonday, "day").isSame(nextMonday)) {
-        mondayReached = true;
-      }
-    } else if ((days - countToMonday) % 7 === 0) {
-      weeklyResets++;
-    }
-
+  for (let i = 0; i < 1000 && credited < symbolsNeeded; i++) {
     days++;
+    credited += dailySymbols;
+    if (hasWeekly && now.add(days, "day").day() === MONDAY) credited += WEEKLY_SYMBOLS;
   }
 
-  return { days, countToMonday, weeklyResets, mondayReached };
+  return { days, credited };
 }
 
 /**

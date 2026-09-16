@@ -60,7 +60,7 @@ Leaf components render without any provider: `useRouter()` and `useBreakpoint()`
 
 **Time**: anything touching `dayjs()` or `new Date()` (`advanceDayCount`, `calculateDaysRemaining`, completion dates, Overview's target date, Graph, Footer's `new Date().getFullYear()`) must freeze the clock: `vi.setSystemTime(WED)`. That alone mocks `Date` without enabling fake timers, which keeps RTL's `waitFor` working. Always use the local-time `Date` fixtures; `new Date("2026-09-16")` is UTC midnight and lands on the previous evening in the Americas, shifting the weekday.
 
-Known-good values (verified by `src/lib/utils.test.ts`; weekly credit follows `dayjs().day(8)`, see KI-003):
+Known-good values (verified by `src/lib/utils.test.ts`; counting starts tomorrow and the weekly lands on the first counted Monday, so a weekly-only answer is the distance to next Monday):
 
 | Frozen day     | Call `calculateDaysRemaining(needed, daily, weekly)` | Days   |
 | -------------- | ---------------------------------------------------- | ------ |
@@ -68,10 +68,11 @@ Known-good values (verified by `src/lib/utils.test.ts`; weekly credit follows `d
 | any            | `(NaN, 10, true)`                                    | NaN    |
 | any            | `(50, 0, false)`                                     | ∞      |
 | any            | `(12, 10, false)` / `(100, 10, false)`               | 2 / 10 |
-| Wed 2026-09-16 | `(120, 0, true)` / `(121, 0, true)`                  | 6 / 13 |
-| Mon 2026-09-14 | `(120, 0, true)`                                     | 8      |
-| Sat 2026-09-19 | `(120, 0, true)`                                     | 3      |
-| Wed 2026-09-16 | `(200, 20, true)` / `(200, 20, false)`               | 6 / 10 |
+| Wed 2026-09-16 | `(120, 0, true)` / `(121, 0, true)`                  | 5 / 12 |
+| Mon 2026-09-14 | `(120, 0, true)`                                     | 7      |
+| Sat 2026-09-19 | `(120, 0, true)`                                     | 2      |
+| Sun 2026-09-13 | `(120, 0, true)`                                     | 1      |
+| Wed 2026-09-16 | `(200, 20, true)` / `(200, 20, false)`               | 5 / 10 |
 
 **Head / SEO**: call `seedHeadMeta()` first (`SEO.setMeta` no-ops on missing tags), render, assert `document.title`, `meta[...]` `content`, `link[rel=canonical]` `href`, and the `script[data-seo-ld]` JSON.
 

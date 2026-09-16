@@ -108,16 +108,15 @@ describe("calculateDaysRemaining", () => {
     expect(calculateDaysRemaining(100, 10, false)).toBe(10);
   });
 
-  // The weekly (+120) is credited relative to dayjs().day(8), so results depend on
-  // the weekday "today" is. Time must be frozen (see docs/TESTING.md → Time).
-  // These values pin the algorithm as it is today, including the known
-  // one-day-late credit (docs/KNOWN_ISSUES.md).
+  // The weekly (+120) lands on the first Monday counted, and counting starts tomorrow,
+  // so the answer is the distance to the next Monday. Time must be frozen
+  // (see docs/TESTING.md → Time). KI-003 fixed the previous one-day-late credit.
   describe("weekly only, with time frozen", () => {
     it.each([
-      ["Wednesday", WED, 6],
-      ["Monday", MON, 8],
-      ["Saturday", SAT, 3],
-      ["Sunday", SUN, 9], // KI-003: the very next Monday is skipped from a Sunday start
+      ["Sunday", SUN, 1], // tomorrow is Monday
+      ["Monday", MON, 7], // today's reset is spent; the next one is a week out
+      ["Wednesday", WED, 5],
+      ["Saturday", SAT, 2],
     ])("%s: one weekly's worth (120) takes %i days", (_day, date, expected) => {
       vi.setSystemTime(date);
       expect(calculateDaysRemaining(120, 0, true)).toBe(expected);
@@ -126,13 +125,13 @@ describe("calculateDaysRemaining", () => {
 
     it("needs a second reset once the first 120 is exceeded", () => {
       vi.setSystemTime(WED);
-      expect(calculateDaysRemaining(121, 0, true)).toBe(13);
+      expect(calculateDaysRemaining(121, 0, true)).toBe(12); // Mondays at day 5 and day 12
     });
   });
 
   it("daily + weekly combine (Wednesday)", () => {
     vi.setSystemTime(WED);
-    expect(calculateDaysRemaining(200, 20, true)).toBe(6);
+    expect(calculateDaysRemaining(200, 20, true)).toBe(5); // 100 from dailies + 120 on Monday
     expect(calculateDaysRemaining(200, 20, false)).toBe(10);
   });
 });
@@ -142,18 +141,22 @@ describe("advanceDayCount", () => {
     expect(advanceDayCount(INITIAL_DAY_COUNT, 0, 10, false)).toBe(INITIAL_DAY_COUNT);
   });
 
-  it("threads Monday/weekly tracking across calls without mutating its input (Graph usage)", () => {
+  it("threads days and credit across calls without mutating its input (Graph usage)", () => {
     vi.setSystemTime(WED);
+    // Each call takes the cumulative target, not a delta, and resumes where the last stopped.
     const first = advanceDayCount(INITIAL_DAY_COUNT, 12, 20, true);
-    expect(first).toEqual({ days: 1, countToMonday: 1, weeklyResets: 0, mondayReached: false });
+    expect(first).toEqual({ days: 1, credited: 20 });
     const second = advanceDayCount(first, 27, 20, true);
-    expect(second).toEqual({ days: 2, countToMonday: 2, weeklyResets: 0, mondayReached: false });
-    expect(first.days).toBe(1);
-    expect(INITIAL_DAY_COUNT).toEqual({
-      days: 0,
-      countToMonday: 0,
-      weeklyResets: 0,
-      mondayReached: false,
-    });
+    expect(second).toEqual({ days: 2, credited: 40 });
+    expect(first).toEqual({ days: 1, credited: 20 });
+    expect(INITIAL_DAY_COUNT).toEqual({ days: 0, credited: 0 });
+  });
+
+  it("credits the weekly on a counted Monday, and keeps it across a threaded call", () => {
+    vi.setSystemTime(WED); // the next Monday is 5 days out
+    const toMonday = advanceDayCount(INITIAL_DAY_COUNT, 200, 20, true);
+    expect(toMonday).toEqual({ days: 5, credited: 220 }); // 5 × 20 + 120
+    // Already past the new target, so the walk does not move.
+    expect(advanceDayCount(toMonday, 150, 20, true)).toEqual(toMonday);
   });
 });

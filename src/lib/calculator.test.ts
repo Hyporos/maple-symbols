@@ -59,10 +59,15 @@ describe("getOverflow", () => {
     expect(getOverflow(vj({ level: 1, experience: 12 }))).toEqual({ level: 2, experience: 0 });
   });
 
-  it("keeps leftover experience even when it reaches max (KI-005)", () => {
+  it("drops leftover experience when it reaches max (KI-005)", () => {
     expect(getOverflow(vj({ level: 19, experience: 2679 }))).toEqual({
       level: 20,
-      experience: 2307,
+      experience: 0,
+    });
+    // Below max the leftover is still carried.
+    expect(getOverflow(vj({ level: 18, experience: 400 }))).toEqual({
+      level: 19,
+      experience: 65, // 335 consumed for 18 → 19
     });
   });
 

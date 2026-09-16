@@ -6,7 +6,7 @@ import type { Dayjs } from "dayjs";
 import { dayjs } from "./dayjs";
 import { maxLevelFor } from "./game";
 import type { SymbolData } from "./types";
-import { calculateDaysRemaining, getDailySymbols, getRemainingSymbols } from "./utils";
+import { calculateDaysRemaining, getDailySymbols, getRemainingSymbols, isMaxLevel } from "./utils";
 
 /** Symbols still needed to reach `maxLevel`. */
 export function getRemainingToMax(symbol: SymbolData, maxLevel: number): number {
@@ -43,7 +43,11 @@ export function progressToMax(symbol: SymbolData, now: Dayjs = dayjs()): Progres
 
 /**
  * With the cap unlocked, how many levels the stored experience would buy, and the leftover.
- * Bounded by the table, so it cannot exceed max; leftover is kept even at max (KI-005).
+ * Bounded by the table, so it cannot exceed max.
+ *
+ * At max the leftover is dropped. KI-005 was keeping it: applying overflow from level 19
+ * with 2679 experience landed on level 20 holding 2307 more, which no longer buys anything,
+ * reads as a negative "symbols remaining", and combined with KI-004 left the field uncapped.
  */
 export function getOverflow(symbol: SymbolData): { level: number; experience: number } {
   let levels = 0;
@@ -54,5 +58,7 @@ export function getOverflow(symbol: SymbolData): { level: number; experience: nu
       consumed += required;
     }
   });
-  return { level: symbol.level + levels, experience: symbol.experience - consumed };
+  const level = symbol.level + levels;
+  if (isMaxLevel(level, symbol.type)) return { level, experience: 0 };
+  return { level, experience: symbol.experience - consumed };
 }
