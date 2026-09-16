@@ -12,26 +12,16 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 - **Cause**: `partialize` in `src/state/store.ts` spreads every `SymbolData` field (static ones included) and `merge` adopts the persisted array wholesale, even its length. `data.ts` claims "game patches only require editing that one JSON file", which is not true today.
 - **Suggested fix**: In `merge`, rebuild each symbol from `createInitialSymbols()` by `id` and copy over only the user fields (`level`, `experience`, `daily`, `weekly`, `extra`, `locked`); make `migrate` map old entries by `id` instead of resetting. Then `symbols.json` becomes the single source of truth again. Test first: `src/state/store.test.ts` pins the current "wholesale" behaviour and must change with it.
 
-### KI-007 · L · Invalid DOM nesting from the `TooltipTrigger` button fallback
-
-- **Symptom**: React logs `validateDOMNesting` ("`<button>` cannot appear as a descendant of `<button>`") in dev, and in tests only with `--silent=false`: the Header language button and the Calculator lock/unlock trigger nested inside the level/exp trigger. The level/exp inputs and Overview's target input also sit inside a trigger `<button>`, which is invalid HTML (interactive content inside a button) but React 18 does not warn about it.
-- **Cause**: `TooltipTrigger` renders a `<button>` unless `asChild` receives a single valid element (see AGENTS.md gotcha 4 for why the `{" "}` sites also hit this path).
-- **Suggested fix**: Give `TooltipTrigger` a `as="div"`/`span` option, or wrap those inputs in a `<div>` passed with `asChild`.
-
-### KI-008 · L · Fragile date and tick edge cases
-
-- `advanceDayCount` compares against next Monday at millisecond precision (`isBefore`/`isSame` with no unit). Since the 2.0 preparation it uses one `now` value, so the race between separate `dayjs()` calls is gone; the unit-less comparison remains.
-- `Graph.tsx` computes `diff(…, "day") + 1`, which overshoots by one exactly at local midnight.
-- `Graph.tsx` clears both tick arrays when `ticks[0] === ticks[2]` ("bandaid" comments) instead of fixing the degenerate range.
-- `Tools.tsx` has one `tabIndex` expression hard-coding `level === 20` (should be mode-aware) and the catalyst walk reads `symbolsRequired[-1]` on its first iteration (harmless `undefined` comparison).
-
 ### KI-009 · L · Deployment and analytics hygiene
 
 - The Umami script in `index.html` has no `data-domains`, so `vite dev` and preview deployments count as production traffic. It is being replaced by Plausible (`docs/ANALYTICS.md` §2, AN-5 and AN-6).
 - Production (2026-09-16) is still a Firebase deploy from March 2026: `main` has `firebase.json`, two Firebase deploy workflows and no `vercel.json`, and the live `/handbook`, `/changelog`, `/credits` return 404. `development` removes all of it; `docs/SEO.md` §0 has the cut-over order.
-- `Tooltip.tsx` registers floating-ui's `arrow()` middleware and `useDelayGroup` but never renders an arrow or a `FloatingDelayGroup`; both are inert.
 
 ## Resolved
+
+### KI-007 · resolved on `v2` (tooltip hygiene, 2026-09-16) · `TooltipTrigger` takes `as` (`"button"` default, `"div"`, `"span"`). Calculator's level/exp trigger and Tools' two before/after previews are `as="div"`; Header's language button and Overview's target input are the `asChild` element themselves; the icon and `RadioButton` triggers in Calculator, Overview and Graph drop `asChild` + `{" "}` for a plain trigger. Rendering Header, Calculator, Tools, Overview and Graph together gives no nesting `console.error` and no `button button`/`button input`. (Was: a `<button>` fallback wrapped inputs and buttons; React logged "`<button>` cannot be a descendant of `<button>`".) The Handbook tables keep the `asChild` + `{" "}` form, which renders a valid icon-in-button.
+
+### KI-008 · resolved on `v2` (tooltip hygiene, 2026-09-16) · `buildGraphSeries` counts whole days between the start of today and the entry date, so midnight no longer adds one; `yAxisTicks`/`xAxisTicks` sort and dedupe their ticks and return `[]` only when a single value is left; Tools' `tabIndex` uses `maxLevelFor(currentSymbol.type)`; `catalystPreview` walks from index 1. The unit-less Monday comparison went with the `advanceDayCount` rewrite (KI-003). (Was: `diff(now, "day") + 1`; the "bandaid" `ticks[0] === ticks[2]` check, which let `[70, 70, 80, 80]` through; `level === 20`; `symbolsRequired[-1]`.)
 
 ### KI-003 · resolved on `v2` (calculator correctness, 2026-09-16) · `advanceDayCount` now walks from tomorrow and credits the weekly on each counted Monday; its state is `{ days, credited }`. One weekly takes Sun 1, Mon 7, Wed 5, Sat 2 days. (Was: next Monday found with `dayjs().day(8)`, credited one iteration late, so 9, 8, 6, 3.)
 

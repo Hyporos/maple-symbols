@@ -86,10 +86,11 @@ export function buildGraphSeries(
   const flatDateSymbols = dateSymbols
     .flatMap((symbol) =>
       symbol.progress.map((entry) => {
-        // Days from today to the entry date; both on today → 0, not 1.
+        // Whole days from today to the entry date; both on today → 0. Comparing from the
+        // start of each day keeps the offset exact at any clock time, midnight included.
         const diffDays = now.isSameOrAfter(entry.date, "day")
           ? 0
-          : dayjs(entry.date).diff(now, "day") + 1;
+          : dayjs(entry.date).startOf("day").diff(now.startOf("day"), "day");
         return {
           name: symbol.name,
           level: symbol.level,
@@ -127,7 +128,16 @@ export function buildGraphSeries(
   };
 }
 
-/** Four Y ticks from current to max power, rounded to tens; empty for a degenerate range. */
+/**
+ * Ascending ticks with the duplicates a short range produces collapsed away. A range that
+ * yields a single value has no usable axis, so it returns [] and Recharts picks its own.
+ */
+function toAxisTicks(ticks: number[]): number[] {
+  const distinct = [...new Set(ticks)].sort((a, b) => a - b);
+  return distinct.length > 1 ? distinct : [];
+}
+
+/** Up to four Y ticks from current to max power, rounded to tens. */
 export function yAxisTicks(currentPower: number, maxPower: number): number[] {
   if (!isValid(currentPower) || !isValid(maxPower) || currentPower === 0 || maxPower === 0)
     return [];
@@ -136,23 +146,26 @@ export function yAxisTicks(currentPower: number, maxPower: number): number[] {
     ticks.push(Math.round((currentPower + (i * (maxPower - currentPower)) / 3) / 10) * 10);
   }
   ticks.push(maxPower);
-  // Bandaid: a sacred series could pin ticks[1] mid-axis; drop the ticks when the range is flat.
-  return ticks[0] !== ticks[2] ? ticks : [];
+  // A short range (a sacred series, say) rounds several ticks onto the same power.
+  return toAxisTicks(ticks);
 }
 
-/** Eight X ticks over the day range (dynamic axis only); empty for a degenerate range. */
+/** Up to eight X ticks over the day range (dynamic axis only). */
 export function xAxisTicks(
   currentPower: number,
   maxPower: number,
   maxDays: number,
   graphDynamic: boolean
 ): number[] {
+  if (!graphDynamic) return [];
   if (!isValid(currentPower) || !isValid(maxPower) || currentPower === 0 || maxPower === 0)
     return [];
+  if (!isValid(maxDays)) return [];
   const ticks = [0];
   for (let i = 1; i < 7; i++) ticks.push(Math.ceil((i * maxDays) / 7));
   ticks.push(maxDays);
-  return ticks[0] !== ticks[2] && graphDynamic ? ticks : [];
+  // A range shorter than eight days rounds several ticks onto the same day.
+  return toAxisTicks(ticks);
 }
 
 /**

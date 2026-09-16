@@ -93,7 +93,7 @@ const Calculator = () => {
           </div>
 
           <Tooltip placement="bottom">
-            <TooltipTrigger className="cursor-default">
+            <TooltipTrigger as="div" className="cursor-default">
               <div className="relative flex items-center justify-center gap-2 pt-4 pb-6">
                 {/* LEVEL INPUT */}
                 <input
@@ -345,8 +345,7 @@ const Calculator = () => {
                         {plural(daysToNextLevel, "day to go", "days to go")}
                       </p>
                       <Tooltip placement={"top"}>
-                        <TooltipTrigger asChild={true}>
-                          {" "}
+                        <TooltipTrigger>
                           <MdOutlineInfo
                             size={20}
                             className="cursor-default fill-accent transition-colors hover:fill-white md:mt-0.5"
@@ -409,8 +408,7 @@ const Calculator = () => {
                     <span>+{MAIN_STAT_PER_LEVEL[mode]}</span> main stat
                   </p>
                   <Tooltip placement={"right"}>
-                    <TooltipTrigger asChild={true}>
-                      {" "}
+                    <TooltipTrigger>
                       <MdOutlineInfo
                         size={20}
                         className="cursor-default fill-accent transition-colors hover:fill-white md:mt-0.5"

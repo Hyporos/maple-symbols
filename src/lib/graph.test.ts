@@ -46,7 +46,7 @@ describe("buildGraphSeries", () => {
 
   it("adds 10 power per level-up, in date order, keeping one point per date (dynamic axis)", () => {
     const series = buildGraphSeries(dateSymbols, 60, true, now);
-    // Day offsets are floor(diff from 10:00 today) + 1: 09-18 → 2, 09-25 → 9 (KI-008 notes the midnight edge).
+    // Day offsets are whole calendar days from today: 09-18 → 2, 09-25 → 9.
     expect(series.flatDateSymbols.map((e) => [e.name, e.date, e.power])).toEqual([
       ["A", 2, 70],
       ["B", 2, 80],
@@ -68,6 +68,14 @@ describe("buildGraphSeries", () => {
       "2026-09-18",
       "2026-09-25",
     ]);
+  });
+
+  it("gives the same day offsets at local midnight as later in the day", () => {
+    // Was diff(now, "day") + 1, which overshot by one when now was exactly 00:00.
+    const midnight = dayjs("2026-09-16T00:00:00");
+    const series = buildGraphSeries(dateSymbols, 60, true, midnight);
+    expect(series.graphSymbols.map((e) => e.date)).toEqual([0, 2, 9]);
+    expect(series.maxDays).toBe(9);
   });
 
   it("with no level-ups, has only the base entry and NaN max days", () => {
@@ -92,6 +100,13 @@ describe("axis ticks", () => {
     expect(yAxisTicks(NaN, 100)).toEqual([]);
     expect(yAxisTicks(70, 70)).toEqual([]);
     expect(xAxisTicks(70, 220, 0, true)).toEqual([]);
+    expect(xAxisTicks(70, 220, NaN, true)).toEqual([]);
+  });
+
+  it("collapse the duplicates a short range rounds onto the same value", () => {
+    // Was returned as [70, 70, 80, 80] and [0, 1, 1, 2, 2, 3, 3, 3].
+    expect(yAxisTicks(70, 80)).toEqual([70, 80]);
+    expect(xAxisTicks(70, 80, 3, true)).toEqual([0, 1, 2, 3]);
   });
 });
 

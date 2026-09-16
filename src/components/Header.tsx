@@ -93,7 +93,7 @@ const Header = () => {
 
               <div className={cn("flex justify-end", isMobile && "hidden")}>
                 <Tooltip placement="bottom">
-                  <TooltipTrigger tabIndex={-1}>
+                  <TooltipTrigger asChild={true}>
                     <button
                       aria-label="Language selector (coming soon)"
                       className={cn(
@@ -131,7 +131,7 @@ const Header = () => {
 
               <div className="flex w-1/3 justify-end">
                 <Tooltip placement="bottom">
-                  <TooltipTrigger tabIndex={-1}>
+                  <TooltipTrigger asChild={true}>
                     <button
                       aria-label="Language selector (coming soon)"
                       className="group flex h-[40px] w-[80px] cursor-default items-center justify-center gap-3 bg-dark"

@@ -130,7 +130,7 @@ const Tools = () => {
                 disabled ||
                 (currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                   currentSymbol.experience < nextExperience) ||
-                currentSymbol.level === 20
+                currentSymbol.level === maxLevelFor(currentSymbol.type)
                   ? -1
                   : 0
               }
@@ -174,6 +174,7 @@ const Tools = () => {
                 <div className="flex items-center justify-around md:w-1/3">
                   <Tooltip>
                     <TooltipTrigger
+                      as="div"
                       className="flex cursor-default items-center space-x-4 md:space-x-5"
                       tabIndex={
                         disabled ||
@@ -269,6 +270,7 @@ const Tools = () => {
             <div className="flex items-center justify-around md:w-1/3">
               <Tooltip>
                 <TooltipTrigger
+                  as="div"
                   className="flex cursor-default items-center space-x-4 md:space-x-5"
                   tabIndex={
                     disabled ||
