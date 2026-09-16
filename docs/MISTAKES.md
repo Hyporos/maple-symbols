@@ -1,0 +1,52 @@
+# Mistakes log
+
+A record of what went wrong while working on this repo, so it is not repeated. Two tiers: **Distilled rules** (short, read every time; also mirrored into `AGENTS.md` when a pattern repeats) and the **Log** (one entry per incident, newest last).
+
+**When to add an entry**: whenever Brian corrects you, or you discover after verifying that an assumption or claim was wrong, or a step failed for a reason you could have foreseen. Use `/log-mistake`. Keep entries to about six lines; the value is the rule, not the story.
+
+## Distilled rules
+
+- **Grep before asserting a repo fact**, even inside a brief or a question. Partial reading produces confident, wrong premises (M-002).
+- **Check `engines` against the local Node before installing a package**; pnpm only warns on mismatch, so nothing stops you (M-001).
+- **Config files may be JSONC.** `tsconfig.json`, `jsconfig.json`, and VS Code settings can contain comments; don't `JSON.parse` them, use the Edit tool (M-003).
+- **`pnpm test <filter>`, never `pnpm test -- <filter>`.** pnpm forwards the `--` literally and Vitest then ignores the filter and runs everything (M-004).
+- **lint-staged hides the output of tasks that exit 0.** A warn-only step must run outside lint-staged or nobody sees it (M-005).
+
+## Log
+
+Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule**, **Where**.
+
+### M-001 · 2026-09-16 · tooling
+
+- **What**: Installed `jsdom@30` for the test stack; its `engines` field requires Node ≥ 22.22 while this machine runs 22.12. pnpm printed a warning and continued, so it went unnoticed until a reader flagged it.
+- **Root cause**: Took "latest" without reading the package's engine floor against the local runtime.
+- **Rule**: Before adding a dev tool, check `engines` (and peer deps) against `node --version`; pin to the newest version that admits the local runtime and note the reason in the docs.
+- **Where**: `package.json` (`jsdom` pinned to 28.x, see `docs/TESTING.md`).
+
+### M-002 · 2026-09-16 · process
+
+- **What**: The briefs given to the analysis readers stated three repo "facts" that were wrong: that `ExpTable` uses `selectedSymbol < 6` (only `CostTable` does), that Selector/Handbook duplicate nav markup (only `Header` does, three times), and that the weekly count went 45→120 (the changelog says 40→120). The readers caught all three.
+- **Root cause**: Wrote the briefs from memory of a partial first read instead of grepping.
+- **Rule**: Any factual claim about this codebase, even in a prompt to a subagent, gets a grep or a file read first. Label anything unverified as a suspicion.
+- **Where**: workflow briefs (session 2026-09-16); the corrected facts are in `docs/ARCHITECTURE.md`.
+
+### M-003 · 2026-09-16 · tooling
+
+- **What**: Tried to add `allowJs` to `tsconfig.json` with `JSON.parse` in a node one-liner; it threw because the file contains comments.
+- **Root cause**: Assumed every `*.json` in the repo is strict JSON.
+- **Rule**: Treat `tsconfig*.json` and editor settings as JSONC; edit them with the Edit tool or a JSONC-aware parser.
+- **Where**: `tsconfig.json`.
+
+### M-004 · 2026-09-16 · tooling
+
+- **What**: Documented `pnpm test -- utils` as the way to filter tests, in three docs and two slash commands. A verifier ran it: pnpm 10 forwards the `--` verbatim, Vitest receives `run -- utils`, ignores the filter, and runs the whole suite.
+- **Root cause**: Assumed npm's `--` convention applies to pnpm without running the command once.
+- **Rule**: Any command written into a doc or a slash command gets executed once first, and its output checked, before it is documented.
+- **Where**: `docs/TESTING.md`, `docs/ARCHITECTURE.md`, `.claude/commands/sync-docs.md`, `.claude/commands/new-component.md` (all corrected).
+
+### M-005 · 2026-09-16 · tooling
+
+- **What**: Wired the docs-drift reminder as a lint-staged task. It ran and exited 0 as designed, but lint-staged only prints task output when a task fails (or with `--verbose`), so the reminder was invisible. Caught by a verifier who reproduced it in a scratch repo.
+- **Root cause**: Tested the script by running it directly, never through the hook that would actually invoke it.
+- **Rule**: Test automation through the real entry point (the hook, the CI step), not just the script in isolation. Warn-only steps run outside lint-staged: `pre-commit: npx lint-staged && node scripts/docs-drift.mjs`.
+- **Where**: `package.json` (`simple-git-hooks`), `scripts/docs-drift.mjs`.
