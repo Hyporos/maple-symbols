@@ -64,7 +64,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 ## Architecture in brief
 
 - **Routes**: `/` (calculator page: Selector, Calculator, Tools, Overview, Graph), `/handbook`, `/changelog`, `/credits`. Unknown paths fall through to `/`. Calculator/Tools/Overview/Graph are `React.lazy`; the page sits in `ErrorBoundary` > `Suspense fallback={null}`.
-- **Page metadata** (title/description) lives in three places (`index.html` static tags + `pageMap`, `App.tsx` SEO props, `SEO.tsx` defaults) and the route URLs also in `public/sitemap.xml`; `src/test/seo.test.tsx` enforces agreement, ARCHITECTURE §2 explains the double write.
+- **Pages are declared once** in `src/lib/routes.ts` (path, title, description, nav entry, sitemap fields). `App.tsx`, `Header`, `Extras` and `SEO.tsx` read it; the routes plugin in `vite.config.ts` fills the `__PLACEHOLDER__` tokens in `index.html` and emits `sitemap.xml` (no file under `public/`). `src/test/seo.test.tsx` checks the generated output; ARCHITECTURE §2 explains the double head write.
 - **State**: one store. Only `symbols` persists (localStorage key `maple-symbols-v2`, `STORAGE_VERSION` 3); UI state resets on reload. `merge` turns JSON `null` back into `NaN`; `migrate` **resets symbols** on a version bump.
 - **Data flow**: `symbols.json` → `createInitialSymbols()` → store → components read via selectors; inputs write with `updateSymbol(symbols, id, patch)`. Nothing derived is stored: symbols/days remaining and the completion date come from `progressToMax` (`src/lib/calculator.ts`) at read time, Graph builds its own series, power from `usePower`.
 - **Responsive**: Tailwind `md:` for style-only differences; `useBreakpoint()` when markup, prop values, or copy differ.
@@ -118,7 +118,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `src/lib/utils.ts`, `data.ts`, `symbols.json`, `hooks/usePower.ts`   | Domain cheat sheet above; ARCHITECTURE §4 Data; KNOWN_ISSUES if an issue moved                     |
 | `src/state/store.ts`, `lib/types.ts`                                 | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                               |
-| `src/contexts/*`, `App.tsx` routes, page titles                      | ARCHITECTURE §2 Routing and §9; the metadata places (the seo test fails otherwise)                 |
+| `src/contexts/*`, `src/lib/routes.ts`, `App.tsx` routes              | ARCHITECTURE §2 Routing and §9 (the seo test fails on drift)                                       |
 | `components/Calculator/*` effects, quest toggles, Overview labels    | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
 | `src/global.css` (tokens + global rules), `components/ui/*`, Tooltip | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks the `@theme` variables) |
 | `package.json` scripts/deps, `vitest.config.ts`, hooks, CI           | Commands/Stack above; TESTING §1 and §3                                                            |

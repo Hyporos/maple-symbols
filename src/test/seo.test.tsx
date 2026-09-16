@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
-// Metadata consistency: page titles/descriptions/URLs live in four places
-// (index.html static tags, the index.html pageMap script, App.tsx <SEO> props +
-// SEO.tsx defaults, public/sitemap.xml). This test fails when they disagree.
+// Page metadata has one source, src/lib/routes.ts. This test checks the two
+// generated artefacts (index.html after the routes plugin, sitemap.xml) and the
+// rendered <head> at every route against it.
 // ---------------------------------------------------------------------------
 
 import { readFileSync } from "node:fs";
@@ -9,53 +9,57 @@ import { describe, expect, it } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import App from "../App";
 import { RouterProvider } from "../contexts/RouterContext";
+import { applyToIndexHtml, pageMap, ROUTES, sitemapXml, urlFor } from "../lib/routes";
 import { seedHeadMeta } from "./helpers";
 
-type PageMeta = { title: string; description: string; url: string };
-
-const html = readFileSync("index.html", "utf8");
-const sitemap = readFileSync("public/sitemap.xml", "utf8");
+const source = readFileSync("index.html", "utf8");
+const html = applyToIndexHtml(source);
 const decode = (s: string) => s.replace(/&amp;/g, "&");
-
-// The inline bootstrap script in index.html is the canonical route → metadata map.
-// Parsed with a regex (no eval) that matches the literal's fixed shape:
-//   "/route": { title: "…", description: "…", url: "…" },
-function readPageMap(): Record<string, PageMeta> {
-  const block = html.match(/const pageMap = \{([\s\S]*?)\n\s*\};/);
-  if (!block) throw new Error("pageMap literal not found in index.html");
-  const entry =
-    /"(\/[\w-]*)":\s*\{\s*title:\s*"([^"]*)",\s*description:\s*"([^"]*)",\s*url:\s*"([^"]*)",?\s*\}/g;
-  const map: Record<string, PageMeta> = {};
-  for (const [, route, title, description, url] of block[1].matchAll(entry)) {
-    map[route] = { title, description, url };
-  }
-  if (Object.keys(map).length === 0) throw new Error("pageMap entries did not parse");
-  return map;
-}
-
-const pageMap = readPageMap();
-const routes = Object.keys(pageMap);
 const content = (selector: string) =>
   document.head.querySelector(selector)?.getAttribute("content");
 
-describe("page metadata is consistent across index.html, sitemap.xml and the React SEO", () => {
-  it("index.html static <title> and description match the root pageMap entry", () => {
-    const title = decode(html.match(/<title>(.*?)<\/title>/)![1]);
-    const description = decode(html.match(/<meta name="description" content="(.*?)"/)![1]);
-    expect(title).toBe(pageMap["/"].title);
-    expect(description).toBe(pageMap["/"].description);
+describe("index.html after the routes plugin", () => {
+  it("keeps its placeholders in the source and fills every one of them", () => {
+    expect(source).toContain("__PAGE_MAP__");
+    expect(source).toContain("__ROOT_TITLE__");
+    expect(html).not.toMatch(/__[A-Z_]+__/);
   });
 
-  it("sitemap.xml lists exactly the pageMap routes", () => {
-    const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]).sort();
-    expect(locs).toEqual(routes.map((r) => pageMap[r].url).sort());
+  it("carries the root route in the static tags and the full pageMap in the bootstrap script", () => {
+    const root = pageMap()["/"];
+    expect(decode(html.match(/<title>(.*?)<\/title>/)![1])).toBe(root.title);
+    expect(decode(html.match(/<meta name="description" content="(.*?)"/)![1])).toBe(
+      root.description
+    );
+    expect(html.match(/<link rel="canonical" href="(.*?)"/)![1]).toBe(root.url);
+
+    const literal = html.match(/const pageMap = (\{.*\});/)![1];
+    expect(JSON.parse(literal)).toEqual(pageMap());
   });
 
-  it.each(routes)(
-    "rendering %s yields the pageMap title, description and canonical",
-    async (route) => {
+  it("rejects an unknown placeholder instead of shipping it", () => {
+    expect(() => applyToIndexHtml("<title>__NOPE__</title>")).toThrow(/__NOPE__/);
+  });
+});
+
+describe("sitemap.xml", () => {
+  it("lists exactly the routes with a dated lastmod", () => {
+    const xml = sitemapXml();
+    const locs = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
+    expect(locs).toEqual(ROUTES.map((r) => urlFor(r.path)));
+    for (const [, lastmod] of xml.matchAll(/<lastmod>(.*?)<\/lastmod>/g)) {
+      expect(lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+});
+
+describe("rendering each route writes its metadata into <head>", () => {
+  it.each(ROUTES.map((r) => r.path))(
+    "%s",
+    async (path) => {
+      const route = ROUTES.find((r) => r.path === path)!;
       seedHeadMeta();
-      window.history.replaceState(null, "", route);
+      window.history.replaceState(null, "", path);
 
       render(
         <RouterProvider>
@@ -65,11 +69,11 @@ describe("page metadata is consistent across index.html, sitemap.xml and the Rea
 
       // "/" mounts <SEO> inside the same Suspense boundary as the four lazy calculator
       // chunks (recharts included), so the title can take a few seconds to land in jsdom.
-      await waitFor(() => expect(document.title).toBe(pageMap[route].title), { timeout: 15_000 });
-      expect(content('meta[name="description"]')).toBe(pageMap[route].description);
-      expect(content('meta[property="og:url"]')).toBe(pageMap[route].url);
+      await waitFor(() => expect(document.title).toBe(route.title), { timeout: 15_000 });
+      expect(content('meta[name="description"]')).toBe(route.description);
+      expect(content('meta[property="og:url"]')).toBe(urlFor(path));
       expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
-        pageMap[route].url
+        urlFor(path)
       );
     },
     20_000

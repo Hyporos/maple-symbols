@@ -1,4 +1,8 @@
 import { useLayoutEffect } from "react";
+import { OG_IMAGE, routeFor, SITE_NAME, SITE_URL, urlFor } from "../lib/routes";
+
+const ROOT = routeFor("/");
+const ROOT_URL = urlFor("/");
 
 interface SEOProps {
   title?: string;
@@ -31,14 +35,14 @@ const setOrCreateLdJson = (json: object[]) => {
 };
 
 function SEO({
-  title = "MapleStory Arcane & Sacred Symbol Calculator | Maple Symbols",
-  description = "The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quest progress, estimate completion dates, and plan your symbol leveling strategy.",
-  url = "https://maplesymbols.com/",
-  image = "https://maplesymbols.com/main/og-image.png",
-  imageAlt = "Maple Symbols — MapleStory Symbol Calculator",
+  title = ROOT.title,
+  description = ROOT.description,
+  url = ROOT_URL,
+  image = OG_IMAGE.url,
+  imageAlt = OG_IMAGE.alt,
 }: SEOProps) {
   useLayoutEffect(() => {
-    const isRoot = url === "https://maplesymbols.com/";
+    const isRoot = url === ROOT_URL;
 
     document.title = title;
 
@@ -62,15 +66,15 @@ function SEO({
       name: title,
       description,
       inLanguage: "en",
-      isPartOf: { "@type": "WebSite", name: "Maple Symbols", url: "https://maplesymbols.com/" },
+      isPartOf: { "@type": "WebSite", name: SITE_NAME, url: ROOT_URL },
     };
 
     if (isRoot) {
       const webApp = {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        name: "Maple Symbols",
-        url: "https://maplesymbols.com/",
+        name: SITE_NAME,
+        url: ROOT_URL,
         description:
           "MapleStory Arcane and Sacred Symbol calculator. Track progress, estimate completion, and plan your leveling strategy.",
         applicationCategory: "GameApplication",
@@ -84,13 +88,13 @@ function SEO({
       const webSite = {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "Maple Symbols",
-        url: "https://maplesymbols.com/",
+        name: SITE_NAME,
+        url: ROOT_URL,
         potentialAction: {
           "@type": "SearchAction",
           target: {
             "@type": "EntryPoint",
-            urlTemplate: "https://maplesymbols.com/?q={search_term_string}",
+            urlTemplate: `${SITE_URL}/?q={search_term_string}`,
           },
           "query-input": "required name=search_term_string",
         },

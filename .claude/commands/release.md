@@ -16,7 +16,7 @@ Steps. Ask me before each irreversible step (the commit, the push, the PR, the t
 
 1. **Version**: set `"version"` in `package.json` to the target (no leading `v`). The footer renders this value.
 2. **Changelog**: append a new entry at the **end** of `changelogEntries` in `src/lib/changelog.ts` (the UI treats the last entry as current). Fields: `version: "vX.Y.Z"`, `date` as `"MMM D, YYYY"` (today), `link` to the PR you will open (issues and PRs share one number sequence, so the next number is the highest existing issue-or-PR number + 1: `gh api 'repos/Hyporos/maple-symbols/issues?state=all&per_page=1' --jq '.[0].number'`, or the newest of the MCP `list_issues` / `list_pull_requests` results), `additions` and `fixes` written from `git log main..development --format=%s` as user-facing sentences; drop chores.
-3. **Sitemap**: set `lastmod` in `public/sitemap.xml` to today (YYYY-MM-DD) for `/` and `/changelog`; `/handbook` only if handbook data changed.
+3. **Sitemap**: set `sitemap.lastmod` in `src/lib/routes.ts` to today (YYYY-MM-DD) for `/` and `/changelog`; `/handbook` only if handbook data changed. (`sitemap.xml` is generated from it at build time.)
 4. **README**: update the version badge (`version-X.Y.Z-red` and its `alt`).
 5. **Storage**: if `SymbolData` changed since the last tag, remind me that bumping `STORAGE_VERSION` wipes user data (see `docs/ARCHITECTURE.md`) and ask what to do.
 6. Commit on `development` as `Release vX.Y.Z`, then push.

@@ -6,6 +6,7 @@ import SEO from "./components/SEO";
 import { ErrorBoundary } from "react-error-boundary";
 import { BreakpointProvider } from "./contexts/BreakpointContext";
 import { useRouter } from "./contexts/RouterContext";
+import { routeFor, urlFor } from "./lib/routes";
 
 // Heavy calculator sections are lazily loaded to keep initial parse cost low.
 const Calculator = lazy(() => import("./components/Calculator/Calculator"));
@@ -17,37 +18,24 @@ import Extras from "./components/Extras/Extras";
 
 function PageContent() {
   const { path: pathname } = useRouter();
+  // Unknown paths resolve to the calculator page.
+  const route = routeFor(pathname);
+  const seo = <SEO title={route.title} description={route.description} url={urlFor(route.path)} />;
 
-  if (pathname === "/handbook") {
+  if (route.path === "/handbook") {
     return (
       <>
-        <SEO
-          title="Symbol Handbook | Maple Symbols"
-          description="Complete Arcane and Sacred Symbol reference: experience tables, meso upgrade costs, and daily/weekly quest ratios for every MapleStory region."
-          url="https://maplesymbols.com/handbook"
-        />
+        {seo}
         <Selector />
         <Handbook />
       </>
     );
   }
 
-  if (pathname === "/changelog" || pathname === "/credits") {
-    const isChangelog = pathname === "/changelog";
-
+  if (route.path === "/changelog" || route.path === "/credits") {
     return (
       <>
-        <SEO
-          title={isChangelog ? "Changelog | Maple Symbols" : "Credits | Maple Symbols"}
-          description={
-            isChangelog
-              ? "Full version history and feature updates for Maple Symbols, the MapleStory Arcane and Sacred Symbol calculator."
-              : "Attributions and acknowledgements for Maple Symbols."
-          }
-          url={
-            isChangelog ? "https://maplesymbols.com/changelog" : "https://maplesymbols.com/credits"
-          }
-        />
+        {seo}
         <Extras />
       </>
     );
@@ -55,7 +43,7 @@ function PageContent() {
 
   return (
     <>
-      <SEO />
+      {seo}
       <Selector />
       <Calculator />
       <Tools />

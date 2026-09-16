@@ -94,7 +94,7 @@ Recharts output (the `ResponsiveContainer` measures 0×0 in jsdom, so paths, tic
 ## 7. Meta-tests that keep the docs and metadata honest
 
 - `src/test/docs.test.ts`: every backticked string that looks like a repo path (`src/`, `docs/`, `public/`, `scripts/`, `.claude/`, `.github/` prefixes or one of a fixed list of root files, see `PATH_LIKE`; globs and JSX are skipped) in `AGENTS.md`, `docs/*`, and `.claude/commands/*` exists; the token table in `docs/DESIGN_SYSTEM.md` (between the `tokens:start`/`tokens:end` markers) matches the `@theme` variables in `src/global.css` exactly, both ways; every `KI-nnn` mentioned is defined in `docs/KNOWN_ISSUES.md`.
-- `src/test/seo.test.tsx`: `index.html`'s static title/description equal its `pageMap` root entry; `public/sitemap.xml` lists exactly the `pageMap` routes; rendering `<App/>` at each route produces the `pageMap` title, description, and canonical.
+- `src/test/seo.test.tsx`: `index.html` keeps its `__PLACEHOLDER__` tokens and `applyToIndexHtml` fills every one (root tags and a `pageMap` equal to `pageMap()`); `sitemapXml()` lists exactly `ROUTES`; rendering `<App/>` at each route writes that route's title, description and canonical. The Vite plugin itself is not run in tests.
 
 ## 8. Where the logic lives now
 

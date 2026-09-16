@@ -2,13 +2,14 @@ import TabLayout from "../ui/TabLayout";
 import Changelog from "./Changelog";
 import Credits from "./Credits";
 import { useRouter } from "../../contexts/RouterContext";
+import { EXTRAS_TABS } from "../../lib/routes";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Extras component acts as a page for the Changelog and Credits components.
 // * Tab selection is reflected in the URL (/changelog, /credits).
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const TAB_PATHS = ["/changelog", "/credits"];
+const TAB_PATHS: readonly string[] = EXTRAS_TABS;
 
 const Extras = () => {
   const { path: pathname, navigate } = useRouter();

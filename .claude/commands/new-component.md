@@ -15,6 +15,6 @@ Produce:
    - kind `card`: `<section className="flex justify-center">` wrapping the card recipe. kind `section`: a block inside an existing card. kind `primitive`: lives in `ui/`, props only, no store access.
    - Store access through individual selectors; tooltips via `Tooltip`/`TooltipTrigger`/`TooltipContent` with `className="tooltip"`.
 2. `src/components/<folder>/<Name>.test.tsx` from the component recipe in `docs/TESTING.md`, using the store and viewport helpers if the component needs them.
-3. If it is a new page section, wire it into `src/App.tsx` and list the metadata places from `AGENTS.md` that a new route would touch.
+3. If it is a new page section, wire it into `src/App.tsx`; a new page also needs an entry in `src/lib/routes.ts` (ARCHITECTURE §9 "Adding a route").
 
 Then run `pnpm test <Name>` (no `--`) and `pnpm lint` and show me the results. Do not add tokens to the `@theme` block in `src/global.css` without asking.

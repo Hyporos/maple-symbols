@@ -5,12 +5,7 @@ import { HiOutlineMenu } from "react-icons/hi";
 import { cn } from "../lib/utils";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import { useRouter } from "../contexts/RouterContext";
-
-const PAGES = [
-  { path: "/", label: "Calculator" },
-  { path: "/handbook", label: "Handbook" },
-  { path: "/changelog", label: "Extras", activeFor: ["/changelog", "/credits"] as string[] },
-];
+import { NAV } from "../lib/routes";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Header component is the top most component of the page which includes navigation and language buttons.
@@ -28,8 +23,8 @@ const Header = () => {
     navigate(to);
   };
 
-  const isActive = (page: (typeof PAGES)[number]) =>
-    pathname === page.path || page.activeFor?.includes(pathname) === true;
+  const isActive = (page: (typeof NAV)[number]) =>
+    pathname === page.path || (page.activeFor as readonly string[]).includes(pathname);
 
   return (
     <section className="mb-16 bg-linear-to-t from-card to-card-grad p-1.5 px-4 md:p-3 md:px-8">
@@ -56,7 +51,7 @@ const Header = () => {
             <div className={cn("flex gap-10", isMobile && "gap-8")}>
               {!isMobile ? (
                 <nav className="flex gap-14">
-                  {PAGES.map((page) => (
+                  {NAV.map((page) => (
                     <a
                       key={page.path}
                       href={page.path}
@@ -107,7 +102,7 @@ const Header = () => {
           ) : (
             <>
               <nav className="flex w-1/3 justify-center gap-14">
-                {PAGES.map((page) => (
+                {NAV.map((page) => (
                   <a
                     key={page.path}
                     href={page.path}
@@ -145,7 +140,7 @@ const Header = () => {
           <>
             <div className="my-2 h-px w-full bg-white/10" />
             <div className="my-auto flex items-center justify-around text-sm">
-              {PAGES.map((page) => (
+              {NAV.map((page) => (
                 <a
                   key={page.path}
                   href={page.path}

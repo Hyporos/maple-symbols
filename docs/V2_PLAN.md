@@ -12,14 +12,15 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 ## Progress on `v2`
 
 - **Identity by id/type** (2026-09-16): `mode: SymbolType`, `selectedId`, `lastSelected`, `selectSymbol`/`setMode`, `useSelectedSymbol()`, `updateSymbol(symbols, id, patch)`, `maxLevelFor(type)`, `isMaxLevel(level, type)`, `usePower(symbols, type)`, `buildDateSymbols(symbols, type)`. No array-index lookups remain; the Selector effect that restored selection is gone. KI-006 resolved.
-- **Derived on read** (2026-09-16): `daysRemaining`/`symbolsRemaining`/`completion` removed from `SymbolData`; `progressToMax(symbol, now)` in `lib/calculator.ts` feeds `collapsedRowLabels(symbol, maxLevel, now)`, Tools derives its clamp, Calculator's write-back effect is gone, `partialize` persists `symbols` as-is, `STORAGE_VERSION` 3 (Brian accepted the reset: persisted data need not survive 2.0). KI-002 resolved. Next: a single routes/metadata module; persistence by id (KI-001) is optional now that a wipe is acceptable.
+- **Derived on read** (2026-09-16): `daysRemaining`/`symbolsRemaining`/`completion` removed from `SymbolData`; `progressToMax(symbol, now)` in `lib/calculator.ts` feeds `collapsedRowLabels(symbol, maxLevel, now)`, Tools derives its clamp, Calculator's write-back effect is gone, `partialize` persists `symbols` as-is, `STORAGE_VERSION` 3 (Brian accepted the reset: persisted data need not survive 2.0). KI-002 resolved.
+- **Single routes module** (2026-09-16): `src/lib/routes.ts` declares every page once (path, title, description, nav, sitemap fields); `App`, `Header`, `Extras`, `SEO` read it; a routes plugin in `vite.config.ts` fills `__PLACEHOLDER__` tokens in `index.html` and emits `sitemap.xml` (the `public/` copy is gone; `/release` bumps `lastmod` in `routes.ts`). `seo.test.tsx` checks the generators. Remaining candidates: weekly-reset algorithm (KI-003), `TooltipTrigger` cleanup (KI-007); persistence by id (KI-001) is optional now that a wipe is acceptable.
 
 ## What the safety net pins (as of 2026-09-16)
 
 - 28 test files, 181 tests, about 92% statement coverage; `pnpm test`.
 - Component tests assert **what the user sees and does** (text, roles, labels, store effects), never class names or DOM shape, so a redesigned component passes them if it keeps the behaviour. When a behaviour changes on purpose, change the test in the same commit and say why.
 - Pure modules with table-driven tests, reusable as-is by the new UI: `src/lib/game.ts`, `src/lib/inputs.ts`, `src/lib/calculator.ts`, `src/lib/tools.ts`, `src/lib/overview.ts`, `src/lib/graph.ts`, `src/lib/utils.ts`, `src/lib/data.ts`, `src/hooks/usePower.ts`.
-- Meta-tests: `src/test/docs.test.ts` (docs cite real paths, tokens and issues) and `src/test/seo.test.tsx` (page metadata agrees across its sources; extend `pageMap` when routes change).
+- Meta-tests: `src/test/docs.test.ts` (docs cite real paths, tokens and issues) and `src/test/seo.test.tsx` (generated `index.html`/sitemap and the rendered head follow `src/lib/routes.ts`).
 
 ## How to use it during the rewrite
 
@@ -38,5 +39,4 @@ After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; lo
 
 - Data model: keep `SymbolData` with NaN sentinels, or move to `level: number | null`? A real `migrate` by `id` (KI-001) is optional: Brian decided (2026-09-16) that persisted symbol data may reset on the 2.0 release.
 - Routing: keep the custom router, or adopt a library once there are more pages?
-- Metadata: collapse the four metadata sources into one `routes` module that the inline script and `SEO.tsx` both read.
 - Visual direction: the new look, and whether the fixed 360 px phone cards and fixed pane heights survive.

@@ -2,8 +2,8 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 // Standalone test config, deliberately NOT merged with vite.config.ts, so the
-// build-only plugins there (brotli/gzip pre-compression, codeSplitting groups) never
-// touch the test run. If vite.config.ts ever gains path aliases, mirror them here.
+// build-only plugins there (routes placeholders/sitemap, brotli/gzip pre-compression,
+// codeSplitting groups) never touch the test run; seo.test.tsx calls the routes generators directly. If vite.config.ts ever gains path aliases, mirror them here.
 export default defineConfig({
   plugins: [react()],
   test: {
