@@ -1,5 +1,32 @@
 @import "tailwindcss";
 
+/*
+  Maven Pro, self-hosted (SEO-19). Google's latin subset is one variable file covering
+  weights 400-900, so a single face serves body (400) and font-semibold (600).
+  Rename the file when replacing it; never overwrite it in place.
+*/
+@font-face {
+  font-family: "Maven Pro";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("/fonts/maven-pro-latin-v40.woff2") format("woff2");
+}
+
+/*
+  Arial resized to Maven Pro's metrics so the swap does not shift layout. Computed from the
+  font files: size-adjust = mean advance width of [a-zA-Z0-9 ] (Maven Pro 0.5657em / Arial
+  0.5743em); the overrides are Maven Pro's typo metrics (965 / 210 / 0 per 1000) divided by it.
+*/
+@font-face {
+  font-family: "Maven Pro Fallback";
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 98.5%;
+  ascent-override: 97.97%;
+  descent-override: 21.32%;
+  line-gap-override: 0%;
+}
+
 @theme {
   --shadow-input: 0 0 9px 0px rgb(0 0 0 / 0.25);
   --shadow-level: 0 0 2.5px 0px rgb(0 0 0 / 0.1);
@@ -90,7 +117,8 @@
 
 @layer base {
   body {
-    @apply overflow-x-hidden bg-linear-to-t from-dark to-[#202020] font-['Maven_Pro'] tracking-wide text-secondary;
+    @apply overflow-x-hidden bg-linear-to-t from-dark to-[#202020] tracking-wide text-secondary;
+    font-family: "Maven Pro", "Maven Pro Fallback", Arial, Helvetica, sans-serif;
   }
 
   button,

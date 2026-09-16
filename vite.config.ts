@@ -1,6 +1,5 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
-import compression from "vite-plugin-compression";
 import { applyToIndexHtml, sitemapXml } from "./src/lib/routes";
 
 /**
@@ -25,14 +24,7 @@ function routes(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    routes(),
-    react(),
-    // Pre-compress assets with Brotli/gzip — Vercel and other CDNs serve the
-    // pre-compressed file to supporting browsers, reducing transfer size.
-    compression({ algorithm: "brotliCompress", ext: ".br" }),
-    compression({ algorithm: "gzip", ext: ".gz" }),
-  ],
+  plugins: [routes(), react()],
   build: {
     // Vite 8 bundles with rolldown; vendor splitting uses its codeSplitting groups
     // (the old rollup `manualChunks` object form is not supported).

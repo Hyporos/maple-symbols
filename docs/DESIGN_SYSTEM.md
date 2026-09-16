@@ -54,7 +54,7 @@ Tailwind built-ins that are part of the palette: `bg-white/10` (dividers, ≈21 
 
 ## 4. Typography
 
-Maven Pro from Google Fonts (`index.html`: preconnect + preload + stylesheet, weights **400, 600, 900** only) applied by `body { font-['Maven_Pro'] }` with no fallback stack. Weights in use: 400 body, `font-semibold` (600) for titles/labels; `font-light` appears once and is a no-op (300 is not loaded). Body has `tracking-wide`; titles, inputs, toggle buttons and Overview headers add `tracking-wider`; the MAX LEVEL / DISABLED states use `tracking-widest`.
+Maven Pro, self-hosted: one variable `woff2` (latin subset, weights 400–900) in `public/fonts/`, declared by `@font-face` at the top of `global.css` and preloaded in `index.html`. `body` sets `font-family: "Maven Pro", "Maven Pro Fallback", Arial, Helvetica, sans-serif`; `Maven Pro Fallback` is local Arial with metric overrides so the swap does not shift layout (SEO-19 has the numbers). Weights in use: 400 body, `font-semibold` (600) for titles/labels; `font-light` appears once and is a no-op (the face starts at 400). Body has `tracking-wide`; titles, inputs, toggle buttons and Overview headers add `tracking-wider`; the MAX LEVEL / DISABLED states use `tracking-widest`.
 
 Mobile-first size pairs (base = phone, `md:` = ≥768 px):
 
