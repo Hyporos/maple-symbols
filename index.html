@@ -3,55 +3,109 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="public/main/favicon.png" />
+  <link rel="icon" type="image/png" href="/main/favicon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <!-- Primary Meta Tags -->
-  <title>MapleStory Arcane & Sacred Symbol Calculator | Level Up Planner</title>
-  <meta name="title" content="MapleStory Arcane & Sacred Symbol Calculator" />
-  <meta name="description" content="The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Calculate daily and weekly quest requirements, track progress, estimate completion dates, and optimize your symbol leveling strategy." />
-  <meta name="keywords" content="maplestory, arcane symbols, sacred symbols, calculator, vanishing journey, chu chu island, lachelein, arcana, morass, esfera, cernium, hotel arks, odium, shangri-la, arteria, carcion, symbol level up, mesos cost, daily quest tracker" />
+  <title>MapleStory Arcane &amp; Sacred Symbol Calculator | Maple Symbols</title>
+  <meta name="description" content="The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quest progress, estimate completion dates, and plan your symbol leveling strategy." />
+  <meta name="keywords" content="maplestory, arcane symbols, sacred symbols, grand symbols, grand sacred symbols, symbol calculator, vanishing journey, chu chu island, lachelein, arcana, morass, esfera, cernium, hotel arcus, odium, shangri-la, arteria, carcion, tallahart, geardrak, symbol level up, mesos cost, daily quest" />
   <meta name="author" content="Hyporos" />
   <meta name="robots" content="index, follow" />
-  <meta name="language" content="en" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://maplesymbols.com/" />
-  <meta property="og:title" content="MapleStory Arcane & Sacred Symbol Calculator" />
-  <meta property="og:description" content="The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Calculate daily and weekly quest requirements, track progress, estimate completion dates, and optimize your symbol leveling strategy." />
-  <meta property="og:image" content="https://github.com/Hyporos/maple-symbols/blob/main/public/main/favicon.png?raw=true" />
+  <meta property="og:site_name" content="Maple Symbols" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="MapleStory Arcane &amp; Sacred Symbol Calculator | Maple Symbols" />
+  <meta property="og:description" content="The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quest progress, estimate completion dates, and plan your symbol leveling strategy." />
+  <meta property="og:image" content="https://maplesymbols.com/main/og-image.png" />
+  <meta property="og:image:alt" content="Maple Symbols — MapleStory Symbol Calculator" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Maple Symbols" />
   
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://maplesymbols.com/" />
-  <meta property="twitter:title" content="MapleStory Arcane & Sacred Symbol Calculator" />
-  <meta property="twitter:description" content="The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Calculate daily and weekly quest requirements, track progress, estimate completion dates, and optimize your symbol leveling strategy." />
-  <meta property="twitter:image" content="https://github.com/Hyporos/maple-symbols/blob/main/public/main/favicon.png?raw=true" />
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://maplesymbols.com/" />
+  <meta name="twitter:title" content="MapleStory Arcane &amp; Sacred Symbol Calculator | Maple Symbols" />
+  <meta name="twitter:description" content="The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quest progress, estimate completion dates, and plan your symbol leveling strategy." />
+  <meta name="twitter:image" content="https://maplesymbols.com/main/og-image.png" />
+  <meta name="twitter:image:alt" content="Maple Symbols — MapleStory Symbol Calculator" />
   
   <!-- Additional Meta Tags -->
   <meta name="theme-color" content="#b18bd0" />
   <meta name="msapplication-TileColor" content="#b18bd0" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Maple Symbols" />
   
   <!-- Canonical URL -->
   <link rel="canonical" href="https://maplesymbols.com/" />
+
+  <script>
+    (() => {
+      const path = window.location.pathname.replace(/\/+$/, "") || "/";
+      const pageMap = {
+        "/": {
+          title: "MapleStory Arcane & Sacred Symbol Calculator | Maple Symbols",
+          description: "The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quest progress, estimate completion dates, and plan your symbol leveling strategy.",
+          url: "https://maplesymbols.com/",
+        },
+        "/handbook": {
+          title: "Symbol Handbook | Maple Symbols",
+          description: "Complete Arcane and Sacred Symbol reference: experience tables, meso upgrade costs, and daily/weekly quest ratios for every MapleStory region.",
+          url: "https://maplesymbols.com/handbook",
+        },
+        "/changelog": {
+          title: "Changelog | Maple Symbols",
+          description: "Full version history and feature updates for Maple Symbols, the MapleStory Arcane and Sacred Symbol calculator.",
+          url: "https://maplesymbols.com/changelog",
+        },
+        "/credits": {
+          title: "Credits | Maple Symbols",
+          description: "Attributions and acknowledgements for Maple Symbols.",
+          url: "https://maplesymbols.com/credits",
+        },
+      };
+
+      const page = pageMap[path] || pageMap["/"];
+      document.title = page.title;
+
+      const setMeta = (selector, attribute, value) => {
+        const element = document.querySelector(selector);
+        if (element) {
+          element.setAttribute(attribute, value);
+        }
+      };
+
+      setMeta('meta[name="description"]', "content", page.description);
+      setMeta('meta[property="og:url"]', "content", page.url);
+      setMeta('meta[property="og:title"]', "content", page.title);
+      setMeta('meta[property="og:description"]', "content", page.description);
+      setMeta('meta[name="twitter:url"]', "content", page.url);
+      setMeta('meta[name="twitter:title"]', "content", page.title);
+      setMeta('meta[name="twitter:description"]', "content", page.description);
+      setMeta('link[rel="canonical"]', "href", page.url);
+    })();
+  </script>
+
+  <!-- Umami Analytics -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="00af1504-752a-470f-98ed-5a76e3d7b286"></script>
   
   <!-- Additional Favicon Sizes -->
-  <link rel="apple-touch-icon" sizes="180x180" href="public/main/favicon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="public/main/favicon.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="public/main/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/main/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/main/favicon.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/main/favicon.png" />
   
   <meta name="darkreader-lock">
 
-  <!-- Preconnect to Google Fonts to reduce DNS + TLS handshake latency -->
+  <!-- Preconnect + preload Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;600;900&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;600;900&display=swap" />
 </head>
 

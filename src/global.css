@@ -1,70 +1,117 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --shadow-input: 0 0 9px 0px rgb(0 0 0 / 0.25);
+  --shadow-level: 0 0 2.5px 0px rgb(0 0 0 / 0.1);
+
+  --text-color-primary: #ffffff;
+  --text-color-secondary: #bfbfbf;
+  --text-color-tertiary: #8c8c8c;
+  --text-color-upgrade: #00b800;
+
+  --background-color-hover: #444444;
+  --background-color-secondary: #333333;
+  --background-color-tertiary: transparent;
+
+  --border-color-unchecked: #ab0000;
+  --border-color-checked: #00a500;
+  --border-color-secondary: #333333;
+
+  --outline-color-basic: #444444;
+
+  --fill-basic: #bfbfbf;
+
+  --color-accent: #b18bd0;
+  --color-card: #1d1d1d;
+  --color-dark: #212121;
+  --color-card-grad: #1b1b1b;
+  --color-card-tool: #1c1c1c;
+  --color-light: #262626;
+
+  --breakpoint-laptop: 1150px;
+  --breakpoint-phone: 550px;
+
+  --transition-property-height: height;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 @layer utilities {
+  /* Firefox */
 
-    /* Firefox */
+  input[type="number"] {
+    appearance: textfield;
+  }
 
-    input[type="number"] {
-        appearance: textfield;
-    }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #444444 #212121;
+  }
 
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: #444444 #212121;
-    }
+  /* Chrome, Edge, Safari */
 
-    /* Chrome, Edge, Safari */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        appearance: none;
-        margin: 0;
-    }
+  *::-webkit-scrollbar {
+    width: 15px;
+  }
 
-    *::-webkit-scrollbar {
-        width: 15px;
-    }
+  *::-webkit-scrollbar-track {
+    background: #212121;
+    border-radius: 5px;
+  }
 
-    *::-webkit-scrollbar-track {
-        background: #212121;
-        border-radius: 5px;
-    }
-
-    *::-webkit-scrollbar-thumb {
-        background-color: #444444;
-        border-radius: 14px;
-        border: 3px solid #212121;
-    }
-
+  *::-webkit-scrollbar-thumb {
+    background-color: #444444;
+    border-radius: 14px;
+    border: 3px solid #212121;
+  }
 }
 
 @layer base {
-    body {
-        @apply font-['Maven_Pro'] text-secondary tracking-wide bg-gradient-to-t from-dark to-[#202020] overflow-x-hidden
-    }
+  body {
+    @apply overflow-x-hidden bg-linear-to-t from-dark to-[#202020] font-['Maven_Pro'] tracking-wide text-secondary;
+  }
 
-    button,
-    input, 
-    .focus {
-        @apply rounded-lg focus-visible:outline focus:outline-2 focus:outline-accent focus-visible:border-0 
-    }
+  button,
+  input,
+  .focus {
+    @apply rounded-lg focus:outline-2 focus:outline-accent focus-visible:border-0 focus-visible:outline-solid;
+  }
 
-    input::placeholder {
-        @apply text-tertiary hover:text-secondary focus:text-secondary transition-all 
-     }
-    
-    span {
-        @apply text-accent
-    }
-    
-    .tooltip {
-        @apply bg-[#111111] px-2.5 py-1.5 text-center text-xs md:text-sm rounded-lg shadow-input
-    }
+  input::placeholder {
+    @apply text-tertiary transition-all hover:text-secondary focus:text-secondary;
+  }
 
-    img {
-        @apply select-none pointer-events-none
-    }
-    
+  span {
+    @apply text-accent;
+  }
+
+  .tooltip {
+    @apply rounded-lg bg-[#111111] px-2.5 py-1.5 text-center text-xs shadow-input md:text-sm;
+  }
+
+  img {
+    @apply pointer-events-none select-none;
+  }
 }

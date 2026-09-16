@@ -1,402 +1,104 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import Disclaimer from "./components/Disclaimer";
+import { lazy, Suspense, useEffect } from "react";
 import Header from "./components/Header";
 import Selector from "./components/Selector";
 import Footer from "./components/Footer";
+import SEO from "./components/SEO";
+import { ErrorBoundary } from "react-error-boundary";
+import { BreakpointProvider } from "./contexts/BreakpointContext";
+import { useRouter } from "./contexts/RouterContext";
 
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
-// Lazily load page-specific components so they are only downloaded when needed
+// Heavy calculator sections are lazily loaded to keep initial parse cost low.
 const Calculator = lazy(() => import("./components/Calculator/Calculator"));
 const Tools = lazy(() => import("./components/Calculator/Tools"));
 const Overview = lazy(() => import("./components/Calculator/Overview"));
 const Graph = lazy(() => import("./components/Calculator/Graph"));
-const Info = lazy(() => import("./components/Handbook/Handbook"));
-const Extras = lazy(() => import("./components/Extras/Extras"));
+import Handbook from "./components/Handbook/Handbook";
+import Extras from "./components/Extras/Extras";
 
-// Initialize Firebase once at module level, not inside the component
-const firebaseConfig = {
-  apiKey: "AIzaSyB1l_uUNUI5gVkvK6J5Xt9i9N86fqmMin0",
-  authDomain: "maple-symbols.firebaseapp.com",
-  projectId: "maple-symbols",
-  storageBucket: "maple-symbols.appspot.com",
-  messagingSenderId: "1034069866026",
-  appId: "1:1034069866026:web:f7d7f1d55054339039b553",
-  measurementId: "G-5EGQQS4DDK",
-};
-const app = initializeApp(firebaseConfig);
-getAnalytics(app);
+function PageContent() {
+  const { path: pathname } = useRouter();
 
-// Static data arrays — defined once at module level so they are never reallocated
-const arcaneData = [
-  0, 12, 15, 20, 27, 36, 47, 60, 75, 92, 111, 132, 155, 180, 207, 236, 267,
-  300, 335, 372,
-];
-
-const sacredData = [0, 29, 76, 141, 224, 325, 444, 581, 736, 909, 1100];
-
-function App() {
-  if (localStorage.getItem("clearStorage") !== "1.3") {
-    localStorage.clear();
-    localStorage.setItem("clearStorage", "1.3");
+  if (pathname === "/handbook") {
+    return (
+      <>
+        <SEO
+          title="Symbol Handbook | Maple Symbols"
+          description="Complete Arcane and Sacred Symbol reference: experience tables, meso upgrade costs, and daily/weekly quest ratios for every MapleStory region."
+          url="https://maplesymbols.com/handbook"
+        />
+        <Selector />
+        <Handbook />
+      </>
+    );
   }
 
-  const [selectedPage, setSelectedPage] = useState(1);
+  if (pathname === "/changelog" || pathname === "/credits") {
+    const isChangelog = pathname === "/changelog";
 
-  const [selectedSymbol, setSelectedSymbol] = useState(0);
+    return (
+      <>
+        <SEO
+          title={isChangelog ? "Changelog | Maple Symbols" : "Credits | Maple Symbols"}
+          description={
+            isChangelog
+              ? "Full version history and feature updates for Maple Symbols, the MapleStory Arcane and Sacred Symbol calculator."
+              : "Attributions and acknowledgements for Maple Symbols."
+          }
+          url={
+            isChangelog ? "https://maplesymbols.com/changelog" : "https://maplesymbols.com/credits"
+          }
+        />
+        <Extras />
+      </>
+    );
+  }
 
-  const [symbols, setSymbols] = useState([
-    {
-      id: 1,
-      name: "Vanishing Journey",
-      alt: "Vanishing Journey",
-      img: "/symbols/vj-symbol.webp",
-      type: "arcane",
-      dailyName: "Vanishing Journey Research",
-      weeklyName: "Erda Spectrum",
-      extraName: "Reverse City",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      weekly: false,
-      extra: false,
-      dailySymbols: 10,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      mondayCount: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: arcaneData,
-      mesosRequired: [
-        0, 970000, 1230000, 1660000, 2260000, 3060000, 4040000, 5220000,
-        6600000, 8180000, 9990000, 12010000, 14260000, 16740000, 19450000,
-        22420000, 25630000, 29100000, 32830000, 36820000,
-      ],
-    },
-    {
-      id: 2,
-      name: "Chu Chu Island",
-      alt: "Chu Chu Island",
-      img: "/symbols/chuchu-symbol.webp",
-      type: "arcane",
-      dailyName: "Chu Chu's Finest Cuisine",
-      weeklyName: "Hungry Muto",
-      extraName: "Yum Yum Island",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      weekly: false,
-      extra: false,
-      dailySymbols: 10,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      mondayCount: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: arcaneData,
-      mesosRequired: [
-        0, 1210000, 1530000, 2060000, 2800000, 3780000, 4980000, 6420000,
-        8100000, 10020000, 12210000, 14650000, 17360000, 20340000, 23590000,
-        27140000, 30970000, 35100000, 39530000, 44260000,
-      ],
-    },
-    {
-      id: 3,
-      name: "Lachelein",
-      alt: "Lachelein",
-      img: "/symbols/lach-symbol.webp",
-      type: "arcane",
-      dailyName: "A Night's Peace in Lachelein",
-      weeklyName: "Midnight Chaser",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      weekly: false,
-      dailySymbols: 20,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      mondayCount: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: arcaneData,
-      mesosRequired: [
-        0, 1450000, 1830000, 2460000, 3340000, 4500000, 5920000, 7620000,
-        9600000, 11860000, 14430000, 17290000, 20460000, 23940000, 27730000,
-        31860000, 36310000, 41100000, 46230000, 51700000,
-      ],
-    },
-    {
-      id: 4,
-      name: "Arcana",
-      alt: "Arcana",
-      img: "/symbols/arcana-symbol.webp",
-      type: "arcane",
-      dailyName: "Peace in Arcana",
-      weeklyName: "Spirit Savior",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      weekly: false,
-      dailySymbols: 20,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      mondayCount: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: arcaneData,
-      mesosRequired: [
-        0, 1690000, 2130000, 2860000, 3880000, 5220000, 6860000, 8820000,
-        11100000, 13700000, 16650000, 19930000, 23560000, 27540000, 31870000,
-        36580000, 41650000, 47100000, 52930000, 59140000,
-      ],
-    },
-    {
-      id: 5,
-      name: "Morass",
-      alt: "Morass",
-      img: "/symbols/morass-symbol.webp",
-      type: "arcane",
-      dailyName: "Save the Morass",
-      weeklyName: "Ranheim Defense",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      weekly: false,
-      dailySymbols: 20,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      mondayCount: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: arcaneData,
-      mesosRequired: [
-        0, 1930000, 2430000, 3260000, 4420000, 5940000, 7800000, 10020000,
-        12600000, 15540000, 18870000, 22570000, 26660000, 31140000, 36010000,
-        41300000, 46990000, 53100000, 59630000, 66580000,
-      ],
-    },
-    {
-      id: 6,
-      name: "Esfera",
-      alt: "Esfera",
-      img: "/symbols/esfera-symbol.webp",
-      type: "arcane",
-      dailyName: "Esfera Research Orders",
-      weeklyName: "Esfera Guardian",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      weekly: false,
-      dailySymbols: 20,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      mondayCount: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: arcaneData,
-      mesosRequired: [
-        0, 2170000, 2730000, 3660000, 4960000, 6660000, 8740000, 11220000,
-        14100000, 17380000, 21090000, 25210000, 29760000, 34740000, 40150000,
-        46020000, 52330000, 59100000, 66330000, 74020000,
-      ],
-    },
-    {
-      id: 7,
-      name: "Cernium",
-      alt: "Cernium",
-      img: "/symbols/cern-symbol.webp",
-      type: "sacred",
-      dailyName: "Cernium Research",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      dailySymbols: 20,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: sacredData,
-      mesosRequired: [
-        0, 36500000, 91200000, 160700000, 241900000, 331500000, 426200000,
-        522900000, 618200000, 709000000, 792000000,
-      ],
-    },
-    {
-      id: 8,
-      name: "Hotel Arcus",
-      alt: "Hotel Arcus",
-      img: "/symbols/arcus-symbol.webp",
-      type: "sacred",
-      dailyName: "Clean Up Around Hotel Arcus",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      dailySymbols: 10,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: sacredData,
-      mesosRequired: [
-        0, 41700000, 104800000, 186100000, 282200000, 390000000, 506100000,
-        627400000, 750700000, 872600000, 990000000,
-      ],
-    },
-    {
-      id: 9,
-      name: "Odium",
-      alt: "Odium",
-      img: "/symbols/odium-symbol.webp",
-      type: "sacred",
-      dailyName: "Odium Area Expedition",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      dailySymbols: 10,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: sacredData,
-      mesosRequired: [
-        0, 46900000, 118500000, 211500000, 322500000, 448500000, 586000000,
-        732000000, 883200000, 1036200000, 1188000000,
-      ],
-    },
-    {
-      id: 10,
-      name: "Shangri-La",
-      alt: "Shangri-La",
-      img: "/symbols/shangri-symbol.webp",
-      type: "sacred",
-      dailyName: "Shangri-La Contamination Purification",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      dailySymbols: 10,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: sacredData,
-      mesosRequired: [
-        0, 52200000, 132200000, 236800000, 362800000, 507000000, 666000000,
-        836600000, 1015600000, 1199800000, 1386000000,
-      ],
-    },
-    {
-      id: 11,
-      name: "Arteria",
-      alt: "Arteria",
-      img: "/symbols/arteria-symbol.webp",
-      type: "sacred",
-      dailyName: "Defeat the Arteria Remnants",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      dailySymbols: 10,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: sacredData,
-      mesosRequired: [
-        0, 57400000, 145900000, 262200000, 403200000, 565500000, 745900000,
-        941200000, 1148100000, 1363500000, 1584000000,
-      ],
-    },
-    {
-      id: 12,
-      name: "Carcion",
-      alt: "Carcion",
-      img: "/symbols/carcion-symbol.webp",
-      type: "sacred",
-      dailyName: "Carcion Recovery Support",
-      level: NaN,
-      experience: NaN,
-      daily: false,
-      dailySymbols: 10,
-      daysRemaining: 0,
-      totalDaysRemaining: 0,
-      symbolsRemaining: 0,
-      completion: "",
-      locked: true,
-      symbolsRequired: sacredData,
-      mesosRequired: [
-        0, 62600000, 159600000, 287600000, 443500000, 624000000, 825800000,
-        1045800000, 1280600000, 1527100000, 1782000000,
-      ],
-    },
-  ]);
+  return (
+    <>
+      <SEO />
+      <Selector />
+      <Calculator />
+      <Tools />
+      <Overview />
+      <Graph />
+    </>
+  );
+}
 
-  // If using Samsung Internet, display an alert. The built in dark theme will mess with the colors.
+function App() {
+  // Warn Samsung Internet users that its built-in dark theme will break colors.
   useEffect(() => {
     if (navigator.userAgent.match(/samsung/i)) {
       alert(
         "Your browser (Samsung Internet) may not show this website " +
           "correctly. Please consider using a standards-compliant " +
-          "browser instead. \n\n" +
+          "browser instead.\n\n" +
           "We recommend Firefox, Microsoft Edge, or Google Chrome."
       );
     }
   }, []);
-  {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
-        <Selector
-          symbols={symbols}
-          selectedSymbol={selectedSymbol}
-          setSelectedSymbol={setSelectedSymbol}
-          selectedPage={selectedPage}
-        />
-        <Suspense fallback={null}>
-          {selectedPage === 1 && (
-            <>
-              <Calculator
-                symbols={symbols}
-                setSymbols={setSymbols}
-                selectedSymbol={selectedSymbol}
-              />
-              <Tools
-                symbols={symbols}
-                setSymbols={setSymbols}
-                selectedSymbol={selectedSymbol}
-              />
-              <Overview
-                symbols={symbols}
-                selectedSymbol={selectedSymbol}
-              />
-              <Graph symbols={symbols} />
-            </>
-          )}
 
-          {selectedPage === 2 && (
-            <>
-              <Info
-                symbols={symbols}
-                selectedSymbol={selectedSymbol}
-              />
-            </>
-          )}
-          {selectedPage === 3 && <Extras />}
-        </Suspense>
+  return (
+    <BreakpointProvider>
+      <div className="flex min-h-screen flex-col">
+        <Header />
+
+        <ErrorBoundary
+          fallback={
+            <div className="flex flex-1 items-center justify-center text-tertiary">
+              Something went wrong. Please refresh.
+            </div>
+          }
+        >
+          <Suspense fallback={null}>
+            <PageContent />
+          </Suspense>
+        </ErrorBoundary>
+
         <Footer />
       </div>
-    );
-  }
+    </BreakpointProvider>
+  );
 }
 
 export default App;

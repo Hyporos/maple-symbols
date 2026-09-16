@@ -1,0 +1,38 @@
+{
+  "id": "/",
+  "name": "Maple Symbols - MapleStory Symbol Calculator",
+  "short_name": "Maple Symbols",
+  "description": "The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quest progress, estimate completion dates, and plan your symbol leveling strategy.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0a",
+  "theme_color": "#b18bd0",
+  "icons": [
+    {
+      "src": "/main/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/main/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/main/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "MapleStory Arcane & Sacred Symbol Calculator"
+    }
+  ],
+  "categories": ["productivity", "games"],
+  "prefer_related_applications": false
+}

@@ -3,6 +3,3 @@ Allow: /
 
 # Sitemap
 Sitemap: https://maplesymbols.com/sitemap.xml
-
-# Crawl delay (optional, be respectful)
-Crawl-delay: 1
