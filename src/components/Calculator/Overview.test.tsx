@@ -117,6 +117,19 @@ describe("Overview — target level panel", () => {
     expect(row.getByText("Enter a target level")).toBeInTheDocument();
   });
 
+  it("renders an empty target input, not NaN, until a target is typed (KI-012)", () => {
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
+    render(<Overview />);
+    const row = openRow("Vanishing Journey");
+    const input = row.getByPlaceholderText("Level");
+    expect(input).toHaveAttribute("value", ""); // was the string "NaN", with a React warning
+
+    typeTarget(row, "6");
+    expect(input).toHaveValue(6);
+    typeTarget(row, ""); // clearing goes back to empty, not NaN
+    expect(input).toHaveAttribute("value", "");
+  });
+
   it("shows ? days when no quest is enabled even with a valid target", () => {
     seedSymbol(1, { level: 5, experience: 0 });
     render(<Overview />);
