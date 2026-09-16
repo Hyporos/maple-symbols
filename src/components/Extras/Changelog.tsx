@@ -3,7 +3,7 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { cn } from "../../lib/utils";
 import { FaGithub, FaChevronRight } from "react-icons/fa6";
 import { changelogEntries, type ChangelogEntry } from "../../lib/changelog";
-import { dayjs } from "../../lib/dayjs";
+import { formatDate } from "../../lib/format";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Changelog component allows the user to view all previous Maple Symbols update details.
@@ -75,10 +75,10 @@ const Changelog = () => {
                 </div>
                 <div className="flex items-center space-x-5">
                   <time
-                    dateTime={dayjs(entry.date).format("YYYY-MM-DD")}
+                    dateTime={entry.date}
                     className={cn("text-xs md:text-sm", open && "hidden")}
                   >
-                    {entry.date}
+                    {formatDate(entry.date)}
                   </time>
                   <a
                     href={entry.link}

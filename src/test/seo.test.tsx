@@ -9,7 +9,16 @@ import { describe, expect, it } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import App from "../App";
 import { RouterProvider } from "../contexts/RouterContext";
-import { applyToIndexHtml, pageMap, ROUTES, sitemapXml, urlFor } from "../lib/routes";
+import {
+  applyToIndexHtml,
+  DEFAULT_LOCALE,
+  OG_LOCALES,
+  ogLocaleFor,
+  pageMap,
+  ROUTES,
+  sitemapXml,
+  urlFor,
+} from "../lib/routes";
 import { changelogEntries } from "../lib/changelog";
 import { dayjs } from "../lib/dayjs";
 import { seedHeadMeta } from "./helpers";
@@ -22,9 +31,36 @@ const content = (selector: string) =>
 
 describe("index.html after the routes plugin", () => {
   it("keeps its placeholders in the source and fills every one of them", () => {
-    expect(source).toContain("__PAGE_MAP__");
-    expect(source).toContain("__ROOT_TITLE__");
+    for (const token of ["__PAGE_MAP__", "__ROOT_TITLE__", "__LOCALE__", "__OG_LOCALE__"]) {
+      expect(source).toContain(token);
+    }
     expect(html).not.toMatch(/__[A-Z_]+__/);
+  });
+
+  it("I18N-1: names the language from DEFAULT_LOCALE alone, in index.html and the manifest", () => {
+    // index.html carries no literal locale; the generated file does.
+    expect(source).not.toMatch(/<html lang="[a-z]/);
+    expect(source).not.toMatch(/og:locale" content="[a-z]/);
+    expect(html.match(/<html lang="(.*?)"/)![1]).toBe(DEFAULT_LOCALE);
+    expect(html.match(/<meta property="og:locale" content="(.*?)"/)![1]).toBe(
+      ogLocaleFor(DEFAULT_LOCALE)
+    );
+    expect(ogLocaleFor(DEFAULT_LOCALE)).toBe("en_US");
+
+    // The manifest is copied verbatim, so its literal is held to the source here.
+    const manifest = JSON.parse(readFileSync("public/manifest.webmanifest", "utf8"));
+    expect(manifest.lang).toBe(DEFAULT_LOCALE);
+  });
+
+  it("maps every I18N-1 locale to an Open Graph language_TERRITORY and rejects an unmapped one", () => {
+    expect(OG_LOCALES).toEqual({
+      en: "en_US",
+      ko: "ko_KR",
+      ja: "ja_JP",
+      "zh-Hant": "zh_TW",
+      "zh-Hans": "zh_CN",
+    });
+    expect(() => ogLocaleFor("fr")).toThrow(/fr/);
   });
 
   it("carries the root route in the static tags and the full pageMap in the bootstrap script", () => {
@@ -175,10 +211,11 @@ describe("static files follow docs/SEO.md", () => {
     expect(robots).toContain(`${urlFor("/")}sitemap.xml`.replace("//sitemap", "/sitemap"));
   });
 
-  it("SEO-12: every changelog date parses to a real calendar date", () => {
+  it("SEO-12: every changelog date is an ISO day that exists on the calendar", () => {
     for (const entry of changelogEntries) {
-      expect(dayjs(entry.date).isValid()).toBe(true);
-      expect(dayjs(entry.date).format("YYYY-MM-DD")).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(entry.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      // dayjs rolls an impossible day over ("2023-02-30" → Mar 2), so only a real one round-trips.
+      expect(dayjs(entry.date).format("YYYY-MM-DD")).toBe(entry.date);
     }
   });
 });

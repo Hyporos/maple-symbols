@@ -5,6 +5,7 @@ import Changelog from "./Changelog";
 import Credits from "./Credits";
 import { RouterProvider } from "../../contexts/RouterContext";
 import { changelogEntries } from "../../lib/changelog";
+import { formatDate } from "../../lib/format";
 
 const newest = changelogEntries[changelogEntries.length - 1];
 
@@ -42,7 +43,9 @@ describe("Changelog", () => {
   it("opens on the newest entry (the LAST array element) with its date and PR link", () => {
     render(<Changelog />);
     expect(screen.getByRole("heading", { name: newest.version })).toBeInTheDocument();
-    expect(screen.getByText(newest.date)).toBeInTheDocument();
+    const time = screen.getByText(formatDate(newest.date));
+    expect(time.tagName).toBe("TIME");
+    expect(time).toHaveAttribute("dateTime", newest.date);
     expect(screen.getByRole("link")).toHaveAttribute("href", newest.link);
   });
 
