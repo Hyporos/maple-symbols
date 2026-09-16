@@ -17,6 +17,18 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 - The Umami script in `index.html` has no `data-domains`, so `vite dev` and preview deployments count as production traffic. It is being replaced by Plausible (`docs/ANALYTICS.md` §2, AN-5 and AN-6).
 - Production (2026-09-16) is still a Firebase deploy from March 2026: `main` has `firebase.json`, two Firebase deploy workflows and no `vercel.json`, and the live `/handbook`, `/changelog`, `/credits` return 404. `development` removes all of it; `docs/SEO.md` §0 has the cut-over order.
 
+### KI-011 · M · `RadioButton` cannot be operated from the keyboard
+
+- **Symptom**: The Graph's Linear/Exponential choice and the Selector's Arcane/Sacred toggle cannot be changed with the keyboard. Tabbing reaches the wrapping tooltip trigger, but Enter and Space do nothing.
+- **Cause**: `src/components/ui/RadioButton.tsx` renders a `<div>` with `onClick`: no `role`, no `tabIndex`, no key handler, and no `aria-checked`. Where it sits inside a tooltip trigger button, the button receives focus and the keypress, but the click handler is on the inner div, so nothing selects.
+- **Suggested fix**: Render a real `<button type="button" role="radio" aria-checked={selected}>` (or native `<input type="radio">` with a label) and group the set with `role="radiogroup"`. The tooltip trigger around it should then use `as="div"` so the radio is the focus target. Found by the tooltip-hygiene work on 2026-09-16.
+
+### KI-012 · L · Overview's target input passes `NaN` to `value` on desktop
+
+- **Symptom**: React logs "Received NaN for the `value` attribute" when a row's target panel is open on desktop and no target has been typed (or the field was cleared).
+- **Cause**: `Overview.tsx` sets `value={String(targetLevel) === "NaN" && levelSet === false && isMobile ? maxLevel : targetLevel}`. On mobile the unset case substitutes `maxLevel`; on desktop it passes `targetLevel`, which is `NaN`. Every other number input in the app renders `""` for `NaN` (AGENTS cheat sheet).
+- **Suggested fix**: Render `""` when `targetLevel` is `NaN` outside the mobile default, matching the other inputs, and replace `String(x) === "NaN"` with `Number.isNaN(x)`.
+
 ## Resolved
 
 ### KI-007 · resolved on `v2` (tooltip hygiene, 2026-09-16) · `TooltipTrigger` takes `as` (`"button"` default, `"div"`, `"span"`). Calculator's level/exp trigger and Tools' two before/after previews are `as="div"`; Header's language button and Overview's target input are the `asChild` element themselves; the icon and `RadioButton` triggers in Calculator, Overview and Graph drop `asChild` + `{" "}` for a plain trigger. Rendering Header, Calculator, Tools, Overview and Graph together gives no nesting `console.error` and no `button button`/`button input`. (Was: a `<button>` fallback wrapped inputs and buttons; React logged "`<button>` cannot be a descendant of `<button>`".) The Handbook tables keep the `asChild` + `{" "}` form, which renders a valid icon-in-button.
