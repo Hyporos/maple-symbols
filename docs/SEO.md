@@ -8,7 +8,7 @@ Only practices that matter for this site are here: a four-page client-rendered R
 
 Checked with `curl` on the audit date. **The domain is not serving the current code.**
 
-- `maplesymbols.com` is served by Firebase Hosting (`X-Served-By: cache-yul…`, Firebase's 404 page). `main` (`f875d7c`, 2026-03-03) still carries `firebase.json`, `.firebaserc`, `public/404.html` and a static `public/sitemap.xml`; `vercel.json` exists only on `development`/`v2`. `firebase.json` has no rewrites.
+- `maplesymbols.com` is served by Firebase Hosting (`X-Served-By: cache-yul…`, Firebase's 404 page). `main` (`f875d7c`, 2026-03-03) still carries `firebase.json`, `.firebaserc`, a static 404 page and a static sitemap under `public/` (none of them on `v2`); `vercel.json` exists only on `development`/`v2`. `firebase.json` has no rewrites.
 - Result: `/` returns 200 with the old title ("… | Level Up Planner"); **`/handbook`, `/changelog`, `/credits` return 404**; the live `sitemap.xml` lists `/calculator`, `/tools`, `/graph` (all 404) and not `/changelog` or `/credits`. The 1.4.0 work (routes, metadata, `vercel.json`) has never reached users.
 - No `www` record exists (`www.maplesymbols.com` does not resolve); `http://` redirects to `https://` correctly.
 
