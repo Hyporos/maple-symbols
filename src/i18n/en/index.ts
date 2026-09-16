@@ -7,10 +7,26 @@
 //   <b>…</b>      accent markup inside the sentence; renders as the accent <span>
 // Write each message as one whole sentence with its markup inside (I18N-10) and
 // no line breaks (I18N-11); plural wording is a { one, other } pair (I18N-14).
+// This file and everything it imports stay free of JSX and React: the routes
+// plugin in vite.config.ts reads page titles from here at build time.
 // ---------------------------------------------------------------------------
 
 import { calculator } from "./calculator";
+import { extras } from "./extras";
+import { graph } from "./graph";
+import { handbook } from "./handbook";
+import { overview } from "./overview";
+import { pages } from "./pages";
+import { shell } from "./shell";
+import { tools } from "./tools";
 
 export const en = {
   calculator,
+  extras,
+  graph,
+  handbook,
+  overview,
+  pages,
+  shell,
+  tools,
 } as const;
