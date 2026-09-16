@@ -101,7 +101,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 6. **Calculator's two remaining store-writing effects (clamp, relock) are boolean-guarded and omit `symbols` from their deps on purpose**; adding `symbols` would loop. A **new input** to the maths (a new quest flag, say) must be hand-added to `getDailySymbols` and to Overview's `targetDays` memo deps; lint won't remind you (exhaustive-deps is off). Checklist in ARCHITECTURE §9.
 7. Use `symbol.type` for per-symbol rules (`maxLevelFor(symbol.type)`, `isMaxLevel(level, type)`, `CATALYST_RETENTION[type]`) and `mode` only for which list is shown. `setMode` switches mode and selection atomically, so the selected symbol always matches the mode (KI-006 resolved).
 8. `tsc` runs in `build` with `noUnusedLocals`: an unused import fails the build. `.gitattributes` (`* text=auto eol=lf`) forces LF in the working tree and overrides `core.autocrlf` (which is `true` system-wide on this machine); never weaken that attribute or touch git config to "fix" line endings. If lint fails on `␍`, run `git ls-files --eol | grep w/crlf`.
-9. Before adding content to a card or replacing an image: DESIGN_SYSTEM §5 (fixed 360 px phone width, 650/700 px pane heights) and KI-009 (`public/` images are cached for a year; rename, don't replace in place).
+9. Before adding content to a card or replacing an image: DESIGN_SYSTEM §5 (fixed 360 px phone width, 650/700 px pane heights) and SEO-20 (`public/` files revalidate on every load, so an image replaced in place does reach returning visitors; only hashed `/assets/*` is immutable).
 
 ## Which doc when
 

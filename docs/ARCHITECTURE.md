@@ -7,7 +7,7 @@ How the app is put together, where each concern lives, and why the odd-looking p
 ```
 index.html          __PLACEHOLDER__ tags + inline script filled from src/lib/routes.ts by the
                     routes plugin (vite.config.ts); the script sets title/meta BEFORE React loads;
-                    Maven Pro font links; Umami analytics; darkreader-lock meta
+                    Maven Pro font preload; Umami analytics; darkreader-lock meta
 └─ src/main.tsx     createRoot(#root).render(<RouterProvider><App/></RouterProvider>) + global.css
    └─ App.tsx       <BreakpointProvider>
                       <Header/>                                  ← outside the error boundary
@@ -104,8 +104,8 @@ Overview has three effects (on `mode`; on `targetId`/`selectedNone`; on the targ
 
 ## 7. Build, deploy, tooling
 
-- `pnpm build` = `tsc` (type-gate over `src/`, tests included, `noEmit`) then `vite build`. Vite plugins: `react()`, brotli and gzip pre-compression of the output. `vitest.config.ts` is standalone so those build plugins never run in tests.
-- `vercel.json`: `buildCommand: pnpm build`, SPA rewrite of every path to `/index.html`, 1-year immutable `Cache-Control` for `/assets/*` **and every static extension** (including un-hashed `public/` images, KI-009), `no-cache` for HTML, `nosniff`/`SAMEORIGIN`/referrer/permissions headers, no CSP (Umami and Google Fonts would need allow-listing). Anything under `api/` would deploy as a Vercel function; the directory is empty.
+- `pnpm build` = `tsc` (type-gate over `src/`, tests included, `noEmit`) then `vite build`. Vite plugins: the routes plugin (placeholders, `sitemap.xml`) and `react()`. There is no pre-compression: Vercel compresses at the edge and ignores `.br`/`.gz` siblings (SEO-20). `vitest.config.ts` is standalone so build plugins never run in tests.
+- `vercel.json`: `buildCommand: pnpm build`, `trailingSlash: false`, SPA rewrite of every path to `/index.html`, 1-year immutable `Cache-Control` for `/assets/*` only (everything else, HTML and `public/` files included, gets Vercel's default `max-age=0, must-revalidate`), `nosniff`/`SAMEORIGIN`/referrer/permissions headers, no CSP (Umami would need allow-listing). `source` patterns are path-to-regexp, not regex (SEO-20). Anything under `api/` would deploy as a Vercel function; the directory is empty.
 - `tsconfig.json`: strict, `noUnusedLocals`, `noUnusedParameters`, `allowImportingTsExtensions`, `resolveJsonModule` (used to import `package.json` in Footer and `symbols.json`), `allowJs`.
 - ESLint flat config: recommended JS/TS rules; `react-hooks` v7 rules `exhaustive-deps`, `immutability`, `set-state-in-effect`, `refs` are **off** ("too aggressive for existing patterns: accumulator vars in render, intentional setState in effects, floating-ui ref passing"); `react-refresh/only-export-components` off (Context and Tooltip files export a component and a hook); ternary/short-circuit statements allowed; `_` prefix for unused; `no-explicit-any` warns, and `--max-warnings 0` makes that fatal (the one `any`, in `Tooltip.tsx`, carries an `eslint-disable-next-line`). Prettier runs inside ESLint, last.
 - Git hooks: `simple-git-hooks` installs a pre-commit that runs lint-staged (ESLint, `vitest related`, Prettier, `scripts/docs-drift.mjs`). CI mirrors lint/typecheck/test/build. `.gitattributes` forces LF in the working tree.
