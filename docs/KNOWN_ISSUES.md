@@ -19,7 +19,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ### KI-011 · M · `RadioButton` cannot be operated from the keyboard
 
-- **Symptom**: The Graph's Linear/Exponential choice and the Selector's Arcane/Sacred toggle cannot be changed with the keyboard. Tabbing reaches the wrapping tooltip trigger, but Enter and Space do nothing.
+- **Symptom**: Neither radio set works from the keyboard. The Selector's Arcane/Sacred toggle is not in the tab order at all, so a keyboard user cannot switch symbol types. The Graph's Linear/Exponential choice is reachable only because its tooltip trigger is a button, and Enter or Space on it does nothing.
 - **Cause**: `src/components/ui/RadioButton.tsx` renders a `<div>` with `onClick`: no `role`, no `tabIndex`, no key handler, and no `aria-checked`. Where it sits inside a tooltip trigger button, the button receives focus and the keypress, but the click handler is on the inner div, so nothing selects.
 - **Suggested fix**: Render a real `<button type="button" role="radio" aria-checked={selected}>` (or native `<input type="radio">` with a label) and group the set with `role="radiogroup"`. The tooltip trigger around it should then use `as="div"` so the radio is the focus target. Found by the tooltip-hygiene work on 2026-09-16.
 
