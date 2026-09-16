@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { OG_IMAGE, routeFor, SITE_NAME, urlFor } from "../lib/routes";
+import { DEFAULT_LOCALE, OG_IMAGE, routeFor, SITE_NAME, urlFor } from "../lib/routes";
 
 const ROOT = routeFor("/");
 const ROOT_URL = urlFor("/");
@@ -65,7 +65,7 @@ function SEO({
       url,
       name: title,
       description,
-      inLanguage: "en",
+      inLanguage: DEFAULT_LOCALE,
       isPartOf: { "@type": "WebSite", name: SITE_NAME, url: ROOT_URL },
     };
 
@@ -78,7 +78,7 @@ function SEO({
         description: ROOT.description,
         applicationCategory: "GameApplication",
         operatingSystem: "Web",
-        inLanguage: "en",
+        inLanguage: DEFAULT_LOCALE,
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         author: { "@type": "Person", name: "Hyporos" },

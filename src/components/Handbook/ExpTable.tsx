@@ -1,6 +1,7 @@
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
+import { formatNumber } from "../../lib/format";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import symbolsJson from "../../lib/symbols.json";
@@ -99,10 +100,10 @@ const ExpTable = () => {
                       </div>
                     </td>
                     <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
-                      {isFirstRow ? "-" : exp.toLocaleString()}
+                      {isFirstRow ? "-" : formatNumber(exp)}
                     </td>
                     <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
-                      {isFirstRow ? "-" : totalExp.toLocaleString()}
+                      {isFirstRow ? "-" : formatNumber(totalExp)}
                     </td>
                   </tr>
                 );
