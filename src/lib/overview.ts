@@ -3,6 +3,9 @@
 // Pure functions over symbol state, so the wording is testable without a render.
 // ---------------------------------------------------------------------------
 
+import type { Dayjs } from "dayjs";
+import { dayjs } from "./dayjs";
+import { progressToMax } from "./calculator";
 import type { SymbolData } from "./types";
 
 /** Invisible placeholder that keeps a row's height when there is nothing to show. */
@@ -17,9 +20,14 @@ export interface CollapsedRowLabels {
 
 /**
  * The collapsed (desktop) row: target column, completion date, days and symbols remaining,
- * read from the symbol's stored derived fields (fresh only for the selected symbol, KI-002).
+ * derived from the symbol's level/experience/quests as of `now` (every row is fresh).
  */
-export function collapsedRowLabels(symbol: SymbolData, maxLevel: number): CollapsedRowLabels {
+export function collapsedRowLabels(
+  symbol: SymbolData,
+  maxLevel: number,
+  now: Dayjs = dayjs()
+): CollapsedRowLabels {
+  const { symbolsRemaining, daysRemaining, completion: date } = progressToMax(symbol, now);
   const atMax = symbol.level === maxLevel;
   const unset = isNaN(symbol.level);
   const noQuests = !symbol.daily && !symbol.weekly;
@@ -29,32 +37,29 @@ export function collapsedRowLabels(symbol: SymbolData, maxLevel: number): Collap
 
   const completion = blank
     ? BLANK
-    : symbol.completion === "Invalid Date" || noQuests || isNaN(symbol.experience)
+    : date === "Invalid Date" || noQuests || isNaN(symbol.experience)
       ? "Indefinite"
-      : symbol.daysRemaining === 0
+      : daysRemaining === 0
         ? "Complete"
-        : symbol.completion;
+        : date;
 
   const days = blank
     ? BLANK
-    : String(symbol.daysRemaining) === "Infinity" ||
-        isNaN(symbol.daysRemaining) ||
-        noQuests ||
-        isNaN(symbol.experience)
+    : !isFinite(daysRemaining) || noQuests || isNaN(symbol.experience)
       ? "? days"
-      : symbol.daysRemaining === 0
+      : daysRemaining === 0
         ? "Ready for upgrade"
-        : symbol.daysRemaining > 1
-          ? `${symbol.daysRemaining} days`
-          : `${symbol.daysRemaining} day`;
+        : daysRemaining > 1
+          ? `${daysRemaining} days`
+          : `${daysRemaining} day`;
 
   const remaining = blank
     ? BLANK
-    : isNaN(symbol.symbolsRemaining)
+    : isNaN(symbolsRemaining)
       ? "?"
-      : symbol.symbolsRemaining <= 0
+      : symbolsRemaining <= 0
         ? "0"
-        : String(symbol.symbolsRemaining);
+        : String(symbolsRemaining);
 
   return { target, completion, days, remaining };
 }

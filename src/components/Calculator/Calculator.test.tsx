@@ -147,14 +147,11 @@ describe("Calculator — quests and the next-level panel", () => {
     expect(screen.getByText(fullText("+200 main stat"))).toBeInTheDocument();
   });
 
-  it("writes the derived fields for the selected symbol into the store (frozen Wednesday)", () => {
+  it("does not write derived values into the store on mount (they are computed on read)", () => {
     vi.setSystemTime(WED);
-    seedSymbol(1, { level: 1, experience: 0, daily: true });
+    const seeded = seedSymbol(1, { level: 1, experience: 0, daily: true });
     render(<Calculator />);
-    expect(vj()).toMatchObject({
-      symbolsRemaining: 2679,
-      daysRemaining: 268,
-      completion: "2027-06-11",
-    });
+    expect(vj()).toEqual(seeded);
+    expect(vj()).not.toHaveProperty("symbolsRemaining");
   });
 });

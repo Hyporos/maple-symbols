@@ -24,43 +24,36 @@ describe("Overview — collapsed rows", () => {
     expect(screen.queryByAltText("Cernium")).not.toBeInTheDocument();
   });
 
-  it("shows the stored completion date, days and symbols remaining", () => {
-    seedSymbol(1, {
-      level: 5,
-      experience: 0,
-      daily: true,
-      daysRemaining: 12,
-      completion: "2026-09-28",
-      symbolsRemaining: 2500,
-    });
+  it("derives the completion date, days and symbols remaining (frozen Wednesday)", () => {
+    vi.setSystemTime(WED);
+    seedSymbol(1, { level: 5, experience: 0, daily: true }); // 2605 symbols at 10/day
     render(<Overview />);
     const row = within(rowOf("Vanishing Journey"));
-    expect(row.getByText("2026-09-28")).toBeInTheDocument();
-    expect(row.getByText("12 days")).toBeInTheDocument();
-    expect(row.getByText("2500")).toBeInTheDocument();
+    expect(row.getByText("2027-06-04")).toBeInTheDocument();
+    expect(row.getByText("261 days")).toBeInTheDocument();
+    expect(row.getByText("2605")).toBeInTheDocument();
+  });
+
+  it("is fresh for every row, not only the selected symbol (KI-002 resolved)", () => {
+    vi.setSystemTime(WED);
+    seedSymbol(3, { level: 5, experience: 0, daily: true }, false); // Lachelein, 20/day
+    seedSymbol(1, { level: 5, experience: 0, daily: true }); // selects Vanishing Journey
+    render(<Overview />);
+    const lachelein = within(rowOf("Lachelein"));
+    expect(lachelein.getByText("131 days")).toBeInTheDocument();
+    expect(lachelein.getByText("2605")).toBeInTheDocument();
+    expect(lachelein.queryByText("Complete")).not.toBeInTheDocument();
   });
 
   it("singularises one day", () => {
-    seedSymbol(1, {
-      level: 5,
-      experience: 0,
-      daily: true,
-      daysRemaining: 1,
-      completion: "2026-09-17",
-    });
+    vi.setSystemTime(WED);
+    seedSymbol(1, { level: 19, experience: 362, daily: true }); // 10 short of the last step
     render(<Overview />);
     expect(within(rowOf("Vanishing Journey")).getByText("1 day")).toBeInTheDocument();
   });
 
-  it("maps zeroed derived fields to Complete / Ready for upgrade / 0 (KI-002: what a reload shows)", () => {
-    seedSymbol(1, {
-      level: 5,
-      experience: 0,
-      daily: true,
-      daysRemaining: 0,
-      completion: "",
-      symbolsRemaining: 0,
-    });
+  it("says Complete / Ready for upgrade / 0 once the experience covers max", () => {
+    seedSymbol(1, { level: 19, experience: 372, daily: true });
     render(<Overview />);
     const row = within(rowOf("Vanishing Journey"));
     expect(row.getByText("Complete")).toBeInTheDocument();
@@ -69,7 +62,7 @@ describe("Overview — collapsed rows", () => {
   });
 
   it("shows Indefinite / ? days when no quest is enabled", () => {
-    seedSymbol(1, { level: 5, experience: 0, daysRemaining: 12, completion: "2026-09-28" });
+    seedSymbol(1, { level: 5, experience: 0 });
     render(<Overview />);
     const row = within(rowOf("Vanishing Journey"));
     expect(row.getAllByText("Indefinite").length).toBeGreaterThan(0);
@@ -105,9 +98,10 @@ describe("Overview — target level panel", () => {
     expect(row.getByText("2026-09-20")).toBeInTheDocument();
 
     typeTarget(row, "25"); // clamps to 20: 2605 symbols → 261 days → 2027-06-04
-    expect(row.getByText("2605")).toBeInTheDocument();
-    expect(row.getByText("261 days")).toBeInTheDocument();
-    expect(row.getByText("2027-06-04")).toBeInTheDocument();
+    // At max target the panel agrees with the collapsed row, so each string appears twice.
+    expect(row.getAllByText("2605")).toHaveLength(2);
+    expect(row.getAllByText("261 days")).toHaveLength(2);
+    expect(row.getAllByText("2027-06-04")).toHaveLength(2);
   });
 
   it("explains a target at or below the current level, and an empty target", () => {

@@ -2,7 +2,6 @@ import { useEffect, useMemo } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import { TbSlash } from "react-icons/tb";
 import { MdOutlineInfo } from "react-icons/md";
-import { dayjs } from "../../lib/dayjs";
 import { FiUnlock, FiLock, FiCheck } from "react-icons/fi";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import {
@@ -15,7 +14,7 @@ import {
 } from "../../lib/utils";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
-import { getOverflow, getRemainingToMax } from "../../lib/calculator";
+import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
 import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
 
@@ -51,51 +50,6 @@ const Calculator = () => {
       return NaN;
     }
   }, [nextExperience, currentSymbol.experience, dailySymbols, currentSymbol.weekly]);
-
-  /*
-   | Calculate Total Symbols Remaining
-   ――――――――――――――――――――――――――――――――
-  */
-
-  // Single effect: compute and persist symbolsRemaining, daysRemaining, and
-  // completion date in one atomic store update — replacing three previous effects
-  // and a useMemo that caused cascading re-renders via intermediate store writes.
-  useEffect(() => {
-    try {
-      const remaining = getRemainingToMax(currentSymbol, maxLevelFor(currentSymbol.type));
-
-      const daysTotal = calculateDaysRemaining(remaining, dailySymbols, !!currentSymbol.weekly);
-      const completionDate = dayjs().add(daysTotal, "day").format("YYYY-MM-DD");
-
-      // Object.is is NaN-safe (Object.is(NaN, NaN) === true), preventing the
-      // infinite re-render loop caused by `NaN !== NaN` always being true.
-      // Functional updater removes `symbols` from the dep array, which was the
-      // feedback path that made the loop possible.
-      if (
-        !Object.is(remaining, currentSymbol.symbolsRemaining) ||
-        !Object.is(daysTotal, currentSymbol.daysRemaining) ||
-        completionDate !== currentSymbol.completion
-      ) {
-        setSymbols(
-          updateSymbol(useAppStore.getState().symbols, selectedId, {
-            symbolsRemaining: remaining,
-            daysRemaining: daysTotal,
-            completion: completionDate,
-          })
-        );
-      }
-    } catch {
-      // Invalid input (e.g. NaN level/exp) — silently skip.
-    }
-  }, [
-    currentSymbol.daily,
-    currentSymbol.extra,
-    currentSymbol.weekly,
-    currentSymbol.level,
-    currentSymbol.experience,
-    mode,
-    selectedId,
-  ]);
 
   // Derived overflow state (cap unlocked): the levels the stored experience would buy and
   // the leftover. useMemo avoids the extra render cycle from a useState+useEffect pair.

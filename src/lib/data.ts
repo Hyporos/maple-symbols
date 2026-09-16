@@ -40,8 +40,5 @@ export function createInitialSymbols(): SymbolData[] {
     ...(def.weeklyName !== undefined && { weekly: false }),
     ...(def.extraName !== undefined && { extra: false }),
     locked: true,
-    daysRemaining: 0,
-    symbolsRemaining: 0,
-    completion: "",
   }));
 }

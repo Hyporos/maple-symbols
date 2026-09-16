@@ -19,7 +19,7 @@ import { persist } from "zustand/middleware";
 import { createInitialSymbols } from "../lib/data";
 import type { SymbolData, SymbolType } from "../lib/types";
 
-const STORAGE_VERSION = 2;
+const STORAGE_VERSION = 3;
 
 /** First symbol of each type in symbols.json (Vanishing Journey, Cernium). */
 export const DEFAULT_SELECTION: Record<SymbolType, number> = { arcane: 1, sacred: 7 };
@@ -66,17 +66,9 @@ export const useAppStore = create<AppStore>()(
     {
       name: "maple-symbols-v2",
       version: STORAGE_VERSION,
-      // Only persist user symbol data — not ephemeral UI state.
-      // Derived calculation fields (daysRemaining, symbolsRemaining, completion)
-      // are intentionally zeroed-out on save; Calculator recomputes them on mount.
-      partialize: (state) => ({
-        symbols: state.symbols.map((s) => ({
-          ...s,
-          daysRemaining: 0,
-          symbolsRemaining: 0,
-          completion: "",
-        })),
-      }),
+      // Only persist user symbol data — not ephemeral UI state. Nothing derived is
+      // stored: symbols/days remaining and completion are computed on read (lib/calculator).
+      partialize: (state) => ({ symbols: state.symbols }),
       // On schema change, reset symbols to defaults rather than loading stale data.
       migrate: () => ({ symbols: createInitialSymbols() }),
       // JSON.stringify converts NaN → null, so convert null back to NaN on rehydration.

@@ -16,7 +16,7 @@ describe("Tools — Symbol Selector", () => {
   });
 
   it("previews the level/exp after using N symbols and applies it to the store", () => {
-    seedSymbol(1, { level: 1, experience: 0, symbolsRemaining: 2679 }); // VJ, arcane
+    seedSymbol(1, { level: 1, experience: 0 }); // VJ, arcane
     render(<Tools />);
     expect(screen.getAllByText("1 / 0").length).toBeGreaterThan(0); // "before" (both tool panels show it)
     expect(screen.getAllByText("? / ?").length).toBeGreaterThan(0); // after, no count yet
@@ -32,8 +32,8 @@ describe("Tools — Symbol Selector", () => {
     expect(countInput()).toHaveValue(null); // count resets
   });
 
-  it("clamps the count: '0' → 1, more than symbolsRemaining → symbolsRemaining", () => {
-    seedSymbol(1, { level: 1, experience: 0, symbolsRemaining: 2679 });
+  it("clamps the count: '0' → 1, more than the symbols left to max → that many (2679)", () => {
+    seedSymbol(1, { level: 1, experience: 0 });
     render(<Tools />);
     fireEvent.change(countInput(), { target: { value: "0" } });
     expect(countInput()).toHaveValue(1);

@@ -11,7 +11,8 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 
 ## Progress on `v2`
 
-- **Identity by id/type** (2026-09-16): `mode: SymbolType`, `selectedId`, `lastSelected`, `selectSymbol`/`setMode`, `useSelectedSymbol()`, `updateSymbol(symbols, id, patch)`, `maxLevelFor(type)`, `isMaxLevel(level, type)`, `usePower(symbols, type)`, `buildDateSymbols(symbols, type)`. No array-index lookups remain; the Selector effect that restored selection is gone. KI-006 resolved. Next: derived values on read (KI-002), then persistence by id (KI-001).
+- **Identity by id/type** (2026-09-16): `mode: SymbolType`, `selectedId`, `lastSelected`, `selectSymbol`/`setMode`, `useSelectedSymbol()`, `updateSymbol(symbols, id, patch)`, `maxLevelFor(type)`, `isMaxLevel(level, type)`, `usePower(symbols, type)`, `buildDateSymbols(symbols, type)`. No array-index lookups remain; the Selector effect that restored selection is gone. KI-006 resolved.
+- **Derived on read** (2026-09-16): `daysRemaining`/`symbolsRemaining`/`completion` removed from `SymbolData`; `progressToMax(symbol, now)` in `lib/calculator.ts` feeds `collapsedRowLabels(symbol, maxLevel, now)`, Tools derives its clamp, Calculator's write-back effect is gone, `partialize` persists `symbols` as-is, `STORAGE_VERSION` 3 (Brian accepted the reset: persisted data need not survive 2.0). KI-002 resolved. Next: a single routes/metadata module; persistence by id (KI-001) is optional now that a wipe is acceptable.
 
 ## What the safety net pins (as of 2026-09-16)
 
@@ -35,8 +36,7 @@ After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; lo
 
 ## Open questions for 2.0 (ask before designing)
 
-- Data model: keep `SymbolData` with NaN sentinels, or move to `level: number | null`? Either way, write a real `migrate` by `id` so returning users keep their levels (KI-001).
-- Derived fields: compute on read (like Graph) instead of caching in the store (KI-002).
+- Data model: keep `SymbolData` with NaN sentinels, or move to `level: number | null`? A real `migrate` by `id` (KI-001) is optional: Brian decided (2026-09-16) that persisted symbol data may reset on the 2.0 release.
 - Routing: keep the custom router, or adopt a library once there are more pages?
 - Metadata: collapse the four metadata sources into one `routes` module that the inline script and `SEO.tsx` both read.
 - Visual direction: the new look, and whether the fixed 360 px phone cards and fixed pane heights survive.

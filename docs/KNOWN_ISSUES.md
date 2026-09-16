@@ -12,12 +12,6 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 - **Cause**: `partialize` in `src/state/store.ts` spreads every `SymbolData` field (static ones included) and `merge` adopts the persisted array wholesale, even its length. `data.ts` claims "game patches only require editing that one JSON file", which is not true today.
 - **Suggested fix**: In `merge`, rebuild each symbol from `createInitialSymbols()` by `id` and copy over only the user fields (`level`, `experience`, `daily`, `weekly`, `extra`, `locked`); make `migrate` map old entries by `id` instead of resetting. Then `symbols.json` becomes the single source of truth again. Test first: `src/state/store.test.ts` pins the current "wholesale" behaviour and must change with it.
 
-### KI-002 · H · Overview shows stale results for every non-selected symbol after a reload
-
-- **Symptom**: Reload with several symbols levelled and quests on. Overview's desktop columns show "Complete", "Ready for upgrade", and "0" for every symbol except the one currently selected, until each is clicked in the Selector.
-- **Cause**: `partialize` zeroes `daysRemaining`/`symbolsRemaining`/`completion` on save; the only writer is the effect in `Calculator.tsx`, which recomputes for the selected symbol only. Overview's collapsed rows read those stored fields and map `0` to "Complete"/"Ready for upgrade".
-- **Suggested fix**: Derive the three values in Overview per row from `level`/`experience`/quests with `getRemainingSymbols` + `calculateDaysRemaining` (Graph already does this), and stop persisting or reading the cached fields. `Tools.tsx` also reads `symbolsRemaining` (selector-count clamp and Apply); derive it there too, or keep the field for the selected symbol only. Alternatively recompute all symbols on mount.
-
 ### KI-003 · M · Weekly reset is credited a day late, and a Sunday start skips the next Monday
 
 - **Symptom**: With time frozen to a Wednesday, 120 symbols from weekly alone takes 6 days (lands on the Tuesday, not the Monday). From a Sunday it takes 9 days: tomorrow's Monday is skipped entirely.
@@ -63,5 +57,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 - **Suggested fix**: guard on `Number(value) === 0` (and `Object.is(value, -0)`) instead of the string, and floor non-integers.
 
 ## Resolved
+
+### KI-002 · resolved on `v2` (derived on read, 2026-09-16) · `symbolsRemaining`/`daysRemaining`/`completion` are no longer stored; `progressToMax` (`lib/calculator.ts`) derives them per row in `collapsedRowLabels`, and Tools derives its clamp with `getRemainingToMax`. Every Overview row is fresh after a reload. (Was: `partialize` zeroed the cached fields and only Calculator's effect refilled them, for the selected symbol only.)
 
 ### KI-006 · resolved on `v2` (identity refactor, 2026-09-16) · `setMode` switches mode and selection atomically and Calculator/Tools use `currentSymbol.type`, so the swap transient cannot occur. (Was: the derived-field effect keyed on `swapped` while `selectedSymbol` lagged one effect behind.)

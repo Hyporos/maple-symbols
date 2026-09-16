@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { getOverflow, getRemainingToMax } from "./calculator";
+import { getOverflow, getRemainingToMax, progressToMax } from "./calculator";
 import { createInitialSymbols } from "./data";
+import { dayjs } from "./dayjs";
+import { WED } from "../test/helpers";
 
 const vj = (patch = {}) => ({ ...createInitialSymbols()[0], ...patch });
 const cernium = (patch = {}) => ({ ...createInitialSymbols()[6], ...patch });
@@ -15,6 +17,38 @@ describe("getRemainingToMax", () => {
 
   it("propagates NaN experience", () => {
     expect(getRemainingToMax(vj({ level: 3, experience: NaN }), 20)).toBeNaN();
+  });
+});
+
+describe("progressToMax", () => {
+  const NOW = dayjs(WED); // Wednesday 2026-09-16
+
+  it("derives symbols, days and completion date from level/exp/quests", () => {
+    expect(progressToMax(vj({ level: 1, experience: 0, daily: true }), NOW)).toEqual({
+      symbolsRemaining: 2679,
+      daysRemaining: 268,
+      completion: "2027-06-11",
+    });
+    expect(progressToMax(cernium({ level: 1, experience: 0, daily: true }), NOW)).toMatchObject({
+      symbolsRemaining: 4565,
+      daysRemaining: 229, // 20/day
+    });
+  });
+
+  it("is 0 days / today once max is covered, Infinity without quests, NaN when unset", () => {
+    expect(progressToMax(vj({ level: 20, experience: 0 }), NOW)).toEqual({
+      symbolsRemaining: 0,
+      daysRemaining: 0,
+      completion: "2026-09-16",
+    });
+    expect(progressToMax(vj({ level: 5, experience: 0 }), NOW)).toMatchObject({
+      daysRemaining: Infinity,
+      completion: "Invalid Date",
+    });
+    const unset = progressToMax(vj({ level: 5, experience: NaN, daily: true }), NOW);
+    expect(unset.symbolsRemaining).toBeNaN();
+    expect(unset.daysRemaining).toBeNaN();
+    expect(unset.completion).toBe("Invalid Date");
   });
 });
 

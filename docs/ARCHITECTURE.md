@@ -51,8 +51,8 @@ The title/description strings therefore live in **three places** that must agree
 
 Persistence details:
 
-- localStorage key `maple-symbols-v2`, `version: STORAGE_VERSION` (2).
-- `partialize` writes only `symbols`, with `daysRemaining`, `symbolsRemaining`, `completion` zeroed. It spreads every other field too, so static game data is persisted as well (KI-001).
+- localStorage key `maple-symbols-v2`, `version: STORAGE_VERSION` (3 on `v2`; 2 on `main`).
+- `partialize` writes only `symbols`, as they are. Static game data is persisted along with the user fields (KI-001).
 - `merge` converts JSON `null` back to `NaN` for `level` and `experience` (JSON cannot encode NaN) and adopts the persisted array wholesale.
 - `migrate` ignores the old state and returns fresh symbols: a version bump is a data wipe. Bump only when `SymbolData`'s shape changes and say so in the changelog.
 - Every `set` (including per-keystroke input handlers) serialises to localStorage through the middleware.
@@ -67,34 +67,33 @@ Field origins:
 
 - **Static (from JSON)**: `id, name, img, type, dailyName, weeklyName?, extraName?, dailySymbols, symbolsRequired, mesosRequired`.
 - **User-controlled**: `level, experience, daily, weekly?, extra?, locked`.
-- **Derived, cached in the store**: `daysRemaining, symbolsRemaining, completion` ("YYYY-MM-DD").
+- **Derived, never stored** (v2): symbols/days remaining and the completion date come from `progressToMax` (`lib/calculator.ts`) at read time; power from `usePower`.
 
 Identity: symbols are addressed by `id` (arcane 1–6, sacred 7–12; `updateSymbol(symbols, id, patch)`, `useSelectedSymbol()`); array position is only display order. `symbolsRequired[L]` and `mesosRequired[L]` are the cost of the L→L+1 step (`[0]` is 0, level 0 does not exist); Handbook rows print "Level N" with value `[N-1]`. `symbolsRequired[max]` is `undefined`, which several comparisons rely on (KI-004).
 
 Who computes what:
 
-| Value                                             | Where                                                                                                           | Stored?                               |
-| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| `symbolsRemaining`, `daysRemaining`, `completion` | the single effect in `Calculator.tsx` (remaining-to-max, `calculateDaysRemaining`, today + days)                | yes, for the `selectedId` symbol only |
-| days to next level, overflow level/exp            | `getOverflow` (`lib/calculator.ts`) via `useMemo` in `Calculator.tsx`                                           | no                                    |
-| Symbol Selector / Catalyst previews               | `selectorPreview` / `catalystPreview` / `formatPreview` (`lib/tools.ts`) via `useMemo`s in `Tools.tsx`          | no                                    |
-| Overview expanded-row target maths                | local `useMemo`s in `Overview.tsx`; strings from `collapsedRowLabels` / `targetPanelLabels` (`lib/overview.ts`) | no                                    |
-| Graph per-level dates and power series            | `buildDateSymbols` / `buildGraphSeries` / ticks / `dateToPower` (`lib/graph.ts`), threading `DayCountState`     | no                                    |
-| current power                                     | `usePower` (`src/hooks/usePower.ts`)                                                                            | no                                    |
+| Value                                          | Where                                                                                                             | Stored? |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------- |
+| symbols/days remaining to max, completion date | `progressToMax` (`lib/calculator.ts`), called per row by `collapsedRowLabels`; `getRemainingToMax` in `Tools.tsx` | no      |
+| days to next level, overflow level/exp         | `getOverflow` (`lib/calculator.ts`) via `useMemo` in `Calculator.tsx`                                             | no      |
+| Symbol Selector / Catalyst previews            | `selectorPreview` / `catalystPreview` / `formatPreview` (`lib/tools.ts`) via `useMemo`s in `Tools.tsx`            | no      |
+| Overview expanded-row target maths             | local `useMemo`s in `Overview.tsx`; strings from `collapsedRowLabels` / `targetPanelLabels` (`lib/overview.ts`)   | no      |
+| Graph per-level dates and power series         | `buildDateSymbols` / `buildGraphSeries` / ticks / `dateToPower` (`lib/graph.ts`), threading `DayCountState`       | no      |
+| current power                                  | `usePower` (`src/hooks/usePower.ts`)                                                                              | no      |
 
-Consumers of the stored derived fields are Overview's collapsed rows and Tools' selector-count clamp plus its Apply handler (`selectorCount < symbolsRemaining ? selectorExp : 0`); Graph never reads them. Note the two Handbook tables have different sources: `ExpTable` reads `symbols.json` directly, `CostTable` reads the persisted `symbol.mesosRequired`.
+Tools' selector-count clamp and its Apply handler (`selectorCount < remainingToMax ? selectorExp : 0`) derive the remaining count locally; nothing reads a cached value. Note the two Handbook tables have different sources: `ExpTable` reads `symbols.json` directly, `CostTable` reads the persisted `symbol.mesosRequired`.
 
 ## 5. Effects that write to the store or the document
 
-| Where                     | Trigger deps                                                | Writes                                                 | Loop guard                                                                                                                               |
-| ------------------------- | ----------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `Calculator.tsx` (main)   | `daily, extra, weekly, level, experience, mode, selectedId` | derived fields for the selected symbol                 | two `Object.is` compares (NaN-safe) plus `!==` on `completion`; reads `useAppStore.getState().symbols`; `symbols` deliberately not a dep |
-| `Calculator.tsx` (clamp)  | `locked, readyForUpgrade, nextExperience, selectedId`       | `experience = nextExperience` when ready and locked    | none beyond the condition; would loop if `symbols` were added to deps                                                                    |
-| `Calculator.tsx` (relock) | `experience, level, locked, mode, selectedId`               | `locked = true` at max level with 0 exp                | self-terminating                                                                                                                         |
-| `SEO.tsx` (layout effect) | title/description/url/image/imageAlt                        | `document.title`, meta/link attributes, JSON-LD script | n/a                                                                                                                                      |
-| `RouterContext.tsx`       | mount                                                       | `popstate` listener                                    | cleanup                                                                                                                                  |
-| `BreakpointContext.tsx`   | mount (×2)                                                  | `matchMedia` change listeners                          | cleanup                                                                                                                                  |
-| `App.tsx`                 | mount                                                       | `alert()` on Samsung Internet                          | mount-only                                                                                                                               |
+| Where                     | Trigger deps                                          | Writes                                                 | Loop guard                                                            |
+| ------------------------- | ----------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------- |
+| `Calculator.tsx` (clamp)  | `locked, readyForUpgrade, nextExperience, selectedId` | `experience = nextExperience` when ready and locked    | none beyond the condition; would loop if `symbols` were added to deps |
+| `Calculator.tsx` (relock) | `experience, level, locked, mode, selectedId`         | `locked = true` at max level with 0 exp                | self-terminating                                                      |
+| `SEO.tsx` (layout effect) | title/description/url/image/imageAlt                  | `document.title`, meta/link attributes, JSON-LD script | n/a                                                                   |
+| `RouterContext.tsx`       | mount                                                 | `popstate` listener                                    | cleanup                                                               |
+| `BreakpointContext.tsx`   | mount (×2)                                            | `matchMedia` change listeners                          | cleanup                                                               |
+| `App.tsx`                 | mount                                                 | `alert()` on Samsung Internet                          | mount-only                                                            |
 
 Overview has three effects (on `mode`; on `targetId`/`selectedNone`; on the target symbol's `level`/`mode`) and Graph two (`mode`, `currentPower`) that only reset local state. Because `react-hooks/exhaustive-deps` is off (see §7), the dependency arrays above are hand-curated and intentionally incomplete; treat them as part of the design, not as omissions.
 
@@ -118,7 +117,7 @@ Each of these looks like something to "fix". Don't, without a decision.
 - **D2 Zustand over Redux + RTK.** One small store, per-field selectors, `persist` middleware for the one thing that needs saving. `partialize`/`merge`/`migrate` are where all persistence policy lives.
 - **D3 NaN as "unset".** Keeps `level`/`experience` numeric everywhere; the price is the `null → NaN` rehydration and NaN-safe comparisons (`Object.is`). Don't switch to `null | number` piecemeal.
 - **D4 Exactly two `matchMedia` listeners.** `BreakpointContext` owns them; `useBreakpoint` is a re-export so components never register their own. Breakpoints (767/1149 px) mirror Tailwind's `md` and the custom `laptop` screen, which must be kept in sync by hand.
-- **D5 One derived-fields effect.** Three effects plus a memo used to cascade re-renders through intermediate store writes and looped on `NaN !== NaN`. The single effect compares with `Object.is`, reads `useAppStore.getState()`, and excludes `symbols` from deps to break the feedback path. It only covers the selected symbol (KI-002 is the consequence).
+- **D5 Nothing derived is stored (v2).** 1.x cached `daysRemaining`/`symbolsRemaining`/`completion` in the store, written by one effect in Calculator for the selected symbol only (KI-002) and guarded with `Object.is` against a `NaN !== NaN` loop. On `v2` those fields are gone: `progressToMax` derives them wherever they are read. The only store-writing effects left are Calculator's clamp and relock; keep it that way and derive new values in `src/lib`.
 - **D6 One dayjs instance.** `dayjs.extend()` mutates a global; `src/lib/dayjs.ts` extends the plugins once and everything imports from there, so no file depends on load order.
 - **D7 Lazy calculator sections + vendor chunks.** Handbook/Extras are small and eager; the four calculator sections and recharts are the heavy part.
 - **D8 Head metadata set in `index.html` and again in `SEO.tsx`.** The inline script covers the pre-React window; `useLayoutEffect` avoids a visible title flicker on client navigation. Duplication is the accepted cost, policed by a test.
@@ -134,6 +133,6 @@ Each of these looks like something to "fix". Don't, without a decision.
 
 **Adding a symbol**: append to the END of `symbols.json` (never reorder) → add `public/symbols/<name>-symbol.webp` (a new filename, so the 1-year cache is not an issue) → `Selector.tsx`: `BAR_POSITIONS` has six slots per type (80 px pitch); a seventh symbol of a type needs a seventh translate class, and the mobile grid (`w-[151px]` = three 35 px icons per row beside a `h-[138px]` divider) wraps to a third row → if the new symbol should be the default for its type, update `DEFAULT_SELECTION` in `store.ts` → decide how returning users get the new symbol (KI-001: the persisted array wins, so they will not see it without a `STORAGE_VERSION` bump) → update `src/lib/data.test.ts` (pins 12 symbols, ids 1–12, arcane 0–5 / sacred 6–11, weekly only on 0–5) and `src/components/Selector.test.tsx` (expects six `Lv. 0` buttons per type) → update the Domain cheat sheet in AGENTS.md.
 
-**Adding a quest toggle** (e.g. a `bonus` flag): `types.ts` (`bonus?`, `bonusName?`) → `data.ts` `SymbolDefinition` and the conditional spread in `createInitialSymbols` → `symbols.json` name field per symbol → `getDailySymbols` (rate effect) → `Calculator.tsx`: the toggle button in the quest row (DESIGN_SYSTEM §6) **and** the new flag in the derived-fields effect's dependency list → `Overview.tsx` `targetDays` memo deps → `src/lib/data.test.ts`, `Calculator.test.tsx` → the `STORAGE_VERSION` decision (a new persisted field rehydrates as `undefined` for existing users, which the `typeof x === "undefined" && "hidden"` pattern treats as "no such quest"; decide whether that is acceptable).
+**Adding a quest toggle** (e.g. a `bonus` flag): `types.ts` (`bonus?`, `bonusName?`) → `data.ts` `SymbolDefinition` and the conditional spread in `createInitialSymbols` → `symbols.json` name field per symbol → `getDailySymbols` (rate effect) → `Calculator.tsx`: the toggle button in the quest row (DESIGN_SYSTEM §6) → `Overview.tsx` `targetDays` memo deps → `src/lib/data.test.ts`, `Calculator.test.tsx` → the `STORAGE_VERSION` decision (a new persisted field rehydrates as `undefined` for existing users, which the `typeof x === "undefined" && "hidden"` pattern treats as "no such quest"; decide whether that is acceptable).
 
 **Changing `SymbolData`**: update `types.ts`, `createInitialSymbols`, `partialize` (should the field persist?), `merge` (does it need `null → NaN`?), bump `STORAGE_VERSION` and accept the wipe or write a real migration, then `store.test.ts` and `src/lib/data.test.ts` (pins the initial shape and the optional-field rules).

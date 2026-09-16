@@ -7,32 +7,23 @@ const KEY = "maple-symbols-v2";
 const readStorage = () => JSON.parse(window.localStorage.getItem(KEY) ?? "null");
 
 describe("store persistence", () => {
-  it("persists only `symbols`, zeroes derived fields, and serialises NaN as null", () => {
+  it("persists only `symbols` (no derived values) and serialises NaN as null", () => {
     useAppStore.setState({
       mode: "sacred",
-      symbols: updateSymbol(createInitialSymbols(), 1, {
-        level: 5,
-        daysRemaining: 7,
-        symbolsRemaining: 99,
-        completion: "2026-01-01",
-      }),
+      symbols: updateSymbol(createInitialSymbols(), 1, { level: 5 }),
     });
 
     const saved = readStorage();
-    expect(saved.version).toBe(2);
+    expect(saved.version).toBe(3);
     expect(Object.keys(saved.state)).toEqual(["symbols"]);
-    expect(saved.state.symbols[0]).toMatchObject({
-      level: 5,
-      daysRemaining: 0,
-      symbolsRemaining: 0,
-      completion: "",
-    });
+    expect(saved.state.symbols[0]).toMatchObject({ level: 5, locked: true });
+    expect(saved.state.symbols[0]).not.toHaveProperty("symbolsRemaining");
     expect(saved.state.symbols[1].level).toBeNull();
   });
 
   it("rehydrates null level/experience back to NaN and adopts the persisted array wholesale", async () => {
     const one = { ...createInitialSymbols()[0], level: null, experience: null };
-    window.localStorage.setItem(KEY, JSON.stringify({ state: { symbols: [one] }, version: 2 }));
+    window.localStorage.setItem(KEY, JSON.stringify({ state: { symbols: [one] }, version: 3 }));
 
     await useAppStore.persist.rehydrate();
 
@@ -47,7 +38,7 @@ describe("store persistence", () => {
     const levelled = { ...createInitialSymbols()[0], level: 9, experience: 4 };
     window.localStorage.setItem(
       KEY,
-      JSON.stringify({ state: { symbols: [levelled] }, version: 1 })
+      JSON.stringify({ state: { symbols: [levelled] }, version: 2 })
     );
 
     await useAppStore.persist.rehydrate();

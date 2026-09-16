@@ -3,6 +3,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { FaArrowRight } from "react-icons/fa6";
 import { cn, isValid, updateSymbol } from "../../lib/utils";
 import { catalystPreview, formatPreview, selectorPreview } from "../../lib/tools";
+import { getRemainingToMax } from "../../lib/calculator";
 import { clampNumberInput } from "../../lib/inputs";
 import { CATALYST_RETENTION, maxLevelFor } from "../../lib/game";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
@@ -26,6 +27,8 @@ const Tools = () => {
   const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
 
   const disabled = isNaN(currentSymbol.level);
+  // Symbols still needed to max: the selector count's ceiling (derived, never stored).
+  const remainingToMax = getRemainingToMax(currentSymbol, maxLevelFor(currentSymbol.type));
 
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
@@ -157,7 +160,7 @@ const Tools = () => {
                       setSelectorCount(
                         isNaN(currentSymbol.experience)
                           ? NaN
-                          : clampNumberInput(e.target.value, currentSymbol.symbolsRemaining)
+                          : clampNumberInput(e.target.value, remainingToMax)
                       )
                     }
                   ></input>
@@ -222,8 +225,7 @@ const Tools = () => {
                     setSymbols(
                       updateSymbol(symbols, selectedId, {
                         level: selectorLevel,
-                        experience:
-                          selectorCount < currentSymbol.symbolsRemaining ? selectorExp : 0,
+                        experience: selectorCount < remainingToMax ? selectorExp : 0,
                       })
                     );
                     setSelectorCount(NaN);

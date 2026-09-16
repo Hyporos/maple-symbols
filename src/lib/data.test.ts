@@ -12,17 +12,12 @@ describe("createInitialSymbols", () => {
     expect(symbols.slice(6).every((s) => s.type === "sacred")).toBe(true);
   });
 
-  it("starts every symbol unset (NaN level/exp), quests off, cap locked, derived fields zeroed", () => {
+  it("starts every symbol unset (NaN level/exp), quests off, cap locked, nothing derived", () => {
     for (const s of symbols) {
       expect(s.level).toBeNaN();
       expect(s.experience).toBeNaN();
-      expect(s).toMatchObject({
-        daily: false,
-        locked: true,
-        daysRemaining: 0,
-        symbolsRemaining: 0,
-        completion: "",
-      });
+      expect(s).toMatchObject({ daily: false, locked: true });
+      expect(s).not.toHaveProperty("symbolsRemaining");
     }
   });
 
