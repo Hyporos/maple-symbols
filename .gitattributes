@@ -1,2 +1,3 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Auto detect text files and perform LF normalization; force LF in the working tree
+# (Prettier demands LF; Windows core.autocrlf=true otherwise checks out CRLF and lint fails)
+* text=auto eol=lf

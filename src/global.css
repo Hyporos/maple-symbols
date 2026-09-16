@@ -3,68 +3,65 @@
 @tailwind utilities;
 
 @layer utilities {
+  /* Firefox */
 
-    /* Firefox */
+  input[type="number"] {
+    appearance: textfield;
+  }
 
-    input[type="number"] {
-        appearance: textfield;
-    }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #444444 #212121;
+  }
 
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: #444444 #212121;
-    }
+  /* Chrome, Edge, Safari */
 
-    /* Chrome, Edge, Safari */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        appearance: none;
-        margin: 0;
-    }
+  *::-webkit-scrollbar {
+    width: 15px;
+  }
 
-    *::-webkit-scrollbar {
-        width: 15px;
-    }
+  *::-webkit-scrollbar-track {
+    background: #212121;
+    border-radius: 5px;
+  }
 
-    *::-webkit-scrollbar-track {
-        background: #212121;
-        border-radius: 5px;
-    }
-
-    *::-webkit-scrollbar-thumb {
-        background-color: #444444;
-        border-radius: 14px;
-        border: 3px solid #212121;
-    }
-
+  *::-webkit-scrollbar-thumb {
+    background-color: #444444;
+    border-radius: 14px;
+    border: 3px solid #212121;
+  }
 }
 
 @layer base {
-    body {
-        @apply font-['Maven_Pro'] text-secondary tracking-wide bg-gradient-to-t from-dark to-[#202020] overflow-x-hidden
-    }
+  body {
+    @apply overflow-x-hidden bg-gradient-to-t from-dark to-[#202020] font-['Maven_Pro'] tracking-wide text-secondary;
+  }
 
-    button,
-    input, 
-    .focus {
-        @apply rounded-lg focus-visible:outline focus:outline-2 focus:outline-accent focus-visible:border-0 
-    }
+  button,
+  input,
+  .focus {
+    @apply rounded-lg focus:outline-2 focus:outline-accent focus-visible:border-0 focus-visible:outline;
+  }
 
-    input::placeholder {
-        @apply text-tertiary hover:text-secondary focus:text-secondary transition-all 
-     }
-    
-    span {
-        @apply text-accent
-    }
-    
-    .tooltip {
-        @apply bg-[#111111] px-2.5 py-1.5 text-center text-xs md:text-sm rounded-lg shadow-input
-    }
+  input::placeholder {
+    @apply text-tertiary transition-all hover:text-secondary focus:text-secondary;
+  }
 
-    img {
-        @apply select-none pointer-events-none
-    }
-    
+  span {
+    @apply text-accent;
+  }
+
+  .tooltip {
+    @apply rounded-lg bg-[#111111] px-2.5 py-1.5 text-center text-xs shadow-input md:text-sm;
+  }
+
+  img {
+    @apply pointer-events-none select-none;
+  }
 }
