@@ -21,30 +21,31 @@ const CreditText = ({ label, img, link, twitch, youtube, x }: CreditTextProps) =
       <a
         href={link}
         target="_blank"
+        rel="noopener"
         className={cn(
           "flex items-center justify-center gap-2",
           link && "text-accent hover:text-white"
         )}
       >
-        <img src={img} className="w-4 md:w-[18px]" />
+        <img src={img} alt="" width={18} height={18} className="w-4 md:w-[18px]" />
         <p className="text-xs transition-all md:text-sm">{label}</p>
       </a>
 
       {/* SOCIAL MEDIA */}
       {twitch && (
-        <a href={twitch} target="_blank">
+        <a href={twitch} target="_blank" rel="noopener">
           <FaTwitch className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-[#6441a5] md:h-4 md:w-4" />
         </a>
       )}
 
       {youtube && (
-        <a href={youtube} target="_blank">
+        <a href={youtube} target="_blank" rel="noopener">
           <FaYoutube className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-[#e00000] md:h-4 md:w-4" />
         </a>
       )}
 
       {x && (
-        <a href={x} target="_blank">
+        <a href={x} target="_blank" rel="noopener">
           <FaXTwitter className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-white md:h-4 md:w-4" />
         </a>
       )}

@@ -20,7 +20,12 @@ const CostTable = () => {
           {/* HEADER */}
           <div className="flex justify-between">
             <div className="flex items-center gap-5 md:gap-6">
-              <img src={symbol.img} width={!isMobile ? 32.5 : 30} className="scale-110" />
+              <img
+                src={symbol.img}
+                alt={symbol.name}
+                width={!isMobile ? 32.5 : 30}
+                className="scale-110"
+              />
               <div className="h-full w-px bg-white/10" aria-hidden="true" />
               <h1
                 className={cn(
@@ -75,7 +80,11 @@ const CostTable = () => {
                       <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
                         <div className="flex items-center justify-center gap-2">
                           {currentLevel && (
-                            <img src={symbol.img} className="h-3 w-3 md:h-4 md:w-4" />
+                            <img
+                              src={symbol.img}
+                              alt={`${symbol.name}: current level`}
+                              className="h-3 w-3 md:h-4 md:w-4"
+                            />
                           )}
                           {index + 1}
                         </div>

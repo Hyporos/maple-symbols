@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { OG_IMAGE, routeFor, SITE_NAME, SITE_URL, urlFor } from "../lib/routes";
+import { OG_IMAGE, routeFor, SITE_NAME, urlFor } from "../lib/routes";
 
 const ROOT = routeFor("/");
 const ROOT_URL = urlFor("/");
@@ -75,8 +75,7 @@ function SEO({
         "@type": "WebApplication",
         name: SITE_NAME,
         url: ROOT_URL,
-        description:
-          "MapleStory Arcane and Sacred Symbol calculator. Track progress, estimate completion, and plan your leveling strategy.",
+        description: ROOT.description,
         applicationCategory: "GameApplication",
         operatingSystem: "Web",
         inLanguage: "en",
@@ -85,19 +84,13 @@ function SEO({
         author: { "@type": "Person", name: "Hyporos" },
         about: { "@type": "VideoGame", name: "MapleStory", genre: "MMORPG", gamePlatform: "PC" },
       };
+      // WebSite carries the site name for the brand line in results. No potentialAction:
+      // Google retired the sitelinks search box in Nov 2024 and the app has no search (SEO-13).
       const webSite = {
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: SITE_NAME,
         url: ROOT_URL,
-        potentialAction: {
-          "@type": "SearchAction",
-          target: {
-            "@type": "EntryPoint",
-            urlTemplate: `${SITE_URL}/?q={search_term_string}`,
-          },
-          "query-input": "required name=search_term_string",
-        },
       };
       setOrCreateLdJson([webApp, webSite, webPage]);
     } else {

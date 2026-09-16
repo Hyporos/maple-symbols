@@ -4,12 +4,14 @@
 // rendered <head> at every route against it.
 // ---------------------------------------------------------------------------
 
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import App from "../App";
 import { RouterProvider } from "../contexts/RouterContext";
 import { applyToIndexHtml, pageMap, ROUTES, sitemapXml, urlFor } from "../lib/routes";
+import { changelogEntries } from "../lib/changelog";
+import { dayjs } from "../lib/dayjs";
 import { seedHeadMeta } from "./helpers";
 
 const source = readFileSync("index.html", "utf8");
@@ -75,7 +77,108 @@ describe("rendering each route writes its metadata into <head>", () => {
       expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
         urlFor(path)
       );
+      // SEO-8: every page names itself in a heading. Tab labels and button text are not headings.
+      expect(document.querySelectorAll("h1").length).toBeGreaterThan(0);
     },
     20_000
   );
+});
+
+// ---------------------------------------------------------------------------
+// The rules in docs/SEO.md that can be checked without a browser. Each assertion
+// cites the rule it enforces; a rule with no assertion is marked "[test: todo]"
+// in that doc, so do not read silence here as coverage.
+// ---------------------------------------------------------------------------
+
+describe("titles and descriptions follow docs/SEO.md", () => {
+  it("SEO-6: titles are unique, end with the brand, and fit the ~60 character display limit", () => {
+    const titles = ROUTES.map((r) => r.title);
+    expect(new Set(titles).size).toBe(titles.length);
+    for (const title of titles) {
+      expect(title.length).toBeLessThanOrEqual(60);
+      expect(title.endsWith("| Maple Symbols")).toBe(true);
+    }
+  });
+
+  it("SEO-7: descriptions are unique, at most 155 characters, and free of superlatives", () => {
+    const descriptions = ROUTES.map((r) => r.description);
+    expect(new Set(descriptions).size).toBe(descriptions.length);
+    for (const description of descriptions) {
+      expect(description.length).toBeLessThanOrEqual(155);
+      expect(description).not.toMatch(/\b(ultimate|best|greatest|#1)\b/i);
+    }
+  });
+
+  it("SEO-1/SEO-5: every route has a dated lastmod and a path that starts with /", () => {
+    for (const route of ROUTES) {
+      expect(route.path.startsWith("/")).toBe(true);
+      expect(route.sitemap.lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+});
+
+describe("source-level SEO rules", () => {
+  const sources = readdirSync("src", { recursive: true, encoding: "utf8" })
+    .filter((f) => /\.tsx$/.test(f) && !/\.test\.tsx$/.test(f))
+    .map((f) => [`src/${f}`.replace(/\\\\/g, "/"), readFileSync(`src/${f}`, "utf8")] as const);
+
+  it("SEO-15: every <img> has an alt attribute", () => {
+    const offenders: string[] = [];
+    for (const [file, code] of sources) {
+      for (const match of code.matchAll(/<img\b[\s\S]*?\/?>/g)) {
+        if (!/\salt[=\s]/.test(match[0])) offenders.push(`${file}: ${match[0].slice(0, 60)}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('SEO-22: every target="_blank" link carries a rel', () => {
+    const offenders: string[] = [];
+    for (const [file, code] of sources) {
+      for (const match of code.matchAll(/<a\b[\s\S]*?>/g)) {
+        if (match[0].includes('target="_blank"') && !/\srel=/.test(match[0])) {
+          offenders.push(`${file}: ${match[0].slice(0, 60)}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("SEO-1: no page title or description string lives outside src/lib/routes.ts", () => {
+    const strings = ROUTES.flatMap((r) => [r.title, r.description]);
+    for (const [file, code] of sources) {
+      if (file.endsWith("src/lib/routes.ts")) continue;
+      for (const value of strings) expect(code).not.toContain(value);
+    }
+  });
+
+  it("SEO-13: no SearchAction is emitted (no search box exists)", () => {
+    expect(readFileSync("src/components/SEO.tsx", "utf8")).not.toContain("SearchAction");
+  });
+});
+
+describe("static files follow docs/SEO.md", () => {
+  it("SEO-11: index.html ships no keywords meta, and no redundant robots meta", () => {
+    expect(source).not.toMatch(/<meta name="keywords"/);
+    expect(source).not.toMatch(/<meta name="robots"/);
+  });
+
+  it("SEO-2: vercel.json disables trailing slashes", () => {
+    const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
+    expect(vercel.trailingSlash).toBe(false);
+  });
+
+  it("SEO-4: robots.txt allows everything and names the sitemap", () => {
+    const robots = readFileSync("public/robots.txt", "utf8");
+    expect(robots).toMatch(/User-agent: \*/);
+    expect(robots).not.toMatch(/Disallow: \/\s*$/m);
+    expect(robots).toContain(`${urlFor("/")}sitemap.xml`.replace("//sitemap", "/sitemap"));
+  });
+
+  it("SEO-12: every changelog date parses to a real calendar date", () => {
+    for (const entry of changelogEntries) {
+      expect(dayjs(entry.date).isValid()).toBe(true);
+      expect(dayjs(entry.date).format("YYYY-MM-DD")).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
 });

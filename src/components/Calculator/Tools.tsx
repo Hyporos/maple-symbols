@@ -80,6 +80,7 @@ const Tools = () => {
                     ? "/symbols/arcane-selector.webp"
                     : "/symbols/sacred-selector.webp"
                 }`}
+                alt={`${mode === "arcane" ? "Arcane" : "Sacred"} Symbol Selector`}
                 width={!isMobile ? 33 : 30}
               />
               <p className="text-sm md:text-base">
@@ -105,6 +106,7 @@ const Tools = () => {
                         ? "/symbols/arcane-catalyst.webp"
                         : "/symbols/sacred-catalyst.webp"
                     }`}
+                    alt={`${mode === "arcane" ? "Arcane" : "Sacred"} Catalyst`}
                     width={!isMobile ? 33 : 30}
                   />
                   <p className="text-sm md:text-base">
@@ -143,7 +145,11 @@ const Tools = () => {
                 }`}
               >
                 <div className="flex items-center space-x-10 md:w-1/4 md:space-x-4">
-                  <img src={currentSymbol.img} width={!isMobile ? 33 : 30}></img>
+                  <img
+                    src={currentSymbol.img}
+                    alt={currentSymbol.name}
+                    width={!isMobile ? 33 : 30}
+                  ></img>
                   <input
                     type="number"
                     placeholder="Count"
@@ -252,7 +258,12 @@ const Tools = () => {
             }`}
           >
             <div className="flex items-center space-x-4 md:w-[70px]">
-              <img src={currentSymbol.img} width={!isMobile ? 33 : 30} className="md:p-0"></img>
+              <img
+                src={currentSymbol.img}
+                alt={currentSymbol.name}
+                width={!isMobile ? 33 : 30}
+                className="md:p-0"
+              ></img>
               <p className="text-sm md:text-base">{isMobile && currentSymbol.name}</p>
             </div>
             <div className="flex items-center justify-around md:w-1/3">

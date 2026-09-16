@@ -1,97 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/main/favicon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/main/favicon.png" />
-  <link rel="manifest" href="/manifest.webmanifest" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- Primary Meta Tags (the double-underscore tokens are filled from src/lib/routes.ts at build time and in dev) -->
-  <title>__ROOT_TITLE__</title>
-  <meta name="description" content="__ROOT_DESCRIPTION__" />
-  <meta name="keywords" content="maplestory, arcane symbols, sacred symbols, grand symbols, grand sacred symbols, symbol calculator, vanishing journey, chu chu island, lachelein, arcana, morass, esfera, cernium, hotel arcus, odium, shangri-la, arteria, carcion, tallahart, geardrak, symbol level up, mesos cost, daily quest" />
-  <meta name="author" content="Hyporos" />
-  <meta name="robots" content="index, follow" />
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="__ROOT_URL__" />
-  <meta property="og:site_name" content="Maple Symbols" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:title" content="__ROOT_TITLE__" />
-  <meta property="og:description" content="__ROOT_DESCRIPTION__" />
-  <meta property="og:image" content="__OG_IMAGE__" />
-  <meta property="og:image:alt" content="__OG_IMAGE_ALT__" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  
-  <!-- Twitter / X -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="__ROOT_URL__" />
-  <meta name="twitter:title" content="__ROOT_TITLE__" />
-  <meta name="twitter:description" content="__ROOT_DESCRIPTION__" />
-  <meta name="twitter:image" content="__OG_IMAGE__" />
-  <meta name="twitter:image:alt" content="__OG_IMAGE_ALT__" />
-  
-  <!-- Additional Meta Tags -->
-  <meta name="theme-color" content="#b18bd0" />
-  <meta name="msapplication-TileColor" content="#b18bd0" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Maple Symbols" />
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="__ROOT_URL__" />
+    <!-- Primary Meta Tags (the double-underscore tokens are filled from src/lib/routes.ts at build time and in dev) -->
+    <title>__ROOT_TITLE__</title>
+    <meta name="description" content="__ROOT_DESCRIPTION__" />
+    <meta name="author" content="Hyporos" />
 
-  <script>
-    (() => {
-      const path = window.location.pathname.replace(/\/+$/, "") || "/";
-      // Filled from src/lib/routes.ts by the routes plugin in vite.config.ts.
-      const pageMap = __PAGE_MAP__;
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="__ROOT_URL__" />
+    <meta property="og:site_name" content="Maple Symbols" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="__ROOT_TITLE__" />
+    <meta property="og:description" content="__ROOT_DESCRIPTION__" />
+    <meta property="og:image" content="__OG_IMAGE__" />
+    <meta property="og:image:alt" content="__OG_IMAGE_ALT__" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
-      const page = pageMap[path] || pageMap["/"];
-      document.title = page.title;
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="__ROOT_URL__" />
+    <meta name="twitter:title" content="__ROOT_TITLE__" />
+    <meta name="twitter:description" content="__ROOT_DESCRIPTION__" />
+    <meta name="twitter:image" content="__OG_IMAGE__" />
+    <meta name="twitter:image:alt" content="__OG_IMAGE_ALT__" />
 
-      const setMeta = (selector, attribute, value) => {
-        const element = document.querySelector(selector);
-        if (element) {
-          element.setAttribute(attribute, value);
-        }
-      };
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#b18bd0" />
+    <meta name="msapplication-TileColor" content="#b18bd0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Maple Symbols" />
 
-      setMeta('meta[name="description"]', "content", page.description);
-      setMeta('meta[property="og:url"]', "content", page.url);
-      setMeta('meta[property="og:title"]', "content", page.title);
-      setMeta('meta[property="og:description"]', "content", page.description);
-      setMeta('meta[name="twitter:url"]', "content", page.url);
-      setMeta('meta[name="twitter:title"]', "content", page.title);
-      setMeta('meta[name="twitter:description"]', "content", page.description);
-      setMeta('link[rel="canonical"]', "href", page.url);
-    })();
-  </script>
+    <!-- Canonical URL -->
+    <link rel="canonical" href="__ROOT_URL__" />
 
-  <!-- Umami Analytics -->
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="00af1504-752a-470f-98ed-5a76e3d7b286"></script>
-  
-  <!-- Additional Favicon Sizes -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/main/favicon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/main/favicon.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/main/favicon.png" />
-  
-  <meta name="darkreader-lock">
+    <script>
+      (() => {
+        const path = window.location.pathname.replace(/\/+$/, "") || "/";
+        // Filled from src/lib/routes.ts by the routes plugin in vite.config.ts.
+        const pageMap = __PAGE_MAP__;
 
-  <!-- Preconnect + preload Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;600;900&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;600;900&display=swap" />
-</head>
+        const page = pageMap[path] || pageMap["/"];
+        document.title = page.title;
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
+        const setMeta = (selector, attribute, value) => {
+          const element = document.querySelector(selector);
+          if (element) {
+            element.setAttribute(attribute, value);
+          }
+        };
 
+        setMeta('meta[name="description"]', "content", page.description);
+        setMeta('meta[property="og:url"]', "content", page.url);
+        setMeta('meta[property="og:title"]', "content", page.title);
+        setMeta('meta[property="og:description"]', "content", page.description);
+        setMeta('meta[name="twitter:url"]', "content", page.url);
+        setMeta('meta[name="twitter:title"]', "content", page.title);
+        setMeta('meta[name="twitter:description"]', "content", page.description);
+        setMeta('link[rel="canonical"]', "href", page.url);
+      })();
+    </script>
+
+    <!-- Umami Analytics -->
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="00af1504-752a-470f-98ed-5a76e3d7b286"
+    ></script>
+
+    <!-- Additional Favicon Sizes -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/main/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/main/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/main/favicon.png" />
+
+    <meta name="darkreader-lock" />
+
+    <!-- Preconnect + preload Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;600;900&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;600;900&display=swap"
+    />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

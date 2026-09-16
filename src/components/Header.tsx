@@ -38,11 +38,23 @@ const Header = () => {
           <div className={cn(!isTablet && "w-1/3")}>
             {!isMobile ? (
               <a href="/" aria-label="Go to calculator" onClick={(e) => handleNav(e, "/")}>
-                <img src="/main/logo-lg.webp" className="cursor-pointer" width={180} />
+                <img
+                  src="/main/logo-lg.webp"
+                  alt="Maple Symbols"
+                  className="cursor-pointer"
+                  width={180}
+                  height={48}
+                />
               </a>
             ) : (
               <a href="/" aria-label="Go to calculator" onClick={(e) => handleNav(e, "/")}>
-                <img src="/main/logo-sm.webp" className="cursor-pointer" width={48} />
+                <img
+                  src="/main/logo-sm.webp"
+                  alt="Maple Symbols"
+                  className="cursor-pointer"
+                  width={48}
+                  height={48}
+                />
               </a>
             )}
           </div>

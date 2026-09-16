@@ -33,7 +33,7 @@ export const ROUTES: readonly Route[] = [
     path: "/",
     title: "MapleStory Arcane & Sacred Symbol Calculator | Maple Symbols",
     description:
-      "The ultimate MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quest progress, estimate completion dates, and plan your symbol leveling strategy.",
+      "MapleStory symbol calculator for Arcane and Sacred symbols. Track daily and weekly quests, estimate completion dates, and plan your leveling.",
     nav: { label: "Calculator" },
     sitemap: { lastmod: "2026-03-11", changefreq: "weekly", priority: 1.0 },
   },
@@ -56,7 +56,8 @@ export const ROUTES: readonly Route[] = [
   {
     path: "/credits",
     title: "Credits | Maple Symbols",
-    description: "Attributions and acknowledgements for Maple Symbols.",
+    description:
+      "Credits for Maple Symbols: the resources, creators and community members behind the MapleStory Arcane and Sacred symbol calculator.",
     sitemap: { lastmod: "2025-08-22", changefreq: "yearly", priority: 0.4 },
   },
 ];

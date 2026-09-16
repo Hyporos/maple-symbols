@@ -23,6 +23,7 @@ const RatioTable = () => {
           <div className="flex items-center gap-5 md:gap-6">
             <img
               src={`/symbols/empty-${mode}.webp`}
+              alt=""
               width={!isMobile ? 32.5 : 30}
               className="scale-110"
             />

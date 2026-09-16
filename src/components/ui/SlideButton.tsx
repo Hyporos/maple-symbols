@@ -20,7 +20,7 @@ const SlideButton = ({ label, selectedInfo, setSelectedInfo, targetInfo }: Slide
       )}
       onClick={() => setSelectedInfo(targetInfo)}
     >
-      <h1 className="text-sm md:text-base">{label}</h1>
+      <span className="text-sm md:text-base">{label}</span>
       <div
         className={cn(
           "absolute right-0 bottom-0 left-0 mx-auto h-px w-0 bg-accent transition-all",

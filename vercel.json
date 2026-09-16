@@ -1,5 +1,6 @@
 {
   "buildCommand": "pnpm build",
+  "trailingSlash": false,
   "outputDirectory": "dist",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
