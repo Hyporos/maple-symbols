@@ -18,10 +18,18 @@ import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
 import { track, trackOnce } from "../../lib/analytics";
 import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
-import { formatNumber, plural } from "../../lib/format";
+import { formatNumber } from "../../lib/format";
+import { useMessages } from "../../i18n";
+import Message from "../../i18n/Message";
+
+// Class-specific stat gains per symbol level, shown in the main stat tooltip.
+const DEMON_AVENGER_HP = { arcane: 2100, sacred: 4200 } as const;
+const XENON_ALL_STAT = { arcane: 48, sacred: 96 } as const;
 
 const Calculator = () => {
   /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */
+
+  const m = useMessages().calculator;
 
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
@@ -99,7 +107,7 @@ const Calculator = () => {
                 {/* LEVEL INPUT */}
                 <input
                   type="number"
-                  placeholder="Level"
+                  placeholder={m.levelPlaceholder}
                   value={isNaN(currentSymbol.level) ? "" : currentSymbol.level}
                   className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
@@ -137,7 +145,7 @@ const Calculator = () => {
                         <FiUnlock
                           size={18}
                           color="#718571"
-                          aria-label="Unlock experience cap"
+                          aria-label={m.unlockCap}
                           onClick={() => {
                             track("cap_unlocked");
                             setSymbols(
@@ -157,7 +165,7 @@ const Calculator = () => {
                         <FiLock
                           size={18}
                           color="#857871"
-                          aria-label="Lock experience cap"
+                          aria-label={m.lockCap}
                           onClick={() =>
                             setSymbols(
                               updateSymbol(symbols, selectedId, {
@@ -169,7 +177,9 @@ const Calculator = () => {
                         />
                       </TooltipTrigger>
                       <TooltipContent className="tooltip">
-                        <span>{currentSymbol.locked ? "Unlock" : "Lock"}</span> experience cap
+                        <Message
+                          text={currentSymbol.locked ? m.unlockCapTooltip : m.lockCapTooltip}
+                        />
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -180,7 +190,7 @@ const Calculator = () => {
                   >
                     <FiCheck
                       size={20}
-                      aria-label="Apply overflow experience"
+                      aria-label={m.applyOverflow}
                       color={currentSymbol.experience > nextExperience ? "#718571" : "#857871"}
                       onClick={() =>
                         setSymbols(
@@ -202,7 +212,9 @@ const Calculator = () => {
                 {/* EXP INPUT */}
                 <input
                   type="number"
-                  placeholder={currentSymbol.locked ? "Experience" : "Exp"}
+                  placeholder={
+                    currentSymbol.locked ? m.experiencePlaceholder : m.experiencePlaceholderShort
+                  }
                   value={isNaN(currentSymbol.experience) ? "" : currentSymbol.experience}
                   className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
@@ -229,7 +241,7 @@ const Calculator = () => {
               </div>
             </TooltipTrigger>
             <TooltipContent className="tooltip">
-              <span>Symbol</span> Level / Exp
+              <Message text={m.inputsTooltip} />
             </TooltipContent>
           </Tooltip>
 
@@ -250,12 +262,11 @@ const Calculator = () => {
                     setSymbols(updateSymbol(symbols, selectedId, { daily: !currentSymbol.daily }));
                   }}
                 >
-                  Daily
+                  {m.daily}
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                <span>[Daily Quest]</span>
-                <br></br> {currentSymbol.dailyName}
+                <Message text={m.dailyTooltip} values={{ quest: currentSymbol.dailyName }} />
               </TooltipContent>
             </Tooltip>
 
@@ -277,12 +288,14 @@ const Calculator = () => {
                     );
                   }}
                 >
-                  Weekly
+                  {m.weekly}
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                <span>[Weekly Quest]</span>
-                <br></br> {currentSymbol.weeklyName}
+                <Message
+                  text={m.weeklyTooltip}
+                  values={{ quest: currentSymbol.weeklyName ?? "" }}
+                />
               </TooltipContent>
             </Tooltip>
 
@@ -302,12 +315,11 @@ const Calculator = () => {
                     setSymbols(updateSymbol(symbols, selectedId, { extra: !currentSymbol.extra }));
                   }}
                 >
-                  Extra
+                  {m.extra}
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
-                <span>[Unlocked]</span>
-                <br></br> {currentSymbol.extraName}
+                <Message text={m.extraTooltip} values={{ quest: currentSymbol.extraName ?? "" }} />
               </TooltipContent>
             </Tooltip>
           </div>
@@ -319,10 +331,15 @@ const Calculator = () => {
               currentSymbol.type === "sacred" && "justify-center"
             )}
           >
-            <p>{dailySymbols} symbols / day</p>
+            <p>
+              <Message text={m.symbolsPerDay} values={{ count: dailySymbols }} />
+            </p>
             {currentSymbol.type === "arcane" && (
               <p>
-                {currentSymbol.weekly ? WEEKLY_SYMBOLS + " symbols / week" : 0 + " symbols / week"}
+                <Message
+                  text={m.symbolsPerWeek}
+                  values={{ count: currentSymbol.weekly ? WEEKLY_SYMBOLS : 0 }}
+                />
               </p>
             )}
           </div>
@@ -346,11 +363,11 @@ const Calculator = () => {
             currentSymbol.symbolsRequired.length === maxLevelFor(currentSymbol.type) && (
               <div className="flex items-center gap-3 pt-0.5">
                 <h1 className="text-base font-semibold tracking-wider text-primary md:text-xl">
-                  Level <span>{currentSymbol.level}</span>
+                  <Message text={m.level} values={{ level: currentSymbol.level }} />
                 </h1>
                 <FaArrowRight size={!isMobile ? 20 : 15} />
                 <h1 className="text-base font-semibold tracking-wider text-primary md:text-xl">
-                  Level <span>{currentSymbol.level + 1}</span>
+                  <Message text={m.level} values={{ level: currentSymbol.level + 1 }} />
                 </h1>
               </div>
             )}
@@ -365,8 +382,7 @@ const Calculator = () => {
                   isValid(currentSymbol.experience) && (
                     <div className="flex justify-center gap-1.5">
                       <p>
-                        <span>{daysToNextLevel}</span>{" "}
-                        {plural(daysToNextLevel, "day to go", "days to go")}
+                        <Message text={m.daysToGo} count={daysToNextLevel} />
                       </p>
                       <Tooltip placement={"top"}>
                         <TooltipTrigger>
@@ -376,8 +392,7 @@ const Calculator = () => {
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip">
-                          The completion date assumes that <br></br> you have <span>completed</span>{" "}
-                          both your <br></br> <span>daily</span> and <span>weekly</span> quests
+                          <Message text={m.completionAssumption} />
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -385,51 +400,53 @@ const Calculator = () => {
 
                 {readyForUpgrade && (
                   <p>
-                    <span>Ready</span> for upgrade
+                    <Message text={m.readyForUpgrade} />
                   </p>
                 )}
 
                 {!isValid(currentSymbol.experience) ? (
                   <p>
-                    <span>Experience</span> is not set
+                    <Message text={m.experienceNotSet} />
                   </p>
                 ) : (
                   !currentSymbol.daily &&
                   !currentSymbol.weekly &&
                   !readyForUpgrade && (
                     <p>
-                      <span>Quests</span> are not set
+                      <Message text={m.questsNotSet} />
                     </p>
                   )
                 )}
 
                 {readyForUpgrade ? (
                   <p>
-                    <span>Sufficient</span> symbols reached
+                    <Message text={m.sufficientSymbols} />
                   </p>
                 ) : isValid(currentSymbol.experience) ? (
                   <p>
-                    <span>{nextExperience - currentSymbol.experience}</span>{" "}
-                    {plural(
-                      nextExperience - currentSymbol.experience,
-                      "symbol remaining",
-                      "symbols remaining"
-                    )}
+                    <Message
+                      text={m.symbolsRemaining}
+                      count={nextExperience - currentSymbol.experience}
+                    />
                   </p>
                 ) : (
                   <p>
-                    <span>Unknown</span> symbols remaining
+                    <Message text={m.unknownRemaining} />
                   </p>
                 )}
 
                 <p className="pt-2.5 md:pt-8">
-                  <span>{formatNumber(currentSymbol.mesosRequired[currentSymbol.level])}</span>{" "}
-                  mesos required
+                  <Message
+                    text={m.mesosRequired}
+                    values={{
+                      mesos: formatNumber(currentSymbol.mesosRequired[currentSymbol.level]),
+                    }}
+                  />
                 </p>
 
                 <div className="flex justify-center gap-1.5 pt-2.5 md:pt-8">
                   <p>
-                    <span>+{MAIN_STAT_PER_LEVEL[mode]}</span> main stat
+                    <Message text={m.mainStat} values={{ stat: MAIN_STAT_PER_LEVEL[mode] }} />
                   </p>
                   <Tooltip placement={"right"}>
                     <TooltipTrigger>
@@ -439,9 +456,12 @@ const Calculator = () => {
                       />
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
-                      <span>{mode === "arcane" ? "+2,100" : "+4,200"} </span> HP (Demon Avenger)
-                      <br></br>
-                      <span>{mode === "arcane" ? "+48" : "+96"}</span> All Stat (Xenon)
+                      <div>
+                        <Message text={m.demonAvengerHp} values={{ hp: DEMON_AVENGER_HP[mode] }} />
+                      </div>
+                      <div>
+                        <Message text={m.xenonAllStat} values={{ stat: XENON_ALL_STAT[mode] }} />
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -452,16 +472,16 @@ const Calculator = () => {
           <div className="flex justify-center text-center">
             {isMaxLevel(currentSymbol.level, currentSymbol.type) && (
               <p className="text-lg font-semibold tracking-widest text-accent md:text-2xl">
-                MAX LEVEL
+                {m.maxLevel}
               </p>
             )}
             {!isValid(currentSymbol.level) && (
               <div className="space-y-1.5 md:space-y-3">
                 <p className="text-lg font-semibold tracking-widest text-secondary md:text-2xl">
-                  DISABLED
+                  {m.disabled}
                 </p>
                 <p className="text-xs font-light tracking-widest text-secondary">
-                  enter a level to enable this symbol
+                  {m.disabledHint}
                 </p>
               </div>
             )}
