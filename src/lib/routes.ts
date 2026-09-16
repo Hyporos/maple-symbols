@@ -14,12 +14,32 @@ export const SITE_NAME = "Maple Symbols";
 /**
  * The BCP-47 tag of the UI the app is serving. One value today; I18N-1 turns this
  * into a per-request locale and `RoutePath` gains a locale prefix (I18N-4).
- * Everything that names a language in TypeScript reads this: `src/lib/format.ts`
- * and the JSON-LD in `src/components/SEO.tsx`. The two static files that also
- * carry it — `index.html` and `public/manifest.webmanifest` — have no build-time
- * substitution yet and say so in a comment.
+ * Everything that names a language reads this: `src/lib/format.ts`, the JSON-LD in
+ * `src/components/SEO.tsx`, and `<html lang>` and `og:locale` in `index.html` (via
+ * `applyToIndexHtml`). `public/manifest.webmanifest` is copied verbatim, so its
+ * `"lang"` is a literal that `src/test/seo.test.tsx` holds equal to this value.
  */
 export const DEFAULT_LOCALE = "en";
+
+/**
+ * BCP-47 tag → Open Graph `og:locale` (`language_TERRITORY`). An explicit table, not
+ * string munging: the script subtags of I18N-1 have no territory to derive
+ * (`zh-Hant` is `zh_TW`, `zh-Hans` is `zh_CN`). Add a row when a locale lands.
+ */
+export const OG_LOCALES: Readonly<Record<string, string>> = {
+  en: "en_US",
+  ko: "ko_KR",
+  ja: "ja_JP",
+  "zh-Hant": "zh_TW",
+  "zh-Hans": "zh_CN",
+};
+
+/** The `og:locale` value for a tag; throws on a tag with no row, so a new locale cannot ship a blank. */
+export const ogLocaleFor = (locale: string): string => {
+  const value = OG_LOCALES[locale];
+  if (value === undefined) throw new Error(`routes.ts: no og:locale mapping for "${locale}"`);
+  return value;
+};
 export const OG_IMAGE = {
   url: `${SITE_URL}/main/og-image.png`,
   alt: "Maple Symbols — MapleStory Symbol Calculator",
@@ -116,6 +136,8 @@ const escapeHtml = (s: string) =>
 export function applyToIndexHtml(html: string): string {
   const root = routeFor("/");
   const values: Record<string, string> = {
+    __LOCALE__: DEFAULT_LOCALE,
+    __OG_LOCALE__: ogLocaleFor(DEFAULT_LOCALE),
     __ROOT_TITLE__: escapeHtml(root.title),
     __ROOT_DESCRIPTION__: escapeHtml(root.description),
     __ROOT_URL__: urlFor("/"),

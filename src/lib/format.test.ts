@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { formatDate, formatNumber, plural } from "./format";
 import { DEFAULT_LOCALE } from "./routes";
+import { dayjs } from "./dayjs";
 
 describe("formatNumber", () => {
   it("groups with the app locale, not the browser's", () => {
@@ -45,9 +46,18 @@ describe("plural", () => {
 });
 
 describe("formatDate", () => {
-  it("renders the changelog's display form", () => {
+  it("renders an ISO day in the changelog's display form", () => {
     expect(formatDate("2023-07-25")).toBe("Jul 25, 2023");
-    expect(formatDate("Jul 25, 2023")).toBe("Jul 25, 2023");
+    expect(formatDate("2024-03-01")).toBe("Mar 1, 2024");
+  });
+
+  it("reads the ISO day as a local calendar day, so it cannot shift in any time zone", () => {
+    // new Date("2023-01-01") is UTC midnight: Dec 31, 2022 anywhere in the Americas.
+    // The day boundaries are where that trap would show.
+    expect(formatDate("2023-01-01")).toBe("Jan 1, 2023");
+    expect(formatDate("2022-12-31")).toBe("Dec 31, 2022");
+    const parsed = dayjs("2023-01-01");
+    expect([parsed.year(), parsed.month(), parsed.date(), parsed.hour()]).toEqual([2023, 0, 1, 0]);
   });
 });
 

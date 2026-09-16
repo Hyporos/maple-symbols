@@ -52,7 +52,10 @@ export const plural = (
 ): string => (pluralRule(locale).select(count) === "one" ? one : other);
 
 /**
- * A human-readable date, "Jul 25, 2023" in `en` — the form the changelog shows.
+ * A human-readable date from an ISO `YYYY-MM-DD` day: "2023-07-25" → "Jul 25, 2023" in `en`,
+ * the form the changelog shows. dayjs parses a date-only ISO string as *local* midnight
+ * (unlike `new Date("2023-07-25")`, which is UTC midnight and shows the previous day west
+ * of Greenwich), so the day never shifts with the visitor's time zone.
  * dayjs falls back to its built-in English locale until locale data is loaded;
  * this is the one place that has to change when it is (docs/I18N.md B-5).
  * Machine-readable dates (`YYYY-MM-DD` in `<time dateTime>`, the completion
