@@ -14,26 +14,26 @@ describe("Selector", () => {
     expect(screen.getAllByText("Lv. 0")).toHaveLength(6);
   });
 
-  it("swapping to Sacred lists sacred symbols and selects index 6 (Cernium)", () => {
+  it("switching to Sacred lists sacred symbols and selects Cernium (id 7)", () => {
     render(<Selector />);
     fireEvent.click(screen.getByText("Sacred"));
 
     expect(screen.getByAltText("Cernium")).toBeInTheDocument();
     expect(screen.queryByAltText("Vanishing Journey")).not.toBeInTheDocument();
-    expect(useAppStore.getState().swapped).toBe(true);
-    expect(useAppStore.getState().selectedSymbol).toBe(6);
+    expect(useAppStore.getState().mode).toBe("sacred");
+    expect(useAppStore.getState().selectedId).toBe(7);
   });
 
-  it("remembers the selected symbol per type across swaps", () => {
+  it("remembers the selected symbol per type across mode switches", () => {
     render(<Selector />);
     fireEvent.click(symbolButton("Lachelein"));
-    expect(useAppStore.getState().selectedSymbol).toBe(2);
+    expect(useAppStore.getState().selectedId).toBe(3);
 
     fireEvent.click(screen.getByText("Sacred"));
     fireEvent.click(symbolButton("Odium"));
-    expect(useAppStore.getState().selectedSymbol).toBe(8);
+    expect(useAppStore.getState().selectedId).toBe(9);
 
     fireEvent.click(screen.getByText("Arcane"));
-    expect(useAppStore.getState().selectedSymbol).toBe(2);
+    expect(useAppStore.getState().selectedId).toBe(3);
   });
 });

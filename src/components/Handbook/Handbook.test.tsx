@@ -36,7 +36,7 @@ describe("ExpTable", () => {
   });
 
   it("switches to the 11 sacred levels totalling 4,565", () => {
-    useAppStore.setState({ swapped: true, selectedSymbol: 6 });
+    useAppStore.setState({ mode: "sacred", selectedId: 7 });
     render(<ExpTable />);
     expect(screen.getByText("Sacred Symbols")).toBeInTheDocument();
     const rows = dataRows();
@@ -45,7 +45,7 @@ describe("ExpTable", () => {
   });
 
   it("marks the selected symbol's current level with its icon", () => {
-    seedSymbol(0, { level: 5, experience: 0 });
+    seedSymbol(1, { level: 5, experience: 0 });
     render(<ExpTable />);
     const rows = dataRows();
     expect(within(rows[4]).getByRole("img")).toBeInTheDocument(); // row "5"
@@ -65,7 +65,7 @@ describe("CostTable", () => {
   });
 
   it("follows the selected symbol (Cernium: 11 rows)", () => {
-    seedSymbol(6, { level: 2, experience: 0 });
+    seedSymbol(7, { level: 2, experience: 0 });
     render(<CostTable />);
     expect(screen.getByRole("heading", { name: "Cernium" })).toBeInTheDocument();
     expect(dataRows()).toHaveLength(11);
@@ -83,7 +83,7 @@ describe("RatioTable", () => {
   });
 
   it("sacred: sixteen difference bands from < -100 to 50+", () => {
-    useAppStore.setState({ swapped: true });
+    useAppStore.setState({ mode: "sacred" });
     render(<RatioTable />);
     expect(screen.getByText("Grandis")).toBeInTheDocument();
     const rows = dataRows();

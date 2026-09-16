@@ -4,8 +4,8 @@ import { FaArrowRight } from "react-icons/fa6";
 import { cn, isValid, updateSymbol } from "../../lib/utils";
 import { catalystPreview, formatPreview, selectorPreview } from "../../lib/tools";
 import { clampNumberInput } from "../../lib/inputs";
-import { CATALYST_RETENTION, maxLevelFor, modeType } from "../../lib/game";
-import { useAppStore } from "../../state/store";
+import { CATALYST_RETENTION, maxLevelFor } from "../../lib/game";
+import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -16,13 +16,13 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 const Tools = () => {
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
-  const selectedSymbol = useAppStore((s) => s.selectedSymbol);
-  const swapped = useAppStore((s) => s.swapped);
+  const selectedId = useAppStore((s) => s.selectedId);
+  const mode = useAppStore((s) => s.mode);
 
   const { isMobile } = useBreakpoint();
   const [selectedTool, setSelectedTool] = useState<"selector" | "catalyst">("selector");
   const [selectorCount, setSelectorCount] = useState(NaN);
-  const currentSymbol = symbols[selectedSymbol];
+  const currentSymbol = useSelectedSymbol();
   const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
 
   const disabled = isNaN(currentSymbol.level);
@@ -37,14 +37,14 @@ const Tools = () => {
 
   // Derive the preview level/exp after using a Catalyst (retention keyed on the mode)
   const { level: catalystLevel, experience: catalystExp } = useMemo(
-    () => catalystPreview(currentSymbol, CATALYST_RETENTION[modeType(swapped)]),
-    [currentSymbol, swapped]
+    () => catalystPreview(currentSymbol, CATALYST_RETENTION[mode]),
+    [currentSymbol, mode]
   );
 
   const displayPreview = (levelType: number, expType: number) =>
     formatPreview(levelType, expType, {
       symbol: currentSymbol,
-      maxLevel: maxLevelFor(swapped),
+      maxLevel: maxLevelFor(currentSymbol.type),
       isCatalyst: selectedTool === "catalyst",
       catalystExperience: catalystExp,
     });
@@ -73,7 +73,9 @@ const Tools = () => {
             >
               <img
                 src={`${
-                  !swapped ? "/symbols/arcane-selector.webp" : "/symbols/sacred-selector.webp"
+                  mode === "arcane"
+                    ? "/symbols/arcane-selector.webp"
+                    : "/symbols/sacred-selector.webp"
                 }`}
                 width={!isMobile ? 33 : 30}
               />
@@ -96,20 +98,22 @@ const Tools = () => {
                 >
                   <img
                     src={`${
-                      !swapped ? "/symbols/arcane-catalyst.webp" : "/symbols/sacred-catalyst.webp"
+                      mode === "arcane"
+                        ? "/symbols/arcane-catalyst.webp"
+                        : "/symbols/sacred-catalyst.webp"
                     }`}
                     width={!isMobile ? 33 : 30}
                   />
                   <p className="text-sm md:text-base">
                     {(selectedTool === "catalyst" || !isMobile) &&
-                      (!swapped ? "Arcane Catalyst" : "Sacred Catalyst")}
+                      (mode === "arcane" ? "Arcane Catalyst" : "Sacred Catalyst")}
                   </p>
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
                 <span>[Regular Server Only]</span> <br></br> Transfer{" "}
-                {!swapped ? "an Arcane Symbol" : "a Sacred Symbol"} once <br></br> within the same
-                world
+                {mode === "arcane" ? "an Arcane Symbol" : "a Sacred Symbol"} once <br></br> within
+                the same world
               </TooltipContent>
             </Tooltip>
           </div>
@@ -119,7 +123,7 @@ const Tools = () => {
               className={`cursor-default ${selectedTool === "catalyst" && "hidden"}`}
               tabIndex={
                 disabled ||
-                (currentSymbol.level < maxLevelFor(swapped) &&
+                (currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                   currentSymbol.experience < nextExperience) ||
                 currentSymbol.level === 20
                   ? -1
@@ -130,7 +134,7 @@ const Tools = () => {
                 className={`focus mx-10 flex flex-col items-center justify-center space-y-5 rounded-3xl bg-dark py-6 md:flex-row md:space-y-0 md:space-x-10 md:py-3 ${
                   selectedTool === "selector" ? "block" : "hidden"
                 } ${
-                  currentSymbol.level < maxLevelFor(swapped) &&
+                  currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                   currentSymbol.experience > nextExperience &&
                   "opacity-50 *:pointer-events-none *:select-none"
                 }`}
@@ -144,7 +148,7 @@ const Tools = () => {
                     className="w-1/2 w-[80px] bg-secondary py-1 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:w-[100px] md:p-2.5"
                     tabIndex={
                       disabled ||
-                      (currentSymbol.level < maxLevelFor(swapped) &&
+                      (currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                         currentSymbol.experience > nextExperience)
                         ? -1
                         : 0
@@ -164,7 +168,7 @@ const Tools = () => {
                       className="flex cursor-default items-center space-x-4 md:space-x-5"
                       tabIndex={
                         disabled ||
-                        (currentSymbol.level < maxLevelFor(swapped) &&
+                        (currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                           currentSymbol.experience > nextExperience)
                           ? -1
                           : 0
@@ -203,19 +207,20 @@ const Tools = () => {
                     disabled ||
                     isNaN(selectorExp) ||
                     !isValid(selectorCount) ||
-                    currentSymbol.level === maxLevelFor(swapped) ||
-                    (currentSymbol.level < maxLevelFor(swapped) &&
+                    currentSymbol.level === maxLevelFor(currentSymbol.type) ||
+                    (currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                       currentSymbol.experience > nextExperience)
                       ? -1
                       : 0
                   }
                   className={`flex w-[175px] items-center justify-center rounded-2xl bg-secondary px-2 py-1.5 tracking-wide text-secondary select-none hover:bg-hover hover:text-primary focus:outline-accent md:w-[100px] md:rounded-3xl md:px-4 md:py-2 md:transition-colors ${
-                    (!isValid(selectorCount) || currentSymbol.level === maxLevelFor(swapped)) &&
+                    (!isValid(selectorCount) ||
+                      currentSymbol.level === maxLevelFor(currentSymbol.type)) &&
                     "pointer-events-none opacity-25"
                   }`}
                   onClick={() => {
                     setSymbols(
-                      updateSymbol(symbols, selectedSymbol, {
+                      updateSymbol(symbols, selectedId, {
                         level: selectorLevel,
                         experience:
                           selectorCount < currentSymbol.symbolsRemaining ? selectorExp : 0,
@@ -230,7 +235,7 @@ const Tools = () => {
             </TooltipTrigger>
             <TooltipContent
               className={`tooltip ${
-                currentSymbol.level < maxLevelFor(swapped) &&
+                currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                 currentSymbol.experience > nextExperience
                   ? "block"
                   : "hidden"
@@ -254,7 +259,7 @@ const Tools = () => {
                   className="flex cursor-default items-center space-x-4 md:space-x-5"
                   tabIndex={
                     disabled ||
-                    (currentSymbol.level < maxLevelFor(swapped) &&
+                    (currentSymbol.level < maxLevelFor(currentSymbol.type) &&
                       currentSymbol.experience > nextExperience)
                       ? -1
                       : 0
@@ -287,7 +292,7 @@ const Tools = () => {
             <p className="w-[200px] py-[6px] text-center text-sm text-tertiary md:py-[8px] md:text-right md:text-base">
               {currentSymbol.level === 1 || isNaN(currentSymbol.level)
                 ? "Must be level 2 or higher"
-                : !swapped
+                : mode === "arcane"
                   ? "-20% EXP upon use"
                   : "-40% EXP upon use"}
             </p>

@@ -9,8 +9,8 @@ const readStorage = () => JSON.parse(window.localStorage.getItem(KEY) ?? "null")
 describe("store persistence", () => {
   it("persists only `symbols`, zeroes derived fields, and serialises NaN as null", () => {
     useAppStore.setState({
-      swapped: true,
-      symbols: updateSymbol(createInitialSymbols(), 0, {
+      mode: "sacred",
+      symbols: updateSymbol(createInitialSymbols(), 1, {
         level: 5,
         daysRemaining: 7,
         symbolsRemaining: 99,
@@ -36,11 +36,11 @@ describe("store persistence", () => {
 
     await useAppStore.persist.rehydrate();
 
-    const { symbols, selectedSacred } = useAppStore.getState();
+    const { symbols, lastSelected } = useAppStore.getState();
     expect(symbols).toHaveLength(1); // persisted array wins, length included (see KNOWN_ISSUES)
     expect(symbols[0].level).toBeNaN();
     expect(symbols[0].experience).toBeNaN();
-    expect(selectedSacred).toBe(6); // non-persisted fields keep their defaults
+    expect(lastSelected.sacred).toBe(7); // non-persisted fields keep their defaults
   });
 
   it("resets symbols on a version mismatch (migrate discards user data)", async () => {

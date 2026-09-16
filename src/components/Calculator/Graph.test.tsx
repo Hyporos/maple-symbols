@@ -16,14 +16,14 @@ describe("Graph", () => {
   });
 
   it("shows current power over the max for the enabled symbols (arcane: level*10+20 of 220)", () => {
-    seedSymbol(0, { level: 5, experience: 0, daily: true });
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
     render(<Graph />);
     expect(screen.getByText("70 / 220")).toBeInTheDocument();
     expect(screen.getByText("Arcane Power")).toBeInTheDocument();
   });
 
   it("sacred power is level*10 of 110 per symbol", () => {
-    seedSymbol(6, { level: 5, experience: 0, daily: true });
+    seedSymbol(7, { level: 5, experience: 0, daily: true });
     render(<Graph />);
     expect(screen.getByText("50 / 110")).toBeInTheDocument();
     expect(screen.getByText("Sacred Power")).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe("Graph", () => {
 
   it("validates the target power and reports the attainment date (frozen Wednesday)", () => {
     vi.setSystemTime(WED);
-    seedSymbol(0, { level: 5, experience: 0, daily: true });
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
     render(<Graph />);
 
     fireEvent.change(targetInput(), { target: { value: "60" } });
@@ -45,7 +45,7 @@ describe("Graph", () => {
   });
 
   it("offers Dynamic (default) and Linear x-axis modes", () => {
-    seedSymbol(0, { level: 5, experience: 0, daily: true });
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
     render(<Graph />);
     expect(screen.getByText("Dynamic")).toBeInTheDocument();
     fireEvent.click(screen.getByText("Linear"));

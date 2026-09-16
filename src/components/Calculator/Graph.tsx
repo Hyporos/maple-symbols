@@ -23,19 +23,19 @@ import {
   type GraphSymbols,
 } from "../../lib/graph";
 import { clampNumberInput } from "../../lib/inputs";
-import { MAX_POWER_PER_SYMBOL, maxLevelFor, modeType } from "../../lib/game";
+import { MAX_POWER_PER_SYMBOL } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
 import { dayjs } from "../../lib/dayjs";
 import RadioButton from "../ui/RadioButton";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
-import type { SymbolData } from "../../lib/types";
+import type { SymbolData, SymbolType } from "../../lib/types";
 
 interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
   currentPower: number;
   isMobile: boolean;
   graphDynamic: boolean;
-  swapped: boolean;
+  mode: SymbolType;
   symbols: SymbolData[];
   flatDateSymbols: GraphSymbols[];
 }
@@ -49,7 +49,7 @@ const CustomTooltip = ({
   currentPower,
   isMobile,
   graphDynamic,
-  swapped,
+  mode,
   symbols,
   flatDateSymbols,
 }: CustomTooltipProps) => {
@@ -72,7 +72,7 @@ const CustomTooltip = ({
           : label
       }`}</p>
       <p className={`text-accent ${isMobile ? "text-xs" : "text-sm"} ${!isFirstEntry && "pb-2"}`}>
-        {!swapped ? "Arcane" : "Sacred"} Power : {payload[0].value}
+        {mode === "arcane" ? "Arcane" : "Sacred"} Power : {payload[0].value}
       </p>
       {!isFirstEntry && <hr className="my-8 w-full pb-2 opacity-20" />}
 
@@ -118,7 +118,7 @@ const Graph = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
   const symbols = useAppStore((s) => s.symbols);
-  const swapped = useAppStore((s) => s.swapped);
+  const mode = useAppStore((s) => s.mode);
 
   const { isMobile, isTablet } = useBreakpoint();
 
@@ -126,23 +126,23 @@ const Graph = () => {
   const [graphDynamic, setGraphDynamic] = useState(true);
 
   const enabledSymbols = symbols.filter(
-    (symbol) => symbol.level > 0 && (!swapped ? symbol.type === "arcane" : symbol.type === "sacred")
+    (symbol) => symbol.level > 0 && symbol.type === mode
   ).length;
 
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
   // Calculate the base power of the character
-  const currentPower = usePower(symbols, swapped);
+  const currentPower = usePower(symbols, mode);
 
   // Calculate every symbol's date needed to reach future levels
   const dateSymbols = useMemo((): DateSymbols[] => {
     try {
-      return buildDateSymbols(symbols, swapped, maxLevelFor(swapped));
+      return buildDateSymbols(symbols, mode);
     } catch (e) {
       console.error(e);
       return [];
     }
-  }, [symbols, swapped]);
+  }, [symbols, mode]);
 
   // Derive graph entries from dateSymbols
   const { graphSymbols, flatDateSymbols, maxPower, maxDays } = useMemo(
@@ -159,12 +159,12 @@ const Graph = () => {
         currentPower={currentPower}
         isMobile={isMobile}
         graphDynamic={graphDynamic}
-        swapped={swapped}
+        mode={mode}
         symbols={symbols}
         flatDateSymbols={flatDateSymbols}
       />
     ),
-    [currentPower, isMobile, graphDynamic, swapped, symbols, flatDateSymbols]
+    [currentPower, isMobile, graphDynamic, mode, symbols, flatDateSymbols]
   );
 
   const yTicks = useMemo(() => yAxisTicks(currentPower, maxPower), [currentPower, maxPower]);
@@ -196,10 +196,10 @@ const Graph = () => {
         : `Target must be greater than ${currentPower}`;
   };
 
-  // Reset targetPower if symbols are swapped
+  // Reset targetPower if symbols are mode
   useEffect(() => {
     setTargetPower(NaN);
-  }, [swapped]);
+  }, [mode]);
 
   // Reset targetPower if symbols are disabled
   useEffect(() => {
@@ -221,9 +221,9 @@ const Graph = () => {
         {/* POWER OVERVIEW */}
         <div className="flex w-full flex-col justify-center gap-4 md:flex-row md:gap-0 md:space-x-8">
           <div className="flex items-center justify-between gap-3 rounded-lg bg-dark px-8 py-4 md:flex-col md:justify-center">
-            <p className="text-sm md:text-base">{!swapped ? "Arcane" : "Sacred"} Power</p>
+            <p className="text-sm md:text-base">{mode === "arcane" ? "Arcane" : "Sacred"} Power</p>
             <p className="text-sm text-accent md:text-base">
-              {currentPower} / {enabledSymbols * MAX_POWER_PER_SYMBOL[modeType(swapped)]}
+              {currentPower} / {enabledSymbols * MAX_POWER_PER_SYMBOL[mode]}
             </p>
           </div>
 
@@ -233,7 +233,7 @@ const Graph = () => {
               <p className="text-sm md:text-base">
                 {isMobile
                   ? `Target Power`
-                  : !swapped
+                  : mode === "arcane"
                     ? "Target Arcane Power"
                     : "Target Sacred Power"}
               </p>
@@ -324,7 +324,7 @@ const Graph = () => {
               type="linear"
               isAnimationActive={false}
               dataKey="power"
-              name={`${!swapped ? "Arcane" : "Sacred"} Power`}
+              name={`${mode === "arcane" ? "Arcane" : "Sacred"} Power`}
               stroke="#b18bd0"
               strokeWidth={1.5}
               dot={{

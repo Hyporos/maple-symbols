@@ -12,15 +12,15 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 const Overview = () => {
   const symbols = useAppStore((s) => s.symbols);
-  const swapped = useAppStore((s) => s.swapped);
+  const mode = useAppStore((s) => s.mode);
 
   const { isMobile, isTablet } = useBreakpoint();
-  const [targetSymbol, setTargetSymbol] = useState(0);
+  const [targetId, setTargetId] = useState(1); // Vanishing Journey
   const [targetLevel, setTargetLevel] = useState(NaN);
   const [selectedNone, setSelectedNone] = useState(true);
   const [levelSet, setLevelSet] = useState(false);
 
-  const currentSymbol = symbols[targetSymbol];
+  const currentSymbol = symbols.find((symbol) => symbol.id === targetId) ?? symbols[0];
 
   const dailySymbols = getDailySymbols(currentSymbol);
 
@@ -42,7 +42,7 @@ const Overview = () => {
   }, [targetSymbols, dailySymbols, currentSymbol.weekly]);
 
   const targetDate = dayjs().add(targetDays, "day").format("YYYY-MM-DD");
-  const maxLevel = maxLevelFor(swapped);
+  const maxLevel = maxLevelFor(mode);
 
   // Row strings (collapsed line and target panel) are pure functions of state; see lib/overview.
   const rowLabels = symbols.map((symbol) => collapsedRowLabels(symbol, maxLevel));
@@ -60,15 +60,15 @@ const Overview = () => {
 
   useEffect(() => {
     setSelectedNone(true);
-  }, [swapped]);
+  }, [mode]);
 
   useEffect(() => {
     setLevelSet(false);
-  }, [targetSymbol, selectedNone]);
+  }, [targetId, selectedNone]);
 
   useEffect(() => {
     if (isNaN(currentSymbol.level) || currentSymbol.level === maxLevel) setSelectedNone(true);
-  }, [currentSymbol.level, swapped]);
+  }, [currentSymbol.level, mode]);
 
   return (
     <section className="flex justify-center">
@@ -101,11 +101,11 @@ const Overview = () => {
           <hr className="h-px w-full opacity-10 md:my-8" />
           {symbols.map(
             (symbol, index) =>
-              symbol.type === (!swapped ? "arcane" : "sacred") && (
+              symbol.type === mode && (
                 <div
-                  key={index}
+                  key={symbol.id}
                   className={`${
-                    targetSymbol === index &&
+                    targetId === symbol.id &&
                     selectedNone === false &&
                     symbol.level < maxLevel &&
                     "z-10 rounded-3xl shadow-level shadow-accent"
@@ -114,9 +114,9 @@ const Overview = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      setTargetSymbol(index);
+                      setTargetId(symbol.id);
                       setTargetLevel(NaN);
-                      targetSymbol === index
+                      targetId === symbol.id
                         ? setSelectedNone(!selectedNone)
                         : setSelectedNone(false);
                     }}
@@ -125,7 +125,7 @@ const Overview = () => {
                       isMobile && "bg-dark",
                       isNaN(symbol.level) && "pointer-events-none opacity-25",
                       symbol.level === maxLevel && "pointer-events-none",
-                      targetSymbol === index && !selectedNone && symbol.level < maxLevel
+                      targetId === symbol.id && !selectedNone && symbol.level < maxLevel
                         ? "rounded-t-3xl bg-dark hover:bg-linear-to-b hover:from-light"
                         : "rounded-3xl"
                     )}
@@ -153,7 +153,7 @@ const Overview = () => {
                       size={22.5}
                       className={cn(
                         "block w-[37.5px] md:hidden",
-                        targetSymbol === index && !selectedNone && "rotate-180",
+                        targetId === symbol.id && !selectedNone && "rotate-180",
                         symbol.level === maxLevel && "hidden"
                       )}
                     ></IoMdArrowDropdown>
@@ -183,7 +183,7 @@ const Overview = () => {
                     className={`flex flex-col items-center rounded-b-3xl bg-dark px-4 pb-4 text-center md:flex-row md:px-0 ${
                       isNaN(symbol.level) && "pointer-events-none opacity-25"
                     } ${symbol.level === maxLevel && "pointer-events-none"} ${
-                      targetSymbol === index && selectedNone === false && symbol.level < maxLevel
+                      targetId === symbol.id && selectedNone === false && symbol.level < maxLevel
                         ? "block border-secondary"
                         : "hidden"
                     }`}

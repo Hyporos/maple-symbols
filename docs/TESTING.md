@@ -38,7 +38,7 @@ Vitest + Testing Library + jsdom, colocated tests, explicit imports. This doc is
 | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
 | `setViewport("mobile" \| "tablet" \| "desktop")` | call **before** rendering a `<BreakpointProvider>`; drives the matchMedia mock                              |
 | `resetStore()`                                   | `useAppStore.setState({ ...getInitialState(), symbols: createInitialSymbols() }, true)`; runs automatically |
-| `seedSymbol(index, patch, select = true)`        | patch one symbol and select it (also sets `swapped` and the per-type memory, see §5)                        |
+| `seedSymbol(id, patch, select = true)`           | patch one symbol by id (1–6 arcane, 7–12 sacred) and select it via `selectSymbol` (switches `mode` too)     |
 | `SUN`, `MON`, `WED`, `SAT`                       | `Date` fixtures for `vi.setSystemTime` (13–19 Sept 2026, 10:00 local)                                       |
 | `seedHeadMeta()`                                 | recreate the `<meta>`/`<link>` tags `index.html` ships so `SEO.tsx` has something to update                 |
 
@@ -46,9 +46,9 @@ Leaf components render without any provider: `useRouter()` and `useBreakpoint()`
 
 ## 4. Recipes
 
-**Pure function** (`src/lib/*.test.ts`): import, call, assert. Build fixtures from `createInitialSymbols()` (index 0 = Vanishing Journey, arcane, 10/day, weekly + extra; index 6 = Cernium, sacred, 20/day) and spread patches over them.
+**Pure function** (`src/lib/*.test.ts`): import, call, assert. Build fixtures from `createInitialSymbols()` (`[0]` = Vanishing Journey, id 1, arcane, 10/day, weekly + extra; `[6]` = Cernium, id 7, sacred, 20/day) and spread patches over them.
 
-**Hook**: `renderHook(() => usePower(symbols, swapped))` → `result.current`. Re-render with a new array to recompute; memoisation is by reference.
+**Hook**: `renderHook(() => usePower(symbols, "arcane"))` → `result.current`. Re-render with a new array to recompute; memoisation is by reference.
 
 **Store** (`src/state/store.test.ts`): set state, then `JSON.parse(localStorage.getItem("maple-symbols-v2"))` to assert what `partialize` wrote (`{ state: { symbols }, version: 2 }`, NaN → `null`). To test `merge`/`migrate`, seed localStorage and `await useAppStore.persist.rehydrate()`. The store is a module singleton hydrated at import; use `vi.resetModules()` + a dynamic import only if you need "storage seeded before creation".
 
@@ -77,7 +77,7 @@ Known-good values (verified by `src/lib/utils.test.ts`; weekly credit follows `d
 
 ## 5. Traps specific to this codebase
 
-- **Selector's mount effect overwrites `selectedSymbol`** with `selectedArcane`/`selectedSacred`. Seed those too (or use `seedSymbol`, which does) or your selection disappears on render.
+- **Selection is by id and tied to `mode`.** `seedSymbol(id, …)` calls `selectSymbol`, which also switches `mode` to that symbol's type; set `mode`/`selectedId` directly only when you want them deliberately out of sync.
 - **Tooltips** portal into `document.body` with `role="tooltip"` and mount at `opacity: 0`: query on `screen`, assert `toBeInTheDocument()`, not visibility. Hover opens after 400 ms; prefer `fireEvent.focus(trigger)`, which opens instantly. If you must hover, `vi.useFakeTimers()` + `userEvent.setup({ advanceTimers: vi.advanceTimersByTime })`, and never mix Vitest fake timers with `waitFor`/`findBy` (RTL only recognises Jest's).
 - **`TooltipTrigger` without `asChild` renders a `<button>`**, so Calculator's inputs sit inside a button and its lock trigger sits inside the level/exp trigger (Header has a button in a button too). React logs `validateDOMNesting` for button-in-button (not for inputs); query inputs by placeholder, not role, and don't assert on a clean console. Vitest 5 defaults to `silent: "passed-only"`, so console output from passing tests is hidden; use `pnpm test --silent=false <filter>` to see it.
 - **Lazy sections + `Suspense fallback={null}`**: on the `/` page nothing from Calculator/Tools/Overview/Graph exists until the chunks load. Use `findBy*`/`waitFor`; the per-route metadata test allows 15 s (20 s test timeout) for every route because the `/` route's recharts chunk is heavy in jsdom.

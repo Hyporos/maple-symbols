@@ -38,25 +38,25 @@ describe("isValid / isMaxLevel", () => {
     expect(isValid(20)).toBe(true);
   });
 
-  it("uses 20 for arcane (swapped=false) and 11 for sacred (swapped=true)", () => {
-    expect(isMaxLevel(20, false)).toBe(true);
-    expect(isMaxLevel(11, false)).toBe(false);
-    expect(isMaxLevel(11, true)).toBe(true);
-    expect(isMaxLevel(NaN, true)).toBe(false);
+  it("uses 20 for arcane and 11 for sacred", () => {
+    expect(isMaxLevel(20, "arcane")).toBe(true);
+    expect(isMaxLevel(11, "arcane")).toBe(false);
+    expect(isMaxLevel(11, "sacred")).toBe(true);
+    expect(isMaxLevel(NaN, "sacred")).toBe(false);
   });
 });
 
 describe("updateSymbol", () => {
-  it("returns a new array, patching only the given index", () => {
+  it("returns a new array, patching only the symbol with the given id", () => {
     const input = createInitialSymbols();
-    const out = updateSymbol(input, 2, { level: 7 });
+    const out = updateSymbol(input, 3, { level: 7 });
     expect(out).not.toBe(input);
     expect(out[2]).toMatchObject({ level: 7, name: "Lachelein" });
     expect(out[0]).toBe(input[0]);
     expect(input[2].level).toBeNaN();
   });
 
-  it("leaves everything untouched for an out-of-range index", () => {
+  it("leaves everything untouched for an unknown id", () => {
     const input = createInitialSymbols();
     expect(updateSymbol(input, 99, { level: 1 })).toEqual(input);
   });

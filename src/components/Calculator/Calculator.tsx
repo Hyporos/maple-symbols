@@ -14,22 +14,22 @@ import {
   updateSymbol,
 } from "../../lib/utils";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
-import { useAppStore } from "../../state/store";
+import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { getOverflow, getRemainingToMax } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
-import { MAIN_STAT_PER_LEVEL, maxLevelFor, modeType, WEEKLY_SYMBOLS } from "../../lib/game";
+import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
 
 const Calculator = () => {
   /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */
 
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
-  const selectedSymbol = useAppStore((s) => s.selectedSymbol);
-  const swapped = useAppStore((s) => s.swapped);
+  const selectedId = useAppStore((s) => s.selectedId);
+  const mode = useAppStore((s) => s.mode);
 
   const { isMobile } = useBreakpoint();
 
-  const currentSymbol = symbols[selectedSymbol];
+  const currentSymbol = useSelectedSymbol();
 
   const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
 
@@ -62,7 +62,7 @@ const Calculator = () => {
   // and a useMemo that caused cascading re-renders via intermediate store writes.
   useEffect(() => {
     try {
-      const remaining = getRemainingToMax(currentSymbol, maxLevelFor(swapped));
+      const remaining = getRemainingToMax(currentSymbol, maxLevelFor(currentSymbol.type));
 
       const daysTotal = calculateDaysRemaining(remaining, dailySymbols, !!currentSymbol.weekly);
       const completionDate = dayjs().add(daysTotal, "day").format("YYYY-MM-DD");
@@ -77,7 +77,7 @@ const Calculator = () => {
         completionDate !== currentSymbol.completion
       ) {
         setSymbols(
-          updateSymbol(useAppStore.getState().symbols, selectedSymbol, {
+          updateSymbol(useAppStore.getState().symbols, selectedId, {
             symbolsRemaining: remaining,
             daysRemaining: daysTotal,
             completion: completionDate,
@@ -93,8 +93,8 @@ const Calculator = () => {
     currentSymbol.weekly,
     currentSymbol.level,
     currentSymbol.experience,
-    swapped,
-    selectedSymbol,
+    mode,
+    selectedId,
   ]);
 
   // Derived overflow state (cap unlocked): the levels the stored experience would buy and
@@ -107,26 +107,20 @@ const Calculator = () => {
   useEffect(() => {
     if (readyForUpgrade && currentSymbol.locked) {
       setSymbols(
-        updateSymbol(useAppStore.getState().symbols, selectedSymbol, { experience: nextExperience })
+        updateSymbol(useAppStore.getState().symbols, selectedId, { experience: nextExperience })
       );
     }
-  }, [currentSymbol.locked, readyForUpgrade, nextExperience, selectedSymbol]);
+  }, [currentSymbol.locked, readyForUpgrade, nextExperience, selectedId]);
 
   useEffect(() => {
     if (
       currentSymbol.experience === 0 &&
-      isMaxLevel(currentSymbol.level, swapped) &&
+      isMaxLevel(currentSymbol.level, currentSymbol.type) &&
       !currentSymbol.locked
     ) {
-      setSymbols(updateSymbol(useAppStore.getState().symbols, selectedSymbol, { locked: true }));
+      setSymbols(updateSymbol(useAppStore.getState().symbols, selectedId, { locked: true }));
     }
-  }, [
-    currentSymbol.experience,
-    currentSymbol.level,
-    currentSymbol.locked,
-    swapped,
-    selectedSymbol,
-  ]);
+  }, [currentSymbol.experience, currentSymbol.level, currentSymbol.locked, mode, selectedId]);
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
 
@@ -157,8 +151,8 @@ const Calculator = () => {
                     setSymbols(
                       updateSymbol(
                         symbols,
-                        selectedSymbol,
-                        levelInputPatch(e.target.value, maxLevelFor(swapped))
+                        selectedId,
+                        levelInputPatch(e.target.value, maxLevelFor(currentSymbol.type))
                       )
                     )
                   }
@@ -186,7 +180,7 @@ const Calculator = () => {
                           aria-label="Unlock experience cap"
                           onClick={() =>
                             setSymbols(
-                              updateSymbol(symbols, selectedSymbol, {
+                              updateSymbol(symbols, selectedId, {
                                 locked: !currentSymbol.locked,
                               })
                             )
@@ -205,7 +199,7 @@ const Calculator = () => {
                           aria-label="Lock experience cap"
                           onClick={() =>
                             setSymbols(
-                              updateSymbol(symbols, selectedSymbol, {
+                              updateSymbol(symbols, selectedId, {
                                 locked: !currentSymbol.locked,
                               })
                             )
@@ -229,7 +223,7 @@ const Calculator = () => {
                       color={currentSymbol.experience > nextExperience ? "#718571" : "#857871"}
                       onClick={() =>
                         setSymbols(
-                          updateSymbol(symbols, selectedSymbol, {
+                          updateSymbol(symbols, selectedId, {
                             level: overflowLevel,
                             experience:
                               overflowLevel > currentSymbol.level ? overflowExperience : 0,
@@ -260,7 +254,7 @@ const Calculator = () => {
                     if (experience === null) {
                       e.target.value = "0"; // "00"/"000" above level 1: rewrite the field, store nothing
                     } else {
-                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience }));
+                      setSymbols(updateSymbol(symbols, selectedId, { experience }));
                     }
                     if (e.target.value.startsWith("0")) {
                       e.target.value = e.target.value.substring(1);
@@ -284,9 +278,7 @@ const Calculator = () => {
                     currentSymbol.daily && "border-checked/80 md:border-checked"
                   )}
                   onClick={() =>
-                    setSymbols(
-                      updateSymbol(symbols, selectedSymbol, { daily: !currentSymbol.daily })
-                    )
+                    setSymbols(updateSymbol(symbols, selectedId, { daily: !currentSymbol.daily }))
                   }
                 >
                   Daily
@@ -307,9 +299,7 @@ const Calculator = () => {
                     typeof currentSymbol.weekly === "undefined" && "hidden"
                   )}
                   onClick={() =>
-                    setSymbols(
-                      updateSymbol(symbols, selectedSymbol, { weekly: !currentSymbol.weekly })
-                    )
+                    setSymbols(updateSymbol(symbols, selectedId, { weekly: !currentSymbol.weekly }))
                   }
                 >
                   Weekly
@@ -330,9 +320,7 @@ const Calculator = () => {
                     typeof currentSymbol.extra === "undefined" && "hidden"
                   )}
                   onClick={() =>
-                    setSymbols(
-                      updateSymbol(symbols, selectedSymbol, { extra: !currentSymbol.extra })
-                    )
+                    setSymbols(updateSymbol(symbols, selectedId, { extra: !currentSymbol.extra }))
                   }
                 >
                   Extra
@@ -369,14 +357,14 @@ const Calculator = () => {
           className={cn(
             "flex w-full max-w-[360px] flex-col items-center justify-between px-8 text-center md:px-10",
             !isValid(currentSymbol.level) && "justify-center",
-            isMaxLevel(currentSymbol.level, swapped) && "justify-center",
+            isMaxLevel(currentSymbol.level, currentSymbol.type) && "justify-center",
             currentSymbol.symbolsRequired.length <= 10 && "hidden"
           )}
         >
           {/* BEFORE > AFTER LEVEL */}
           {isValid(currentSymbol.level) &&
-            !isMaxLevel(currentSymbol.level, swapped) &&
-            currentSymbol.symbolsRequired.length === maxLevelFor(swapped) && (
+            !isMaxLevel(currentSymbol.level, currentSymbol.type) &&
+            currentSymbol.symbolsRequired.length === maxLevelFor(currentSymbol.type) && (
               <div className="flex items-center gap-3 pt-0.5">
                 <h1 className="text-base font-semibold tracking-wider text-primary md:text-xl">
                   Level <span>{currentSymbol.level}</span>
@@ -390,8 +378,8 @@ const Calculator = () => {
 
           {/* NEXT LEVEL STATS */}
           {isValid(currentSymbol.level) &&
-            !isMaxLevel(currentSymbol.level, swapped) &&
-            currentSymbol.symbolsRequired.length === maxLevelFor(swapped) && (
+            !isMaxLevel(currentSymbol.level, currentSymbol.type) &&
+            currentSymbol.symbolsRequired.length === maxLevelFor(currentSymbol.type) && (
               <div className="flex h-full flex-col justify-between gap-2 pt-5 **:text-sm md:gap-0 md:pt-10 md:**:text-base">
                 {!readyForUpgrade &&
                   (currentSymbol.daily || currentSymbol.weekly) &&
@@ -461,7 +449,7 @@ const Calculator = () => {
 
                 <div className="flex justify-center gap-1.5 pt-2.5 md:pt-8">
                   <p>
-                    <span>+{MAIN_STAT_PER_LEVEL[modeType(swapped)]}</span> main stat
+                    <span>+{MAIN_STAT_PER_LEVEL[mode]}</span> main stat
                   </p>
                   <Tooltip placement={"right"}>
                     <TooltipTrigger asChild={true}>
@@ -472,8 +460,9 @@ const Calculator = () => {
                       />
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
-                      <span>{!swapped ? "+2,100" : "+4,200"} </span> HP (Demon Avenger)<br></br>
-                      <span>{!swapped ? "+48" : "+96"}</span> All Stat (Xenon)
+                      <span>{mode === "arcane" ? "+2,100" : "+4,200"} </span> HP (Demon Avenger)
+                      <br></br>
+                      <span>{mode === "arcane" ? "+48" : "+96"}</span> All Stat (Xenon)
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -482,7 +471,7 @@ const Calculator = () => {
 
           {/* MAX LEVEL / DISABLED LEVEL */}
           <div className="flex justify-center text-center">
-            {isMaxLevel(currentSymbol.level, swapped) && (
+            {isMaxLevel(currentSymbol.level, currentSymbol.type) && (
               <p className="text-lg font-semibold tracking-widest text-accent md:text-2xl">
                 MAX LEVEL
               </p>

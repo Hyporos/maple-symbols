@@ -38,7 +38,7 @@ src/
   main.tsx, App.tsx            entry; RouterProvider > App > BreakpointProvider; PageContent switches on path
   contexts/  RouterContext     pushState/popstate router: { path, navigate }
              BreakpointContext isMobile (<768px) / isTablet (<1150px); two matchMedia listeners app-wide
-  state/store.ts               the one Zustand store (symbols, swapped, selectedSymbol, per-type memory)
+  state/store.ts               the one Zustand store (symbols, mode, selectedId, lastSelected per type; useSelectedSymbol)
   lib/       symbols.json      exp tables, the 12 symbol definitions, meso tables (other constants: see cheat sheet)
              data.ts           createInitialSymbols(): json → SymbolData[]
              types.ts          SymbolData, SymbolType
@@ -66,7 +66,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - **Routes**: `/` (calculator page: Selector, Calculator, Tools, Overview, Graph), `/handbook`, `/changelog`, `/credits`. Unknown paths fall through to `/`. Calculator/Tools/Overview/Graph are `React.lazy`; the page sits in `ErrorBoundary` > `Suspense fallback={null}`.
 - **Page metadata** (title/description) lives in three places (`index.html` static tags + `pageMap`, `App.tsx` SEO props, `SEO.tsx` defaults) and the route URLs also in `public/sitemap.xml`; `src/test/seo.test.tsx` enforces agreement, ARCHITECTURE §2 explains the double write.
 - **State**: one store. Only `symbols` persists (localStorage key `maple-symbols-v2`, `STORAGE_VERSION` 2); UI state resets on reload. `partialize` zeroes derived fields; `merge` turns JSON `null` back into `NaN`; `migrate` **resets symbols** on a version bump.
-- **Data flow**: `symbols.json` → `createInitialSymbols()` → store → components read via selectors; inputs write with `updateSymbol(symbols, index, patch)`. Derived fields (`symbolsRemaining`, `daysRemaining`, `completion`) are written back into the store by one effect in Calculator, for the selected symbol only. Graph recomputes its own dates.
+- **Data flow**: `symbols.json` → `createInitialSymbols()` → store → components read via selectors; inputs write with `updateSymbol(symbols, id, patch)`. Derived fields (`symbolsRemaining`, `daysRemaining`, `completion`) are written back into the store by one effect in Calculator, for the selected symbol only. Graph recomputes its own dates.
 - **Responsive**: Tailwind `md:` for style-only differences; `useBreakpoint()` when markup, prop values, or copy differ.
 
 ## Conventions
@@ -82,7 +82,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 
 ## Domain cheat sheet
 
-- 12 symbols in `symbols.json` order: **arcane = indices 0–5 (max level 20)**, **sacred = indices 6–11 (max level 11)**. `swapped` false = arcane mode. Array index = `id - 1`. Order is load-bearing (gotcha 1).
+- 12 symbols: **arcane ids 1–6 (max level 20)**, **sacred ids 7–12 (max level 11)**. `mode` (`"arcane"` | `"sacred"`) is the type the UI shows; selection is by `id` (`selectedId`, with `lastSelected` remembered per type). JSON order only affects display order (gotcha 1).
 - `symbolsRequired[L]` = symbols needed to go from level L to L+1 (`[0]` is 0). Totals: arcane 2679, sacred 4565. `mesosRequired[L]` likewise = cost of the L→L+1 upgrade.
 - Power: arcane `level*10 + 20` (max 220/symbol), sacred `level*10` (max 110). Every level-up is +10 in the Graph.
 - Daily rate: `dailySymbols × (extra ? (arcane 2 : sacred 1.5) : 1)`, 0 when the daily toggle is off. Weekly quests exist only on arcane and add **120 per Monday reset**. Extra exists only on Vanishing Journey and Chu Chu.
@@ -93,13 +93,13 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 
 ## Gotchas (the ones that bite)
 
-1. **Indices are identity.** `selectedSymbol`, `selectedArcane` (default 0), `selectedSacred` (default 6) are array indices; `Selector`'s `BAR_POSITIONS` and `CostTable`'s `selectedSymbol < 6` assume the JSON order. Reordering or inserting symbols breaks all of them; append only (ARCHITECTURE §9).
+1. **Symbols are addressed by `id`, never by array index** (v2 identity refactor). `selectedId`/`lastSelected` hold ids, `updateSymbol` takes an id, `useSelectedSymbol()` resolves the current one, `selectSymbol(id)`/`setMode(type)` are the only ways to change selection. Don't reintroduce `symbols[i]` lookups; the one positional thing left is the Selector's indicator bar (position within the six shown symbols, ARCHITECTURE §9).
 2. **Game data is frozen in users' localStorage.** `partialize` persists every `SymbolData` field and `merge` adopts the persisted array wholesale, so `symbols.json` edits don't reach returning users, and a **new symbol is absent for them entirely**, unless `STORAGE_VERSION` is bumped, which wipes their levels (KI-001). Adding a symbol forces that decision (rule 1).
 3. **Derived fields are only fresh for the selected symbol**; after a reload Overview shows "Complete / Ready for upgrade / 0" for the others until each is clicked (KI-002). Don't build on stored `daysRemaining`/`symbolsRemaining` for non-selected symbols; compute like Graph does.
 4. **The `{" "}` before a react-icons or `RadioButton` child inside `<TooltipTrigger asChild>` is load-bearing.** It makes `children` an array, so the trigger falls back to rendering a `<button>`; without it floating-ui puts a ref on a function component and the tooltip loses its anchor. A `<button>`/`<div>` child goes in directly, with no `{" "}` (adding one nests a button in a button).
 5. **Global CSS**: every `<span>` is accent purple; every `<button>`/`<input>` is `rounded-lg` with an accent focus ring; every `<img>` is `pointer-events-none` (put `onClick`/`cursor-pointer` on the parent, not the image).
 6. **Calculator's derived-fields effect omits `symbols` from its deps on purpose and compares with `Object.is`** (NaN-safe; the other two store-writing effects are boolean-guarded). The original infinite loop was `NaN !== NaN` with `symbols` in deps, so keep both guards. Conversely, any **new input** to the derived fields (a new quest flag, say) must be hand-added to that effect's deps, Overview's `targetDays` memo deps, and `getDailySymbols`; lint won't remind you (exhaustive-deps is off). Checklist in ARCHITECTURE §9.
-7. Mode is `swapped`, not `symbol.type`. The max-level literal `!swapped ? 20 : 11` is repeated in ~30 places; use `isMaxLevel` in new code and don't assume the selected symbol matches the mode during a swap (KI-006).
+7. Use `symbol.type` for per-symbol rules (`maxLevelFor(symbol.type)`, `isMaxLevel(level, type)`, `CATALYST_RETENTION[type]`) and `mode` only for which list is shown. `setMode` switches mode and selection atomically, so the selected symbol always matches the mode (KI-006 resolved).
 8. `tsc` runs in `build` with `noUnusedLocals`: an unused import fails the build. `.gitattributes` (`* text=auto eol=lf`) forces LF in the working tree and overrides `core.autocrlf` (which is `true` system-wide on this machine); never weaken that attribute or touch git config to "fix" line endings. If lint fails on `␍`, run `git ls-files --eol | grep w/crlf`.
 9. Before adding content to a card or replacing an image: DESIGN_SYSTEM §5 (fixed 360 px phone width, 650/700 px pane heights) and KI-009 (`public/` images are cached for a year; rename, don't replace in place).
 

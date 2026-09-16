@@ -1,7 +1,7 @@
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
-import { useAppStore } from "../../state/store";
+import { useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -9,11 +9,8 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const CostTable = () => {
-  const symbols = useAppStore((s) => s.symbols);
-  const selectedSymbol = useAppStore((s) => s.selectedSymbol);
-
   const { isMobile } = useBreakpoint();
-  const symbol = symbols[selectedSymbol];
+  const symbol = useSelectedSymbol();
   let totalCost = 0;
 
   return (
@@ -23,11 +20,7 @@ const CostTable = () => {
           {/* HEADER */}
           <div className="flex justify-between">
             <div className="flex items-center gap-5 md:gap-6">
-              <img
-                src={symbols[selectedSymbol].img}
-                width={!isMobile ? 32.5 : 30}
-                className="scale-110"
-              />
+              <img src={symbol.img} width={!isMobile ? 32.5 : 30} className="scale-110" />
               <div className="h-full w-px bg-white/10" aria-hidden="true" />
               <h1
                 className={cn(
@@ -35,7 +28,7 @@ const CostTable = () => {
                   symbol.name === "Vanishing Journey" && "text-base"
                 )}
               >
-                {symbols[selectedSymbol].name}
+                {symbol.name}
               </h1>
             </div>
 
@@ -103,7 +96,7 @@ const CostTable = () => {
             <div
               className={cn(
                 "w-[11px] bg-dark",
-                selectedSymbol < 6 && "hidden",
+                symbol.type === "arcane" && "hidden",
                 isMobile && "hidden"
               )}
             ></div>

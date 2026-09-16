@@ -14,14 +14,13 @@ describe("buildDateSymbols", () => {
       vj({ level: NaN, experience: 0, daily: true }),
       { ...createInitialSymbols()[6], level: 3, experience: 0, daily: true }, // sacred while arcane mode
     ];
-    expect(buildDateSymbols(symbols, false, 20, now)).toEqual([]);
+    expect(buildDateSymbols(symbols, "arcane", now)).toEqual([]);
   });
 
   it("dates every future level from the daily rate (VJ level 18, 10/day)", () => {
     const [entry] = buildDateSymbols(
       [vj({ level: 18, experience: 0, daily: true })],
-      false,
-      20,
+      "arcane",
       now
     );
     expect(entry.name).toBe("Vanishing Journey");

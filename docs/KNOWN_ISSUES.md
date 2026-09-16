@@ -15,7 +15,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 ### KI-002 · H · Overview shows stale results for every non-selected symbol after a reload
 
 - **Symptom**: Reload with several symbols levelled and quests on. Overview's desktop columns show "Complete", "Ready for upgrade", and "0" for every symbol except the one currently selected, until each is clicked in the Selector.
-- **Cause**: `partialize` zeroes `daysRemaining`/`symbolsRemaining`/`completion` on save; the only writer is the effect in `Calculator.tsx`, which recomputes for `symbols[selectedSymbol]` only. Overview's collapsed rows read those stored fields and map `0` to "Complete"/"Ready for upgrade".
+- **Cause**: `partialize` zeroes `daysRemaining`/`symbolsRemaining`/`completion` on save; the only writer is the effect in `Calculator.tsx`, which recomputes for the selected symbol only. Overview's collapsed rows read those stored fields and map `0` to "Complete"/"Ready for upgrade".
 - **Suggested fix**: Derive the three values in Overview per row from `level`/`experience`/quests with `getRemainingSymbols` + `calculateDaysRemaining` (Graph already does this), and stop persisting or reading the cached fields. `Tools.tsx` also reads `symbolsRemaining` (selector-count clamp and Apply); derive it there too, or keep the field for the selected symbol only. Alternatively recompute all symbols on mount.
 
 ### KI-003 · M · Weekly reset is credited a day late, and a Sunday start skips the next Monday
@@ -36,12 +36,6 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 - **Symptom**: Level 19 with 2679 unlocked exp, click the check icon → level 20 with 2307 exp. The click also sets `locked: true`, so the symbol ends up locked at max level with leftover exp, a negative `symbolsRemaining`, and an exp field with no cap (KI-004).
 - **Cause**: The overflow walk in `Calculator.tsx` applies `overflowExperience` whenever `overflowLevel > level`, including when it reaches max.
 - **Suggested fix**: When `overflowLevel` is max, set `experience: 0`.
-
-### KI-006 · L · Calculator's derived-field effect keys on `swapped`, not the symbol's type
-
-- **Symptom**: On an Arcane→Sacred swap there is one commit where `swapped` is already true but `selectedSymbol` still points at the arcane symbol; the effect slices `symbolsRequired.slice(level, 11)` for it and writes wrong derived fields. The render path guards this transient with `symbolsRequired.length === (!swapped ? 20 : 11)`; the effect does not. In practice the corrupted symbol is always `selectedArcane`, which is re-selected on the swap back and recomputed before arcane rows are shown again, so there is no lasting visible symptom; this entry is about fragility under refactoring, not user-facing output.
-- **Cause**: `Selector`'s effect updates `selectedSymbol` one effect later than the `swapped` change.
-- **Suggested fix**: Early-return in the effect when `currentSymbol.type` does not match the mode, or derive the bound from `currentSymbol.symbolsRequired.length`.
 
 ### KI-007 · L · Invalid DOM nesting from the `TooltipTrigger` button fallback
 
@@ -70,4 +64,4 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ## Resolved
 
-_None yet. Format: `### KI-NNN · resolved in <commit> · one line on what changed`._
+### KI-006 · resolved on `v2` (identity refactor, 2026-09-16) · `setMode` switches mode and selection atomically and Calculator/Tools use `currentSymbol.type`, so the swap transient cannot occur. (Was: the derived-field effect keyed on `swapped` while `selectedSymbol` lagged one effect behind.)

@@ -5,7 +5,7 @@
 
 import { dayjs } from "./dayjs";
 import type { Dayjs } from "dayjs";
-import type { SymbolData } from "./types";
+import type { SymbolData, SymbolType } from "./types";
 import {
   advanceDayCount,
   getDailySymbols,
@@ -13,7 +13,7 @@ import {
   INITIAL_DAY_COUNT,
   isValid,
 } from "./utils";
-import { POWER_PER_LEVEL } from "./game";
+import { MAX_LEVEL, POWER_PER_LEVEL } from "./game";
 
 export type DateSymbols = {
   name: string;
@@ -39,20 +39,20 @@ export interface GraphSeries {
   maxDays: number;
 }
 
-/** For every graphable symbol of the current mode, the date each future level is reached. */
+/** For every graphable symbol of one type, the date each future level is reached. */
 export function buildDateSymbols(
   symbols: SymbolData[],
-  swapped: boolean,
-  maxLevel: number,
+  type: SymbolType,
   now: Dayjs = dayjs()
 ): DateSymbols[] {
+  const maxLevel = MAX_LEVEL[type];
   return symbols
     .filter(
       (symbol) =>
         (symbol.weekly || symbol.daily) &&
         isValid(symbol.level) &&
         isValid(symbol.experience) &&
-        (!swapped ? symbol.type === "arcane" : symbol.type === "sacred")
+        symbol.type === type
     )
     .map((symbol) => {
       const progress: DateSymbols["progress"] = [];

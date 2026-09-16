@@ -25,7 +25,7 @@ describe("Overview — collapsed rows", () => {
   });
 
   it("shows the stored completion date, days and symbols remaining", () => {
-    seedSymbol(0, {
+    seedSymbol(1, {
       level: 5,
       experience: 0,
       daily: true,
@@ -41,7 +41,7 @@ describe("Overview — collapsed rows", () => {
   });
 
   it("singularises one day", () => {
-    seedSymbol(0, {
+    seedSymbol(1, {
       level: 5,
       experience: 0,
       daily: true,
@@ -53,7 +53,7 @@ describe("Overview — collapsed rows", () => {
   });
 
   it("maps zeroed derived fields to Complete / Ready for upgrade / 0 (KI-002: what a reload shows)", () => {
-    seedSymbol(0, {
+    seedSymbol(1, {
       level: 5,
       experience: 0,
       daily: true,
@@ -69,7 +69,7 @@ describe("Overview — collapsed rows", () => {
   });
 
   it("shows Indefinite / ? days when no quest is enabled", () => {
-    seedSymbol(0, { level: 5, experience: 0, daysRemaining: 12, completion: "2026-09-28" });
+    seedSymbol(1, { level: 5, experience: 0, daysRemaining: 12, completion: "2026-09-28" });
     render(<Overview />);
     const row = within(rowOf("Vanishing Journey"));
     expect(row.getAllByText("Indefinite").length).toBeGreaterThan(0);
@@ -77,7 +77,7 @@ describe("Overview — collapsed rows", () => {
   });
 
   it("shows MAX for a maxed symbol and 0 for an unset one in the target column", () => {
-    seedSymbol(0, { level: 20, experience: 0 });
+    seedSymbol(1, { level: 20, experience: 0 });
     render(<Overview />);
     expect(within(rowOf("Vanishing Journey")).getAllByText("MAX").length).toBeGreaterThan(0);
     expect(within(rowOf("Lachelein")).getAllByText("0").length).toBeGreaterThan(0);
@@ -95,7 +95,7 @@ describe("Overview — target level panel", () => {
 
   it("computes symbols, days and date for a target level (frozen Wednesday)", () => {
     vi.setSystemTime(WED);
-    seedSymbol(0, { level: 5, experience: 0, daily: true });
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
     render(<Overview />);
     const row = openRow("Vanishing Journey");
 
@@ -111,7 +111,7 @@ describe("Overview — target level panel", () => {
   });
 
   it("explains a target at or below the current level, and an empty target", () => {
-    seedSymbol(0, { level: 5, experience: 0, daily: true });
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
     render(<Overview />);
     const row = openRow("Vanishing Journey");
 
@@ -124,7 +124,7 @@ describe("Overview — target level panel", () => {
   });
 
   it("shows ? days when no quest is enabled even with a valid target", () => {
-    seedSymbol(0, { level: 5, experience: 0 });
+    seedSymbol(1, { level: 5, experience: 0 });
     render(<Overview />);
     const row = openRow("Vanishing Journey");
     typeTarget(row, "6");

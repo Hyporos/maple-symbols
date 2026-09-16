@@ -10,17 +10,17 @@ const symbols = [
 
 describe("usePower", () => {
   it("arcane mode: level*10 + 20 per valid arcane symbol", () => {
-    const { result } = renderHook(() => usePower(symbols, false));
+    const { result } = renderHook(() => usePower(symbols, "arcane"));
     expect(result.current).toBe(70);
   });
 
   it("sacred mode: level*10 per valid sacred symbol, no base bonus", () => {
-    const { result } = renderHook(() => usePower(symbols, true));
+    const { result } = renderHook(() => usePower(symbols, "sacred"));
     expect(result.current).toBe(30);
   });
 
   it("is 0 with no valid symbols", () => {
-    const { result } = renderHook(() => usePower([{ type: "arcane", level: NaN }], false));
+    const { result } = renderHook(() => usePower([{ type: "arcane", level: NaN }], "arcane"));
     expect(result.current).toBe(0);
   });
 });

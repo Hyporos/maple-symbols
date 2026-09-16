@@ -16,7 +16,7 @@ describe("Tools — Symbol Selector", () => {
   });
 
   it("previews the level/exp after using N symbols and applies it to the store", () => {
-    seedSymbol(0, { level: 1, experience: 0, symbolsRemaining: 2679 }); // VJ, arcane
+    seedSymbol(1, { level: 1, experience: 0, symbolsRemaining: 2679 }); // VJ, arcane
     render(<Tools />);
     expect(screen.getAllByText("1 / 0").length).toBeGreaterThan(0); // "before" (both tool panels show it)
     expect(screen.getAllByText("? / ?").length).toBeGreaterThan(0); // after, no count yet
@@ -33,7 +33,7 @@ describe("Tools — Symbol Selector", () => {
   });
 
   it("clamps the count: '0' → 1, more than symbolsRemaining → symbolsRemaining", () => {
-    seedSymbol(0, { level: 1, experience: 0, symbolsRemaining: 2679 });
+    seedSymbol(1, { level: 1, experience: 0, symbolsRemaining: 2679 });
     render(<Tools />);
     fireEvent.change(countInput(), { target: { value: "0" } });
     expect(countInput()).toHaveValue(1);
@@ -44,14 +44,14 @@ describe("Tools — Symbol Selector", () => {
 
 describe("Tools — Catalyst", () => {
   it("needs level 2 or higher", () => {
-    seedSymbol(0, { level: 1, experience: 0 });
+    seedSymbol(1, { level: 1, experience: 0 });
     render(<Tools />);
     fireEvent.click(screen.getByRole("button", { name: /Arcane Catalyst/ }));
     expect(screen.getByText("Must be level 2 or higher")).toBeInTheDocument();
   });
 
   it("arcane keeps 80% of cumulative exp: level 5 → 4 / 13", () => {
-    seedSymbol(0, { level: 5, experience: 0 }); // invested 12+15+20+27 = 74; ×0.8 = 59.2 → level 4, 12.2 → ceil 13
+    seedSymbol(1, { level: 5, experience: 0 }); // invested 12+15+20+27 = 74; ×0.8 = 59.2 → level 4, 12.2 → ceil 13
     render(<Tools />);
     fireEvent.click(screen.getByRole("button", { name: /Arcane Catalyst/ }));
     expect(screen.getByText("4 / 13")).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe("Tools — Catalyst", () => {
   });
 
   it("sacred keeps 60%: Cernium level 5 → 4 / 36", () => {
-    seedSymbol(6, { level: 5, experience: 0 }); // invested 29+76+141+224 = 470; ×0.6 = 282 → level 4, 36 left
+    seedSymbol(7, { level: 5, experience: 0 }); // invested 29+76+141+224 = 470; ×0.6 = 282 → level 4, 36 left
     render(<Tools />);
     fireEvent.click(screen.getByRole("button", { name: /Sacred Catalyst/ }));
     expect(screen.getByText("4 / 36")).toBeInTheDocument();

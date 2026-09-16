@@ -9,6 +9,10 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 - **Known issues** (`docs/KNOWN_ISSUES.md`): folded into 2.0. Current behaviour is pinned by tests marked with the `KI-` id; each fix is a deliberate test change plus a move to **Resolved**.
 - **Preparations chosen**: characterization tests (done), extract logic seams into `src/lib` (done), dependency upgrades first and separately (done 2026-09-16 on `development`: tooling minors, React 19, Tailwind 4 with before/after screenshots identical; pending: Node to the latest 22 LTS, then jsdom 30 and an `engines` field). Not chosen: a persistence migration up front (part of the 2.0 data-model work), tagging 1.4.0 first, `noUncheckedIndexedAccess` (apply on the v2 code as it is written).
 
+## Progress on `v2`
+
+- **Identity by id/type** (2026-09-16): `mode: SymbolType`, `selectedId`, `lastSelected`, `selectSymbol`/`setMode`, `useSelectedSymbol()`, `updateSymbol(symbols, id, patch)`, `maxLevelFor(type)`, `isMaxLevel(level, type)`, `usePower(symbols, type)`, `buildDateSymbols(symbols, type)`. No array-index lookups remain; the Selector effect that restored selection is gone. KI-006 resolved. Next: derived values on read (KI-002), then persistence by id (KI-001).
+
 ## What the safety net pins (as of 2026-09-16)
 
 - 28 test files, 181 tests, about 92% statement coverage; `pnpm test`.

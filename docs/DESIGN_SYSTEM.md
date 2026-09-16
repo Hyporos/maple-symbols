@@ -123,9 +123,7 @@ Inputs opt out of the global accent focus ring and show focus with `bg-hover` in
         currentSymbol.bonus && "border-checked/80 md:border-checked",
         typeof currentSymbol.bonus === "undefined" && "hidden"
       )}
-      onClick={() =>
-        setSymbols(updateSymbol(symbols, selectedSymbol, { bonus: !currentSymbol.bonus }))
-      }
+      onClick={() => setSymbols(updateSymbol(symbols, selectedId, { bonus: !currentSymbol.bonus }))}
     >
       Bonus
     </button>
@@ -143,7 +141,7 @@ A new toggle also needs the checklist in ARCHITECTURE §9 (effect deps, `getDail
 
 **Nav link** (Header): `cn("transition-all hover:text-white", isActive && "text-white")` on an `<a href>` that calls `navigate` after `preventDefault`. **Changelog version button**: `w-full cursor-pointer select-none py-[20.2px] text-center text-xs transition-all hover:bg-light hover:tracking-wider hover:text-accent md:text-base`, selected adds `bg-light font-semibold tracking-wider text-accent`.
 
-**Table** (Handbook): scroll container `flex overflow-y-auto`; `<table className="mb-1 w-full md:mr-10">`; `th` `pb-5 text-sm font-semibold md:text-base`; `td` `border border-white/5 py-[5px] text-center text-xs md:text-sm`; `tr` `cn("hover:bg-dark", isCurrentLevel && "bg-dark text-accent")` with a 12–16 px symbol icon beside the current level; first data row shows `-`; numbers via `toLocaleString()`. After the table, a desktop-only scrollbar spacer `cn("w-[11px] bg-dark", <shorter-dataset condition> && "hidden", isMobile && "hidden")` reserves scrollbar width on the dataset that does not overflow so columns don't shift. The condition is hand-set per table: CostTable `selectedSymbol < 6`, ExpTable `!swapped` (20 vs 11 rows), RatioTable `swapped` (9 arcane vs 16 sacred rows).
+**Table** (Handbook): scroll container `flex overflow-y-auto`; `<table className="mb-1 w-full md:mr-10">`; `th` `pb-5 text-sm font-semibold md:text-base`; `td` `border border-white/5 py-[5px] text-center text-xs md:text-sm`; `tr` `cn("hover:bg-dark", isCurrentLevel && "bg-dark text-accent")` with a 12–16 px symbol icon beside the current level; first data row shows `-`; numbers via `toLocaleString()`. After the table, a desktop-only scrollbar spacer `cn("w-[11px] bg-dark", <shorter-dataset condition> && "hidden", isMobile && "hidden")` reserves scrollbar width on the dataset that does not overflow so columns don't shift. The condition is hand-set per table: CostTable `symbol.type === "arcane"`, ExpTable `mode === "arcane"` (20 vs 11 rows), RatioTable `mode === "sacred"` (9 arcane vs 16 sacred rows).
 
 **Tooltip** (`placement` is `top` by default, or `bottom` / `left` / `right`):
 
@@ -183,7 +181,7 @@ A new toggle also needs the checklist in ARCHITECTURE §9 (effect deps, `getDail
 ## 8. Motion
 
 - Defaults: `transition-all` or `transition-colors` at Tailwind's 150 ms. Calculator toggles animate only `transition-[background-color]`; Tools pills transition only on desktop (`md:transition-colors`).
-- Selector indicator bar: `mt-1 h-[3px] w-[40px] rounded-full bg-accent transition-all duration-[350ms] md:mt-3 md:w-[50px]` + a `translate-x-[…]` from `BAR_POSITIONS` (80 px pitch = 40 px icon + `md:gap-10`), desktop only.
+- Selector indicator bar: `mt-1 h-[3px] w-[40px] rounded-full bg-accent transition-all duration-[350ms] md:mt-3 md:w-[50px]` + a `translate-x-[…]` from `BAR_POSITIONS` (six slots by position within the shown type; 80 px pitch = 40 px icon + `md:gap-10`), desktop only.
 - Header mobile menu: `flex h-[55px] flex-col overflow-hidden transition-height` → `h-[110px]` when open.
 - Hovers: `hover:scale-110` on social icons; `hover:tracking-wider` on changelog versions; the changelog GitHub icon spins (`transition-all duration-1000 hover:rotate-[360deg] hover:scale-110 hover:fill-white`); `group-hover:w-1/4` grows the tab underline. State rotations (`rotate-180` on chevrons) snap, no transition.
 - Tooltips fade over 250 ms (`useTransitionStyles`, initial `opacity: 0`); hover opens after 400 ms and closes after 250 ms; focus opens instantly; offset 12 px, `flip` + `shift`.
@@ -231,13 +229,13 @@ interface ThingProps {
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Thing = ({ label }: ThingProps) => {
-  const swapped = useAppStore((s) => s.swapped);
+  const mode = useAppStore((s) => s.mode);
   const { isMobile } = useBreakpoint();
 
   return (
     <section className="flex justify-center">
       <div className="mx-4 w-[360px] rounded-lg bg-gradient-to-t from-card to-card-grad px-8 py-8 md:w-full md:max-w-[700px] md:px-10 md:py-10">
-        <p className={cn("text-sm md:text-base", swapped && "text-accent")}>{label}</p>
+        <p className={cn("text-sm md:text-base", mode === "sacred" && "text-accent")}>{label}</p>
         {isMobile && <p className="text-xs text-tertiary">phone-only copy</p>}
       </div>
     </section>

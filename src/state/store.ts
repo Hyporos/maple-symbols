@@ -1,61 +1,67 @@
 // ---------------------------------------------------------------------------
 // store.ts — Global application state via Zustand.
-// Replaces the previous Redux + RTK setup.
 //
 // Persistence: only `symbols` is written to localStorage via the `persist`
-// middleware.  UI state (swapped, selectedSymbol, selectedPage) intentionally
-// resets to defaults on every page load.
+// middleware. UI state (mode, selection) intentionally resets on reload.
+//
+// Identity: symbols are addressed by `id` (from symbols.json), never by array
+// index. `mode` is the type the UI is showing; `selectedId` is the symbol the
+// Calculator/Tools/Handbook operate on; `lastSelected` remembers one id per type
+// so switching modes restores the previous choice.
 //
 // Version: bump STORAGE_VERSION whenever the SymbolData schema changes.
 // The `migrate` function runs automatically when the stored version differs,
-// resetting symbols to a clean initial state.
+// resetting symbols to a clean initial state (KI-001).
 // ---------------------------------------------------------------------------
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createInitialSymbols } from "../lib/data";
-import type { SymbolData } from "../lib/types";
+import type { SymbolData, SymbolType } from "../lib/types";
 
 const STORAGE_VERSION = 2;
 
+/** First symbol of each type in symbols.json (Vanishing Journey, Cernium). */
+export const DEFAULT_SELECTION: Record<SymbolType, number> = { arcane: 1, sacred: 7 };
+
 interface AppStore {
-  // ── Symbol type toggle ────────────────────────────────────────────────────
-  swapped: boolean;
-  setSwapped: (v: boolean) => void;
+  // ── Mode (which symbol type the UI shows) ────────────────────────────────
+  mode: SymbolType;
+  /** Switch mode and restore the last symbol selected in that mode. */
+  setMode: (mode: SymbolType) => void;
 
   // ── Symbol data ───────────────────────────────────────────────────────────
   symbols: SymbolData[];
   setSymbols: (symbols: SymbolData[]) => void;
 
-  // ── Selection state ───────────────────────────────────────────────────────
-  selectedSymbol: number;
-  setSelectedSymbol: (index: number) => void;
-
-  // ── Per-type symbol memory (survives swaps; resets on full page reload) ────
-  /** Index of the last-selected Arcane symbol. Restored when swapping back. */
-  selectedArcane: number;
-  setSelectedArcane: (index: number) => void;
-  /** Index of the last-selected Sacred symbol. Restored when swapping back. */
-  selectedSacred: number;
-  setSelectedSacred: (index: number) => void;
+  // ── Selection (by id) ─────────────────────────────────────────────────────
+  selectedId: number;
+  /** Remembered selection per type; resets on reload. */
+  lastSelected: Record<SymbolType, number>;
+  /** Select a symbol of the current mode by id and remember it for that type. */
+  selectSymbol: (id: number) => void;
 }
 
 export const useAppStore = create<AppStore>()(
   persist(
-    (set) => ({
-      swapped: false,
-      setSwapped: (swapped) => set({ swapped }),
+    (set, get) => ({
+      mode: "arcane",
+      setMode: (mode) => set({ mode, selectedId: get().lastSelected[mode] }),
 
       symbols: createInitialSymbols(),
       setSymbols: (symbols) => set({ symbols }),
 
-      selectedSymbol: 0,
-      setSelectedSymbol: (selectedSymbol) => set({ selectedSymbol }),
-
-      selectedArcane: 0,
-      setSelectedArcane: (selectedArcane) => set({ selectedArcane }),
-      selectedSacred: 6,
-      setSelectedSacred: (selectedSacred) => set({ selectedSacred }),
+      selectedId: DEFAULT_SELECTION.arcane,
+      lastSelected: { ...DEFAULT_SELECTION },
+      selectSymbol: (id) => {
+        const symbol = get().symbols.find((s) => s.id === id);
+        if (!symbol) return;
+        set((state) => ({
+          selectedId: id,
+          mode: symbol.type,
+          lastSelected: { ...state.lastSelected, [symbol.type]: id },
+        }));
+      },
     }),
     {
       name: "maple-symbols-v2",
@@ -72,11 +78,7 @@ export const useAppStore = create<AppStore>()(
         })),
       }),
       // On schema change, reset symbols to defaults rather than loading stale data.
-      migrate: (_persistedState, _version) => ({
-        swapped: false,
-        symbols: createInitialSymbols(),
-        selectedSymbol: 0,
-      }),
+      migrate: () => ({ symbols: createInitialSymbols() }),
       // JSON.stringify converts NaN → null, so convert null back to NaN on rehydration.
       merge: (persisted, current) => {
         const p = persisted as Partial<AppStore>;
@@ -96,3 +98,7 @@ export const useAppStore = create<AppStore>()(
     }
   )
 );
+
+/** The symbol the Calculator/Tools/Handbook operate on (falls back to the first symbol). */
+export const useSelectedSymbol = (): SymbolData =>
+  useAppStore((s) => s.symbols.find((x) => x.id === s.selectedId) ?? s.symbols[0]);

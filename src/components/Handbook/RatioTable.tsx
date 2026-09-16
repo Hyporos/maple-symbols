@@ -11,7 +11,7 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const RatioTable = () => {
-  const swapped = useAppStore((s) => s.swapped);
+  const mode = useAppStore((s) => s.mode);
 
   const { isMobile } = useBreakpoint();
 
@@ -22,13 +22,13 @@ const RatioTable = () => {
         <div className="flex justify-between">
           <div className="flex items-center gap-5 md:gap-6">
             <img
-              src={`/symbols/empty-${!swapped ? "arcane" : "sacred"}.webp`}
+              src={`/symbols/empty-${mode}.webp`}
               width={!isMobile ? 32.5 : 30}
               className="scale-110"
             />
             <div className="h-full w-px bg-white/10"></div>
             <h1 className="text-lg font-semibold md:text-2xl">
-              {!swapped ? "Arcane River" : "Grandis"}
+              {mode === "arcane" ? "Arcane River" : "Grandis"}
             </h1>
           </div>
 
@@ -41,9 +41,9 @@ const RatioTable = () => {
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
-              Displays <span>damage ratios</span> for {!swapped ? "Arcane River" : "Grandis"}{" "}
-              <br></br>maps, <span>depending</span> on your{" "}
-              {!swapped ? "Arcane Power" : "Sacred Power"}.
+              Displays <span>damage ratios</span> for{" "}
+              {mode === "arcane" ? "Arcane River" : "Grandis"} <br></br>maps, <span>depending</span>{" "}
+              on your {mode === "arcane" ? "Arcane Power" : "Sacred Power"}.
             </TooltipContent>
           </Tooltip>
         </div>
@@ -58,7 +58,7 @@ const RatioTable = () => {
               <tr>
                 <th className="flex items-center justify-center px-3 pb-5 md:gap-2 md:px-0">
                   <h2 className="text-sm font-semibold md:text-base">
-                    {!swapped ? "Arcane Power" : "Sacred Power"}
+                    {mode === "arcane" ? "Arcane Power" : "Sacred Power"}
                   </h2>
                   {!isMobile && (
                     <Tooltip>
@@ -70,7 +70,7 @@ const RatioTable = () => {
                         />
                       </TooltipTrigger>
                       <TooltipContent className="tooltip">
-                        {!swapped ? (
+                        {mode === "arcane" ? (
                           <>
                             The current <span>Arcane Power range</span> you meet, <br></br> compared
                             to the <span>map requirement</span>
@@ -92,7 +92,7 @@ const RatioTable = () => {
 
             {/* TABLE BODY */}
             <tbody>
-              {!swapped
+              {mode === "arcane"
                 ? arcaneRatioData.map((requirement, index) => (
                     <tr key={index} className="hover:bg-dark">
                       <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
@@ -103,13 +103,13 @@ const RatioTable = () => {
                       </td>
                       <td className="border border-white/5 py-[5px]">
                         <div className="flex items-center justify-center md:gap-2">
-                          {!swapped && index === 8 && (
+                          {mode === "arcane" && index === 8 && (
                             <MdOutlineInfo size={18} className="collapse hidden md:block" />
                           )}
                           <p className="text-center text-xs md:text-sm">
                             {requirement.damageTaken}%
                           </p>
-                          {!swapped && index === 8 && !isMobile && (
+                          {mode === "arcane" && index === 8 && !isMobile && (
                             <Tooltip>
                               <TooltipTrigger asChild={true}>
                                 {" "}
@@ -145,7 +145,9 @@ const RatioTable = () => {
           </table>
 
           {/* CONDITIONAL SIDEBAR */}
-          <div className={cn("w-[11px] bg-dark", swapped && "hidden", isMobile && "hidden")}></div>
+          <div
+            className={cn("w-[11px] bg-dark", mode === "sacred" && "hidden", isMobile && "hidden")}
+          ></div>
         </div>
       </div>
     </div>

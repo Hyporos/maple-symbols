@@ -1,7 +1,7 @@
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
-import { useAppStore } from "../../state/store";
+import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import symbolsJson from "../../lib/symbols.json";
 
@@ -10,18 +10,16 @@ import symbolsJson from "../../lib/symbols.json";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const ExpTable = () => {
-  const swapped = useAppStore((s) => s.swapped);
-  const symbols = useAppStore((s) => s.symbols);
-  const selectedSymbol = useAppStore((s) => s.selectedSymbol);
+  const mode = useAppStore((s) => s.mode);
 
   const { isMobile } = useBreakpoint();
   let totalExp = 0;
 
-  const symbol = symbols[selectedSymbol];
-  const isMatchingType = swapped ? symbol?.type === "sacred" : symbol?.type === "arcane";
+  const symbol = useSelectedSymbol();
+  const isMatchingType = mode === "sacred" ? symbol?.type === "sacred" : symbol?.type === "arcane";
   const currentLevel = isMatchingType && !isNaN(symbol?.level) ? symbol.level : null;
 
-  const expData = !swapped ? symbolsJson.arcaneExpRequired : symbolsJson.sacredExpRequired;
+  const expData = mode === "arcane" ? symbolsJson.arcaneExpRequired : symbolsJson.sacredExpRequired;
 
   return (
     <div className="flex h-[535px] pt-10 md:h-[555px]">
@@ -30,13 +28,13 @@ const ExpTable = () => {
         <div className="flex justify-between">
           <div className="flex items-center gap-5 md:gap-6">
             <img
-              src={`/symbols/empty-${!swapped ? "arcane" : "sacred"}.webp`}
+              src={`/symbols/empty-${mode}.webp`}
               width={!isMobile ? 32.5 : 30}
               className="scale-110"
             />
             <div className="h-full w-px bg-white/10"></div>
             <h1 className="text-lg font-semibold md:text-2xl">
-              {!swapped ? "Arcane Symbols" : "Sacred Symbols"}
+              {mode === "arcane" ? "Arcane Symbols" : "Sacred Symbols"}
             </h1>
           </div>
 
@@ -108,7 +106,9 @@ const ExpTable = () => {
           </table>
 
           {/* CONDITIONAL SIDEBAR */}
-          <div className={cn("w-[11px] bg-dark", !swapped && "hidden", isMobile && "hidden")}></div>
+          <div
+            className={cn("w-[11px] bg-dark", mode === "arcane" && "hidden", isMobile && "hidden")}
+          ></div>
         </div>
       </div>
     </div>

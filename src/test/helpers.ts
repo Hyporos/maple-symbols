@@ -24,23 +24,12 @@ export function resetStore() {
   useAppStore.setState({ ...useAppStore.getInitialState(), symbols: createInitialSymbols() }, true);
 }
 
-/** Patch one symbol by index and (optionally) select it. Returns the patched symbol. */
-export function seedSymbol(index: number, patch: Partial<SymbolData>, select = true): SymbolData {
-  const symbols = useAppStore
-    .getState()
-    .symbols.map((s, i) => (i === index ? { ...s, ...patch } : s));
+/** Patch one symbol by id (1–6 arcane, 7–12 sacred) and, by default, select it (switching mode). */
+export function seedSymbol(id: number, patch: Partial<SymbolData>, select = true): SymbolData {
+  const symbols = useAppStore.getState().symbols.map((s) => (s.id === id ? { ...s, ...patch } : s));
   useAppStore.setState({ symbols });
-  if (select) {
-    // Selector's mount effect restores selectedSymbol from selectedArcane/selectedSacred,
-    // so set those too or the selection is overwritten on render.
-    const isSacred = symbols[index].type === "sacred";
-    useAppStore.setState({
-      selectedSymbol: index,
-      swapped: isSacred,
-      ...(isSacred ? { selectedSacred: index } : { selectedArcane: index }),
-    });
-  }
-  return symbols[index];
+  if (select) useAppStore.getState().selectSymbol(id);
+  return symbols.find((s) => s.id === id)!;
 }
 
 // ── Text matching ─────────────────────────────────────────────────────────

@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 import { dayjs } from "./dayjs";
 import type { Dayjs } from "dayjs";
-import type { SymbolData } from "./types";
+import type { SymbolData, SymbolType } from "./types";
 import { EXTRA_MULTIPLIER, maxLevelFor, WEEKLY_SYMBOLS } from "./game";
 
 // ---------------------------------------------------------------------------
@@ -27,27 +27,22 @@ export function isValid(value: number): boolean {
   return !isNaN(value);
 }
 
-/** Returns true when the symbol is at its maximum level for the current mode. */
-export function isMaxLevel(level: number, swapped: boolean): boolean {
-  return level === maxLevelFor(swapped);
+/** Returns true when the level is the maximum for that symbol type. */
+export function isMaxLevel(level: number, type: SymbolType): boolean {
+  return level === maxLevelFor(type);
 }
 
 // ---------------------------------------------------------------------------
 // Symbol state helpers
 // ---------------------------------------------------------------------------
 
-/**
- * Immutably updates a single symbol in the array by array index.
- *
- * Replaces the common pattern:
- *   symbols.map((s) => s.id === selectedSymbol + 1 ? { ...s, ...patch } : s)
- */
+/** Immutably updates the symbol with the given id. */
 export function updateSymbol(
   symbols: SymbolData[],
-  index: number,
+  id: number,
   patch: Partial<SymbolData>
 ): SymbolData[] {
-  return symbols.map((s, i) => (i === index ? { ...s, ...patch } : s));
+  return symbols.map((s) => (s.id === id ? { ...s, ...patch } : s));
 }
 
 // ---------------------------------------------------------------------------

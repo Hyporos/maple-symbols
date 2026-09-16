@@ -8,11 +8,8 @@ import type { SymbolType } from "./types";
 /** Highest level per symbol type. */
 export const MAX_LEVEL: Record<SymbolType, number> = { arcane: 20, sacred: 11 };
 
-/** The mode the UI is in: `swapped` false = arcane, true = sacred. */
-export const modeType = (swapped: boolean): SymbolType => (swapped ? "sacred" : "arcane");
-
-/** Max level for the current mode (the former `!swapped ? 20 : 11` literal). */
-export const maxLevelFor = (swapped: boolean): number => MAX_LEVEL[modeType(swapped)];
+/** Max level for a symbol type (the former `!swapped ? 20 : 11` literal). */
+export const maxLevelFor = (type: SymbolType): number => MAX_LEVEL[type];
 
 /** Symbols granted by a weekly quest at each Monday reset (arcane only). */
 export const WEEKLY_SYMBOLS = 120;
