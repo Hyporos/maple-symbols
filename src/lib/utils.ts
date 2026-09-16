@@ -5,7 +5,9 @@
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 import { dayjs } from "./dayjs";
+import type { Dayjs } from "dayjs";
 import type { SymbolData } from "./types";
+import { EXTRA_MULTIPLIER, maxLevelFor, WEEKLY_SYMBOLS } from "./game";
 
 // ---------------------------------------------------------------------------
 // Tailwind class merging helper
@@ -27,7 +29,7 @@ export function isValid(value: number): boolean {
 
 /** Returns true when the symbol is at its maximum level for the current mode. */
 export function isMaxLevel(level: number, swapped: boolean): boolean {
-  return level === (swapped ? 11 : 20);
+  return level === maxLevelFor(swapped);
 }
 
 // ---------------------------------------------------------------------------
@@ -62,7 +64,7 @@ export function updateSymbol(
 export function getDailySymbols(symbol: SymbolData): number {
   if (!symbol.daily) return 0;
 
-  const extraMultiplier = symbol.extra ? (symbol.type === "arcane" ? 2 : 1.5) : 1;
+  const extraMultiplier = symbol.extra ? EXTRA_MULTIPLIER[symbol.type] : 1;
 
   return symbol.dailySymbols * extraMultiplier;
 }
@@ -124,7 +126,8 @@ export function advanceDayCount(
   state: DayCountState,
   symbolsNeeded: number,
   dailySymbols: number,
-  hasWeekly: boolean
+  hasWeekly: boolean,
+  now: Dayjs = dayjs()
 ): DayCountState {
   if (isNaN(symbolsNeeded)) return { ...state, days: NaN };
   if (symbolsNeeded <= 0) return state;
@@ -136,11 +139,13 @@ export function advanceDayCount(
 
   // Safety cap: 1000 iterations covers ~2.7 years of daily progress.
   for (let i = 0; i < 1000; i++) {
-    if (days * dailySymbols + (hasWeekly ? weeklyResets * 120 : 0) >= target) break;
+    if (days * dailySymbols + (hasWeekly ? weeklyResets * WEEKLY_SYMBOLS : 0) >= target) break;
 
-    if (!mondayReached && dayjs().add(countToMonday, "day").isBefore(dayjs().day(8))) {
+    // "Next Monday" is dayjs().day(8): Monday of NEXT week in Sunday-start weeks (KI-003).
+    const nextMonday = now.day(8);
+    if (!mondayReached && now.add(countToMonday, "day").isBefore(nextMonday)) {
       countToMonday++;
-      if (dayjs().add(countToMonday, "day").isSame(dayjs().day(8))) {
+      if (now.add(countToMonday, "day").isSame(nextMonday)) {
         mondayReached = true;
       }
     } else if ((days - countToMonday) % 7 === 0) {
@@ -166,7 +171,8 @@ export function advanceDayCount(
 export function calculateDaysRemaining(
   symbolsNeeded: number,
   dailySymbols: number,
-  hasWeekly: boolean
+  hasWeekly: boolean,
+  now: Dayjs = dayjs()
 ): number {
-  return advanceDayCount(INITIAL_DAY_COUNT, symbolsNeeded, dailySymbols, hasWeekly).days;
+  return advanceDayCount(INITIAL_DAY_COUNT, symbolsNeeded, dailySymbols, hasWeekly, now).days;
 }

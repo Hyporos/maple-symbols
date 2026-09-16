@@ -44,6 +44,9 @@ src/
              types.ts          SymbolData, SymbolType
              utils.ts          cn, isValid, isMaxLevel, updateSymbol, getDailySymbols,
                                getRemainingSymbols, advanceDayCount, calculateDaysRemaining
+             game.ts           MAX_LEVEL/maxLevelFor, WEEKLY_SYMBOLS, extra/catalyst/power/main-stat constants
+             inputs.ts         clampNumberInput, levelInputPatch, expCapFor, experienceInputValue
+             calculator.ts, tools.ts, overview.ts, graph.ts   pure maths + label strings behind each card
              dayjs.ts          singleton with plugins; changelog.ts; ratioData.ts
   hooks/     usePower          arcane/sacred power total; useBreakpoint (re-export)
   components/
@@ -86,7 +89,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - Days/dates: `calculateDaysRemaining(needed, daily, hasWeekly)` returns 0 (nothing needed), `Infinity` (no progress possible), or `NaN` (bad input); completion = today + days (`YYYY-MM-DD`). Overview shows 0 as "Complete" / "Ready for upgrade"; Infinity, NaN, or no quest enabled as "Indefinite" / "? days" (keyed on `daily`/`weekly`/`experience`, not on the number).
 - `NaN` means **unset** for `level`/`experience` (`isValid`); inputs render `""` for NaN. Typing exactly "0" as a level gives 1, but "00"/"0.5"/"-0" store 0 (KI-010).
 - `locked` (default) caps experience at the next-level requirement; unlocked caps at the full-table total and the check icon converts overflow into levels. Catalyst keeps 80% (arcane) / 60% (sacred) of cumulative exp and needs level ≥ 2; +100/+200 main stat per level.
-- Constants hard-coded outside `symbols.json`: weekly 120 (`advanceDayCount` + the Calculator label), catalyst 0.8/0.6 + its copy (`Tools.tsx`), +100/+200 (`Calculator.tsx`), power formula (`usePower.ts`, `Graph.tsx`), max level (`isMaxLevel` + ~30 `!swapped ? 20 : 11` literals), damage ratios (`ratioData.ts`). A game patch usually touches several.
+- Game constants live in `src/lib/game.ts` (max levels, weekly 120, extra/catalyst multipliers, power formula, main stat); `symbols.json` holds the tables and `ratioData.ts` the damage ratios. Still literal: the `-20%/-40% EXP` copy in `Tools.tsx` and the HP/all-stat tooltip in `Calculator.tsx`.
 
 ## Gotchas (the ones that bite)
 
@@ -107,6 +110,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - `docs/TESTING.md`: writing or fixing tests; helpers, mocks, frozen-time fixtures, recipes per layer, the traps (tooltips, Overview duplicates, lazy sections).
 - `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd.
 - `docs/MISTAKES.md`: distilled rules at the top, log below.
+- `docs/V2_PLAN.md`: the 2.0 overhaul: scope, branch, what is pinned, what is reusable, upgrade order, and the decisions already made.
 
 ## Keep the docs honest
 

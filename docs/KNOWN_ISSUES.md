@@ -51,7 +51,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ### KI-008 · L · Fragile date and tick edge cases
 
-- `advanceDayCount` compares two separate `dayjs()` calls at millisecond precision (`isBefore`/`isSame` with no unit); a rare boundary straddle can add a day. Pass `"day"` as the unit.
+- `advanceDayCount` compares against next Monday at millisecond precision (`isBefore`/`isSame` with no unit). Since the 2.0 preparation it uses one `now` value, so the race between separate `dayjs()` calls is gone; the unit-less comparison remains.
 - `Graph.tsx` computes `diff(…, "day") + 1`, which overshoots by one exactly at local midnight.
 - `Graph.tsx` clears both tick arrays when `ticks[0] === ticks[2]` ("bandaid" comments) instead of fixing the degenerate range.
 - `Tools.tsx` has one `tabIndex` expression hard-coding `level === 20` (should be mode-aware) and the catalyst walk reads `symbolsRequired[-1]` on its first iteration (harmless `undefined` comparison).

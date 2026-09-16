@@ -73,14 +73,14 @@ Index conventions: array index = `id - 1`; arcane occupy 0–5, sacred 6–11. `
 
 Who computes what:
 
-| Value                                             | Where                                                                                            | Stored?                                 |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------- |
-| `symbolsRemaining`, `daysRemaining`, `completion` | the single effect in `Calculator.tsx` (remaining-to-max, `calculateDaysRemaining`, today + days) | yes, for `symbols[selectedSymbol]` only |
-| days to next level, overflow level/exp            | `useMemo`s in `Calculator.tsx`                                                                   | no                                      |
-| Symbol Selector / Catalyst previews               | `useMemo`s in `Tools.tsx`                                                                        | no                                      |
-| Overview expanded-row target maths                | local `useMemo`s in `Overview.tsx`                                                               | no                                      |
-| Graph per-level dates and power series            | `Graph.tsx` via `getRemainingSymbols` + `advanceDayCount` threading `DayCountState`              | no                                      |
-| current power                                     | `usePower` (`src/hooks/usePower.ts`)                                                             | no                                      |
+| Value                                             | Where                                                                                                           | Stored?                                 |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `symbolsRemaining`, `daysRemaining`, `completion` | the single effect in `Calculator.tsx` (remaining-to-max, `calculateDaysRemaining`, today + days)                | yes, for `symbols[selectedSymbol]` only |
+| days to next level, overflow level/exp            | `getOverflow` (`lib/calculator.ts`) via `useMemo` in `Calculator.tsx`                                           | no                                      |
+| Symbol Selector / Catalyst previews               | `selectorPreview` / `catalystPreview` / `formatPreview` (`lib/tools.ts`) via `useMemo`s in `Tools.tsx`          | no                                      |
+| Overview expanded-row target maths                | local `useMemo`s in `Overview.tsx`; strings from `collapsedRowLabels` / `targetPanelLabels` (`lib/overview.ts`) | no                                      |
+| Graph per-level dates and power series            | `buildDateSymbols` / `buildGraphSeries` / ticks / `dateToPower` (`lib/graph.ts`), threading `DayCountState`     | no                                      |
+| current power                                     | `usePower` (`src/hooks/usePower.ts`)                                                                            | no                                      |
 
 Consumers of the stored derived fields are Overview's collapsed rows and Tools' selector-count clamp plus its Apply handler (`selectorCount < symbolsRemaining ? selectorExp : 0`); Graph never reads them. Note the two Handbook tables have different sources: `ExpTable` reads `symbols.json` directly, `CostTable` reads the persisted `symbol.mesosRequired`.
 
@@ -101,7 +101,7 @@ Overview has three effects (on `swapped`; on `targetSymbol`/`selectedNone`; on t
 
 ## 6. Module layering
 
-`lib/` (pure, imports only `lib/`) → `state/` (imports `lib/`) → `hooks/` and `contexts/` (import `lib/`, `contexts/`) → `components/` (import everything). No cycles. Hubs: `lib/utils` (≈14 importers), `hooks/useBreakpoint` (≈11), `state/store` (≈8), `components/Tooltip` (≈8). `components/ui/*` never touch the store; feature components read the store directly instead of taking props.
+`lib/` (pure, imports only `lib/`) → `state/` (imports `lib/`) → `hooks/` and `contexts/` (import `lib/`, `contexts/`) → `components/` (import everything). No cycles. Hubs: `lib/utils` (≈14 importers), `hooks/useBreakpoint` (≈11), `state/store` (≈8), `components/Tooltip` (≈8). `components/ui/*` never touch the store; feature components read the store directly instead of taking props. Since the 2.0 preparation, the per-card maths lives in `lib/calculator.ts`, `lib/tools.ts`, `lib/overview.ts`, `lib/graph.ts`, the input rules in `lib/inputs.ts`, and the game constants in `lib/game.ts`; components only wire state and DOM to those functions, which is what the rewrite reuses.
 
 ## 7. Build, deploy, tooling
 

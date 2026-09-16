@@ -12,34 +12,24 @@ import { ValueType, NameType } from "recharts/types/component/DefaultTooltipCont
 import { FaArrowRight } from "react-icons/fa6";
 
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
+import { isValid, cn } from "../../lib/utils";
 import {
-  isValid,
-  getRemainingSymbols,
-  getDailySymbols,
-  cn,
-  advanceDayCount,
-  INITIAL_DAY_COUNT,
-} from "../../lib/utils";
+  buildDateSymbols,
+  buildGraphSeries,
+  dateToPower,
+  xAxisTicks,
+  yAxisTicks,
+  type DateSymbols,
+  type GraphSymbols,
+} from "../../lib/graph";
+import { clampNumberInput } from "../../lib/inputs";
+import { MAX_POWER_PER_SYMBOL, maxLevelFor, modeType } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
 import { dayjs } from "../../lib/dayjs";
 import RadioButton from "../ui/RadioButton";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import type { SymbolData } from "../../lib/types";
-
-type DateSymbols = {
-  name: string;
-  level: number;
-  progress: Array<{ level: number; date: string }>;
-};
-
-type GraphSymbols = {
-  name: string;
-  level: number;
-  entryLevel: number;
-  date: string | number;
-  power: number;
-};
 
 interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
   currentPower: number;
@@ -147,53 +137,7 @@ const Graph = () => {
   // Calculate every symbol's date needed to reach future levels
   const dateSymbols = useMemo((): DateSymbols[] => {
     try {
-      return symbols
-        .filter(
-          // Only use symbols that have a valid level/exp/quest
-          (currentSymbol) =>
-            (currentSymbol.weekly || currentSymbol.daily) &&
-            isValid(currentSymbol.level) &&
-            isValid(currentSymbol.experience) &&
-            (!swapped ? currentSymbol.type === "arcane" : currentSymbol.type === "sacred")
-        )
-        .map((currentSymbol) => {
-          const progress = [];
-          let dayState = INITIAL_DAY_COUNT;
-
-          // Get the daily symbol count of the symbol
-          const dailySymbols = getDailySymbols(currentSymbol);
-
-          // Loop through the next symbol levels
-          for (
-            let nextLevel = currentSymbol.level + 1;
-            nextLevel <= (!swapped ? 20 : 11);
-            nextLevel++
-          ) {
-            // Get the symbols needed to get from the current iterated level to the next level
-            const remainingSymbols = getRemainingSymbols(nextLevel, currentSymbol);
-
-            // Advance the shared day-count state to the point where this level is reached
-            dayState = advanceDayCount(
-              dayState,
-              remainingSymbols,
-              dailySymbols,
-              !!currentSymbol.weekly
-            );
-
-            // Store the dates needed to reach the next levels
-            progress.push({
-              level: nextLevel,
-              date: dayjs().add(dayState.days, "day").format("YYYY-MM-DD"),
-            });
-          }
-
-          // Return the new tempDateSymbols object
-          return {
-            name: currentSymbol.name,
-            level: currentSymbol.level,
-            progress: progress,
-          };
-        }) as DateSymbols[];
+      return buildDateSymbols(symbols, swapped, maxLevelFor(swapped));
     } catch (e) {
       console.error(e);
       return [];
@@ -201,65 +145,10 @@ const Graph = () => {
   }, [symbols, swapped]);
 
   // Derive graph entries from dateSymbols
-  const { graphSymbols, flatDateSymbols, maxPower, maxDays } = useMemo(() => {
-    let tempPower = currentPower;
-    const maxPowerByDate: Record<string, number> = {};
-
-    // Create a flat (merged) version of the dateSymbols array.
-    const tempFlatDateSymbols = dateSymbols
-      .flatMap((symbol) =>
-        symbol.progress.map((entry) => {
-          // Find the difference of days between today and the entry date (days).
-          // If they both land on today, make sure it's set to 0 and not 1
-          const diffDays = dayjs().isSameOrAfter(entry.date, "day")
-            ? 0
-            : dayjs(entry.date).diff(dayjs(), "day") + 1;
-
-          return {
-            name: symbol.name,
-            level: symbol.level,
-            entryLevel: entry.level,
-            date: graphDynamic ? diffDays : entry.date,
-            power: NaN,
-          };
-        })
-      )
-      .sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
-      // If there is more than one entry on the same date, merge them and combine the power gain (+10)
-      .map((entry) => {
-        tempPower += 10;
-        entry.power = tempPower;
-
-        // Update the maximum power for the specific date
-        maxPowerByDate[entry.date] = Math.max(maxPowerByDate[entry.date] || 0, entry.power);
-
-        return entry;
-      });
-
-    // Create a new array with only entries with the highest power for each date
-    const tempGraphSymbols = tempFlatDateSymbols.reduce((result: GraphSymbols[], entry) => {
-      if (entry.power === maxPowerByDate[entry.date]) {
-        result.push(entry);
-      }
-      return result;
-    }, []);
-
-    // Add today's date and base power to the beginning of the graph
-    tempGraphSymbols.unshift({
-      name: "",
-      level: NaN,
-      entryLevel: NaN,
-      date: graphDynamic ? 0 : dayjs().format("YYYY-MM-DD"),
-      power: currentPower,
-    });
-
-    return {
-      flatDateSymbols: tempFlatDateSymbols,
-      graphSymbols: tempGraphSymbols,
-      maxPower: tempGraphSymbols[tempGraphSymbols.length - 1]?.power ?? NaN,
-      maxDays: (tempGraphSymbols[tempGraphSymbols.length - 1]?.date ?? NaN) as number,
-    };
-  }, [dateSymbols, currentPower, graphDynamic]);
+  const { graphSymbols, flatDateSymbols, maxPower, maxDays } = useMemo(
+    () => buildGraphSeries(dateSymbols, currentPower, graphDynamic),
+    [dateSymbols, currentPower, graphDynamic]
+  );
 
   // Stable tooltip content reference — deps listed so it only re-creates when
   // the underlying data changes, not on every render.
@@ -278,75 +167,26 @@ const Graph = () => {
     [currentPower, isMobile, graphDynamic, swapped, symbols, flatDateSymbols]
   );
 
-  const yAxisTicks = useMemo((): number[] => {
-    if (!isValid(currentPower) || !isValid(maxPower) || currentPower === 0 || maxPower === 0) {
-      return [];
-    }
+  const yTicks = useMemo(() => yAxisTicks(currentPower, maxPower), [currentPower, maxPower]);
 
-    const ticks = [currentPower];
-
-    for (let i = 1; i < 3; i++) {
-      ticks.push(Math.round((currentPower + (i * (maxPower - currentPower)) / 3) / 10) * 10);
-    }
-
-    ticks.push(maxPower);
-
-    // ! Bandaid bug fix | ticks[1] sacred would be stuck in middle of Y axis (arcane)
-    return ticks[0] !== ticks[2] ? ticks : [];
-  }, [currentPower, maxPower]);
-
-  const xAxisTicks = useMemo((): number[] => {
-    if (!isValid(currentPower) || !isValid(maxPower) || currentPower === 0 || maxPower === 0) {
-      return [];
-    }
-
-    const ticks = [0];
-
-    for (let i = 1; i < 7; i++) {
-      ticks.push(Math.ceil((i * maxDays) / 7));
-    }
-
-    ticks.push(maxDays);
-
-    // ! Bandaid bug fix | ticks[1] sacred would be stuck in middle of Y axis (arcane)
-    return ticks[0] !== ticks[2] && graphDynamic ? ticks : [];
-  }, [currentPower, maxPower, maxDays, graphDynamic]);
+  const xTicks = useMemo(
+    () => xAxisTicks(currentPower, maxPower, maxDays, graphDynamic),
+    [currentPower, maxPower, maxDays, graphDynamic]
+  );
 
   // Validate the specified target power
-  const getTargetPowerDate = (target: string) => {
-    if (target === "0") {
-      setTargetPower(1);
-    } else if (Number(target) < 0) {
-      setTargetPower(NaN);
-    } else if (Number(target) >= maxPower) {
-      setTargetPower(maxPower);
-    } else {
-      setTargetPower(parseInt(target));
-    }
-  };
+  const getTargetPowerDate = (target: string) => setTargetPower(clampNumberInput(target, maxPower));
 
   // Derive the attainment date for the target power
-  const dateToPower = useMemo((): string => {
-    if (Math.ceil(targetPower / 10) * 10 <= currentPower) return "";
-
-    // Find the first graphSymbol entry that matches or is closest to the specified power
-    let tempDateToPower = graphSymbols.find(
-      (entry) => entry.power >= Math.ceil(targetPower / 10) * 10
-    )?.date;
-
-    if (graphDynamic) {
-      tempDateToPower = dayjs()
-        .add(tempDateToPower as number, "day")
-        .format("YYYY-MM-DD");
-    }
-
-    return dayjs(tempDateToPower).isValid() ? (tempDateToPower as string) : "";
-  }, [currentPower, targetPower, graphSymbols, graphDynamic]);
+  const attainmentDate = useMemo(
+    () => dateToPower(targetPower, currentPower, graphSymbols, graphDynamic),
+    [currentPower, targetPower, graphSymbols, graphDynamic]
+  );
 
   // Get the date or error message for the attainment date of the target power
   const getTargetPowerResponse = () => {
     // If a valid target is specified, return the date
-    if (dateToPower) return dateToPower;
+    if (attainmentDate) return attainmentDate;
 
     // Otherwise, return an error message
     return !isValid(targetPower)
@@ -383,7 +223,7 @@ const Graph = () => {
           <div className="flex items-center justify-between gap-3 rounded-lg bg-dark px-8 py-4 md:flex-col md:justify-center">
             <p className="text-sm md:text-base">{!swapped ? "Arcane" : "Sacred"} Power</p>
             <p className="text-sm text-accent md:text-base">
-              {currentPower} / {enabledSymbols * (!swapped ? 220 : 110)}
+              {currentPower} / {enabledSymbols * MAX_POWER_PER_SYMBOL[modeType(swapped)]}
             </p>
           </div>
 
@@ -506,7 +346,7 @@ const Graph = () => {
               domain={[() => 0, (max: number) => (isFinite(max) ? maxDays : 1)]}
               stroke="#8c8c8c"
               tickCount={graphDynamic ? 10 : undefined}
-              ticks={graphDynamic ? xAxisTicks : undefined}
+              ticks={graphDynamic ? xTicks : undefined}
               tick={{ fontSize: !isMobile ? 16 : 12 }}
               tickFormatter={graphDynamic ? (tick) => formatXAxis(tick) : undefined}
             />
@@ -515,7 +355,7 @@ const Graph = () => {
               tickMargin={isMobile ? 5 : 10}
               stroke="#8c8c8c"
               domain={[currentPower, maxPower]}
-              ticks={yAxisTicks}
+              ticks={yTicks}
               tick={{ fontSize: !isMobile ? 16 : 12 }}
             />
           </LineChart>

@@ -2,6 +2,9 @@ import { useMemo, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { FaArrowRight } from "react-icons/fa6";
 import { cn, isValid, updateSymbol } from "../../lib/utils";
+import { catalystPreview, formatPreview, selectorPreview } from "../../lib/tools";
+import { clampNumberInput } from "../../lib/inputs";
+import { CATALYST_RETENTION, maxLevelFor, modeType } from "../../lib/game";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 
@@ -27,75 +30,24 @@ const Tools = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
   // Derive the preview level/exp after applying Symbol Selectors
-  const { selectorLevel, selectorExp } = useMemo(() => {
-    let totalLevels = 0;
-    let totalExp = 0;
-    currentSymbol.symbolsRequired.forEach((_, indexLevel) => {
-      if (
-        indexLevel >= currentSymbol.level &&
-        selectorCount >=
-          currentSymbol.symbolsRequired[indexLevel] - currentSymbol.experience + totalExp
-      ) {
-        totalLevels++;
-        totalExp += currentSymbol.symbolsRequired[indexLevel];
-      }
-    });
-    return {
-      selectorLevel: currentSymbol.level + totalLevels,
-      selectorExp: selectorCount
-        ? selectorCount - totalExp + currentSymbol.experience
-        : currentSymbol.experience,
-    };
-  }, [currentSymbol.level, currentSymbol.experience, currentSymbol.symbolsRequired, selectorCount]);
+  const { level: selectorLevel, experience: selectorExp } = useMemo(
+    () => selectorPreview(currentSymbol, selectorCount),
+    [currentSymbol, selectorCount]
+  );
 
-  // Derive the preview level/exp after using a Catalyst
-  const { catalystLevel, catalystExp } = useMemo(() => {
-    let totalExp = 0;
-    currentSymbol.symbolsRequired.forEach((_, indexLevel) => {
-      if (indexLevel < currentSymbol.level) {
-        totalExp = totalExp + currentSymbol.symbolsRequired[indexLevel];
-      }
-    });
+  // Derive the preview level/exp after using a Catalyst (retention keyed on the mode)
+  const { level: catalystLevel, experience: catalystExp } = useMemo(
+    () => catalystPreview(currentSymbol, CATALYST_RETENTION[modeType(swapped)]),
+    [currentSymbol, swapped]
+  );
 
-    let tempCatalystExp =
-      (totalExp +
-        (currentSymbol.experience > nextExperience ? nextExperience : currentSymbol.experience)) *
-      (!swapped ? 0.8 : 0.6);
-
-    let tempLevel = NaN;
-    currentSymbol.symbolsRequired.forEach((_, indexLevel) => {
-      if (tempCatalystExp > currentSymbol.symbolsRequired[indexLevel - 1]) {
-        tempCatalystExp = tempCatalystExp - currentSymbol.symbolsRequired[indexLevel - 1];
-        tempLevel = indexLevel;
-      }
+  const displayPreview = (levelType: number, expType: number) =>
+    formatPreview(levelType, expType, {
+      symbol: currentSymbol,
+      maxLevel: maxLevelFor(swapped),
+      isCatalyst: selectedTool === "catalyst",
+      catalystExperience: catalystExp,
     });
-    return { catalystLevel: tempLevel, catalystExp: tempCatalystExp };
-  }, [
-    currentSymbol.level,
-    currentSymbol.experience,
-    currentSymbol.symbolsRequired,
-    nextExperience,
-    swapped,
-  ]);
-  const displayPreview = (levelType: number, expType: number) => {
-    if (!isValid(levelType)) return "? / ?";
-    if (levelType === currentSymbol.level && levelType <= 1 && selectedTool === "catalyst") {
-      return "? / ?";
-    }
-    if (currentSymbol.experience > nextExperience && expType !== catalystExp) {
-      return currentSymbol.level + " / " + nextExperience; // Prevent modification from unlocked exp field overflow on Symbol Selectors
-    }
-    if (levelType === (!swapped ? 20 : 11)) {
-      return levelType + " / 0";
-    }
-    if (!isValid(currentSymbol.level)) {
-      return "? / ?";
-    }
-    if (!isValid(currentSymbol.experience)) {
-      return levelType + " / ?";
-    }
-    return levelType + " / " + Math.ceil(expType);
-  };
 
   return (
     <section className="flex justify-center">
@@ -167,7 +119,7 @@ const Tools = () => {
               className={`cursor-default ${selectedTool === "catalyst" && "hidden"}`}
               tabIndex={
                 disabled ||
-                (currentSymbol.level < (!swapped ? 20 : 11) &&
+                (currentSymbol.level < maxLevelFor(swapped) &&
                   currentSymbol.experience < nextExperience) ||
                 currentSymbol.level === 20
                   ? -1
@@ -178,7 +130,7 @@ const Tools = () => {
                 className={`focus mx-10 flex flex-col items-center justify-center space-y-5 rounded-3xl bg-dark py-6 md:flex-row md:space-x-10 md:space-y-0 md:py-3 ${
                   selectedTool === "selector" ? "block" : "hidden"
                 } ${
-                  currentSymbol.level < (!swapped ? 20 : 11) &&
+                  currentSymbol.level < maxLevelFor(swapped) &&
                   currentSymbol.experience > nextExperience &&
                   "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
                 }`}
@@ -192,24 +144,18 @@ const Tools = () => {
                     className="w-1/2 w-[80px] bg-secondary py-1 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:w-[100px] md:p-2.5"
                     tabIndex={
                       disabled ||
-                      (currentSymbol.level < (!swapped ? 20 : 11) &&
+                      (currentSymbol.level < maxLevelFor(swapped) &&
                         currentSymbol.experience > nextExperience)
                         ? -1
                         : 0
                     }
-                    onChange={(e) => {
-                      if (isNaN(currentSymbol.experience)) {
-                        setSelectorCount(NaN);
-                      } else if (Number(e.target.value) < 0) {
-                        setSelectorCount(NaN);
-                      } else if (e.target.value === "0") {
-                        setSelectorCount(1);
-                      } else if (Number(e.target.value) >= currentSymbol.symbolsRemaining) {
-                        setSelectorCount(currentSymbol.symbolsRemaining);
-                      } else {
-                        setSelectorCount(parseInt(e.target.value));
-                      }
-                    }}
+                    onChange={(e) =>
+                      setSelectorCount(
+                        isNaN(currentSymbol.experience)
+                          ? NaN
+                          : clampNumberInput(e.target.value, currentSymbol.symbolsRemaining)
+                      )
+                    }
                   ></input>
                 </div>
                 <div className="flex items-center justify-around md:w-1/3">
@@ -218,7 +164,7 @@ const Tools = () => {
                       className="flex cursor-default items-center space-x-4 md:space-x-5"
                       tabIndex={
                         disabled ||
-                        (currentSymbol.level < (!swapped ? 20 : 11) &&
+                        (currentSymbol.level < maxLevelFor(swapped) &&
                           currentSymbol.experience > nextExperience)
                           ? -1
                           : 0
@@ -257,14 +203,14 @@ const Tools = () => {
                     disabled ||
                     isNaN(selectorExp) ||
                     !isValid(selectorCount) ||
-                    currentSymbol.level === (!swapped ? 20 : 11) ||
-                    (currentSymbol.level < (!swapped ? 20 : 11) &&
+                    currentSymbol.level === maxLevelFor(swapped) ||
+                    (currentSymbol.level < maxLevelFor(swapped) &&
                       currentSymbol.experience > nextExperience)
                       ? -1
                       : 0
                   }
                   className={`flex w-[175px] select-none items-center justify-center rounded-2xl bg-secondary px-2 py-1.5 tracking-wide text-secondary hover:bg-hover hover:text-primary focus:outline-accent md:w-[100px] md:rounded-3xl md:px-4 md:py-2 md:transition-colors ${
-                    (!isValid(selectorCount) || currentSymbol.level === (!swapped ? 20 : 11)) &&
+                    (!isValid(selectorCount) || currentSymbol.level === maxLevelFor(swapped)) &&
                     "pointer-events-none opacity-25"
                   }`}
                   onClick={() => {
@@ -284,7 +230,7 @@ const Tools = () => {
             </TooltipTrigger>
             <TooltipContent
               className={`tooltip ${
-                currentSymbol.level < (!swapped ? 20 : 11) &&
+                currentSymbol.level < maxLevelFor(swapped) &&
                 currentSymbol.experience > nextExperience
                   ? "block"
                   : "hidden"
@@ -308,7 +254,7 @@ const Tools = () => {
                   className="flex cursor-default items-center space-x-4 md:space-x-5"
                   tabIndex={
                     disabled ||
-                    (currentSymbol.level < (!swapped ? 20 : 11) &&
+                    (currentSymbol.level < maxLevelFor(swapped) &&
                       currentSymbol.experience > nextExperience)
                       ? -1
                       : 0

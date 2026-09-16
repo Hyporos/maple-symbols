@@ -24,7 +24,8 @@ const RouterContext = createContext<RouterContextValue>({
   navigate: () => {},
 });
 
-const normalize = (p: string) => p.replace(/\/+$/, "") || "/";
+/** Strips trailing slashes: "/handbook/" → "/handbook", "" → "/". */
+export const normalize = (p: string) => p.replace(/\/+$/, "") || "/";
 
 export function RouterProvider({ children }: { children: ReactNode }) {
   const [path, setPath] = useState(() => normalize(window.location.pathname));

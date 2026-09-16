@@ -63,6 +63,20 @@ describe("Calculator — level and experience inputs", () => {
     expect(vj()).toMatchObject({ locked: true, experience: 12 }); // re-locking clamps back to the cap
   });
 
+  it("the check icon converts unlocked overflow into levels and re-locks", () => {
+    seedSymbol(0, { level: 1, experience: 50, locked: false });
+    render(<Calculator />);
+    fireEvent.click(screen.getByLabelText("Apply overflow experience"));
+    expect(vj()).toMatchObject({ level: 4, experience: 3, locked: true }); // 12+15+20 = 47
+  });
+
+  it("applying overflow that reaches max keeps the leftover experience (KI-005, current behaviour)", () => {
+    seedSymbol(0, { level: 19, experience: 2679, locked: false });
+    render(<Calculator />);
+    fireEvent.click(screen.getByLabelText("Apply overflow experience"));
+    expect(vj()).toMatchObject({ level: 20, experience: 2307, locked: true });
+  });
+
   it("at max level with the cap locked, any experience is accepted (KI-004, current behaviour)", () => {
     seedSymbol(0, { level: 20, experience: 0 });
     render(<Calculator />);

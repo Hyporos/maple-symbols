@@ -15,6 +15,9 @@ import {
 } from "../../lib/utils";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useAppStore } from "../../state/store";
+import { getOverflow, getRemainingToMax } from "../../lib/calculator";
+import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
+import { MAIN_STAT_PER_LEVEL, maxLevelFor, modeType, WEEKLY_SYMBOLS } from "../../lib/game";
 
 const Calculator = () => {
   /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */
@@ -59,10 +62,7 @@ const Calculator = () => {
   // and a useMemo that caused cascading re-renders via intermediate store writes.
   useEffect(() => {
     try {
-      const remaining =
-        currentSymbol.symbolsRequired
-          .slice(currentSymbol.level, !swapped ? 20 : 11)
-          .reduce((acc, exp) => acc + exp, 0) - currentSymbol.experience;
+      const remaining = getRemainingToMax(currentSymbol, maxLevelFor(swapped));
 
       const daysTotal = calculateDaysRemaining(remaining, dailySymbols, !!currentSymbol.weekly);
       const completionDate = dayjs().add(daysTotal, "day").format("YYYY-MM-DD");
@@ -97,25 +97,12 @@ const Calculator = () => {
     selectedSymbol,
   ]);
 
-  // Derived overflow state: if the stored experience exceeds the next-level
-  // requirement, compute how many levels would be gained and the leftover exp.
-  // Using useMemo avoids the extra render cycle from a useState+useEffect pair.
-  const { overflowLevel, overflowExperience } = useMemo(() => {
-    let totalLevels = 0;
-    let totalExp = 0;
-    let oLevel = currentSymbol.level;
-    currentSymbol.symbolsRequired.forEach((_, indexLevel) => {
-      if (
-        indexLevel >= currentSymbol.level &&
-        currentSymbol.experience >= currentSymbol.symbolsRequired[indexLevel] + totalExp
-      ) {
-        totalLevels++;
-        totalExp += currentSymbol.symbolsRequired[indexLevel];
-        oLevel = currentSymbol.level + totalLevels;
-      }
-    });
-    return { overflowLevel: oLevel, overflowExperience: currentSymbol.experience - totalExp };
-  }, [currentSymbol.level, currentSymbol.experience, currentSymbol.symbolsRequired]);
+  // Derived overflow state (cap unlocked): the levels the stored experience would buy and
+  // the leftover. useMemo avoids the extra render cycle from a useState+useEffect pair.
+  const { level: overflowLevel, experience: overflowExperience } = useMemo(
+    () => getOverflow(currentSymbol),
+    [currentSymbol]
+  );
 
   useEffect(() => {
     if (readyForUpgrade && currentSymbol.locked) {
@@ -166,24 +153,15 @@ const Calculator = () => {
                   value={isNaN(currentSymbol.level) ? "" : currentSymbol.level}
                   className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
-                  onChange={(e) => {
-                    if (Number(e.target.value) < 0) {
-                      setSymbols(updateSymbol(symbols, selectedSymbol, { level: NaN }));
-                    } else if (e.target.value === "0") {
-                      setSymbols(updateSymbol(symbols, selectedSymbol, { level: 1 }));
-                    } else if (Number(e.target.value) >= (!swapped ? 20 : 11)) {
-                      setSymbols(
-                        updateSymbol(symbols, selectedSymbol, {
-                          level: !swapped ? 20 : 11,
-                          experience: 0,
-                        })
-                      );
-                    } else {
-                      setSymbols(
-                        updateSymbol(symbols, selectedSymbol, { level: parseInt(e.target.value) })
-                      );
-                    }
-                  }}
+                  onChange={(e) =>
+                    setSymbols(
+                      updateSymbol(
+                        symbols,
+                        selectedSymbol,
+                        levelInputPatch(e.target.value, maxLevelFor(swapped))
+                      )
+                    )
+                  }
                 ></input>
 
                 <TbSlash size={30} color="#B2B2B2" className="mx-2 md:mx-0" />
@@ -247,6 +225,7 @@ const Calculator = () => {
                   >
                     <FiCheck
                       size={20}
+                      aria-label="Apply overflow experience"
                       color={currentSymbol.experience > nextExperience ? "#718571" : "#857871"}
                       onClick={() =>
                         setSymbols(
@@ -273,27 +252,15 @@ const Calculator = () => {
                   className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
-                    const expCap = currentSymbol.locked
-                      ? nextExperience
-                      : currentSymbol.symbolsRequired.reduce((a, b) => a + b, 0);
-                    if (!isValid(currentSymbol.level)) {
-                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: NaN }));
-                    } else if (Number(e.target.value) >= expCap) {
-                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: expCap }));
-                    } else if (Number(e.target.value) < 0) {
-                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: NaN }));
-                    } else if (e.target.value === "0" && currentSymbol.level === 1) {
-                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience: 1 }));
-                    } else if (e.target.value === "00" || e.target.value === "000") {
-                      currentSymbol.level === 1
-                        ? setSymbols(updateSymbol(symbols, selectedSymbol, { experience: 1 }))
-                        : (e.target.value = "0");
+                    const experience = experienceInputValue(
+                      e.target.value,
+                      currentSymbol.level,
+                      expCapFor(currentSymbol)
+                    );
+                    if (experience === null) {
+                      e.target.value = "0"; // "00"/"000" above level 1: rewrite the field, store nothing
                     } else {
-                      setSymbols(
-                        updateSymbol(symbols, selectedSymbol, {
-                          experience: parseInt(e.target.value),
-                        })
-                      );
+                      setSymbols(updateSymbol(symbols, selectedSymbol, { experience }));
                     }
                     if (e.target.value.startsWith("0")) {
                       e.target.value = e.target.value.substring(1);
@@ -387,7 +354,9 @@ const Calculator = () => {
           >
             <p>{dailySymbols} symbols / day</p>
             {currentSymbol.type === "arcane" && (
-              <p>{currentSymbol.weekly ? 120 + " symbols / week" : 0 + " symbols / week"}</p>
+              <p>
+                {currentSymbol.weekly ? WEEKLY_SYMBOLS + " symbols / week" : 0 + " symbols / week"}
+              </p>
             )}
           </div>
         </div>
@@ -407,7 +376,7 @@ const Calculator = () => {
           {/* BEFORE > AFTER LEVEL */}
           {isValid(currentSymbol.level) &&
             !isMaxLevel(currentSymbol.level, swapped) &&
-            currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
+            currentSymbol.symbolsRequired.length === maxLevelFor(swapped) && (
               <div className="flex items-center gap-3 pt-0.5">
                 <h1 className="text-base font-semibold tracking-wider text-primary md:text-xl">
                   Level <span>{currentSymbol.level}</span>
@@ -422,7 +391,7 @@ const Calculator = () => {
           {/* NEXT LEVEL STATS */}
           {isValid(currentSymbol.level) &&
             !isMaxLevel(currentSymbol.level, swapped) &&
-            currentSymbol.symbolsRequired.length === (!swapped ? 20 : 11) && (
+            currentSymbol.symbolsRequired.length === maxLevelFor(swapped) && (
               <div className="flex h-full flex-col justify-between gap-2 pt-5 md:gap-0 md:pt-10 [&_*]:text-sm [&_*]:md:text-base">
                 {!readyForUpgrade &&
                   (currentSymbol.daily || currentSymbol.weekly) &&
@@ -492,7 +461,7 @@ const Calculator = () => {
 
                 <div className="flex justify-center gap-1.5 pt-2.5 md:pt-8">
                   <p>
-                    <span>{!swapped ? "+100" : "+200"}</span> main stat
+                    <span>+{MAIN_STAT_PER_LEVEL[modeType(swapped)]}</span> main stat
                   </p>
                   <Tooltip placement={"right"}>
                     <TooltipTrigger asChild={true}>
