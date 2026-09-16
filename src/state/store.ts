@@ -9,14 +9,17 @@
 // Calculator/Tools/Handbook operate on; `lastSelected` remembers one id per type
 // so switching modes restores the previous choice.
 //
-// Version: bump STORAGE_VERSION whenever the SymbolData schema changes.
-// The `migrate` function runs automatically when the stored version differs,
-// resetting symbols to a clean initial state (KI-001).
+// Saved data: each symbol's `id` and the player's own fields only (lib/persistence).
+// On load the list is rebuilt from symbols.json and those fields are laid on top by
+// id, so game-data patches and new symbols reach returning players without a wipe.
+// STORAGE_VERSION only needs a bump if the *player* fields change meaning; migrate
+// passes any older save straight to that same by-id rebuild instead of resetting.
 // ---------------------------------------------------------------------------
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createInitialSymbols } from "../lib/data";
+import { restoreSymbols, toSaved } from "../lib/persistence";
 import type { SymbolData, SymbolType } from "../lib/types";
 
 const STORAGE_VERSION = 3;
@@ -66,26 +69,16 @@ export const useAppStore = create<AppStore>()(
     {
       name: "maple-symbols-v2",
       version: STORAGE_VERSION,
-      // Only persist user symbol data — not ephemeral UI state. Nothing derived is
-      // stored: symbols/days remaining and completion are computed on read (lib/calculator).
-      partialize: (state) => ({ symbols: state.symbols }),
-      // On schema change, reset symbols to defaults rather than loading stale data.
-      migrate: () => ({ symbols: createInitialSymbols() }),
-      // JSON.stringify converts NaN → null, so convert null back to NaN on rehydration.
+      // Persist only the player's fields per symbol, never game data, UI state or anything
+      // derived (lib/persistence). NaN is written as null because JSON cannot encode it.
+      partialize: (state) => ({ symbols: toSaved(state.symbols) }),
+      // Older saves (full SymbolData records in versions 2 and 3) carry the same player
+      // fields by id, so they go through the same rebuild in merge; nothing is wiped.
+      migrate: (persisted) => persisted,
+      // Rebuild from symbols.json and lay the saved player fields on top, matched by id.
       merge: (persisted, current) => {
-        const p = persisted as Partial<AppStore>;
-        return {
-          ...current,
-          ...p,
-          symbols: (p.symbols ?? current.symbols).map(
-            (s) =>
-              ({
-                ...s,
-                level: s.level === null ? NaN : s.level,
-                experience: s.experience === null ? NaN : s.experience,
-              }) as SymbolData
-          ),
-        };
+        const saved = (persisted as { symbols?: unknown } | undefined)?.symbols;
+        return { ...current, symbols: restoreSymbols(saved, createInitialSymbols()) };
       },
     }
   )

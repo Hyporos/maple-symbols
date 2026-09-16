@@ -15,6 +15,9 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 - **Derived on read** (2026-09-16): `daysRemaining`/`symbolsRemaining`/`completion` removed from `SymbolData`; `progressToMax(symbol, now)` in `lib/calculator.ts` feeds `collapsedRowLabels(symbol, maxLevel, now)`, Tools derives its clamp, Calculator's write-back effect is gone, `partialize` persists `symbols` as-is, `STORAGE_VERSION` 3 (Brian accepted the reset: persisted data need not survive 2.0). KI-002 resolved.
 - **Single routes module** (2026-09-16): `src/lib/routes.ts` declares every page once (path, title, description, nav, sitemap fields); `App`, `Header`, `Extras`, `SEO` read it; a routes plugin in `vite.config.ts` fills `__PLACEHOLDER__` tokens in `index.html` and emits `sitemap.xml` (the `public/` copy is gone; `/release` bumps `lastmod` in `routes.ts`). `seo.test.tsx` checks the generators. Persistence by id (KI-001) is optional now that a wipe is acceptable.
 - **Calculator correctness** (2026-09-16): KI-003 (weekly credit a day late, Sunday skipped Monday), KI-004 (experience uncapped at max), KI-005 (overflow stranded experience at max), KI-010 (level inputs "00"/"0.5"/"-0" stored 0). All four fixes live in `src/lib` (`advanceDayCount`, `expCapFor`, `getOverflow`, `clampNumberInput`); test expectations changed deliberately and cite the KI. **User-visible**: day counts with the weekly toggle on drop by one or more, so the 2.0 changelog needs a line.
+- **Persistence by id** (2026-09-16): KI-001 resolved. Saves hold `id` + player fields only and are rebuilt onto fresh `symbols.json` data by id; older saves (production's version 2) migrate without a wipe, so the 2.0 release keeps players' levels after all.
+- **i18n decisions** (2026-09-16): interface-only translation (numbers stay GMS; official regional names for symbols and quests) and a typed dictionary with no dependency. Groundwork done: `src/lib/format.ts`, ISO changelog dates, `lang`/`og:locale` from `DEFAULT_LOCALE`. Next: extract the English catalogue and rewrite the 20 split sentences (B-1, B-2).
+- **Umami analytics** (2026-09-16): Brian chose Umami over Plausible (free). The production-only before-send gate is live on `main` (PR #18); the typed wrapper and every catalogued event are on `v2`.
 
 ## What the safety net pins (as of 2026-09-16)
 
@@ -38,9 +41,7 @@ After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; lo
 
 ## Open questions for 2.0 (ask before designing)
 
-- Data model: keep `SymbolData` with NaN sentinels, or move to `level: number | null`? A real `migrate` by `id` (KI-001) is optional: Brian decided (2026-09-16) that persisted symbol data may reset on the 2.0 release.
+- Data model: keep `SymbolData` with NaN sentinels, or move to `level: number | null`? Persistence by id is done (KI-001), so either choice now only touches `src/lib/persistence.ts` and the components, not players' saves.
 - Routing: keep the custom router, or adopt a library once there are more pages?
 - Visual direction: the new look, and whether the fixed 360 px phone cards and fixed pane heights survive.
-- Localisation scope (`docs/I18N.md` §0): interface-only translation, or per-region game data? KMS, JMS, TMS and CMS ship different symbols and yields, and the second answer adds a version dimension to `symbols.json`, the store and the persistence key, so it belongs with the data-model decision above.
-- Localisation library (`docs/I18N.md` §4): typed dictionary, react-i18next, or Lingui.
-- Analytics (`docs/ANALYTICS.md`): Brian chose to stay on Umami (Plausible is paid). Pending: `data-domains`, `data-performance`, the typed wrapper and the §3 events; Search Console is read separately.
+- Analytics (`docs/ANALYTICS.md`): nothing open; the §3 events reach production when `v2` ships.

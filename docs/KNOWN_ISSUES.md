@@ -6,17 +6,11 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ## Open
 
-### KI-001 · H · Static game data is frozen in each user's localStorage
-
-- **Symptom**: Editing `src/lib/symbols.json` (exp tables, meso costs, daily counts, new symbols) has no effect for returning users. Bumping `STORAGE_VERSION` does apply it, but `migrate` returns fresh symbols, so their levels and quest toggles are wiped.
-- **Cause**: `partialize` in `src/state/store.ts` spreads every `SymbolData` field (static ones included) and `merge` adopts the persisted array wholesale, even its length. `data.ts` claims "game patches only require editing that one JSON file", which is not true today.
-- **Suggested fix**: In `merge`, rebuild each symbol from `createInitialSymbols()` by `id` and copy over only the user fields (`level`, `experience`, `daily`, `weekly`, `extra`, `locked`); make `migrate` map old entries by `id` instead of resetting. Then `symbols.json` becomes the single source of truth again. Test first: `src/state/store.test.ts` pins the current "wholesale" behaviour and must change with it.
-
-### KI-009 · L · Deployment and analytics hygiene
-
-- Production is on Vercel with the apex as primary, but `www` redirects to it with a temporary 307 rather than a permanent 308. Fix in Vercel's domain settings; see `docs/SEO.md` §0 (A-0).
-
 ## Resolved
+
+### KI-009 · resolved (hosting and analytics hygiene, 2026-09-16) · Production is on Vercel with the apex as primary and `www` on a permanent 308; Firebase is removed; the year-long immutable cache covers only hashed `/assets/*` and the versioned `/fonts/*`; Umami records only on production (before-send gate, PR #18); the inert tooltip middleware is gone. (Was: blanket immutable caching of un-hashed `public/` files, dev and preview traffic counted as production, an inert `SearchAction`, unused floating-ui code, and a stale Firebase deploy.)
+
+### KI-001 · resolved on `v2` (persistence by id, 2026-09-16) · Saves hold only each symbol's `id` and the player's fields (`toSaved` in `src/lib/persistence.ts`); on load `restoreSymbols` rebuilds the list from `symbols.json` and lays those fields on top by id, and `migrate` passes older saves (full records from versions 2 and 3) to the same rebuild. Game-data patches and new symbols now reach returning players without wiping their levels. (Was: every `SymbolData` field was persisted and `merge` adopted the saved array wholesale, so `symbols.json` edits never reached returning players unless a version bump wiped them.)
 
 ### KI-011 · resolved on `v2` (accessibility follow-ups, 2026-09-16) · `RadioButton` is a `<button type="button" role="radio" aria-checked>` with a roving `tabIndex` (0 when selected, -1 otherwise) and arrow keys that move focus and selection within the nearest `role="radiogroup"`, wrapping. Selector's toggle is a radiogroup named "Symbol type"; Graph's is "X-axis spacing", and its two tooltip triggers are `as="div"`, so the radio itself takes focus. The Handbook's five `asChild` + `{" "}` triggers became plain triggers. `src/test/interactiveNesting.test.tsx` pins no `button button`/`button input`/`button a`/`button [role=radio]` and no React DOM warning. (Was: a `<div onClick>` with no role, tab stop or key handling; the Selector toggle was unreachable and Graph's trigger button took focus while Enter/Space did nothing.)
 
