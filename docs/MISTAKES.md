@@ -54,7 +54,7 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 
 ### M-006 · 2026-09-16 · tooling
 
-- **What**: Proposed and installed `@vitejs/plugin-react` 6 as part of the React 19 upgrade; its peer range is Vite `^8`, and the build failed on `vite/internal`. Pinned to 5.2 (supports Vite 7).
+- **What**: Proposed and installed `@vitejs/plugin-react` 6 as part of the React 19 upgrade; its peer range is Vite `^8`, and the build failed on `vite/internal`. Pinned to 5.2 (supports Vite 7); later the same day Vite itself was upgraded to 8 and the plugin to 6.
 - **Root cause**: Read the "latest" column of `pnpm outdated` as "compatible" without checking the package's peer dependencies against the installed Vite.
 - **Rule**: Before proposing an upgrade version, check `pnpm view <pkg>@<ver> peerDependencies` against what is installed; "latest" is not "compatible".
 - **Where**: `package.json` (`@vitejs/plugin-react` ^5.2.0).

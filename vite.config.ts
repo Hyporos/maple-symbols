@@ -12,12 +12,22 @@ export default defineConfig({
     compression({ algorithm: "gzip", ext: ".gz" }),
   ],
   build: {
-    rollupOptions: {
+    // Vite 8 bundles with rolldown; vendor splitting uses its codeSplitting groups
+    // (the old rollup `manualChunks` object form is not supported).
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          "react-vendor": ["react", "react-dom", "zustand"],
-          "recharts-vendor": ["recharts"],
-          "dayjs-vendor": ["dayjs"],
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-vendor",
+              test: /node_modules[\\/](react|react-dom|scheduler|zustand|use-sync-external-store)[\\/]/,
+            },
+            {
+              name: "recharts-vendor",
+              test: /node_modules[\\/](recharts|victory-vendor|d3-[^\\/]+|internmap|delaunator|robust-predicates|@reduxjs|react-redux|reselect|immer|es-toolkit|eventemitter3|decimal\.js-light|tiny-invariant)[\\/]/,
+            },
+            { name: "dayjs-vendor", test: /node_modules[\\/]dayjs[\\/]/ },
+          ],
         },
       },
     },
