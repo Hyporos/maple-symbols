@@ -43,6 +43,16 @@ export function seedSymbol(index: number, patch: Partial<SymbolData>, select = t
   return symbols[index];
 }
 
+// ── Text matching ─────────────────────────────────────────────────────────
+/**
+ * Matcher for text split across child elements, e.g. `<p><span>2</span> days to go</p>`.
+ * Testing Library's default matcher only sees an element's direct text nodes.
+ * Usage: `screen.getByText(fullText("2 days to go"))`.
+ */
+export const fullText = (text: string) => (_content: string, element: Element | null) =>
+  element?.textContent === text &&
+  !Array.from(element.children).some((child) => child.textContent === text);
+
 // ── Time ──────────────────────────────────────────────────────────────────
 // Use with vi.setSystemTime(WED). Always the local-time constructor: on a UTC-4
 // machine `new Date("2026-09-16")` is Tuesday 20:00 local and shifts the Monday math.

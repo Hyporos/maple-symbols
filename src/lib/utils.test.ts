@@ -11,7 +11,7 @@ import {
   updateSymbol,
 } from "./utils";
 import { createInitialSymbols } from "./data";
-import { MON, SAT, WED } from "../test/helpers";
+import { MON, SAT, SUN, WED } from "../test/helpers";
 
 // Fixtures: index 0 = Vanishing Journey (arcane, 10/day, weekly + extra);
 // index 6 = Cernium (sacred, 20/day, no weekly/extra).
@@ -117,6 +117,7 @@ describe("calculateDaysRemaining", () => {
       ["Wednesday", WED, 6],
       ["Monday", MON, 8],
       ["Saturday", SAT, 3],
+      ["Sunday", SUN, 9], // KI-003: the very next Monday is skipped from a Sunday start
     ])("%s: one weekly's worth (120) takes %i days", (_day, date, expected) => {
       vi.setSystemTime(date);
       expect(calculateDaysRemaining(120, 0, true)).toBe(expected);
