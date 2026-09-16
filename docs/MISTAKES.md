@@ -13,6 +13,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **lint-staged hides the output of tasks that exit 0.** A warn-only step must run outside lint-staged or nobody sees it (M-005).
 - **Check peer ranges before proposing an upgrade version**; `pnpm outdated`'s latest column is not a compatibility claim (M-006).
 - **Claims about hosting or search-engine behaviour get checked against the live site and the platform's current docs, not memory**; a second, independent review pass before shipping a reference doc pays for itself (M-007).
+- **Platform config is validated by the platform, not by reading it.** `vercel.json` passed lint, tests and two reviews, and Vercel still rejected the deployment. Check syntax against the platform's docs before shipping config that CI cannot run, and deploy a preview before DNS moves (M-008).
 
 ## Log
 
@@ -66,3 +67,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Wrote from general SEO knowledge and the repo's config files, treating "what the config says" as "what is live" and treating remembered guidance as current.
 - **Rule**: For any doc that makes claims about hosting or search-engine behaviour, curl the live site and cite the platform's current documentation; then run an independent review pass against the code before committing.
 - **Where**: `docs/SEO.md` §0 (production state) and §2 (corrected rules).
+
+### M-008 · 2026-09-16 · tooling
+
+- **What**: `vercel.json` shipped in v1.4.0 with header `source` patterns written as raw regex (an escaped dot and a non-capturing group for the file extensions, and an escaped dot for `.html`). Vercel matches `source` with path-to-regexp and rejected them, which failed validation for every deployment of `main` right after DNS had been pointed at Vercel. Two SEO audits that session read the file, one even noted that the `.html` rule "matches nothing useful", and neither checked whether the patterns were valid at all.
+- **Root cause**: Treated the config as reviewed because it had been read. Nothing in lint, typecheck, tests or CI runs Vercel's own parser, so the error could only surface on a real deployment.
+- **Rule**: Config that only the hosting platform parses gets checked against that platform's documented syntax before release, and a new host gets a preview deployment before DNS moves.
+- **Where**: `vercel.json` (hotfix 99a926f on `main`).
