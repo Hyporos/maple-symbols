@@ -1,6 +1,6 @@
 # Maple Symbols — Agent Guide
 
-MapleStory Arcane/Sacred **symbol calculator**: a single-page React app (no backend) where a player enters each symbol's level and experience, toggles daily/weekly quests, and gets completion dates, meso costs, a power graph, and reference tables. Live at maplesymbols.com. Intended host: Vercel from `main` (`vercel.json` on `development`/`v2`); as of 2026-09-16 the domain still serves a Firebase build from March 2026 whose sub-pages 404 (SEO §0).
+MapleStory Arcane/Sacred **symbol calculator**: a single-page React app (no backend) where a player enters each symbol's level and experience, toggles daily/weekly quests, and gets completion dates, meso costs, a power graph, and reference tables. Live at maplesymbols.com, deployed by Vercel from `main` since 2026-09-16 (Firebase before that). One open hosting fix: Vercel currently treats `www` as primary while the code's canonicals use the apex (SEO §0).
 
 Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives here; the deep docs in `docs/` are read on demand (see "Which doc when"). Keep it under ~120 lines: anything longer than two lines that a deep doc covers belongs there, with a pointer here.
 
@@ -110,7 +110,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - `docs/TESTING.md`: writing or fixing tests; helpers, mocks, frozen-time fixtures, recipes per layer, the traps (tooltips, Overview duplicates, lazy sections).
 - `docs/SEO.md`: anything search engines see: `routes.ts` entries, `index.html`, `SEO.tsx`, `vercel.json`, headings, copy, images, performance. Numbered rules (cite as `SEO-n`), the query map, and the audit backlog. The goal is rank one, so treat its rules as requirements, not advice.
 - `docs/I18N.md`: before adding a user-facing string, touching `src/lib/routes.ts`, or any work on the language selector. Korean, Japanese, Traditional and Simplified Chinese are planned; §5 has the rules that apply to new copy **today** (whole sentences, no `<br>` in copy, locale-aware formatting, `Intl.PluralRules`).
-- `docs/ANALYTICS.md`: before adding, changing or removing any tracking. Plausible plus Google Search Console; §3 is the event catalogue and every event must name the decision it informs.
+- `docs/ANALYTICS.md`: before adding, changing or removing any tracking. Umami Cloud (free Hobby plan) plus Google Search Console read side by side; §3 is the event catalogue and every event must name the decision it informs.
 - `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd.
 - `docs/MISTAKES.md`: distilled rules at the top, log below.
 - `docs/V2_PLAN.md`: the 2.0 overhaul: scope, branch, what is pinned, what is reusable, upgrade order, and the decisions already made.

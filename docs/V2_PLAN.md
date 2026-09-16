@@ -43,4 +43,4 @@ After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; lo
 - Visual direction: the new look, and whether the fixed 360 px phone cards and fixed pane heights survive.
 - Localisation scope (`docs/I18N.md` §0): interface-only translation, or per-region game data? KMS, JMS, TMS and CMS ship different symbols and yields, and the second answer adds a version dimension to `symbols.json`, the store and the persistence key, so it belongs with the data-model decision above.
 - Localisation library (`docs/I18N.md` §4): typed dictionary, react-i18next, or Lingui.
-- Analytics cut-over (`docs/ANALYTICS.md`): Umami out, Plausible in, Search Console joined to it.
+- Analytics (`docs/ANALYTICS.md`): Brian chose to stay on Umami (Plausible is paid). Pending: `data-domains`, `data-performance`, the typed wrapper and the §3 events; Search Console is read separately.

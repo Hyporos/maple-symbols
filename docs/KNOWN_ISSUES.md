@@ -14,8 +14,8 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ### KI-009 · L · Deployment and analytics hygiene
 
-- The Umami script in `index.html` has no `data-domains`, so `vite dev` and preview deployments count as production traffic. It is being replaced by Plausible (`docs/ANALYTICS.md` §2, AN-5 and AN-6).
-- Production (2026-09-16) is still a Firebase deploy from March 2026: `main` has `firebase.json`, two Firebase deploy workflows and no `vercel.json`, and the live `/handbook`, `/changelog`, `/credits` return 404. `development` removes all of it; `docs/SEO.md` §0 has the cut-over order.
+- The Umami script in `index.html` has no `data-domains`, so `vite dev` and preview deployments count as production traffic. The fix, and the event plan that goes with it, is `docs/ANALYTICS.md` §2 (AN-6); Umami stays as the analytics tool.
+- Production moved to Vercel on 2026-09-16, but Vercel has `www` as the primary domain and 308s the apex to it, while every canonical URL in the code is the apex. Fix in Vercel's domain settings; see `docs/SEO.md` §0 (A-0).
 
 ### KI-011 · M · `RadioButton` cannot be operated from the keyboard
 
