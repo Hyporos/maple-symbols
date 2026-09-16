@@ -8,37 +8,39 @@ Dark, quiet, one accent. Near-black gradient cards (`#1b1b1b`→`#1d1d1d`) on a 
 
 ## 2. Tokens
 
-Defined in `tailwind.config.js` under `theme.extend`, split across namespaces, so the same word can mean different colours in different namespaces (`secondary` is `#bfbfbf` as text but `#333333` as background/border). The docs test checks every row below exists in the config.
+Tailwind 4: tokens are CSS variables in the `@theme` block of `src/global.css` (there is no `tailwind.config.js` any more). Most are namespace-specific on purpose, so the same word can mean different colours per utility (`text-secondary` is `#bfbfbf`; `bg-secondary`/`border-secondary` are `#333333`); the `--color-*` ones work with every colour utility and opacity modifier. The docs test checks that this table and the `@theme` block match exactly, both ways.
 
 <!-- tokens:start -->
 
-| Class       | Namespace          | Value                       | Used for                                                                                                                          |
-| ----------- | ------------------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `accent`    | colors             | `#b18bd0`                   | selection, highlighted words (every `<span>`), focus rings, graph line, `shadow-accent`                                           |
-| `card`      | colors             | `#1d1d1d`                   | card gradient stop (`from-card` in most cards)                                                                                    |
-| `card-grad` | colors             | `#1b1b1b`                   | card gradient stop (`to-card-grad`, the top edge)                                                                                 |
-| `card-tool` | colors             | `#1c1c1c`                   | the seam colour shared by Calculator (bottom) and Tools (top), and TabLayout's bottom                                             |
-| `dark`      | colors             | `#212121`                   | inner "well" surfaces: pills, panels, table row hover/current, stat boxes; page bottom                                            |
-| `light`     | colors             | `#262626`                   | hover/selected surfaces: tab buttons, changelog versions, graph tooltip                                                           |
-| `primary`   | textColor          | `#ffffff`                   | emphasis text, hover text, selected labels                                                                                        |
-| `secondary` | textColor          | `#bfbfbf`                   | body text (set on `body`), inputs, buttons                                                                                        |
-| `tertiary`  | textColor          | `#8c8c8c`                   | muted captions, placeholders, footer, table headers in Overview                                                                   |
-| `upgrade`   | textColor          | `#00b800`                   | unused                                                                                                                            |
-| `hover`     | backgroundColor    | `#444444`                   | `hover:bg-hover` / `focus:bg-hover` on inputs and toggle buttons                                                                  |
-| `secondary` | backgroundColor    | `#333333`                   | input and button backgrounds, selected pill                                                                                       |
-| `tertiary`  | backgroundColor    | `transparent`               | unused                                                                                                                            |
-| `unchecked` | borderColor        | `#ab0000`                   | bottom border of an OFF daily/weekly/extra toggle (`border-unchecked/80`)                                                         |
-| `checked`   | borderColor        | `#00a500`                   | bottom border of an ON toggle (`border-checked/80`)                                                                               |
-| `secondary` | borderColor        | `#333333`                   | RadioButton ring, Overview expanded panel                                                                                         |
-| `basic`     | outlineColor       | `#444444`                   | unused                                                                                                                            |
-| `basic`     | fill               | `#bfbfbf`                   | `fill-basic/75` on the Header globe icon                                                                                          |
-| `input`     | boxShadow          | `0 0 9px 0 rgb(0 0 0/.25)`  | TabLayout nav bar, `.tooltip`                                                                                                     |
-| `level`     | boxShadow          | `0 0 2.5px 0 rgb(0 0 0/.1)` | paired with `shadow-accent` (the Tools pill drops it when the symbol has no level): mobile unselected pill, expanded Overview row |
-| `laptop`    | screens            | `1150px`                    | unused as a class prefix; mirrors `isTablet`                                                                                      |
-| `phone`     | screens            | `550px`                     | unused                                                                                                                            |
-| `height`    | transitionProperty | `height`                    | `transition-height` on the Header mobile menu                                                                                     |
+| Variable                       | Class                                   | Value                       | Used for                                                                                |
+| ------------------------------ | --------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
+| `--color-accent`               | `text-/bg-/border-/fill-/shadow-accent` | `#b18bd0`                   | selection, highlighted words (every `<span>`), focus rings, graph line, `shadow-accent` |
+| `--color-card`                 | `from-card, to-card`                    | `#1d1d1d`                   | card gradient stop (`from-card` in most cards)                                          |
+| `--color-card-grad`            | `to-card-grad`                          | `#1b1b1b`                   | card gradient stop (the top edge)                                                       |
+| `--color-card-tool`            | `from-/to-card-tool`                    | `#1c1c1c`                   | the seam colour shared by Calculator (bottom) and Tools (top), and TabLayout's bottom   |
+| `--color-dark`                 | `bg-dark`                               | `#212121`                   | inner "well" surfaces: pills, panels, table row hover/current, stat boxes; page bottom  |
+| `--color-light`                | `bg-light`                              | `#262626`                   | hover/selected surfaces: tab buttons, changelog versions, graph tooltip                 |
+| `--text-color-primary`         | `text-primary`                          | `#ffffff`                   | emphasis text, hover text, selected labels                                              |
+| `--text-color-secondary`       | `text-secondary`                        | `#bfbfbf`                   | body text (set on `body`), inputs, buttons                                              |
+| `--text-color-tertiary`        | `text-tertiary`                         | `#8c8c8c`                   | muted captions, placeholders, footer, table headers in Overview                         |
+| `--text-color-upgrade`         | `text-upgrade`                          | `#00b800`                   | unused                                                                                  |
+| `--background-color-hover`     | `bg-hover`                              | `#444444`                   | `hover:bg-hover` / `focus:bg-hover` on inputs and toggle buttons                        |
+| `--background-color-secondary` | `bg-secondary`                          | `#333333`                   | input and button backgrounds, selected pill                                             |
+| `--background-color-tertiary`  | `bg-tertiary`                           | `transparent`               | unused                                                                                  |
+| `--border-color-unchecked`     | `border-unchecked`                      | `#ab0000`                   | bottom border of an OFF daily/weekly/extra toggle (`border-unchecked/80`)               |
+| `--border-color-checked`       | `border-checked`                        | `#00a500`                   | bottom border of an ON toggle (`border-checked/80`)                                     |
+| `--border-color-secondary`     | `border-secondary`                      | `#333333`                   | RadioButton ring, Overview expanded panel                                               |
+| `--outline-color-basic`        | `outline-basic`                         | `#444444`                   | unused                                                                                  |
+| `--fill-basic`                 | `fill-basic`                            | `#bfbfbf`                   | `fill-basic/75` on the Header globe icon                                                |
+| `--shadow-input`               | `shadow-input`                          | `0 0 9px 0 rgb(0 0 0/.25)`  | TabLayout nav bar, `.tooltip`                                                           |
+| `--shadow-level`               | `shadow-level`                          | `0 0 2.5px 0 rgb(0 0 0/.1)` | paired with `shadow-accent` (the Tools pill drops it when the symbol has no level)      |
+| `--breakpoint-laptop`          | `laptop:`                               | `1150px`                    | unused as a class prefix; mirrors `isTablet`                                            |
+| `--breakpoint-phone`           | `phone:`                                | `550px`                     | unused                                                                                  |
+| `--transition-property-height` | `transition-height`                     | `height`                    | the Header mobile menu                                                                  |
 
 <!-- tokens:end -->
+
+**Tailwind 4 notes** (migrated 2026-09-16 with `@tailwindcss/upgrade`): gradients are `bg-linear-to-t` (was `bg-gradient-to-t`); `outline-hidden` replaces the old `outline-none` on inputs; child selectors are `*:pointer-events-none` (was `[&>*]:…`); a compat rule in `global.css` keeps v3's default border colour (remove it only after giving every colourless `border-*` element an explicit colour); Tailwind runs through `@tailwindcss/postcss` (`postcss.config.js`), and Prettier's class sorting reads `tailwindStylesheet: ./src/global.css` from `.prettierrc`.
 
 Tailwind built-ins that are part of the palette: `bg-white/10` (dividers, ≈21 uses), `border-white/5` (table cells), `text-white` / `fill-white` / `stroke-white` (nav-active and icon hovers), `bg-white/40` (Tools' disabled seam). White is written two ways: `text-primary` for text, `text-white`/`fill-white`/`stroke-white` for nav links and icons.
 
@@ -117,7 +119,7 @@ Inputs opt out of the global accent focus ring and show focus with `bg-hover` in
   <TooltipTrigger asChild={true}>
     <button
       className={cn(
-        "w-full select-none border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
+        "w-full border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] select-none hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
         currentSymbol.bonus && "border-checked/80 md:border-checked",
         typeof currentSymbol.bonus === "undefined" && "hidden"
       )}
@@ -205,7 +207,7 @@ The codebase mixes some patterns; new code should pick these sides.
 3. **Text is `text-primary`/`secondary`/`tertiary`**; `text-white`, `fill-white`, `stroke-white` stay for nav-active state and icon hovers.
 4. **Dividers are `<div className="h-px w-full bg-white/10" />`**, not `<hr>` with opacity.
 5. **`md:` first, JS second**: reach for `useBreakpoint()` only when the difference is not expressible as a class.
-6. **Don't hand-order classes** (Prettier's Tailwind plugin sorts them) and don't add tokens or screens to `tailwind.config.js` without asking; the unused ones (`text-upgrade`, `bg-tertiary`, `outline-basic`, `laptop`, `phone`) are candidates for removal, not for casual use.
+6. **Don't hand-order classes** (Prettier's Tailwind plugin sorts them) and don't add tokens or breakpoints to the `@theme` block without asking; the unused ones (`text-upgrade`, `bg-tertiary`, `outline-basic`, `laptop`, `phone`) are candidates for removal, not for casual use.
 7. **New number inputs** get the `onWheel` blur; **icon-only buttons** get an `aria-label`; **new static maps** are hoisted outside the component.
 8. **Card gradient**: standalone → `from-card to-card-grad`; a stacked pair → meet at `card-tool`.
 

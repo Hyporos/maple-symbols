@@ -72,7 +72,7 @@ const Overview = () => {
 
   return (
     <section className="flex justify-center">
-      <div className="mx-4 mt-16 flex w-[360px] max-w-[1050px] items-center justify-center rounded-lg bg-gradient-to-t from-card to-card-grad px-8 py-8 md:mx-8 md:mt-28 md:w-full md:px-10 md:py-10">
+      <div className="mx-4 mt-16 flex w-[360px] max-w-[1050px] items-center justify-center rounded-lg bg-linear-to-t from-card to-card-grad px-8 py-8 md:mx-8 md:mt-28 md:w-full md:px-10 md:py-10">
         <div className="flex w-full flex-col justify-center gap-4 md:gap-0">
           <div className="hidden items-center text-center text-tertiary md:flex">
             <div className="flex w-1/5 justify-center">
@@ -126,7 +126,7 @@ const Overview = () => {
                       isNaN(symbol.level) && "pointer-events-none opacity-25",
                       symbol.level === maxLevel && "pointer-events-none",
                       targetSymbol === index && !selectedNone && symbol.level < maxLevel
-                        ? "rounded-t-3xl bg-dark hover:bg-gradient-to-b hover:from-light"
+                        ? "rounded-t-3xl bg-dark hover:bg-linear-to-b hover:from-light"
                         : "rounded-3xl"
                     )}
                   >
@@ -189,8 +189,8 @@ const Overview = () => {
                     }`}
                   >
                     <div className="relative hidden w-1/4 md:block">
-                      <div className="absolute left-0 right-0 mx-auto h-[35px] w-px translate-y-[-35px] bg-white/10" />
-                      <div className="absolute left-[50%] mx-auto h-px w-full w-full bg-white/10" />
+                      <div className="absolute right-0 left-0 mx-auto h-[35px] w-px translate-y-[-35px] bg-white/10" />
+                      <div className="absolute left-[50%] mx-auto h-px w-full bg-white/10" />
                     </div>
                     <div className="relative hidden md:block md:w-1/4">
                       <div className="absolute left-[50%] mx-auto h-px w-[55%] bg-white/10" />
@@ -209,7 +209,7 @@ const Overview = () => {
                                 ? maxLevel
                                 : targetLevel
                             }
-                            className="h-[25px] w-[60px] bg-secondary p-1.5 text-center text-sm outline-none transition-colors hover:bg-hover focus:bg-hover focus:outline-none md:h-[35px] md:w-[75px] md:text-base"
+                            className="h-[25px] w-[60px] bg-secondary p-1.5 text-center text-sm outline-hidden transition-colors hover:bg-hover focus:bg-hover focus:outline-hidden md:h-[35px] md:w-[75px] md:text-base"
                             onWheel={(e) => e.currentTarget.blur()}
                             onChange={(e) => {
                               setTargetLevel(clampNumberInput(e.target.value, maxLevel));

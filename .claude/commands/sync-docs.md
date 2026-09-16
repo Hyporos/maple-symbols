@@ -13,7 +13,7 @@ Context:
 
 Steps:
 
-1. Find what changed: `git diff --stat <last-doc-commit>..HEAD -- src tailwind.config.js vite.config.ts vitest.config.ts package.json vercel.json index.html`, plus the uncommitted changes above.
+1. Find what changed: `git diff --stat <last-doc-commit>..HEAD -- src vite.config.ts vitest.config.ts package.json vercel.json index.html`, plus the uncommitted changes above.
 2. Map each changed file to doc sections using the table in `AGENTS.md` → "Keep the docs honest".
 3. For each affected section, read the current code (never rely on memory) and edit the doc to match. Prefer identifiers over line numbers.
 4. `docs/KNOWN_ISSUES.md`: move fixed issues to **Resolved** with the commit; add any new issue that is evident from the diff.

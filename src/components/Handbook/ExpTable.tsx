@@ -55,7 +55,7 @@ const ExpTable = () => {
           </Tooltip>
         </div>
 
-        <div className="mb-6 mt-4 h-px bg-white/10" aria-hidden="true" />
+        <div className="mt-4 mb-6 h-px bg-white/10" aria-hidden="true" />
 
         {/* TABLE */}
         <div className="flex overflow-y-auto">

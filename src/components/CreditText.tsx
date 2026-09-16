@@ -33,7 +33,7 @@ const CreditText = ({ label, img, link, twitch, youtube, x }: CreditTextProps) =
       {/* SOCIAL MEDIA */}
       {twitch && (
         <a href={twitch} target="_blank">
-          <FaTwitch className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-[#6441a5] md:h-4 md:w-4 " />
+          <FaTwitch className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-[#6441a5] md:h-4 md:w-4" />
         </a>
       )}
 

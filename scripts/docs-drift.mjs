@@ -14,7 +14,7 @@ const docsTouched = staged.some((f) => f === "AGENTS.md" || f.startsWith("docs/"
 const sensitive = staged.filter(
   (f) =>
     !/\.test\.tsx?$/.test(f) &&
-    /^(src\/lib\/|src\/state\/|src\/contexts\/|tailwind\.config\.js$|src\/global\.css$)/.test(f)
+    /^(src\/lib\/|src\/state\/|src\/contexts\/|src\/global\.css$)/.test(f)
 );
 
 if (sensitive.length > 0 && !docsTouched) {

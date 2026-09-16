@@ -132,26 +132,26 @@ const Calculator = () => {
 
   return (
     <section className="flex justify-center">
-      <div className="mx-4 flex w-[360px] flex-col justify-between gap-8 rounded-t-lg bg-gradient-to-t from-card-tool to-card-grad py-8 md:w-full md:max-w-[700px] md:flex-row md:gap-0 md:py-16">
+      <div className="mx-4 flex w-[360px] flex-col justify-between gap-8 rounded-t-lg bg-linear-to-t from-card-tool to-card-grad py-8 md:w-full md:max-w-[700px] md:flex-row md:gap-0 md:py-16">
         {/* SYMBOL INPUTS */}
         <div className="flex w-full max-w-[360px] flex-col justify-between px-10 md:h-[250px]">
           <div className="flex items-center justify-center gap-4 pb-5 md:pb-6">
             {/* SYMBOL TITLE */}
             <img src={currentSymbol.img} alt={currentSymbol.name} width={33} />
-            <p className="text-lg font-semibold uppercase tracking-wider text-primary md:text-xl">
+            <p className="text-lg font-semibold tracking-wider text-primary uppercase md:text-xl">
               {currentSymbol.name}
             </p>
           </div>
 
           <Tooltip placement="bottom">
             <TooltipTrigger className="cursor-default">
-              <div className="relative flex items-center justify-center gap-2 pb-6 pt-4">
+              <div className="relative flex items-center justify-center gap-2 pt-4 pb-6">
                 {/* LEVEL INPUT */}
                 <input
                   type="number"
                   placeholder="Level"
                   value={isNaN(currentSymbol.level) ? "" : currentSymbol.level}
-                  className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:p-2.5"
+                  className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) =>
                     setSymbols(
@@ -249,7 +249,7 @@ const Calculator = () => {
                   type="number"
                   placeholder={currentSymbol.locked ? "Experience" : "Exp"}
                   value={isNaN(currentSymbol.experience) ? "" : currentSymbol.experience}
-                  className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:p-2.5"
+                  className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
                     const experience = experienceInputValue(
@@ -280,7 +280,7 @@ const Calculator = () => {
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "w-full select-none border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
+                    "w-full border-b-2 border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] select-none hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
                     currentSymbol.daily && "border-checked/80 md:border-checked"
                   )}
                   onClick={() =>
@@ -302,7 +302,7 @@ const Calculator = () => {
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "block w-full select-none border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
+                    "block w-full border-b-2 border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] select-none hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
                     currentSymbol.weekly && "border-checked/80 md:border-checked",
                     typeof currentSymbol.weekly === "undefined" && "hidden"
                   )}
@@ -325,7 +325,7 @@ const Calculator = () => {
               <TooltipTrigger asChild={true}>
                 <button
                   className={cn(
-                    "block w-full select-none border-b-[2px] border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
+                    "block w-full border-b-2 border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] select-none hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
                     currentSymbol.extra && "border-checked/80 md:border-checked",
                     typeof currentSymbol.extra === "undefined" && "hidden"
                   )}
@@ -392,7 +392,7 @@ const Calculator = () => {
           {isValid(currentSymbol.level) &&
             !isMaxLevel(currentSymbol.level, swapped) &&
             currentSymbol.symbolsRequired.length === maxLevelFor(swapped) && (
-              <div className="flex h-full flex-col justify-between gap-2 pt-5 md:gap-0 md:pt-10 [&_*]:text-sm [&_*]:md:text-base">
+              <div className="flex h-full flex-col justify-between gap-2 pt-5 **:text-sm md:gap-0 md:pt-10 md:**:text-base">
                 {!readyForUpgrade &&
                   (currentSymbol.daily || currentSymbol.weekly) &&
                   isValid(currentSymbol.experience) && (

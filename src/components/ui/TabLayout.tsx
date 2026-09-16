@@ -35,7 +35,7 @@ const TabLayout = ({ tabs, activeTab, onTabChange }: TabLayoutProps) => {
 
   return (
     <section className="mx-4 flex justify-center md:mx-8">
-      <div className="h-[650px] w-[360px] max-w-[800px] rounded-lg bg-gradient-to-t from-card-tool to-card-grad py-8 md:h-[700px] md:w-full md:py-10">
+      <div className="h-[650px] w-[360px] max-w-[800px] rounded-lg bg-linear-to-t from-card-tool to-card-grad py-8 md:h-[700px] md:w-full md:py-10">
         {/* NAVBAR */}
         <nav className="flex bg-dark text-center shadow-input transition-all">
           {tabs.map((tab, index) => (

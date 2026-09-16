@@ -59,7 +59,7 @@ const Selector = () => {
 
   return (
     <section className={cn("mx-4 flex justify-center")}>
-      <div className="mb-6 flex w-[360px] max-w-[700px] flex-row items-center justify-between rounded-3xl bg-gradient-to-t from-card to-card-grad px-8 py-8 md:w-full md:items-stretch md:justify-center md:gap-11 md:py-6">
+      <div className="mb-6 flex w-[360px] max-w-[700px] flex-row items-center justify-between rounded-3xl bg-linear-to-t from-card to-card-grad px-8 py-8 md:w-full md:items-stretch md:justify-center md:gap-11 md:py-6">
         {/* SWAP BUTTONS */}
         <div className="mb-1 flex flex-col justify-center gap-14 md:mb-0 md:justify-around md:gap-5">
           <RadioButton label="Arcane" selected={!swapped} onClick={() => setSwapped(false)} />
@@ -79,7 +79,7 @@ const Selector = () => {
                   <button
                     key={index}
                     className={cn(
-                      "flex cursor-pointer select-none flex-col items-center font-semibold text-accent transition-all hover:text-primary",
+                      "flex cursor-pointer flex-col items-center font-semibold text-accent transition-all select-none hover:text-primary",
                       !isValid(symbol.level) && "text-secondary",
                       isSelected && "text-primary transition-none"
                     )}
@@ -104,7 +104,7 @@ const Selector = () => {
           {/* SELECTION BAR */}
           {!isMobile && (
             <div
-              className={`mt-1 h-[3px] w-[40px] rounded-full bg-accent transition-all duration-[350ms] md:mt-3 md:w-[50px] ${BAR_POSITIONS[swapped ? selectedSacred : selectedArcane]}`}
+              className={`mt-1 h-[3px] w-[40px] rounded-full bg-accent transition-all duration-350 md:mt-3 md:w-[50px] ${BAR_POSITIONS[swapped ? selectedSacred : selectedArcane]}`}
             />
           )}
         </div>

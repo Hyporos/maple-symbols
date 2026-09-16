@@ -217,7 +217,7 @@ const Graph = () => {
 
   return (
     <section className="flex justify-center">
-      <div className="mx-4 mt-16 flex w-[360px] max-w-[1050px] flex-col items-center justify-center rounded-lg bg-gradient-to-t from-card to-card-grad px-8 py-8 md:mx-8 md:mt-28 md:w-full md:px-10 md:py-10">
+      <div className="mx-4 mt-16 flex w-[360px] max-w-[1050px] flex-col items-center justify-center rounded-lg bg-linear-to-t from-card to-card-grad px-8 py-8 md:mx-8 md:mt-28 md:w-full md:px-10 md:py-10">
         {/* POWER OVERVIEW */}
         <div className="flex w-full flex-col justify-center gap-4 md:flex-row md:gap-0 md:space-x-8">
           <div className="flex items-center justify-between gap-3 rounded-lg bg-dark px-8 py-4 md:flex-col md:justify-center">
@@ -242,8 +242,8 @@ const Graph = () => {
                   <input
                     type="number"
                     className={cn(
-                      "h-[25px] w-[65px] bg-secondary text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:h-[30px]",
-                      graphSymbols.length === 1 && "pointer-events-none select-none opacity-25"
+                      "h-[25px] w-[65px] bg-secondary text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:h-[30px]",
+                      graphSymbols.length === 1 && "pointer-events-none opacity-25 select-none"
                     )}
                     placeholder="Target"
                     value={isNaN(targetPower) ? "" : targetPower}

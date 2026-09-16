@@ -17,4 +17,4 @@ Produce:
 2. `src/components/<folder>/<Name>.test.tsx` from the component recipe in `docs/TESTING.md`, using the store and viewport helpers if the component needs them.
 3. If it is a new page section, wire it into `src/App.tsx` and list the metadata places from `AGENTS.md` that a new route would touch.
 
-Then run `pnpm test <Name>` (no `--`) and `pnpm lint` and show me the results. Do not add tokens to `tailwind.config.js` without asking.
+Then run `pnpm test <Name>` (no `--`) and `pnpm lint` and show me the results. Do not add tokens to the `@theme` block in `src/global.css` without asking.

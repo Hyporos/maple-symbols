@@ -35,7 +35,7 @@ const Changelog = () => {
             <button
               key={index}
               className={cn(
-                "w-full cursor-pointer select-none py-[20.2px] text-center text-xs transition-all hover:bg-light hover:tracking-wider hover:text-accent md:text-base",
+                "w-full cursor-pointer py-[20.2px] text-center text-xs transition-all select-none hover:bg-light hover:tracking-wider hover:text-accent md:text-base",
                 entry.version === selectedVersion &&
                   "bg-light font-semibold tracking-wider text-accent"
               )}
@@ -77,7 +77,7 @@ const Changelog = () => {
                   <a href={entry.link} target="_blank">
                     <FaGithub
                       size={!isMobile ? 18 : 16}
-                      className="transition-all duration-1000 hover:rotate-[360deg] hover:scale-110 hover:fill-white"
+                      className="transition-all duration-1000 hover:scale-110 hover:rotate-360 hover:fill-white"
                     />
                   </a>
                 </div>

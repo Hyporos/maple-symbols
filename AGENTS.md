@@ -9,7 +9,7 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 1. **Ask before deciding.** Configuration, design, and architecture choices that matter are Brian's to make. Use the question tool: give two or three alternatives that are genuinely as good, say which you recommend and why, then wait. Don't assume, and don't quietly narrow or widen scope. Small, conventional, reversible calls (a variable name, a test case) you make yourself and mention.
 2. **Log mistakes.** Whenever Brian corrects you, or you find after verifying that you were wrong, add an entry to `docs/MISTAKES.md` (`/log-mistake`). If a root cause repeats or costs real time, promote a one-line rule into this section. Read the **Distilled rules** at the top of that file before non-trivial work.
 3. **Verify before claiming.** Run `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build` for anything beyond docs. Report failures with the output; never say "done" on an assumption.
-4. **Keep the docs honest.** After changing code, update the docs the table at the bottom points to. The pre-commit hook prints a reminder when `src/lib`, `src/state`, `src/contexts`, `tailwind.config.js`, or `global.css` change without a docs change; `/sync-docs` does the reconciliation.
+4. **Keep the docs honest.** After changing code, update the docs the table at the bottom points to. The pre-commit hook prints a reminder when `src/lib`, `src/state`, `src/contexts`, or `global.css` change without a docs change; `/sync-docs` does the reconciliation.
 5. **Be creative when asked for ideas**, and offer better alternatives when you see them. Otherwise deliver the requested scope, whole.
 6. **Real bugs you find go in `docs/KNOWN_ISSUES.md`**, not silently fixed or worked around. Fixing one is a scoped decision (rule 1).
 
@@ -29,7 +29,7 @@ Package manager is **pnpm** (never npm/yarn). Node 22. Pre-commit (simple-git-ho
 
 ## Stack
 
-React 18 + TypeScript 5 (strict) + Vite 7 · Tailwind 3 (`cn()` = clsx + tailwind-merge) · Zustand 5 with `persist` · custom History-API router (no react-router) · @floating-ui/react tooltips · Recharts 3 · dayjs (import from `src/lib/dayjs.ts` only) · react-icons · Vitest 5 + Testing Library + jsdom.
+React 18 + TypeScript 5 (strict) + Vite 7 · Tailwind 4 (`cn()` = clsx + tailwind-merge) · Zustand 5 with `persist` · custom History-API router (no react-router) · @floating-ui/react tooltips · Recharts 3 · dayjs (import from `src/lib/dayjs.ts` only) · react-icons · Vitest 5 + Testing Library + jsdom.
 
 ## Map
 
@@ -114,12 +114,12 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 
 ## Keep the docs honest
 
-| If you change…                                                     | Update…                                                                                 |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| `src/lib/utils.ts`, `data.ts`, `symbols.json`, `hooks/usePower.ts` | Domain cheat sheet above; ARCHITECTURE §4 Data; KNOWN_ISSUES if an issue moved          |
-| `src/state/store.ts`, `lib/types.ts`                               | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                    |
-| `src/contexts/*`, `App.tsx` routes, page titles                    | ARCHITECTURE §2 Routing and §9; the metadata places (the seo test fails otherwise)      |
-| `components/Calculator/*` effects, quest toggles, Overview labels  | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above |
-| `tailwind.config.js`, `src/global.css`, `components/ui/*`, Tooltip | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks token names) |
-| `package.json` scripts/deps, `vitest.config.ts`, hooks, CI         | Commands/Stack above; TESTING §1 and §3                                                 |
-| A correction from Brian, or a wrong assumption of yours            | MISTAKES (`/log-mistake`)                                                               |
+| If you change…                                                       | Update…                                                                                            |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `src/lib/utils.ts`, `data.ts`, `symbols.json`, `hooks/usePower.ts`   | Domain cheat sheet above; ARCHITECTURE §4 Data; KNOWN_ISSUES if an issue moved                     |
+| `src/state/store.ts`, `lib/types.ts`                                 | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                               |
+| `src/contexts/*`, `App.tsx` routes, page titles                      | ARCHITECTURE §2 Routing and §9; the metadata places (the seo test fails otherwise)                 |
+| `components/Calculator/*` effects, quest toggles, Overview labels    | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
+| `src/global.css` (tokens + global rules), `components/ui/*`, Tooltip | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks the `@theme` variables) |
+| `package.json` scripts/deps, `vitest.config.ts`, hooks, CI           | Commands/Stack above; TESTING §1 and §3                                                            |
+| A correction from Brian, or a wrong assumption of yours              | MISTAKES (`/log-mistake`)                                                                          |

@@ -8,7 +8,7 @@ import packageJson from "../../package.json";
 function Footer() {
   return (
     <section className="mt-auto">
-      <section className="mt-16 flex flex-col items-center gap-4 bg-gradient-to-t from-card-grad to-card p-6 md:gap-5">
+      <section className="mt-16 flex flex-col items-center gap-4 bg-linear-to-t from-card-grad to-card p-6 md:gap-5">
         <div className="flex gap-6">
           <a
             href="https://github.com/Hyporos/maple-symbols"
@@ -16,7 +16,7 @@ function Footer() {
             rel="noopener noreferrer"
             aria-label="GitHub repository"
           >
-            <FaGithub className="h-[22px] w-[22px] transition-all hover:scale-110 hover:fill-[#B18BD0] md:h-[26px] md:w-[26px]" />
+            <FaGithub className="h-[22px] w-[22px] transition-all hover:scale-110 hover:fill-accent md:h-[26px] md:w-[26px]" />
           </a>
           <a
             href="https://discord.gg/FTMgy2ZKPK"

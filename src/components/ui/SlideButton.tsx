@@ -23,7 +23,7 @@ const SlideButton = ({ label, selectedInfo, setSelectedInfo, targetInfo }: Slide
       <h1 className="text-sm md:text-base">{label}</h1>
       <div
         className={cn(
-          "absolute bottom-0 left-0 right-0 mx-auto h-px w-0 bg-accent transition-all",
+          "absolute right-0 bottom-0 left-0 mx-auto h-px w-0 bg-accent transition-all",
           selectedInfo === targetInfo ? "w-full" : "group-hover:w-1/4"
         )}
       ></div>

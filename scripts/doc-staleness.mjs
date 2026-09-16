@@ -9,7 +9,6 @@ const git = (...args) =>
 const lines = (s) => s.split("\n").filter(Boolean);
 const CODE_PATHS = [
   "src",
-  "tailwind.config.js",
   "vite.config.ts",
   "vitest.config.ts",
   "package.json",

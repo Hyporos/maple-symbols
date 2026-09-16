@@ -52,8 +52,8 @@ const Tools = () => {
   return (
     <section className="flex justify-center">
       <div
-        className={`mx-4 flex w-[360px] flex-col rounded-b-lg bg-gradient-to-t from-card to-card-tool md:h-[225px] md:w-full md:max-w-[700px]  ${
-          disabled && "select-none [&>*]:pointer-events-none [&>*]:opacity-25"
+        className={`mx-4 flex w-[360px] flex-col rounded-b-lg bg-linear-to-t from-card to-card-tool md:h-[225px] md:w-full md:max-w-[700px] ${
+          disabled && "select-none *:pointer-events-none *:opacity-25"
         }`}
       >
         <div className={cn("h-px w-full bg-white/10", disabled && "bg-white/40")} />
@@ -61,7 +61,7 @@ const Tools = () => {
         <div className="my-8 flex h-full flex-col justify-between gap-6 md:my-10">
           <div className="mx-10 flex justify-between gap-4 text-secondary md:mx-20">
             <button
-              className={`flex max-w-[200px] select-none items-center justify-center rounded-2xl bg-dark px-3 py-2 tracking-wide text-secondary hover:bg-secondary hover:text-primary focus:outline-accent md:w-full md:max-w-[215px] md:gap-4 md:rounded-3xl md:px-4 md:transition-colors ${
+              className={`flex max-w-[200px] items-center justify-center rounded-2xl bg-dark px-3 py-2 tracking-wide text-secondary select-none hover:bg-secondary hover:text-primary focus:outline-accent md:w-full md:max-w-[215px] md:gap-4 md:rounded-3xl md:px-4 md:transition-colors ${
                 selectedTool === "selector"
                   ? "gap-2 bg-secondary text-primary md:gap-4"
                   : isMobile
@@ -84,11 +84,11 @@ const Tools = () => {
             <Tooltip>
               <TooltipTrigger asChild={true}>
                 <button
-                  className={`flex max-w-[200px] select-none items-center justify-center rounded-2xl bg-dark px-3 py-2 tracking-wide text-secondary hover:bg-secondary hover:text-primary focus:outline-accent md:w-full md:max-w-[215px] md:gap-4 md:rounded-3xl md:px-4 md:transition-colors ${
+                  className={`flex max-w-[200px] items-center justify-center rounded-2xl bg-dark px-3 py-2 tracking-wide text-secondary select-none hover:bg-secondary hover:text-primary focus:outline-accent md:w-full md:max-w-[215px] md:gap-4 md:rounded-3xl md:px-4 md:transition-colors ${
                     selectedTool === "catalyst"
                       ? "gap-2 bg-secondary text-primary md:gap-4"
                       : isMobile
-                        ? `${!isValid(currentSymbol.level) ? "" : "shadow-accent"} shadow-level `
+                        ? `${!isValid(currentSymbol.level) ? "" : "shadow-accent"} shadow-level`
                         : ""
                   }`}
                   onClick={() => setSelectedTool("catalyst")}
@@ -127,12 +127,12 @@ const Tools = () => {
               }
             >
               <div
-                className={`focus mx-10 flex flex-col items-center justify-center space-y-5 rounded-3xl bg-dark py-6 md:flex-row md:space-x-10 md:space-y-0 md:py-3 ${
+                className={`focus mx-10 flex flex-col items-center justify-center space-y-5 rounded-3xl bg-dark py-6 md:flex-row md:space-y-0 md:space-x-10 md:py-3 ${
                   selectedTool === "selector" ? "block" : "hidden"
                 } ${
                   currentSymbol.level < maxLevelFor(swapped) &&
                   currentSymbol.experience > nextExperience &&
-                  "opacity-50 [&>*]:pointer-events-none [&>*]:select-none"
+                  "opacity-50 *:pointer-events-none *:select-none"
                 }`}
               >
                 <div className="flex items-center space-x-10 md:w-1/4 md:space-x-4">
@@ -141,7 +141,7 @@ const Tools = () => {
                     type="number"
                     placeholder="Count"
                     value={isNaN(selectorCount) ? "" : selectorCount}
-                    className="w-1/2 w-[80px] bg-secondary py-1 text-center text-sm tracking-wider text-secondary outline-none transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-none md:w-[100px] md:p-2.5"
+                    className="w-1/2 w-[80px] bg-secondary py-1 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:w-[100px] md:p-2.5"
                     tabIndex={
                       disabled ||
                       (currentSymbol.level < maxLevelFor(swapped) &&
@@ -209,7 +209,7 @@ const Tools = () => {
                       ? -1
                       : 0
                   }
-                  className={`flex w-[175px] select-none items-center justify-center rounded-2xl bg-secondary px-2 py-1.5 tracking-wide text-secondary hover:bg-hover hover:text-primary focus:outline-accent md:w-[100px] md:rounded-3xl md:px-4 md:py-2 md:transition-colors ${
+                  className={`flex w-[175px] items-center justify-center rounded-2xl bg-secondary px-2 py-1.5 tracking-wide text-secondary select-none hover:bg-hover hover:text-primary focus:outline-accent md:w-[100px] md:rounded-3xl md:px-4 md:py-2 md:transition-colors ${
                     (!isValid(selectorCount) || currentSymbol.level === maxLevelFor(swapped)) &&
                     "pointer-events-none opacity-25"
                   }`}
@@ -240,7 +240,7 @@ const Tools = () => {
             </TooltipContent>
           </Tooltip>
           <div
-            className={`focus mx-10 flex flex-col items-center justify-center space-y-5 rounded-3xl bg-dark py-6 md:flex-row md:space-x-8 md:space-y-0 md:py-3 ${
+            className={`focus mx-10 flex flex-col items-center justify-center space-y-5 rounded-3xl bg-dark py-6 md:flex-row md:space-y-0 md:space-x-8 md:py-3 ${
               selectedTool === "catalyst" ? "block" : "hidden"
             }`}
           >

@@ -32,7 +32,7 @@ const Header = () => {
     pathname === page.path || page.activeFor?.includes(pathname) === true;
 
   return (
-    <section className="mb-16 bg-gradient-to-t from-card to-card-grad p-1.5 px-4 md:p-3 md:px-8">
+    <section className="mb-16 bg-linear-to-t from-card to-card-grad p-1.5 px-4 md:p-3 md:px-8">
       <div
         className={cn(
           "flex h-[55px] flex-col overflow-hidden transition-height",

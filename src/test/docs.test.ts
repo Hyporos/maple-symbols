@@ -5,7 +5,6 @@
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import tailwindConfig from "../../tailwind.config.js";
 
 const DOC_FILES = [
   "AGENTS.md",
@@ -16,7 +15,7 @@ const read = (path: string) => readFileSync(path, "utf8");
 
 // Backticked strings that look like repo paths. Globs and JSX snippets are skipped.
 const PATH_LIKE =
-  /^(?:(?:src|docs|public|scripts|\.claude|\.github)\/[\w.\-/]+|(?:AGENTS|CLAUDE|README)\.md|tailwind\.config\.js|vite\.config\.ts|vitest\.config\.ts|package\.json|index\.html|vercel\.json|tsconfig\.json|eslint\.config\.js|\.gitattributes|\.prettierrc)$/;
+  /^(?:(?:src|docs|public|scripts|\.claude|\.github)\/[\w.\-/]+|(?:AGENTS|CLAUDE|README)\.md|vite\.config\.ts|vitest\.config\.ts|postcss\.config\.js|package\.json|index\.html|vercel\.json|tsconfig\.json|eslint\.config\.js|\.gitattributes|\.prettierrc)$/;
 
 describe("docs stay honest", () => {
   it("every file path cited in backticks exists", () => {
@@ -31,27 +30,25 @@ describe("docs stay honest", () => {
     expect(missing).toEqual([]);
   });
 
-  it("every token in DESIGN_SYSTEM.md's token table exists in tailwind.config.js", () => {
+  it("every token in DESIGN_SYSTEM.md's token table is defined in the @theme block of global.css", () => {
     const region = read("docs/DESIGN_SYSTEM.md").match(
       /<!-- tokens:start -->([\s\S]*?)<!-- tokens:end -->/
     );
     expect(region, "tokens:start / tokens:end markers").toBeTruthy();
 
-    const extend = (tailwindConfig.theme?.extend ?? {}) as unknown as Record<
-      string,
-      Record<string, unknown>
-    >;
-    const missing: string[] = [];
-    let rows = 0;
+    const theme = read("src/global.css").match(/@theme\s*\{([\s\S]*?)\n\}/);
+    expect(theme, "@theme block in src/global.css").toBeTruthy();
+    const defined = new Set([...theme![1].matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]));
+
+    const cited: string[] = [];
     for (const line of region![1].split("\n")) {
-      const row = line.match(/^\|\s*`([^`]+)`\s*\|\s*([\w-]+)\s*\|/);
-      if (!row) continue;
-      rows++;
-      const [, name, namespace] = row;
-      if (extend[namespace]?.[name] === undefined) missing.push(`${namespace}.${name}`);
+      const row = line.match(/^\|\s*`(--[\w-]+)`\s*\|/);
+      if (row) cited.push(row[1]);
     }
-    expect(rows).toBeGreaterThan(10);
-    expect(missing).toEqual([]);
+    expect(cited.length).toBeGreaterThan(10);
+    expect(cited.filter((v) => !defined.has(v))).toEqual([]);
+    // and the table is complete: every theme variable is documented
+    expect([...defined].filter((v) => !cited.includes(v))).toEqual([]);
   });
 
   it("every KI-nnn referenced in the docs is defined in KNOWN_ISSUES.md", () => {
