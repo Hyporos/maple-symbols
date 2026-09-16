@@ -121,10 +121,17 @@
     font-family: "Maven Pro", "Maven Pro Fallback", Arial, Helvetica, sans-serif;
   }
 
+  /* The accent outline marks keyboard focus only (:focus-visible), never a mouse click. */
   button,
   input,
   .focus {
-    @apply rounded-lg focus:outline-2 focus:outline-accent focus-visible:border-0 focus-visible:outline-solid;
+    @apply rounded-lg focus-visible:border-0 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-solid;
+  }
+
+  /* Tailwind 4 dropped the pointer cursor from buttons; restore it (cursor-* utilities still win). */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 
   input::placeholder {

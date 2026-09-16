@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import RadioButton from "./RadioButton";
@@ -26,10 +27,12 @@ describe("RadioButton", () => {
     expect(two).toHaveAttribute("tabindex", "-1");
   });
 
-  it("shows the focus outline for keyboard focus only, not after a click", () => {
-    render(<RadioButton label="Arcane" selected={true} onClick={() => {}} />);
-    const radio = screen.getByRole("radio", { name: "Arcane" });
-    expect(radio).toHaveClass("focus:outline-none", "focus-visible:outline-solid");
+  it("gets the focus outline for keyboard focus only, not after a click (global button rule)", () => {
+    const css = readFileSync("src/global.css", "utf8");
+    const buttonRule = css.match(/button,\s*input,\s*\.focus\s*\{([^}]*)\}/)?.[1] ?? "";
+    expect(buttonRule).toContain("focus-visible:outline-accent");
+    expect(buttonRule).not.toMatch(/(^|\s)focus:/);
+    expect(css).toMatch(/button:not\(:disabled\)[^{]*\{\s*cursor: pointer;/);
   });
 
   it("arrow keys move focus and selection within the group, wrapping around", () => {

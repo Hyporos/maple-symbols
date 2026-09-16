@@ -187,8 +187,9 @@ Its copy goes in the catalogue (`bonus: "Bonus"`, `bonusTooltip: "<b>[Bonus Ques
 
 ## 9. Global CSS side effects (`src/global.css`)
 
+- `button:not(:disabled), [role="button"]`: `cursor: pointer`, restoring Tailwind 3 behaviour that Tailwind 4 preflight removed. A `cursor-*` utility on the element still wins.
 - `body`: Maven Pro, `text-secondary`, `tracking-wide`, `bg-gradient-to-t from-dark to-[#202020]`, `overflow-x-hidden` (hides horizontal overflow bugs).
-- `button, input, .focus`: `rounded-lg` plus a 2 px accent focus outline. Every button and input gets these unless overridden; `.focus` is applied to the two Tools panels so a focusable trigger shows the ring.
+- `button, input, .focus`: `rounded-lg` plus a 2 px accent outline on keyboard focus only (`:focus-visible`; a mouse click draws none). Every button and input gets these unless overridden; `.focus` is applied to the two Tools panels so a focusable trigger shows the ring.
 - `span { text-accent }`: **every span is purple**. All 40-odd spans in the app rely on this; a plain span will never be grey.
 - `img { select-none pointer-events-none }`: images cannot be dragged or clicked; put handlers and `cursor-pointer` on the parent.
 - `input::placeholder` is tertiary, secondary on hover/focus; number-input spinners are removed; scrollbars are thin, `#444444` thumb on `#212121` track (15 px in WebKit).
