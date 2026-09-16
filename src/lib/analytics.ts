@@ -6,9 +6,10 @@
 // of quietly polluting the dashboard. Components import `track` / `trackOnce`;
 // nothing else touches `window.umami` (a test enforces that).
 //
-// The Umami script loads with `data-domains`, so on localhost, in previews and in
-// tests `window.umami` is either absent or refuses to send; every call here is a
-// silent no-op in those cases and never throws into a click handler.
+// Off production, the gate in index.html (umamiBeforeSend) prints every send to the
+// console and drops it, so events can be checked locally and on Vercel previews
+// without being recorded. In tests `window.umami` is absent and every call here is a
+// silent no-op; nothing here ever throws into a click handler.
 // ---------------------------------------------------------------------------
 
 import type { SymbolType } from "./types";

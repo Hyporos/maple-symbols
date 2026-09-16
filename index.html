@@ -69,12 +69,23 @@
       })();
     </script>
 
-    <!-- Umami Analytics -->
+    <!-- Umami Analytics (docs/ANALYTICS.md). Only the production hosts send anything:
+         on localhost, Vercel previews or any other host, every pageview and event is
+         printed to the console and dropped, so tracking can be tested without being
+         recorded. The tracker calls this before every send; a falsy return cancels it. -->
+    <script>
+      window.umamiBeforeSend = function (type, payload) {
+        var productionHosts = ["maplesymbols.com", "www.maplesymbols.com"];
+        if (productionHosts.indexOf(window.location.hostname) !== -1) return payload;
+        console.info("[umami] not sent from " + window.location.hostname + ":", type, payload);
+        return false;
+      };
+    </script>
     <script
       defer
       src="https://cloud.umami.is/script.js"
       data-website-id="00af1504-752a-470f-98ed-5a76e3d7b286"
-      data-domains="maplesymbols.com,www.maplesymbols.com"
+      data-before-send="umamiBeforeSend"
       data-performance="true"
       data-exclude-search="true"
     ></script>

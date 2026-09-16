@@ -14,7 +14,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ### KI-009 · L · Deployment and analytics hygiene
 
-- Production moved to Vercel on 2026-09-16, but Vercel has `www` as the primary domain and 308s the apex to it, while every canonical URL in the code is the apex. Fix in Vercel's domain settings; see `docs/SEO.md` §0 (A-0).
+- Production is on Vercel with the apex as primary, but `www` redirects to it with a temporary 307 rather than a permanent 308. Fix in Vercel's domain settings; see `docs/SEO.md` §0 (A-0).
 
 ## Resolved
 

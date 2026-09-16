@@ -6,9 +6,8 @@ Brian chose Umami over Plausible on 2026-09-16 because Plausible is paid and Uma
 
 ## 0. Current state (2026-09-16)
 
-- **Done:** the Umami script in `index.html` carries `data-domains`, `data-performance` and `data-exclude-search` (AN-6), so dev and preview traffic is no longer counted and Web Vitals are collected. The typed wrapper exists in `src/lib/` (AN-8) with its tests, including the scan that keeps `window.umami` out of every other file.
-- **Wired:** every §3 event fires from its component, and `src/test/analyticsEvents.test.tsx` proves each one (name, data, once-per-session and on-change-only rules). `outbound` uses `data-umami-event` attributes on the Footer and Credits anchors. `error_shown` is wired through the ErrorBoundary `onError` but has no test, because that needs a render crash inside App. The Handbook reports tab changes through `TabLayout`'s `onSelect` observer prop.
-- **To verify on the live site after the next deploy:** AN-7 (a client-side navigation records two pageviews) and that custom events appear in the Umami dashboard.
+- **Live on production** (PR #18): the production-only gate and the tracker attributes (AN-6). Verified in a browser on `https://maplesymbols.com` with the collector requests intercepted and aborted, so nothing was recorded: the tracker loaded and built a pageview for `/`, a Web Vitals report and a client-side navigation pageview for `/handbook`, all addressed to `gateway.umami.is/api/send` with the right website id and hostname. The same check on a local production build logged all of them as not sent.
+- **On `v2` only:** the typed wrapper and every §3 event, wired and tested (`src/test/analyticsEvents.test.tsx`). They reach production when `v2` ships. `error_shown` is wired through the ErrorBoundary `onError` but has no test, because that needs a render crash inside App.
 - Search Console's verification method is not recorded in the repo. The site moved from Firebase to Vercel on 2026-09-16 (`docs/SEO.md` §0), so confirm the property is still verified.
 
 ## 1. The rules that keep this useful
@@ -21,12 +20,13 @@ Brian chose Umami over Plausible on 2026-09-16 because Plausible is paid and Uma
 
 ## 2. Setup
 
-- **AN-6 One script, configured by attributes.** Keep the existing Umami Cloud script tag in `index.html` and add:
-  - `data-domains="maplesymbols.com,www.maplesymbols.com"`. The tracker splits this on commas and compares each entry with `window.location.hostname` exactly, so both hosts must be listed while either one serves the site. This is what stops dev and preview traffic being counted.
-  - `data-performance="true"`, so the tracker collects Core Web Vitals itself. That replaces the hand-rolled `web_vital` event an earlier draft needed.
-  - `data-exclude-search="true"`. No query string on this site carries meaning, and it keeps stray tracking parameters out of the page list.
+- **AN-6 Only production records; everywhere else prints.** `index.html` defines `window.umamiBeforeSend` before the tracker loads, and the tracker tag names it in `data-before-send`. The live tracker calls that function before every send (pageviews, Web Vitals, `track()` calls, `data-umami-event` clicks) and cancels the send on a falsy return. On `maplesymbols.com` and `www.maplesymbols.com` it returns the payload; on any other host (localhost, `vite preview`, Vercel previews) it logs `[umami] not sent from <host>:` with the payload and returns `false`. So to test tracking, open the browser console locally or on a preview and do the thing.
+  - `data-domains` is deliberately **not** used: the tracker checks it before the before-send hook, so non-production hosts would be dropped silently, with nothing to inspect.
+  - `data-performance="true"` collects Core Web Vitals; `data-exclude-search="true"` keeps query strings out of the page list.
+  - To keep your own production visits out of the numbers, run `localStorage.setItem("umami.disabled", "1")` once in the console on maplesymbols.com; the tracker checks that key and stops sending from that browser.
+  - `src/test/umami.test.ts` runs the real gate from `index.html` against production, local, preview and lookalike hosts, and on `v2` checks the allowed hosts match `SITE_URL`.
 - **AN-7 The script already tracks the custom router.** The live tracker wraps `history.pushState` and `history.replaceState` and records a pageview on each change, which is exactly what `RouterContext.navigate` calls, so no manual pageviews are needed. Verify once after deploying: navigate client-side from `/` to `/handbook` and confirm two pageviews with different paths in the Umami dashboard.
-- **AN-8 All tracking goes through one wrapper module,** `analytics.ts`, beside the other pure modules in `src/lib/`. It exports a typed `track(event, data)` over a union of the event names in §3, calls `window.umami.track(name, data)` only when that function exists (it does not in dev, in tests, or behind blockers), and never throws. Components import it; nothing calls `window.umami` directly.
+- **AN-8 All tracking goes through one wrapper module,** `analytics.ts`, beside the other pure modules in `src/lib/`. It exports a typed `track(event, data)` over a union of the event names in §3, calls `window.umami.track(name, data)` only when that function exists (it does not in tests or behind blockers; locally it exists and the AN-6 gate prints instead of sending), and never throws. Components import it; nothing calls `window.umami` directly.
 - Tracker limits to design within: event names at most 50 characters; string values at most 500 characters; at most 50 properties per event; numbers keep 4 digits of precision. Data sent through `data-umami-event-*` HTML attributes is always stored as strings.
 
 ## 3. Event catalogue
@@ -116,4 +116,4 @@ Umami does not use cookies and does not collect personal data; combined with AN-
 
 - Adding an event means adding a row to §3 with its decision column filled in, in the same commit. A row with an empty decision column does not merge.
 - Removing an event means deleting its row and saying where it went.
-- §0 is rewritten the day `data-domains` and the first events ship, and §7 the day the verification method is recorded.
+- §0 is rewritten the day the §3 events reach production, and §7 the day the verification method is recorded.

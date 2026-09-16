@@ -1,6 +1,6 @@
 # Maple Symbols — Agent Guide
 
-MapleStory Arcane/Sacred **symbol calculator**: a single-page React app (no backend) where a player enters each symbol's level and experience, toggles daily/weekly quests, and gets completion dates, meso costs, a power graph, and reference tables. Live at maplesymbols.com, deployed by Vercel from `main` since 2026-09-16 (Firebase before that). One open hosting fix: Vercel currently treats `www` as primary while the code's canonicals use the apex (SEO §0).
+MapleStory Arcane/Sacred **symbol calculator**: a single-page React app (no backend) where a player enters each symbol's level and experience, toggles daily/weekly quests, and gets completion dates, meso costs, a power graph, and reference tables. Live at maplesymbols.com, deployed by Vercel from `main` since 2026-09-16 (Firebase before that). The apex is the primary domain; `www` still redirects with a temporary 307 that should be a 308 (SEO §0). Analytics only records on production (ANALYTICS AN-6).
 
 Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives here; the deep docs in `docs/` are read on demand (see "Which doc when"). Keep it under ~120 lines: anything longer than two lines that a deep doc covers belongs there, with a pointer here.
 

@@ -26,6 +26,12 @@ describe("RadioButton", () => {
     expect(two).toHaveAttribute("tabindex", "-1");
   });
 
+  it("shows the focus outline for keyboard focus only, not after a click", () => {
+    render(<RadioButton label="Arcane" selected={true} onClick={() => {}} />);
+    const radio = screen.getByRole("radio", { name: "Arcane" });
+    expect(radio).toHaveClass("focus:outline-none", "focus-visible:outline-solid");
+  });
+
   it("arrow keys move focus and selection within the group, wrapping around", () => {
     const pickOne = vi.fn();
     const pickTwo = vi.fn();

@@ -43,7 +43,8 @@ const RadioButton = ({ label, selected, onClick }: RadioButtonProps) => {
       role="radio"
       aria-checked={selected}
       tabIndex={selected ? 0 : -1}
-      className="group flex cursor-pointer items-center gap-4"
+      // Outline on keyboard focus only: the global button rule also draws it after a click.
+      className="group flex cursor-pointer items-center gap-4 focus:outline-none focus-visible:outline-solid"
       onClick={onClick}
       onKeyDown={handleKeyDown}
     >
