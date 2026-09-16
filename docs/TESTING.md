@@ -4,12 +4,12 @@ Vitest + Testing Library + jsdom, colocated tests, explicit imports. This doc is
 
 ## 1. Stack and commands
 
-| Piece                                                                   | Version / note                                                   |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `vitest` + `@vitest/coverage-v8`                                        | 5.x (needs Vite ≥ 6.4 and Node ≥ 22.12; Vite is 8.3, Node is 26) |
-| `jsdom`                                                                 | 30.x (needs Node ^22.22                                          |     | ^24.15 |     | >=26; the `engines` field in `package.json` mirrors that) |
-| `@testing-library/react` 16, `/dom` 10, `/jest-dom` 7, `/user-event` 14 |                                                                  |
-| `@types/node`                                                           | for `node:fs` in the meta-tests                                  |
+| Piece                                                                   | Version / note                                                                              |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `vitest` + `@vitest/coverage-v8`                                        | 5.x (needs Vite ≥ 6.4 and Node ≥ 22.12; Vite is 8.3, Node is 26)                            |
+| `jsdom`                                                                 | 30.x (needs Node 22.22+, 24.15+ or 26+; the `engines` field in `package.json` mirrors that) |
+| `@testing-library/react` 16, `/dom` 10, `/jest-dom` 7, `/user-event` 14 |                                                                                             |
+| `@types/node`                                                           | for `node:fs` in the meta-tests                                                             |
 
 - `pnpm test` (single run), `pnpm test:watch`, `pnpm test:coverage` (v8 over `src/**/*.{ts,tsx}` minus `main.tsx`, `src/test/**`, `*.d.ts` and the tests themselves; text + html).
 - Filter: `pnpm test utils` or `pnpm test src/state`. Never `pnpm test -- utils`: pnpm passes the `--` through to Vitest, which then ignores the filter and runs everything.
