@@ -26,3 +26,6 @@ dist-ssr
 
 # Playwright MCP screenshots/snapshots
 .playwright-mcp
+
+# TypeScript incremental build info
+*.tsbuildinfo

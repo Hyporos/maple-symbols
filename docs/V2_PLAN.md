@@ -29,7 +29,7 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 
 ## Dependency upgrades (first, on the old code, one commit each)
 
-Done on `development` (commits `0778e4f`, `5fbee93`, and the Tailwind 4 commit after them): tooling minors; React 18.3 → 19 (+ `@types/react*` 19; `@vitejs/plugin-react` stays on 5.x because 6.x needs Vite 8); Tailwind 3 → 4 via `@tailwindcss/upgrade` (tokens moved to the `@theme` block in `src/global.css`, `bg-linear-to-*`, `outline-hidden`, `*:` variants, `@tailwindcss/postcss`, `prettier-plugin-tailwindcss` 0.8 with `tailwindStylesheet`); desktop and phone screenshots identical before/after. Pending: jsdom 30 and an `engines` field once Node is on the latest 22 LTS. Peer check on 2026-09-16: recharts 3, @testing-library/react 16, react-error-boundary, zustand and @floating-ui/react 0.24 all accept React 19.
+Done on `development` (commits `0778e4f`, `5fbee93`, and the Tailwind 4 commit after them): tooling minors; React 18.3 → 19 (+ `@types/react*` 19; `@vitejs/plugin-react` 6 and Vite 8 (rolldown; chunking via `codeSplitting`)); Tailwind 3 → 4 via `@tailwindcss/upgrade` (tokens moved to the `@theme` block in `src/global.css`, `bg-linear-to-*`, `outline-hidden`, `*:` variants, `@tailwindcss/postcss`, `prettier-plugin-tailwindcss` 0.8 with `tailwindStylesheet`); desktop and phone screenshots identical before/after. Pending: jsdom 30 and an `engines` field once Node is on the latest 22 LTS. Peer check on 2026-09-16: recharts 3, @testing-library/react 16, react-error-boundary, zustand and @floating-ui/react 0.24 all accept React 19.
 
 After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; log surprises in `docs/MISTAKES.md`.
 

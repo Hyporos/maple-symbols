@@ -29,7 +29,7 @@ Package manager is **pnpm** (never npm/yarn). Node 22. Pre-commit (simple-git-ho
 
 ## Stack
 
-React 18 + TypeScript 5 (strict) + Vite 7 · Tailwind 4 (`cn()` = clsx + tailwind-merge) · Zustand 5 with `persist` · custom History-API router (no react-router) · @floating-ui/react tooltips · Recharts 3 · dayjs (import from `src/lib/dayjs.ts` only) · react-icons · Vitest 5 + Testing Library + jsdom.
+React 19 + TypeScript 5 (strict) + Vite 8 (rolldown) · Tailwind 4 (`cn()` = clsx + tailwind-merge) · Zustand 5 with `persist` · custom History-API router (no react-router) · @floating-ui/react tooltips · Recharts 3 · dayjs (import from `src/lib/dayjs.ts` only) · react-icons · Vitest 5 + Testing Library + jsdom.
 
 ## Map
 

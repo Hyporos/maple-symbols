@@ -26,7 +26,7 @@ PageContent:
   otherwise    the "/" page (there is no 404)
 ```
 
-`Selector` renders on `/handbook` too because the tables read `selectedId` and `mode`. Vite splits `react-vendor` (react, react-dom, zustand), `recharts-vendor`, `dayjs-vendor`, and one chunk per lazy component (`vite.config.ts` → `manualChunks`).
+`Selector` renders on `/handbook` too because the tables read `selectedId` and `mode`. Vite splits `react-vendor` (react, react-dom, zustand), `recharts-vendor`, `dayjs-vendor`, and one chunk per lazy component (`vite.config.ts` → `build.rolldownOptions.output.codeSplitting`; Vite 8 bundles with rolldown, so the old rollup `manualChunks` object form is gone).
 
 ## 2. Routing
 
