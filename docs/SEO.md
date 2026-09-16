@@ -70,7 +70,7 @@ Until that is done, AGENTS.md's deploy sentence describes the intent, not the si
 
 ### Performance (Core Web Vitals)
 
-- **SEO-18 Budgets on the deployed site, mobile: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1, Lighthouse performance ≥ 90.** [review] Use PageSpeed Insights after each release. Field data (CrUX) only appears above a traffic threshold, so lab numbers are what you will mostly see. The heavy pieces are known: the recharts chunk (~350 KB raw) is lazy and stays lazy; the react vendor chunk (~220 KB) and the CSS (~40 KB) load up front; the Umami script is the one third-party script on every page.
+- **SEO-18 Budgets on the deployed site, mobile: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1, Lighthouse performance ≥ 90.** [review] Use PageSpeed Insights after each release. Field data (CrUX) only appears above a traffic threshold, so lab numbers are what you will mostly see. The heavy pieces are known: the recharts chunk (~350 KB raw) is lazy and stays lazy; the react vendor chunk (~220 KB) and the CSS (~40 KB) load up front; the analytics script is the one third-party script on every page (`docs/ANALYTICS.md`).
 - **SEO-19 Fonts do not block first paint.** [review] Maven Pro loads from Google Fonts through a render-blocking stylesheet (with `display=swap` in the URL) after two preconnects. Self-hosting a `woff2` in `public/` with `font-display: swap` removes two third-party connections from LCP, but `global.css` sets `font-['Maven_Pro']` with no fallback stack, so a self-hosted swap needs a fallback font with `size-adjust`, or LCP is traded for CLS.
 - **SEO-20 Caching: hashed `/assets/*` immutable for a year; HTML revalidated on every request.** [review] `vercel.json` sets the `/assets/` rule correctly. Two things it does not do as written: the `/(.*)\.html` header never matches `/` or `/handbook` (Vercel matches the request path; Vercel's default for HTML is `max-age=0, must-revalidate`, which is fine), and the blanket immutable rule on every static extension covers un-hashed `public/` images (KI-009: scope it to `/assets/`, or rename images instead of replacing them). The `.br`/`.gz` files from `vite-plugin-compression` are only useful if the host serves them; confirm on a Vercel preview, otherwise drop the plugin.
 
@@ -82,7 +82,7 @@ Until that is done, AGENTS.md's deploy sentence describes the intent, not the si
 
 ### Languages (when the selector ships)
 
-- **SEO-24 Each language gets its own URLs (`/ko/handbook`), its own `ROUTES` entries, `hreflang` links between variants plus `x-default`, and translated titles and descriptions.** [review] A client-side toggle on one URL is invisible to search engines. Until then `lang="en"` and `inLanguage: "en"` stay.
+- **SEO-24 Each language gets its own URLs (`/ko/handbook`), its own `ROUTES` entries, `hreflang` links between variants plus `x-default`, and translated titles and descriptions.** [review] A client-side toggle on one URL is invisible to search engines. Until then `lang="en"` and `inLanguage: "en"` stay. The plan for Korean, Japanese, Traditional and Simplified Chinese, including the scope question that gates it, is `docs/I18N.md`.
 
 ### Release gate
 
@@ -117,7 +117,7 @@ Closed on 2026-09-16 (commit "Apply the SEO quick wins"): **A-4** `trailingSlash
 
 ## 5. Off-page and monitoring (no code change covers this)
 
-- **Search Console and Bing Webmaster Tools**: verify the domain (record which method; there is no verification meta in `index.html`, so it is presumably DNS, and a host move must keep it), submit `https://maplesymbols.com/sitemap.xml`, and after each release read the Pages report and URL Inspection for the four URLs. A `site:` query is not an indexing check.
+- **Search Console and Bing Webmaster Tools**: verify the domain (record which method; there is no verification meta in `index.html`, so it is presumably DNS, and a host move must keep it), submit `https://maplesymbols.com/sitemap.xml`, and after each release read the Pages report and URL Inspection for the four URLs. A `site:` query is not an indexing check. Search Console is joined to Plausible so queries sit next to the traffic they produce; `docs/ANALYTICS.md` §7 has the setup and its limits.
 - **After every release**: SEO-25 live check; PageSpeed Insights on `/` and `/handbook` (mobile); validator.schema.org on `/`.
 - **Links that count**: the GitHub README (links already), the Discord, the MapleStory subreddit's tools thread, the MapleStory wiki and StrategyWiki resource lists (both credited on `/credits`, so a reciprocal listing is a fair ask), the creators in the Credits. One link from a wiki outranks a hundred directory listings.
 - **Brand**: "Maple Symbols" should appear as text on every page (Header logo `alt`, Footer) so branded queries resolve to the site rather than the GitHub repo.

@@ -57,7 +57,7 @@ src/
     Extras/      TabLayout page: Changelog (/changelog), Credits (/credits)
     ui/          RadioButton, SlideButton, TabLayout (reusable primitives)
   test/      setup.ts (mocks), helpers.ts (store/viewport/time/head helpers), docs + seo meta-tests
-docs/        ARCHITECTURE, DESIGN_SYSTEM, TESTING, SEO, KNOWN_ISSUES, MISTAKES
+docs/        ARCHITECTURE, DESIGN_SYSTEM, TESTING, SEO, I18N, ANALYTICS, KNOWN_ISSUES, MISTAKES
 scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-start banner)
 ```
 
@@ -75,7 +75,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - Store access is one selector per line: `const symbols = useAppStore((s) => s.symbols);`. Imperative reads inside handlers/effects use `useAppStore.getState()`.
 - Conditional classes go through `cn()`; template-literal classNames exist in older files but don't add more. Never hand-order Tailwind classes (Prettier sorts them).
 - Reusable primitives live in `components/ui/`; feature components take store state directly rather than props.
-- Tooltips: `<Tooltip placement="…"><TooltipTrigger asChild>…</TooltipTrigger><TooltipContent className="tooltip">…</TooltipContent></Tooltip>`; accent words are bare `<span>`s (global CSS colours every span).
+- Tooltips: `<Tooltip placement="…"><TooltipTrigger asChild>…</TooltipTrigger><TooltipContent className="tooltip">…</TooltipContent></Tooltip>`; accent words are bare `<span>`s (global CSS colours every span). New copy is written as **whole sentences with the markup inside**, never as fragments around a `<span>`, and without `<br>`: the existing 20 split sentences are the main blocker to translation (I18N §3, B-1).
 - Prettier: 100 columns, double quotes, semicolons, LF. ESLint: `_`-prefixed unused vars allowed; `any` fails lint; the react-hooks dependency rules are **off**, so effect deps are curated by hand and on purpose.
 - Tests are colocated `Name.test.ts(x)` with explicit `import { … } from "vitest"` (no globals). See `docs/TESTING.md`.
 - Commits: short capitalised imperative subject, no prefix, no period ("Add weekly toggle to Cernium"). Work on `development`, PR into `main`.
@@ -109,6 +109,8 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - `docs/DESIGN_SYSTEM.md`: any UI work; tokens, recipes with exact class strings, responsive/motion rules, new-component checklist.
 - `docs/TESTING.md`: writing or fixing tests; helpers, mocks, frozen-time fixtures, recipes per layer, the traps (tooltips, Overview duplicates, lazy sections).
 - `docs/SEO.md`: anything search engines see: `routes.ts` entries, `index.html`, `SEO.tsx`, `vercel.json`, headings, copy, images, performance. Numbered rules (cite as `SEO-n`), the query map, and the audit backlog. The goal is rank one, so treat its rules as requirements, not advice.
+- `docs/I18N.md`: before adding a user-facing string, touching `src/lib/routes.ts`, or any work on the language selector. Korean, Japanese, Traditional and Simplified Chinese are planned; §5 has the rules that apply to new copy **today** (whole sentences, no `<br>` in copy, locale-aware formatting, `Intl.PluralRules`).
+- `docs/ANALYTICS.md`: before adding, changing or removing any tracking. Plausible plus Google Search Console; §3 is the event catalogue and every event must name the decision it informs.
 - `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd.
 - `docs/MISTAKES.md`: distilled rules at the top, log below.
 - `docs/V2_PLAN.md`: the 2.0 overhaul: scope, branch, what is pinned, what is reusable, upgrade order, and the decisions already made.
@@ -122,6 +124,8 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 | `src/contexts/*`, `src/lib/routes.ts`, `App.tsx` routes                                         | ARCHITECTURE §2 Routing and §9 (the seo test fails on drift)                                       |
 | `components/Calculator/*` effects, quest toggles, Overview labels                               | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
 | `index.html`, `SEO.tsx`, `vercel.json`, `robots.txt`, the manifest, headings, page copy, images | SEO §1 table / §2 rules / §4 backlog (every rule must stay true of the code)                       |
+| User-facing copy, `src/lib/routes.ts` titles, the language selector                             | I18N §2 volumes and §3 blockers (add a row when new work introduces one)                           |
+| Any tracking call, the analytics wrapper in `src/lib/`, the analytics script in `index.html`    | ANALYTICS §3 catalogue (a new event needs its decision column filled in the same commit)           |
 | `src/global.css` (tokens + global rules), `components/ui/*`, Tooltip                            | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks the `@theme` variables) |
 | `package.json` scripts/deps, `vitest.config.ts`, hooks, CI                                      | Commands/Stack above; TESTING §1 and §3                                                            |
 | A correction from Brian, or a wrong assumption of yours                                         | MISTAKES (`/log-mistake`)                                                                          |

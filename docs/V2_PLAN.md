@@ -40,3 +40,6 @@ After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; lo
 - Data model: keep `SymbolData` with NaN sentinels, or move to `level: number | null`? A real `migrate` by `id` (KI-001) is optional: Brian decided (2026-09-16) that persisted symbol data may reset on the 2.0 release.
 - Routing: keep the custom router, or adopt a library once there are more pages?
 - Visual direction: the new look, and whether the fixed 360 px phone cards and fixed pane heights survive.
+- Localisation scope (`docs/I18N.md` §0): interface-only translation, or per-region game data? KMS, JMS, TMS and CMS ship different symbols and yields, and the second answer adds a version dimension to `symbols.json`, the store and the persistence key, so it belongs with the data-model decision above.
+- Localisation library (`docs/I18N.md` §4): typed dictionary, react-i18next, or Lingui.
+- Analytics cut-over (`docs/ANALYTICS.md`): Umami out, Plausible in, Search Console joined to it.
