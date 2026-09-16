@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.4.0",
   "type": "module",
+  "engines": {
+    "node": "^22.22.0 || ^24.15.0 || >=26.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -44,7 +47,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.12.0",
-    "jsdom": "^28.1.0",
+    "jsdom": "^30.0.1",
     "lint-staged": "^17.5.1",
     "postcss": "^8.5.28",
     "prettier": "^3.9.7",

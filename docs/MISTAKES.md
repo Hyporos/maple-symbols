@@ -22,7 +22,7 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **What**: Installed `jsdom@30` for the test stack; its `engines` field requires Node ≥ 22.22 while this machine runs 22.12. pnpm printed a warning and continued, so it went unnoticed until a reader flagged it.
 - **Root cause**: Took "latest" without reading the package's engine floor against the local runtime.
 - **Rule**: Before adding a dev tool, check `engines` (and peer deps) against `node --version`; pin to the newest version that admits the local runtime and note the reason in the docs.
-- **Where**: `package.json` (`jsdom` pinned to 28.x, see `docs/TESTING.md`).
+- **Where**: `package.json` (`jsdom` was pinned to 28.x until Node moved to 26 later that day; `engines` now guards the floor).
 
 ### M-002 · 2026-09-16 · process
 

@@ -25,7 +25,7 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 | `/release X.Y.Z`                               | Whole release: version, changelog entry (newest entry goes **last**), sitemap, README badge, PR `development → main`, tag, back-merge       |
 | `/sync-docs`, `/log-mistake`, `/new-component` | Reconcile docs with code; log a mistake; scaffold a component in the house style with a test. Full list: `docs/COMMANDS.md`                 |
 
-Package manager is **pnpm** (never npm/yarn). Node 22. Pre-commit (simple-git-hooks) runs lint-staged (ESLint, related Vitest tests, Prettier on staged files) and then `scripts/docs-drift.mjs`. CI (`.github/workflows/ci.yml`) runs lint, typecheck, test, build on pushes and PRs to `main`/`development`.
+Package manager is **pnpm** (never npm/yarn). Node 26 locally and in CI (`engines`: ^22.22 || ^24.15 || >=26). Pre-commit (simple-git-hooks) runs lint-staged (ESLint, related Vitest tests, Prettier on staged files) and then `scripts/docs-drift.mjs`. CI (`.github/workflows/ci.yml`) runs lint, typecheck, test, build on pushes and PRs to `main`/`development`.
 
 ## Stack
 
