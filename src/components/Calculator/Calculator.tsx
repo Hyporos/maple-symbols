@@ -17,6 +17,7 @@ import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
 import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
+import { formatNumber, plural } from "../../lib/format";
 
 const Calculator = () => {
   /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */
@@ -341,7 +342,7 @@ const Calculator = () => {
                     <div className="flex justify-center gap-1.5">
                       <p>
                         <span>{daysToNextLevel}</span>{" "}
-                        {daysToNextLevel > 1 ? "days to go" : "day to go"}
+                        {plural(daysToNextLevel, "day to go", "days to go")}
                       </p>
                       <Tooltip placement={"top"}>
                         <TooltipTrigger asChild={true}>
@@ -386,9 +387,11 @@ const Calculator = () => {
                 ) : isValid(currentSymbol.experience) ? (
                   <p>
                     <span>{nextExperience - currentSymbol.experience}</span>{" "}
-                    {nextExperience - currentSymbol.experience > 1
-                      ? "symbols remaining"
-                      : "symbol remaining"}
+                    {plural(
+                      nextExperience - currentSymbol.experience,
+                      "symbol remaining",
+                      "symbols remaining"
+                    )}
                   </p>
                 ) : (
                   <p>
@@ -397,7 +400,7 @@ const Calculator = () => {
                 )}
 
                 <p className="pt-2.5 md:pt-8">
-                  <span>{currentSymbol.mesosRequired[currentSymbol.level]?.toLocaleString()}</span>{" "}
+                  <span>{formatNumber(currentSymbol.mesosRequired[currentSymbol.level])}</span>{" "}
                   mesos required
                 </p>
 

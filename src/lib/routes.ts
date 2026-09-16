@@ -11,6 +11,15 @@
 
 export const SITE_URL = "https://maplesymbols.com";
 export const SITE_NAME = "Maple Symbols";
+/**
+ * The BCP-47 tag of the UI the app is serving. One value today; I18N-1 turns this
+ * into a per-request locale and `RoutePath` gains a locale prefix (I18N-4).
+ * Everything that names a language in TypeScript reads this: `src/lib/format.ts`
+ * and the JSON-LD in `src/components/SEO.tsx`. The two static files that also
+ * carry it — `index.html` and `public/manifest.webmanifest` — have no build-time
+ * substitution yet and say so in a comment.
+ */
+export const DEFAULT_LOCALE = "en";
 export const OG_IMAGE = {
   url: `${SITE_URL}/main/og-image.png`,
   alt: "Maple Symbols — MapleStory Symbol Calculator",

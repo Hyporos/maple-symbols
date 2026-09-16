@@ -1,6 +1,7 @@
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
+import { formatNumber } from "../../lib/format";
 import { useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 
@@ -90,10 +91,10 @@ const CostTable = () => {
                         </div>
                       </td>
                       <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
-                        {isFirstRow ? "-" : cost.toLocaleString()}
+                        {isFirstRow ? "-" : formatNumber(cost)}
                       </td>
                       <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
-                        {isFirstRow ? "-" : totalCost.toLocaleString()}
+                        {isFirstRow ? "-" : formatNumber(totalCost)}
                       </td>
                     </tr>
                   );

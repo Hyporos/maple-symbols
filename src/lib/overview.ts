@@ -6,6 +6,7 @@
 import type { Dayjs } from "dayjs";
 import { dayjs } from "./dayjs";
 import { progressToMax } from "./calculator";
+import { plural } from "./format";
 import type { SymbolData } from "./types";
 
 /** Invisible placeholder that keeps a row's height when there is nothing to show. */
@@ -49,9 +50,7 @@ export function collapsedRowLabels(
       ? "? days"
       : daysRemaining === 0
         ? "Ready for upgrade"
-        : daysRemaining > 1
-          ? `${daysRemaining} days`
-          : `${daysRemaining} day`;
+        : `${daysRemaining} ${plural(daysRemaining, "day", "days")}`;
 
   const remaining = blank
     ? BLANK
@@ -116,11 +115,11 @@ export function targetPanelLabels(input: TargetPanelInput): TargetPanelLabels {
             noQuests ||
             isNaN(current.experience)
           ? "? days"
-          : targetDays > 1
-            ? `${targetDays} days`
-            : targetDays <= 0
-              ? "Ready for upgrade"
-              : `${targetDays} day`;
+          : // `targetDays` is a whole day count from advanceDayCount, so testing
+            // "<= 0" before the plural reads the same as the old "> 1" chain did.
+            targetDays <= 0
+            ? "Ready for upgrade"
+            : `${targetDays} ${plural(targetDays, "day", "days")}`;
 
   const remaining =
     isNaN(targetSymbols) ||
