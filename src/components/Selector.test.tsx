@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import Selector from "./Selector";
 import { useAppStore } from "../state/store";
 
@@ -35,5 +35,20 @@ describe("Selector", () => {
 
     fireEvent.click(screen.getByText("Arcane"));
     expect(useAppStore.getState().selectedId).toBe(3);
+  });
+
+  it("the type toggle is a named radio group operable from the keyboard (KI-011)", () => {
+    render(<Selector />);
+    const group = screen.getByRole("radiogroup", { name: "Symbol type" });
+    const arcane = within(group).getByRole("radio", { name: "Arcane" });
+    const sacred = within(group).getByRole("radio", { name: "Sacred" });
+    expect(arcane).toHaveAttribute("aria-checked", "true");
+    expect(arcane).toHaveAttribute("tabindex", "0");
+
+    fireEvent.keyDown(arcane, { key: "ArrowDown" });
+    expect(useAppStore.getState().mode).toBe("sacred");
+    expect(sacred).toHaveFocus();
+    expect(sacred).toHaveAttribute("aria-checked", "true");
+    expect(arcane).toHaveAttribute("tabindex", "-1");
   });
 });

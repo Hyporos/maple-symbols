@@ -204,8 +204,10 @@ const Overview = () => {
                             type="number"
                             placeholder="Level"
                             value={
-                              String(targetLevel) === "NaN" && levelSet === false && isMobile
-                                ? maxLevel
+                              Number.isNaN(targetLevel)
+                                ? levelSet === false && isMobile
+                                  ? maxLevel
+                                  : ""
                                 : targetLevel
                             }
                             className="h-[25px] w-[60px] bg-secondary p-1.5 text-center text-sm outline-hidden transition-colors hover:bg-hover focus:bg-hover focus:outline-hidden md:h-[35px] md:w-[75px] md:text-base"

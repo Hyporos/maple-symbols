@@ -276,9 +276,13 @@ const Graph = () => {
         <hr className="my-8 h-px w-full opacity-10" />
 
         {/* RADIO BUTTONS */}
-        <div className="flex space-x-[75px] pb-6 md:space-x-32 md:pb-4">
+        <div
+          role="radiogroup"
+          aria-label="X-axis spacing"
+          className="flex space-x-[75px] pb-6 md:space-x-32 md:pb-4"
+        >
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger as="div">
               <RadioButton
                 label="Dynamic"
                 selected={graphDynamic}
@@ -291,7 +295,7 @@ const Graph = () => {
             </TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger as="div">
               <RadioButton
                 label="Linear"
                 selected={!graphDynamic}

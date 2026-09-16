@@ -42,7 +42,11 @@ const Selector = () => {
     <section className="mx-4 flex justify-center">
       <div className="mb-6 flex w-[360px] max-w-[700px] flex-row items-center justify-between rounded-3xl bg-linear-to-t from-card to-card-grad px-8 py-8 md:w-full md:items-stretch md:justify-center md:gap-11 md:py-6">
         {/* MODE BUTTONS */}
-        <div className="mb-1 flex flex-col justify-center gap-14 md:mb-0 md:justify-around md:gap-5">
+        <div
+          role="radiogroup"
+          aria-label="Symbol type"
+          className="mb-1 flex flex-col justify-center gap-14 md:mb-0 md:justify-around md:gap-5"
+        >
           <RadioButton
             label="Arcane"
             selected={mode === "arcane"}

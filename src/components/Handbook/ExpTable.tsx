@@ -41,8 +41,7 @@ const ExpTable = () => {
           </div>
 
           <Tooltip placement="left">
-            <TooltipTrigger asChild={true}>
-              {" "}
+            <TooltipTrigger>
               <HiOutlineQuestionMarkCircle
                 size={!isMobile ? 30 : 27.5}
                 className="cursor-default transition-all hover:stroke-white"

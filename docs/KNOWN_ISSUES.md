@@ -16,19 +16,11 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 - Production moved to Vercel on 2026-09-16, but Vercel has `www` as the primary domain and 308s the apex to it, while every canonical URL in the code is the apex. Fix in Vercel's domain settings; see `docs/SEO.md` §0 (A-0).
 
-### KI-011 · M · `RadioButton` cannot be operated from the keyboard
-
-- **Symptom**: Neither radio set works from the keyboard. The Selector's Arcane/Sacred toggle is not in the tab order at all, so a keyboard user cannot switch symbol types. The Graph's Linear/Exponential choice is reachable only because its tooltip trigger is a button, and Enter or Space on it does nothing.
-- **Cause**: `src/components/ui/RadioButton.tsx` renders a `<div>` with `onClick`: no `role`, no `tabIndex`, no key handler, and no `aria-checked`. Where it sits inside a tooltip trigger button, the button receives focus and the keypress, but the click handler is on the inner div, so nothing selects.
-- **Suggested fix**: Render a real `<button type="button" role="radio" aria-checked={selected}>` (or native `<input type="radio">` with a label) and group the set with `role="radiogroup"`. The tooltip trigger around it should then use `as="div"` so the radio is the focus target. Found by the tooltip-hygiene work on 2026-09-16.
-
-### KI-012 · L · Overview's target input passes `NaN` to `value` on desktop
-
-- **Symptom**: React logs "Received NaN for the `value` attribute" when a row's target panel is open on desktop and no target has been typed (or the field was cleared).
-- **Cause**: `Overview.tsx` sets `value={String(targetLevel) === "NaN" && levelSet === false && isMobile ? maxLevel : targetLevel}`. On mobile the unset case substitutes `maxLevel`; on desktop it passes `targetLevel`, which is `NaN`. Every other number input in the app renders `""` for `NaN` (AGENTS cheat sheet).
-- **Suggested fix**: Render `""` when `targetLevel` is `NaN` outside the mobile default, matching the other inputs, and replace `String(x) === "NaN"` with `Number.isNaN(x)`.
-
 ## Resolved
+
+### KI-011 · resolved on `v2` (accessibility follow-ups, 2026-09-16) · `RadioButton` is a `<button type="button" role="radio" aria-checked>` with a roving `tabIndex` (0 when selected, -1 otherwise) and arrow keys that move focus and selection within the nearest `role="radiogroup"`, wrapping. Selector's toggle is a radiogroup named "Symbol type"; Graph's is "X-axis spacing", and its two tooltip triggers are `as="div"`, so the radio itself takes focus. The Handbook's five `asChild` + `{" "}` triggers became plain triggers. `src/test/interactiveNesting.test.tsx` pins no `button button`/`button input`/`button a`/`button [role=radio]` and no React DOM warning. (Was: a `<div onClick>` with no role, tab stop or key handling; the Selector toggle was unreachable and Graph's trigger button took focus while Enter/Space did nothing.)
+
+### KI-012 · resolved on `v2` (accessibility follow-ups, 2026-09-16) · Overview's target input renders `""` for an unset `targetLevel` (`Number.isNaN`) outside the mobile `maxLevel` default. (Was: `String(targetLevel) === "NaN"` and `NaN` passed to `value` on desktop, which React warned about.)
 
 ### KI-007 · resolved on `v2` (tooltip hygiene, 2026-09-16) · `TooltipTrigger` takes `as` (`"button"` default, `"div"`, `"span"`). Calculator's level/exp trigger and Tools' two before/after previews are `as="div"`; Header's language button and Overview's target input are the `asChild` element themselves; the icon and `RadioButton` triggers in Calculator, Overview and Graph drop `asChild` + `{" "}` for a plain trigger. Rendering Header, Calculator, Tools, Overview and Graph together gives no nesting `console.error` and no `button button`/`button input`. (Was: a `<button>` fallback wrapped inputs and buttons; React logged "`<button>` cannot be a descendant of `<button>`".) The Handbook tables keep the `asChild` + `{" "}` form, which renders a valid icon-in-button.
 

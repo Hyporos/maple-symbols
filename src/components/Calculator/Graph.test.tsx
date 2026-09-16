@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import Graph from "./Graph";
 import { seedSymbol, WED } from "../../test/helpers";
 
@@ -50,5 +50,20 @@ describe("Graph", () => {
     expect(screen.getByText("Dynamic")).toBeInTheDocument();
     fireEvent.click(screen.getByText("Linear"));
     expect(screen.getByText("70 / 220")).toBeInTheDocument(); // still renders after the switch
+  });
+
+  it("the x-axis choice is a named radio group; the radios, not their tooltip triggers, take focus (KI-011)", () => {
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
+    render(<Graph />);
+    const group = screen.getByRole("radiogroup", { name: "X-axis spacing" });
+    const dynamic = within(group).getByRole("radio", { name: "Dynamic" });
+    const linear = within(group).getByRole("radio", { name: "Linear" });
+    expect(within(group).queryAllByRole("button")).toHaveLength(0);
+    expect(dynamic).toHaveAttribute("aria-checked", "true");
+
+    fireEvent.keyDown(dynamic, { key: "ArrowRight" });
+    expect(linear).toHaveFocus();
+    expect(linear).toHaveAttribute("aria-checked", "true");
+    expect(dynamic).toHaveAttribute("tabindex", "-1");
   });
 });

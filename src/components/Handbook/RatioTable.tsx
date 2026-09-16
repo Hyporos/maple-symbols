@@ -34,8 +34,7 @@ const RatioTable = () => {
           </div>
 
           <Tooltip placement="left">
-            <TooltipTrigger asChild={true}>
-              {" "}
+            <TooltipTrigger>
               <HiOutlineQuestionMarkCircle
                 size={!isMobile ? 30 : 27.5}
                 className="cursor-default transition-all hover:stroke-white"
@@ -63,8 +62,7 @@ const RatioTable = () => {
                   </h2>
                   {!isMobile && (
                     <Tooltip>
-                      <TooltipTrigger asChild={true}>
-                        {" "}
+                      <TooltipTrigger>
                         <MdOutlineInfo
                           size={20}
                           className="cursor-default transition-all hover:fill-white"
@@ -112,8 +110,7 @@ const RatioTable = () => {
                           </p>
                           {mode === "arcane" && index === 8 && !isMobile && (
                             <Tooltip>
-                              <TooltipTrigger asChild={true}>
-                                {" "}
+                              <TooltipTrigger>
                                 <MdOutlineInfo
                                   size={18}
                                   className="cursor-default transition-all hover:fill-white"
