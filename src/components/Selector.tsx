@@ -2,6 +2,8 @@ import { isValid, cn } from "../lib/utils";
 import RadioButton from "./ui/RadioButton";
 import { useAppStore } from "../state/store";
 import { useBreakpoint } from "../hooks/useBreakpoint";
+import { track } from "../lib/analytics";
+import type { SymbolType } from "../lib/types";
 
 // Indicator-bar translation per position within the six symbols of a type
 // (80 px pitch = 40 px icon + md:gap-10). Static so Tailwind can see the classes.
@@ -30,6 +32,11 @@ const Selector = () => {
 
   const { isMobile } = useBreakpoint();
 
+  const switchMode = (to: SymbolType) => {
+    if (to !== mode) track("mode_switch", { to });
+    setMode(to);
+  };
+
   const shown = symbols.filter((symbol) => symbol.type === mode);
   const selectedPosition = Math.max(
     0,
@@ -50,12 +57,12 @@ const Selector = () => {
           <RadioButton
             label="Arcane"
             selected={mode === "arcane"}
-            onClick={() => setMode("arcane")}
+            onClick={() => switchMode("arcane")}
           />
           <RadioButton
             label="Sacred"
             selected={mode === "sacred"}
-            onClick={() => setMode("sacred")}
+            onClick={() => switchMode("sacred")}
           />
         </div>
 
@@ -75,7 +82,10 @@ const Selector = () => {
                     !isValid(symbol.level) && "text-secondary",
                     isSelected && "text-primary transition-none"
                   )}
-                  onClick={() => selectSymbol(symbol.id)}
+                  onClick={() => {
+                    if (!isSelected) track("symbol_select", { symbol: symbol.name, mode });
+                    selectSymbol(symbol.id);
+                  }}
                 >
                   <img
                     src={symbol.img}

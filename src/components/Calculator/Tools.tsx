@@ -8,6 +8,7 @@ import { clampNumberInput } from "../../lib/inputs";
 import { CATALYST_RETENTION, maxLevelFor } from "../../lib/game";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { track } from "../../lib/analytics";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Tools component is the section under the Calculator which contains the Selectors and Catalyst.
@@ -22,6 +23,10 @@ const Tools = () => {
 
   const { isMobile } = useBreakpoint();
   const [selectedTool, setSelectedTool] = useState<"selector" | "catalyst">("selector");
+  const openTool = (tool: "selector" | "catalyst") => {
+    if (tool !== selectedTool) track("tool_used", { tool, action: "preview" });
+    setSelectedTool(tool);
+  };
   const [selectorCount, setSelectorCount] = useState(NaN);
   const currentSymbol = useSelectedSymbol();
   const nextExperience = currentSymbol?.symbolsRequired[currentSymbol.level];
@@ -71,7 +76,7 @@ const Tools = () => {
                     ? `${!isValid(currentSymbol.level) ? "" : "shadow-accent"} shadow-level`
                     : ""
               }`}
-              onClick={() => setSelectedTool("selector")}
+              onClick={() => openTool("selector")}
               tabIndex={disabled ? -1 : 0}
             >
               <img
@@ -97,7 +102,7 @@ const Tools = () => {
                         ? `${!isValid(currentSymbol.level) ? "" : "shadow-accent"} shadow-level`
                         : ""
                   }`}
-                  onClick={() => setSelectedTool("catalyst")}
+                  onClick={() => openTool("catalyst")}
                   tabIndex={disabled ? -1 : 0}
                 >
                   <img
@@ -229,6 +234,7 @@ const Tools = () => {
                     "pointer-events-none opacity-25"
                   }`}
                   onClick={() => {
+                    track("tool_used", { tool: "selector", action: "apply" });
                     setSymbols(
                       updateSymbol(symbols, selectedId, {
                         level: selectorLevel,

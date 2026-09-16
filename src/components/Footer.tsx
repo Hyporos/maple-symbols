@@ -12,6 +12,8 @@ function Footer() {
         <div className="flex gap-6">
           <a
             href="https://github.com/Hyporos/maple-symbols"
+            data-umami-event="outbound"
+            data-umami-event-destination="github"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub repository"
@@ -20,6 +22,8 @@ function Footer() {
           </a>
           <a
             href="https://discord.gg/FTMgy2ZKPK"
+            data-umami-event="outbound"
+            data-umami-event-destination="discord"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Discord server"
@@ -28,6 +32,8 @@ function Footer() {
           </a>
           <a
             href="https://www.paypal.com/donate/?hosted_button_id=RL3T3LA3QNVTU"
+            data-umami-event="outbound"
+            data-umami-event-destination="donate"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Donate via PayPal"

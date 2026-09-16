@@ -7,7 +7,8 @@ Brian chose Umami over Plausible on 2026-09-16 because Plausible is paid and Uma
 ## 0. Current state (2026-09-16)
 
 - **Done:** the Umami script in `index.html` carries `data-domains`, `data-performance` and `data-exclude-search` (AN-6), so dev and preview traffic is no longer counted and Web Vitals are collected. The typed wrapper exists in `src/lib/` (AN-8) with its tests, including the scan that keeps `window.umami` out of every other file.
-- **Not done yet:** no component calls `track` so far; the §3 events are wired in a follow-up, after the accessibility and i18n work on the same components merges. `outbound` attributes are not on the anchors yet.
+- **Wired:** every §3 event fires from its component, and `src/test/analyticsEvents.test.tsx` proves each one (name, data, once-per-session and on-change-only rules). `outbound` uses `data-umami-event` attributes on the Footer and Credits anchors. `error_shown` is wired through the ErrorBoundary `onError` but has no test, because that needs a render crash inside App. The Handbook reports tab changes through `TabLayout`'s `onSelect` observer prop.
+- **To verify on the live site after the next deploy:** AN-7 (a client-side navigation records two pageviews) and that custom events appear in the Umami dashboard.
 - Search Console's verification method is not recorded in the repo. The site moved from Firebase to Vercel on 2026-09-16 (`docs/SEO.md` §0), so confirm the property is still verified.
 
 ## 1. The rules that keep this useful
@@ -59,7 +60,7 @@ The one funnel that matters: land, enter a level, toggle a quest, see an answer.
 | `tool_used`       | `tool`: `selector` \| `catalyst`; `action`: `preview` \| `apply`    | Whether the Tools card earns its space, and whether people trust Apply or just look.                                                                                        |
 | `cap_unlocked`    | —                                                                   | How many people use the experience-cap unlock. It caused two bugs fixed on `v2` (KI-004, KI-005) and is the most intricate input rule; low usage argues for simplifying it. |
 | `overview_target` | `target_level` bucketed (`2-5`, `6-10`, `11-15`, `16-20`)           | Whether the target-level panel is used at all, and whether people aim for max or for a next milestone.                                                                      |
-| `graph_mode`      | `mode`: `linear` \| `exponential`                                   | Whether the exponential mode (a 1.3.0 feature) was worth building and should be the default.                                                                                |
+| `graph_mode`      | `mode`: `dynamic` \| `linear` (the UI labels)                       | Whether the dynamic x-axis (a 1.3.0 feature) earns its place as the default, or whether people switch to linear spacing.                                                    |
 | `handbook_tab`    | `tab`: `exp` \| `cost` \| `ratio`                                   | Which table earns the Handbook's traffic, which is also the page's SEO target (`docs/SEO.md` §3).                                                                           |
 | `extras_tab`      | `tab`: `changelog` \| `credits`                                     | Whether anyone reads the changelog, which decides how much effort each release entry deserves.                                                                              |
 | `language_switch` | `to`: locale (not in the wrapper's union until the selector exists) | After `docs/I18N.md` ships: which locales are worth the translation cost, and which to add next.                                                                            |

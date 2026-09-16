@@ -21,6 +21,8 @@ const CreditText = ({ label, img, link, twitch, youtube, x }: CreditTextProps) =
       <a
         href={link}
         target="_blank"
+        data-umami-event="outbound"
+        data-umami-event-destination="credit"
         rel="noopener"
         className={cn(
           "flex items-center justify-center gap-2",
@@ -33,19 +35,37 @@ const CreditText = ({ label, img, link, twitch, youtube, x }: CreditTextProps) =
 
       {/* SOCIAL MEDIA */}
       {twitch && (
-        <a href={twitch} target="_blank" rel="noopener">
+        <a
+          href={twitch}
+          target="_blank"
+          rel="noopener"
+          data-umami-event="outbound"
+          data-umami-event-destination="credit"
+        >
           <FaTwitch className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-[#6441a5] md:h-4 md:w-4" />
         </a>
       )}
 
       {youtube && (
-        <a href={youtube} target="_blank" rel="noopener">
+        <a
+          href={youtube}
+          target="_blank"
+          rel="noopener"
+          data-umami-event="outbound"
+          data-umami-event-destination="credit"
+        >
           <FaYoutube className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-[#e00000] md:h-4 md:w-4" />
         </a>
       )}
 
       {x && (
-        <a href={x} target="_blank" rel="noopener">
+        <a
+          href={x}
+          target="_blank"
+          rel="noopener"
+          data-umami-event="outbound"
+          data-umami-event-destination="credit"
+        >
           <FaXTwitter className="h-3.5 w-3.5 transition-all hover:scale-110 hover:fill-white md:h-4 md:w-4" />
         </a>
       )}

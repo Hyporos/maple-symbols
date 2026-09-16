@@ -18,6 +18,9 @@ interface TabLayoutProps {
   /** Called with the new 1-based tab index whenever the user clicks a tab.
    * Only used when `activeTab` is provided. */
   onTabChange?: (index: number) => void;
+  /** Observer called with the new 1-based index when the user picks a different tab, in
+   * both modes, alongside the change itself. For side effects such as analytics. */
+  onSelect?: (index: number) => void;
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -26,12 +29,16 @@ interface TabLayoutProps {
 // * selected tab's content.  Navigation state lives entirely inside this component.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const TabLayout = ({ tabs, activeTab, onTabChange }: TabLayoutProps) => {
+const TabLayout = ({ tabs, activeTab, onTabChange, onSelect }: TabLayoutProps) => {
   const [internalTab, setInternalTab] = useState(1);
   const { isMobile } = useBreakpoint();
 
   const selectedTab = activeTab ?? internalTab;
-  const setSelectedTab = onTabChange ?? setInternalTab;
+  const changeTab = onTabChange ?? setInternalTab;
+  const setSelectedTab = (index: number) => {
+    if (index !== selectedTab) onSelect?.(index);
+    changeTab(index);
+  };
 
   return (
     <section className="mx-4 flex justify-center md:mx-8">

@@ -36,7 +36,7 @@ describe("track", () => {
         throw new Error("blocked");
       },
     };
-    expect(() => track("graph_mode", { mode: "exponential" })).not.toThrow();
+    expect(() => track("graph_mode", { mode: "dynamic" })).not.toThrow();
   });
 
   it("trackOnce sends a given key only once per session (AN-5)", () => {
@@ -78,7 +78,7 @@ describe("the wrapper is the only way in (AN-8)", () => {
       .map((f) => f.replace(/\\/g, "/"))
       .filter((f) => /\.(ts|tsx)$/.test(f) && !f.endsWith(".test.ts") && !f.endsWith(".test.tsx"))
       .filter((f) => f !== "lib/analytics.ts" && !f.endsWith(".d.ts"))
-      .filter((f) => readFileSync(`src/${f}`, "utf8").includes("umami"));
+      .filter((f) => /window\.umami/.test(readFileSync(`src/${f}`, "utf8")));
     expect(offenders).toEqual([]);
   });
 });

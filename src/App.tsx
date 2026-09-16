@@ -6,7 +6,8 @@ import SEO from "./components/SEO";
 import { ErrorBoundary } from "react-error-boundary";
 import { BreakpointProvider } from "./contexts/BreakpointContext";
 import { useRouter } from "./contexts/RouterContext";
-import { routeFor, urlFor } from "./lib/routes";
+import { ROUTES, routeFor, urlFor } from "./lib/routes";
+import { notFoundPath, track } from "./lib/analytics";
 
 // Heavy calculator sections are lazily loaded to keep initial parse cost low.
 const Calculator = lazy(() => import("./components/Calculator/Calculator"));
@@ -20,6 +21,12 @@ function PageContent() {
   const { path: pathname } = useRouter();
   // Unknown paths resolve to the calculator page.
   const route = routeFor(pathname);
+  const isKnownPath = ROUTES.some((r) => r.path === pathname);
+
+  // Evidence for SEO-3: do unknown URLs get real traffic? (docs/ANALYTICS.md §3)
+  useEffect(() => {
+    if (!isKnownPath) track("not_found", { path: notFoundPath(pathname) });
+  }, [pathname, isKnownPath]);
   const seo = <SEO title={route.title} description={route.description} url={urlFor(route.path)} />;
 
   if (route.path === "/handbook") {
@@ -72,6 +79,7 @@ function App() {
         <Header />
 
         <ErrorBoundary
+          onError={() => track("error_shown", { route: routeFor(window.location.pathname).path })}
           fallback={
             <div className="flex flex-1 items-center justify-center text-tertiary">
               Something went wrong. Please refresh.

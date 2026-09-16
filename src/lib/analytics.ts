@@ -31,7 +31,7 @@ export interface EventData {
   tool_used: { tool: "selector" | "catalyst"; action: "preview" | "apply" };
   cap_unlocked: undefined;
   overview_target: { target_level: TargetBucket };
-  graph_mode: { mode: "linear" | "exponential" };
+  graph_mode: { mode: "dynamic" | "linear" };
   handbook_tab: { tab: "exp" | "cost" | "ratio" };
   extras_tab: { tab: "changelog" | "credits" };
   error_shown: { route: string };

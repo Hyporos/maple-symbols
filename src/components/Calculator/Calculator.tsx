@@ -16,6 +16,7 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
+import { track, trackOnce } from "../../lib/analytics";
 import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
 import { formatNumber, plural } from "../../lib/format";
 
@@ -102,15 +103,19 @@ const Calculator = () => {
                   value={isNaN(currentSymbol.level) ? "" : currentSymbol.level}
                   className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    trackOnce("symbol_input:level", "symbol_input", {
+                      field: "level",
+                      mode: currentSymbol.type,
+                    });
                     setSymbols(
                       updateSymbol(
                         symbols,
                         selectedId,
                         levelInputPatch(e.target.value, maxLevelFor(currentSymbol.type))
                       )
-                    )
-                  }
+                    );
+                  }}
                 ></input>
 
                 <TbSlash size={30} color="#B2B2B2" className="mx-2 md:mx-0" />
@@ -133,13 +138,14 @@ const Calculator = () => {
                           size={18}
                           color="#718571"
                           aria-label="Unlock experience cap"
-                          onClick={() =>
+                          onClick={() => {
+                            track("cap_unlocked");
                             setSymbols(
                               updateSymbol(symbols, selectedId, {
                                 locked: !currentSymbol.locked,
                               })
-                            )
-                          }
+                            );
+                          }}
                           className={`cursor-pointer ${
                             (!currentSymbol.locked ||
                               !readyForUpgrade ||
@@ -201,6 +207,10 @@ const Calculator = () => {
                   className="w-1/2 bg-secondary p-2 text-center text-sm tracking-wider text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary focus:outline-hidden md:p-2.5"
                   onWheel={(e) => e.currentTarget.blur()}
                   onChange={(e) => {
+                    trackOnce("symbol_input:experience", "symbol_input", {
+                      field: "experience",
+                      mode: currentSymbol.type,
+                    });
                     const experience = experienceInputValue(
                       e.target.value,
                       currentSymbol.level,
@@ -232,9 +242,13 @@ const Calculator = () => {
                     "w-full border-b-2 border-unchecked/80 bg-secondary py-1.5 text-sm tracking-wider text-secondary transition-[background-color] select-none hover:bg-hover hover:text-primary focus:outline-accent md:border-unchecked md:text-base",
                     currentSymbol.daily && "border-checked/80 md:border-checked"
                   )}
-                  onClick={() =>
-                    setSymbols(updateSymbol(symbols, selectedId, { daily: !currentSymbol.daily }))
-                  }
+                  onClick={() => {
+                    track("quest_toggle", {
+                      quest: "daily",
+                      state: currentSymbol.daily ? "off" : "on",
+                    });
+                    setSymbols(updateSymbol(symbols, selectedId, { daily: !currentSymbol.daily }));
+                  }}
                 >
                   Daily
                 </button>
@@ -253,9 +267,15 @@ const Calculator = () => {
                     currentSymbol.weekly && "border-checked/80 md:border-checked",
                     typeof currentSymbol.weekly === "undefined" && "hidden"
                   )}
-                  onClick={() =>
-                    setSymbols(updateSymbol(symbols, selectedId, { weekly: !currentSymbol.weekly }))
-                  }
+                  onClick={() => {
+                    track("quest_toggle", {
+                      quest: "weekly",
+                      state: currentSymbol.weekly ? "off" : "on",
+                    });
+                    setSymbols(
+                      updateSymbol(symbols, selectedId, { weekly: !currentSymbol.weekly })
+                    );
+                  }}
                 >
                   Weekly
                 </button>
@@ -274,9 +294,13 @@ const Calculator = () => {
                     currentSymbol.extra && "border-checked/80 md:border-checked",
                     typeof currentSymbol.extra === "undefined" && "hidden"
                   )}
-                  onClick={() =>
-                    setSymbols(updateSymbol(symbols, selectedId, { extra: !currentSymbol.extra }))
-                  }
+                  onClick={() => {
+                    track("quest_toggle", {
+                      quest: "extra",
+                      state: currentSymbol.extra ? "off" : "on",
+                    });
+                    setSymbols(updateSymbol(symbols, selectedId, { extra: !currentSymbol.extra }));
+                  }}
                 >
                   Extra
                 </button>

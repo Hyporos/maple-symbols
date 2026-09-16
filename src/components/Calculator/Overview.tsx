@@ -9,6 +9,7 @@ import { clampNumberInput } from "../../lib/inputs";
 import { maxLevelFor } from "../../lib/game";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { targetBucket, trackOnce } from "../../lib/analytics";
 
 const Overview = () => {
   const symbols = useAppStore((s) => s.symbols);
@@ -213,7 +214,15 @@ const Overview = () => {
                             className="h-[25px] w-[60px] bg-secondary p-1.5 text-center text-sm outline-hidden transition-colors hover:bg-hover focus:bg-hover focus:outline-hidden md:h-[35px] md:w-[75px] md:text-base"
                             onWheel={(e) => e.currentTarget.blur()}
                             onChange={(e) => {
-                              setTargetLevel(clampNumberInput(e.target.value, maxLevel));
+                              const level = clampNumberInput(e.target.value, maxLevel);
+                              const bucket = targetBucket(level);
+                              // Once per bucket per session: typing "16" passes through "1" (AN-5).
+                              if (bucket) {
+                                trackOnce(`overview_target:${bucket}`, "overview_target", {
+                                  target_level: bucket,
+                                });
+                              }
+                              setTargetLevel(level);
                               setLevelSet(true);
                             }}
                           />

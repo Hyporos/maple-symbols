@@ -29,6 +29,7 @@ import { dayjs } from "../../lib/dayjs";
 import RadioButton from "../ui/RadioButton";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { track } from "../../lib/analytics";
 import type { SymbolData, SymbolType } from "../../lib/types";
 
 interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
@@ -286,7 +287,10 @@ const Graph = () => {
               <RadioButton
                 label="Dynamic"
                 selected={graphDynamic}
-                onClick={() => setGraphDynamic(true)}
+                onClick={() => {
+                  if (!graphDynamic) track("graph_mode", { mode: "dynamic" });
+                  setGraphDynamic(true);
+                }}
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
@@ -299,7 +303,10 @@ const Graph = () => {
               <RadioButton
                 label="Linear"
                 selected={!graphDynamic}
-                onClick={() => setGraphDynamic(false)}
+                onClick={() => {
+                  if (graphDynamic) track("graph_mode", { mode: "linear" });
+                  setGraphDynamic(false);
+                }}
               />
             </TooltipTrigger>
             <TooltipContent className="tooltip">
