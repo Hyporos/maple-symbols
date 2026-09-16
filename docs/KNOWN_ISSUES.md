@@ -48,7 +48,8 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 - `vercel.json` marks every static extension immutable for a year, including un-hashed `public/` images; replacing an image in place is invisible to returning visitors. Rename instead, or scope the rule to `/assets/`.
 - The Umami script in `index.html` has no `data-domains`, so `vite dev` and preview deployments count as production traffic.
-- `SEO.tsx` emits a schema.org `SearchAction` (`?q=`) but the app has no search.
+- `SEO.tsx` emits a schema.org `SearchAction` (`?q=`) but the app has no search (SEO backlog A-5; the search box feature was retired by Google in Nov 2024, so the markup is inert).
+- Production (2026-09-16) is still a Firebase deploy from March 2026: `main` has `firebase.json`, no `vercel.json`, and the live `/handbook`, `/changelog`, `/credits` return 404. See `docs/SEO.md` §0.
 - `Tooltip.tsx` registers floating-ui's `arrow()` middleware and `useDelayGroup` but never renders an arrow or a `FloatingDelayGroup`; both are inert.
 
 ### KI-010 · L · The level input stores 0 for "00", "0.5", and "-0"

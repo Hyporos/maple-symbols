@@ -1,0 +1,127 @@
+# SEO — how Maple Symbols ranks, and the rules that keep it ranking
+
+Goal: rank first for the queries a MapleStory player types when they want a symbol calculator or a symbol reference, and stay there. This doc is the reference for anything that touches what search engines see: page metadata, headings, copy, images, structured data, performance, hosting. Read it before changing `src/lib/routes.ts`, `index.html`, `src/components/SEO.tsx`, `vercel.json`, `public/robots.txt`, `public/manifest.webmanifest`, headings, or visible copy. Rules are numbered so a review can cite them (`SEO-7`). §0 is the state of production, §4 the audit backlog, §6 how this doc stays true.
+
+Only practices that matter for this site are here: a four-page client-rendered React tool with no blog, no accounts, no search box. Where a rule rests on a claim about Google or Bing, the claim was checked against their current documentation on the audit date; where it rests on a claim about this code, the file is cited. Reviewed twice on 2026-09-16 (author, then an independent pass against the code and the live site).
+
+## 0. Production first (2026-09-16)
+
+Checked with `curl` on the audit date. **The domain is not serving the current code.**
+
+- `maplesymbols.com` is served by Firebase Hosting (`X-Served-By: cache-yul…`, Firebase's 404 page). `main` (`f875d7c`, 2026-03-03) still carries `firebase.json`, `.firebaserc`, `public/404.html` and a static `public/sitemap.xml`; `vercel.json` exists only on `development`/`v2`. `firebase.json` has no rewrites.
+- Result: `/` returns 200 with the old title ("… | Level Up Planner"); **`/handbook`, `/changelog`, `/credits` return 404**; the live `sitemap.xml` lists `/calculator`, `/tools`, `/graph` (all 404) and not `/changelog` or `/credits`. The 1.4.0 work (routes, metadata, `vercel.json`) has never reached users.
+- No `www` record exists (`www.maplesymbols.com` does not resolve); `http://` redirects to `https://` correctly.
+
+Nothing in §2 moves a ranking until this is fixed. The order is: decide the host (Vercel as planned, or keep Firebase and add its rewrites), release `development → main`, point DNS, then confirm the four `ROUTES` URLs return 200 and `/sitemap.xml` matches `ROUTES` on the live host. That check is rule SEO-25 and belongs in `/release`. Until it is done, AGENTS.md's deploy sentence describes the intent, not the site.
+
+## 1. Where SEO lives in this repo
+
+| Concern                                             | Source of truth                                                                                                                                                                                                                                             |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Page paths, titles, descriptions, sitemap `lastmod` | `src/lib/routes.ts` (`ROUTES`). Nothing else may hold a title or description string.                                                                                                                                                                        |
+| Pre-React head (what a non-JS fetch sees)           | `index.html`: static tags with `__PLACEHOLDER__` tokens plus the inline bootstrap script; both filled from `routes.ts` by the routes plugin in `vite.config.ts`                                                                                             |
+| Per-route head after render, JSON-LD                | `src/components/SEO.tsx` (`useLayoutEffect`; `WebApplication` + `WebSite` + `WebPage` on `/`, `WebPage` elsewhere)                                                                                                                                          |
+| Sitemap                                             | `sitemapXml()` from `routes.ts`, emitted to `dist/sitemap.xml` and served in dev by the plugin; `public/robots.txt` points at it                                                                                                                            |
+| Hosting: rewrites, redirects, headers               | `vercel.json` (intended host; see §0)                                                                                                                                                                                                                       |
+| Social preview image, favicon, PWA manifest         | `public/main/og-image.png` (1200×630, 162 KB), `public/main/favicon.png` (373×373), `public/manifest.webmanifest`                                                                                                                                           |
+| Enforcement                                         | `src/test/seo.test.tsx` covers SEO-1 and the `urlFor` half of SEO-2 today. Rules tagged **[test]** are asserted there; **[test: todo]** can be asserted and are not yet; **[review]** need a human or the live site. Do not read "[test: todo]" as covered. |
+
+## 2. Rules
+
+### Indexing and URLs
+
+- **SEO-1 Every indexable page is a `ROUTES` entry with a unique `path`, `title`, `description` and `lastmod`.** [test] Sitemap, pre-React head and rendered head all derive from it; a page missing from `ROUTES` does not exist to search engines. `changefreq` and `priority` are ignored by Google and Bing and can be dropped from the type when convenient.
+- **SEO-2 One canonical URL per page: `https://maplesymbols.com` + path, no trailing slash except the root, no query strings.** [test: todo for the redirect] `urlFor()` builds it and the router's `normalize()` strips slashes, but `vercel.json` has no `"trailingSlash": false`, so `/handbook/` would serve 200 today; the bootstrap script's canonical (`routeFor` falls back by exact path) is the only thing pointing it home. Add `trailingSlash: false`. Decide whether a `www` record plus a 308 to the apex is wanted; until then there is nothing to redirect. Never publish a variant URL (README, Discord, social profiles). The `?q=` in `SEO.tsx`'s `SearchAction` is the one query-string URL in the code (A-5).
+- **SEO-3 Unknown paths resolve to the calculator with a canonical of `/`; that is a recorded decision (ARCHITECTURE D1), not a bug.** [review] `vercel.json` rewrites everything to `index.html` and `routeFor()` canonicalises unknown paths to the root, so Google files them as "alternate page with proper canonical", and only if something links to them. Returning a real 404 would mean rewriting only the four known routes (keep that list in sync with `ROUTES` by test) and shipping a `404.html`; do it if Search Console ever shows junk URLs, not before.
+- **SEO-4 `robots.txt` allows every crawler and names the sitemap.** [review] Nothing on the site should be hidden from search. Whether to allow or block AI crawlers (`GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`) is Brian's call (AGENTS rule 1); today they are allowed and the site benefits from being cited by assistants. If a page ever needs `noindex`, set it as a per-path `X-Robots-Tag` header in `vercel.json`: a robots meta added by JavaScript is not reliably honoured. The `robots: index, follow` meta in `index.html` is the default and can go.
+- **SEO-5 `lastmod` in `ROUTES` changes only when that page's content changed.** [review] `/release` bumps `/` and `/changelog`; `/handbook` only when game data changed. Dates that move without content changing get ignored.
+
+### Titles and descriptions
+
+- **SEO-6 Title ≤ 60 characters, the page's primary query first, `| Maple Symbols` last, unique per page.** [test: todo] Google rewrites title links freely and publishes no length rule; ~60 characters is where display truncates. No minimum: "Changelog | Maple Symbols" is fine. The root title, "MapleStory Arcane & Sacred Symbol Calculator | Maple Symbols" (60), is the model.
+- **SEO-7 Description ≤ 155 characters, one plain sentence saying what the page does and for whom, unique per page, no superlatives.** [test: todo] Google shows its own snippet more often than not, but when it uses the description it truncates around 155. "The ultimate …" (current root description and the manifest) is a superlative; replace it.
+- **SEO-8 Headings describe content, in order, and are never used for styling.** [test: todo for "at least one h1"] Google accepts several `h1`s and treats headings as structure hints, so "exactly one" is an accessibility and outline convention, not a ranking rule; the doc asks for at least one `h1` per page that says what the page is, `h2` for sections, and no heading on a button label (`SlideButton` renders tab labels as `h1`). This conflicts with DESIGN_SYSTEM §4 ("headings are not semantic here") and the tab recipes in §6; reconcile them in the 2.0 design pass (A-3).
+
+### Content
+
+- **SEO-9 Every page carries text that answers its query, not only widgets.** [review] Google renders the JavaScript and the site already ranks, so this is not about being invisible. It is about relevance and about crawlers that do not execute JS (Bing renders less reliably; AI crawlers mostly fetch raw HTML). Each route needs an `h1`, a sentence or two of what the tool does and for whom, and below the tool the explanatory content players search for (how symbol levels work, daily and weekly yields, what the numbers mean). Where that copy sits is a layout decision under DESIGN_SYSTEM §5's fixed geometry (rule 1). Prerendering the four routes to static HTML is the proposed 2.0 change that makes the text visible without JS (A-1, not yet in `docs/V2_PLAN.md`).
+- **SEO-10 One primary query per page; secondary terms in headings and copy.** [review] The map is in §3. A new page starts from a query players type (Google autocomplete, "People also ask"), never from an internal name.
+- **SEO-11 Cover the game as it is, and never claim coverage the site lacks.** [review] Missing content is the biggest ranking gap after §0: the site should list every symbol in the current game, and a new symbol type (Grand Sacred, for example) lands in calculator, handbook and copy in the same release. Delete `<meta name="keywords">` from `index.html`: Google has ignored it since 2009, Bing treats stuffing as a spam signal, and today it names Tallahart and Geardrak, which the site does not cover.
+- **SEO-12 The changelog is the site's dated record; keep it real.** [review] One entry per release, written as sentences, with a machine-readable `<time dateTime>`. Only the open entry is in the DOM, so this is bookkeeping and trust, not a freshness lever for the calculator queries.
+
+### Structured data
+
+- **SEO-13 JSON-LD describes only what is on the page, and only types that can validate.** [test: todo] `WebPage` and `WebSite` (with the site name, for the brand in results) are true and stay. `WebApplication` is Google's SoftwareApplication rich-result type and needs `aggregateRating` or `offers` to qualify; the site has no ratings, so it will always report a missing field. Keep it as descriptive markup or drop it, but never add fake ratings. Remove the `SearchAction`: the sitelinks search box was retired in November 2024 and there is no search. `FAQPage` and `HowTo` rich results no longer apply to sites like this. Validate with validator.schema.org (the Rich Results Test only knows rich-result types).
+- **SEO-14 No decorative structured data.** [review] A `BreadcrumbList` on a flat four-URL site adds nothing Google does not derive from the path; add markup only when a page gains a real hierarchy or a rich-result type it can satisfy.
+
+### Images and media
+
+- **SEO-15 Every `<img>` has `alt`.** [test: todo] Informative images (symbol icons, the logo) get a short name ("Vanishing Journey symbol", "Maple Symbols"); decorative ones get `alt=""`. Cheapest enforcement is `eslint-plugin-jsx-a11y`'s `alt-text` rule. Trap: `Handbook.test.tsx` finds a row icon by `getByRole("img")`; `alt=""` makes it presentational and the query must change with it.
+- **SEO-16 Images that are not sized by CSS classes declare `width` and `height`; below-the-fold images use `loading="lazy"`.** [review] This is the Cumulative Layout Shift budget, a page-experience tiebreaker. Header logos (width only) are the real CLS candidates; 12-px table icons sized with `h-3 w-3` are not. Do not lazy-load the icons in the Handbook header: they are above the fold.
+- **SEO-17 Social preview stays a 1200×630 absolute-URL PNG with `og:image:alt`; the favicon is at least 48×48 (ideally a multiple of 48).** [review] Both hold today. Manifest icon sizes and maskable padding are PWA-install hygiene, not ranking; fix when touching the manifest, not for SEO.
+
+### Performance (Core Web Vitals)
+
+- **SEO-18 Budgets on the deployed site, mobile: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1, Lighthouse performance ≥ 90.** [review] Use PageSpeed Insights after each release. Field data (CrUX) only appears above a traffic threshold, so lab numbers are what you will mostly see. The heavy pieces are known: the recharts chunk (~350 KB raw) is lazy and stays lazy; the react vendor chunk (~220 KB) and the CSS (~40 KB) load up front; the Umami script is the one third-party script on every page.
+- **SEO-19 Fonts do not block first paint.** [review] Maven Pro loads from Google Fonts through a render-blocking stylesheet (with `display=swap` in the URL) after two preconnects. Self-hosting a `woff2` in `public/` with `font-display: swap` removes two third-party connections from LCP, but `global.css` sets `font-['Maven_Pro']` with no fallback stack, so a self-hosted swap needs a fallback font with `size-adjust`, or LCP is traded for CLS.
+- **SEO-20 Caching: hashed `/assets/*` immutable for a year; HTML revalidated on every request.** [review] `vercel.json` sets the `/assets/` rule correctly. Two things it does not do as written: the `/(.*)\.html` header never matches `/` or `/handbook` (Vercel matches the request path; Vercel's default for HTML is `max-age=0, must-revalidate`, which is fine), and the blanket immutable rule on every static extension covers un-hashed `public/` images (KI-009: scope it to `/assets/`, or rename images instead of replacing them). The `.br`/`.gz` files from `vite-plugin-compression` are only useful if the host serves them; confirm on a Vercel preview, otherwise drop the plugin.
+
+### Links, navigation, mobile
+
+- **SEO-21 Navigation is real `<a href>` links with descriptive text, and pages link to each other in the copy.** [review] The Header already renders anchors with client-side `navigate` on click. Contextual links matter more: the calculator page should link to the handbook tables by name ("Arcane Symbol EXP table"), and the handbook back to the calculator.
+- **SEO-22 External links carry `rel="noopener"` and, for paid or user-submitted destinations, `rel="sponsored"` or `rel="ugc"`.** [test: todo] Credits and Footer links are endorsements and stay followed. `noopener` is implied by modern browsers for `target="_blank"`; write it anyway for the linter and old engines. `noreferrer` is not required and hides the referral from sites the Credits page is thanking.
+- **SEO-23 Mobile rendering is the only rendering that is indexed.** [review] Readable text without zoom, tap targets of 48 px (Google and Lighthouse; WCAG AA minimum is 24), and no clipped content at 360 px (`body` has `overflow-x-hidden`, so overflow hides rather than scrolls; check the layout, not the scrollbar). The fixed 360 px cards (DESIGN_SYSTEM §5) are the constraint to respect.
+
+### Languages (when the selector ships)
+
+- **SEO-24 Each language gets its own URLs (`/ko/handbook`), its own `ROUTES` entries, `hreflang` links between variants plus `x-default`, and translated titles and descriptions.** [review] A client-side toggle on one URL is invisible to search engines. Until then `lang="en"` and `inLanguage: "en"` stay.
+
+### Release gate
+
+- **SEO-25 A release is not done until the live host returns 200 for every `ROUTES` URL and `/sitemap.xml` matches `ROUTES`.** [review, then script] `/release` step 9 runs this check after the deploy. §0 is what happens without it.
+
+## 3. Query map (what each page must win)
+
+| Page         | Primary query                                    | Secondary terms to cover in copy                                                                                                                           |
+| ------------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`          | `maplestory symbol calculator`                   | arcane symbol calculator, sacred symbol calculator, symbol level calculator, arcane power / sacred power, days to max, daily quest, weekly quest, catalyst |
+| `/handbook`  | `arcane symbol exp table` / `sacred symbol cost` | symbol upgrade cost mesos, symbols per level, daily quest symbol count per region (Vanishing Journey … Carcion), arcane force, sacred power, damage ratio  |
+| `/changelog` | `maple symbols changelog` (brand)                | version, update, new symbols                                                                                                                               |
+| `/credits`   | brand only                                       | keep short; it exists for attribution, not traffic                                                                                                         |
+
+Competitors for the primary queries are wiki pages and other fan calculators. The site wins on: being live and correct (§0), a working tool plus explanatory text on the same URL (SEO-9), complete and current symbol coverage (SEO-11), speed (SEO-18), and links from where players already are (§5).
+
+## 4. Audit backlog (2026-09-16, `v2`)
+
+Verified against the code and, for A-0, the live site. Fixing any row is scoped work (AGENTS rule 1); **2.0** marks design decisions for the overhaul. Remove a row when fixed (say where).
+
+| #    | Rule       | Finding                                                                                                                                                                                                                                                                                                           | Impact  |
+| ---- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| A-0  | §0, SEO-25 | Production is a Firebase build from March 2026: sub-pages 404, sitemap lists dead URLs, old title. Needs a host decision, a release of `development`, DNS, and the live check.                                                                                                                                    | Blocker |
+| A-1  | SEO-9      | Rendered pages are widgets and tables with almost no explanatory text, and the HTML is empty without JS. **2.0**: prerender the four routes at build time and add the copy (where it sits is a layout decision).                                                                                                  | High    |
+| A-2  | SEO-11     | Grand Sacred symbols (Tallahart, Geardrak) are absent from the game data and the site. **2.0** for the data model. The `keywords` meta naming them can be deleted now.                                                                                                                                            | High    |
+| A-3  | SEO-8      | Headings are styling hooks: `SlideButton` labels are `h1`s (Handbook has four `h1`s, Changelog three, Credits five), and the calculator page's only always-present `h1` is the mobile "Symbol Overview" (the "Level N" `h1`s render only with a level set). Conflicts with DESIGN_SYSTEM §4/§6; reconcile in 2.0. | Medium  |
+| A-4  | SEO-2      | No `trailingSlash: false` in `vercel.json`; `/handbook/` would serve 200 (canonical covers it).                                                                                                                                                                                                                   | Low     |
+| A-5  | SEO-13     | `SEO.tsx` emits a `SearchAction` for a search box that does not exist (also KI-009). Inert since Nov 2024; remove.                                                                                                                                                                                                | Low     |
+| A-6  | SEO-7      | Root description is 178 characters and opens with "The ultimate" (so does the manifest); Credits is 52.                                                                                                                                                                                                           | Medium  |
+| A-7  | SEO-15     | `<img>` without `alt`: Header logos (2), Tools (4), CostTable (2), ExpTable (2), RatioTable (1), CreditText (1). Selector, Calculator and Overview already have it.                                                                                                                                               | Medium  |
+| A-8  | SEO-19     | Google Fonts stylesheet on the critical path; no fallback font stack.                                                                                                                                                                                                                                             | Medium  |
+| A-9  | SEO-20     | Blanket 1-year immutable header on un-hashed `public/` images (KI-009); `.html` header rule matches nothing useful; `.br`/`.gz` pre-compression unverified on Vercel.                                                                                                                                             | Low     |
+| A-10 | SEO-22     | `CreditText` (Twitch/YouTube/X) and the Changelog PR link open `_blank` with no `rel`.                                                                                                                                                                                                                            | Low     |
+| A-11 | SEO-16     | Header logos have `width` only (CLS); `CreditText` images have neither.                                                                                                                                                                                                                                           | Low     |
+| A-12 | SEO-4      | `robots: index, follow` meta is redundant; AI-crawler policy undecided.                                                                                                                                                                                                                                           | Low     |
+| A-13 | SEO-12     | Changelog dates are plain text, not `<time>`.                                                                                                                                                                                                                                                                     | Low     |
+
+## 5. Off-page and monitoring (no code change covers this)
+
+- **Search Console and Bing Webmaster Tools**: verify the domain (record which method; there is no verification meta in `index.html`, so it is presumably DNS, and a host move must keep it), submit `https://maplesymbols.com/sitemap.xml`, and after each release read the Pages report and URL Inspection for the four URLs. A `site:` query is not an indexing check.
+- **After every release**: SEO-25 live check; PageSpeed Insights on `/` and `/handbook` (mobile); validator.schema.org on `/`.
+- **Links that count**: the GitHub README (links already), the Discord, the MapleStory subreddit's tools thread, the MapleStory wiki and StrategyWiki resource lists (both credited on `/credits`, so a reciprocal listing is a fair ask), the creators in the Credits. One link from a wiki outranks a hundred directory listings.
+- **Brand**: "Maple Symbols" should appear as text on every page (Header logo `alt`, Footer) so branded queries resolve to the site rather than the GitHub repo.
+
+## 6. Keeping this doc true
+
+- Whoever changes a file in §1's table updates §2 or §4 in the same commit; the pre-commit drift reminder (`scripts/docs-drift.mjs`) covers `index.html`, `SEO.tsx`, `vercel.json`, `robots.txt` and the manifest as well as `src/lib`.
+- §4 is a backlog: remove a row when it is fixed (cite the commit), add one when something new is found, and re-date the heading. §0 is rewritten the day production changes.
+- Re-audit fully after the 2.0 rewrite and then yearly against Google Search Central and Bing Webmaster guidelines; search-engine guidance changes (this doc records the state on the audit date).
+- A rule that turns out to be wrong for this site is deleted, not softened; log why in `docs/MISTAKES.md` (M-007 is the first such entry).

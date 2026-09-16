@@ -1,6 +1,6 @@
 # Maple Symbols — Agent Guide
 
-MapleStory Arcane/Sacred **symbol calculator**: a single-page React app (no backend) where a player enters each symbol's level and experience, toggles daily/weekly quests, and gets completion dates, meso costs, a power graph, and reference tables. Live at maplesymbols.com, deployed by Vercel from `main`.
+MapleStory Arcane/Sacred **symbol calculator**: a single-page React app (no backend) where a player enters each symbol's level and experience, toggles daily/weekly quests, and gets completion dates, meso costs, a power graph, and reference tables. Live at maplesymbols.com. Intended host: Vercel from `main` (`vercel.json` on `development`/`v2`); as of 2026-09-16 the domain still serves a Firebase build from March 2026 whose sub-pages 404 (SEO §0).
 
 Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives here; the deep docs in `docs/` are read on demand (see "Which doc when"). Keep it under ~120 lines: anything longer than two lines that a deep doc covers belongs there, with a pointer here.
 
@@ -57,7 +57,7 @@ src/
     Extras/      TabLayout page: Changelog (/changelog), Credits (/credits)
     ui/          RadioButton, SlideButton, TabLayout (reusable primitives)
   test/      setup.ts (mocks), helpers.ts (store/viewport/time/head helpers), docs + seo meta-tests
-docs/        ARCHITECTURE, DESIGN_SYSTEM, TESTING, KNOWN_ISSUES, MISTAKES
+docs/        ARCHITECTURE, DESIGN_SYSTEM, TESTING, SEO, KNOWN_ISSUES, MISTAKES
 scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-start banner)
 ```
 
@@ -108,18 +108,20 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - `docs/ARCHITECTURE.md`: state, routing, data flow, effects, build/deploy. **§9 Checklists** for adding a route, a symbol, a quest toggle, or changing `SymbolData`; **§8 Decisions** for what looks odd but is intentional.
 - `docs/DESIGN_SYSTEM.md`: any UI work; tokens, recipes with exact class strings, responsive/motion rules, new-component checklist.
 - `docs/TESTING.md`: writing or fixing tests; helpers, mocks, frozen-time fixtures, recipes per layer, the traps (tooltips, Overview duplicates, lazy sections).
+- `docs/SEO.md`: anything search engines see: `routes.ts` entries, `index.html`, `SEO.tsx`, `vercel.json`, headings, copy, images, performance. Numbered rules (cite as `SEO-n`), the query map, and the audit backlog. The goal is rank one, so treat its rules as requirements, not advice.
 - `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd.
 - `docs/MISTAKES.md`: distilled rules at the top, log below.
 - `docs/V2_PLAN.md`: the 2.0 overhaul: scope, branch, what is pinned, what is reusable, upgrade order, and the decisions already made.
 
 ## Keep the docs honest
 
-| If you change…                                                       | Update…                                                                                            |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `src/lib/utils.ts`, `data.ts`, `symbols.json`, `hooks/usePower.ts`   | Domain cheat sheet above; ARCHITECTURE §4 Data; KNOWN_ISSUES if an issue moved                     |
-| `src/state/store.ts`, `lib/types.ts`                                 | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                               |
-| `src/contexts/*`, `src/lib/routes.ts`, `App.tsx` routes              | ARCHITECTURE §2 Routing and §9 (the seo test fails on drift)                                       |
-| `components/Calculator/*` effects, quest toggles, Overview labels    | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
-| `src/global.css` (tokens + global rules), `components/ui/*`, Tooltip | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks the `@theme` variables) |
-| `package.json` scripts/deps, `vitest.config.ts`, hooks, CI           | Commands/Stack above; TESTING §1 and §3                                                            |
-| A correction from Brian, or a wrong assumption of yours              | MISTAKES (`/log-mistake`)                                                                          |
+| If you change…                                                                                  | Update…                                                                                            |
+| ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `src/lib/utils.ts`, `data.ts`, `symbols.json`, `hooks/usePower.ts`                              | Domain cheat sheet above; ARCHITECTURE §4 Data; KNOWN_ISSUES if an issue moved                     |
+| `src/state/store.ts`, `lib/types.ts`                                                            | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                               |
+| `src/contexts/*`, `src/lib/routes.ts`, `App.tsx` routes                                         | ARCHITECTURE §2 Routing and §9 (the seo test fails on drift)                                       |
+| `components/Calculator/*` effects, quest toggles, Overview labels                               | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
+| `index.html`, `SEO.tsx`, `vercel.json`, `robots.txt`, the manifest, headings, page copy, images | SEO §1 table / §2 rules / §4 backlog (every rule must stay true of the code)                       |
+| `src/global.css` (tokens + global rules), `components/ui/*`, Tooltip                            | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks the `@theme` variables) |
+| `package.json` scripts/deps, `vitest.config.ts`, hooks, CI                                      | Commands/Stack above; TESTING §1 and §3                                                            |
+| A correction from Brian, or a wrong assumption of yours                                         | MISTAKES (`/log-mistake`)                                                                          |

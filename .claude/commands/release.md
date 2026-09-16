@@ -22,5 +22,6 @@ Steps. Ask me before each irreversible step (the commit, the push, the PR, the t
 6. Commit on `development` as `Release vX.Y.Z`, then push.
 7. Open the PR `development → main` with `gh pr create --base main --title "Release vX.Y.Z"` (or the MCP `create_pull_request` on `Hyporos/maple-symbols`); body = the changelog entry as bullets.
 8. After I confirm the PR is merged: `git checkout main && git pull`, `git tag vX.Y.Z && git push origin vX.Y.Z`, then `git checkout development && git merge main` so the branches stay level.
+9. **Live check (SEO-25)**: once the deploy is up, `curl -s -o /dev/null -w "%{http_code}"` every `ROUTES` URL (expect 200) and diff `https://maplesymbols.com/sitemap.xml` against `pnpm exec node -e` of `sitemapXml()` (or `dist/sitemap.xml`). Report any mismatch; the release is not done until they agree.
 
 `--dry-run`: do steps 1–5 as a diff preview only; commit nothing.

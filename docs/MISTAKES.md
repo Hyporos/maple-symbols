@@ -12,6 +12,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **`pnpm test <filter>`, never `pnpm test -- <filter>`.** pnpm forwards the `--` literally and Vitest then ignores the filter and runs everything (M-004).
 - **lint-staged hides the output of tasks that exit 0.** A warn-only step must run outside lint-staged or nobody sees it (M-005).
 - **Check peer ranges before proposing an upgrade version**; `pnpm outdated`'s latest column is not a compatibility claim (M-006).
+- **Claims about hosting or search-engine behaviour get checked against the live site and the platform's current docs, not memory**; a second, independent review pass before shipping a reference doc pays for itself (M-007).
 
 ## Log
 
@@ -58,3 +59,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Read the "latest" column of `pnpm outdated` as "compatible" without checking the package's peer dependencies against the installed Vite.
 - **Rule**: Before proposing an upgrade version, check `pnpm view <pkg>@<ver> peerDependencies` against what is installed; "latest" is not "compatible".
 - **Where**: `package.json` (`@vitejs/plugin-react` ^5.2.0).
+
+### M-007 · 2026-09-16 · process
+
+- **What**: The first draft of `docs/SEO.md` asserted that Vercel redirects trailing slashes, that the `.html` cache header applied to `/`, that a stale `SearchAction` risks a manual action, that a single `h1` is a ranking signal, and that Overview images lack `alt`; all wrong or outdated. It also never checked production: the domain still serves a Firebase build from March 2026 with three of four routes returning 404, which outranks everything else in the doc.
+- **Root cause**: Wrote from general SEO knowledge and the repo's config files, treating "what the config says" as "what is live" and treating remembered guidance as current.
+- **Rule**: For any doc that makes claims about hosting or search-engine behaviour, curl the live site and cite the platform's current documentation; then run an independent review pass against the code before committing.
+- **Where**: `docs/SEO.md` §0 (production state) and §2 (corrected rules).

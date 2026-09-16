@@ -14,7 +14,9 @@ const docsTouched = staged.some((f) => f === "AGENTS.md" || f.startsWith("docs/"
 const sensitive = staged.filter(
   (f) =>
     !/\.test\.tsx?$/.test(f) &&
-    /^(src\/lib\/|src\/state\/|src\/contexts\/|src\/global\.css$)/.test(f)
+    /^(src\/lib\/|src\/state\/|src\/contexts\/|src\/global\.css$|src\/components\/SEO\.tsx$|index\.html$|vercel\.json$|public\/robots\.txt$|public\/manifest\.webmanifest$)/.test(
+      f
+    )
 );
 
 if (sensitive.length > 0 && !docsTouched) {
@@ -23,7 +25,7 @@ if (sensitive.length > 0 && !docsTouched) {
       "",
       "[docs-drift] Doc-sensitive files are staged but nothing under docs/ or AGENTS.md changed:",
       ...sensitive.map((f) => `  - ${f}`),
-      "If behaviour, tokens, state shape, or architecture changed, update the docs (or run /sync-docs).",
+      "If behaviour, tokens, state shape, architecture, or anything search engines see changed, update the docs (docs/SEO.md included; or run /sync-docs).",
       "This is a reminder only; the commit proceeds.",
       "",
     ].join("\n")
