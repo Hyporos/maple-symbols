@@ -8,7 +8,7 @@ Release Maple Symbols. Target: $ARGUMENTS
 
 Releases are cut from `development`. While the 2.0 branch `v2` exists, `development` and `v2` have different layouts, so every step below says how to tell which one you are on. Check by file, never by memory: `test -f src/lib/routes.ts` is true on the 2.0 layout and false on the 1.x layout.
 
-**Where to run.** `git worktree list` first. The main checkout may be on `v2` with `development` in a separate worktree; run steps 1–7 in the `development` worktree (or check it out if none exists). Stage files by name, never `git add -A` or `git commit -a` (stray folders such as `.claude/worktrees/` get swept in).
+**Where to run.** `git worktree list` first. The main checkout may be on `v2` with `development` in a separate worktree; run steps 1–7 in the `development` worktree (or check it out if none exists). Stage files by name, never `git add -A` or `git commit -a` (stray folders such as .claude/worktrees get swept in).
 
 ## Preconditions (stop and report if any fails)
 
@@ -27,11 +27,11 @@ Brian's request to release is the go-ahead for the commit, push and PR; still sa
    - `link`: the PR you are about to open. Issues and PRs share one number sequence, so it is the highest existing issue-or-PR number + 1 (`gh api 'repos/Hyporos/maple-symbols/issues?state=all&per_page=1' --jq '.[0].number'`, or the max of MCP `list_pull_requests` and `list_issues` with `state: all`). After opening the PR, check the number matches and fix the link if not.
    - `additions` / `fixes`: written from `git log origin/main..development --format=%s`, **only what a player can see or feel** (MISTAKES M-010). Analytics, tooling, dependency, test, docs and refactor work stay out; if nothing player-facing is left, ask Brian whether this is worth a release.
 3. **Sitemap `lastmod`** (today, `YYYY-MM-DD`) for `/` and `/changelog`; `/handbook` only if handbook data changed.
-   - 2.0 layout: `sitemap.lastmod` in `src/lib/routes.ts` (`sitemap.xml` is generated at build).
+   - 2.0 layout: `sitemap.lastmod` in src/lib/routes.ts (`sitemap.xml` is generated at build).
    - 1.x layout: the `<lastmod>` lines in public/sitemap.xml (1.x only).
    - Already today? Leave it.
 4. **README**: the version badge (`version-X.Y.Z-red` and its `alt`).
-5. **Storage**: if a player field changed meaning since the last tag (2.0: `src/lib/persistence.ts`; 1.x: the persisted `SymbolData` in `src/state/store.ts`), check `STORAGE_VERSION` was bumped with a conversion in `migrate`. Confirm no existing symbol `id` changed (`git diff <last tag>..development -- src/lib/symbols.json`). On the 1.x layout any `symbols.json` change does not reach returning players without a version bump (KI-001 there); on 2.0 it needs nothing.
+5. **Storage**: if a player field changed meaning since the last tag (2.0: src/lib/persistence.ts; 1.x: the persisted `SymbolData` in `src/state/store.ts`), check `STORAGE_VERSION` was bumped with a conversion in `migrate`. Confirm no existing symbol `id` changed (`git diff <last tag>..development -- src/lib/symbols.json`). On the 1.x layout any `symbols.json` change does not reach returning players without a version bump (KI-001 there); on 2.0 it needs nothing.
 6. **Commit** on `development` as `Release vX.Y.Z` (stage the changed files by name), rerun the four checks, push.
 7. **PR** `development → main`, title `Release vX.Y.Z`, body = the changelog entry as bullets plus the PR attribution line. Then stop and give Brian the link to merge.
 8. **After Brian confirms the merge** (verify with `git fetch && git log -1 origin/main`):

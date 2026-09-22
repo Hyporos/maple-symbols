@@ -93,7 +93,7 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 
 ### M-011 · 2026-09-16 · git
 
-- **What**: Committed the merge with `git add -A`, which staged eight leftover agent worktrees under `.claude/worktrees/` as embedded repositories. lint-staged then linted all of their files and blocked the commit, which was the only reason it did not land.
+- **What**: Committed the merge with `git add -A`, which staged eight leftover agent worktrees under .claude/worktrees as embedded repositories. lint-staged then linted all of their files and blocked the commit, which was the only reason it did not land.
 - **Root cause**: Staged everything instead of the files the change touched, in a tree known to hold untracked worktree folders.
 - **Rule**: Stage files by name (`git add <paths>`), never `git add -A` or `commit -a`; clean up agent worktrees when their work is recovered.
 - **Where**: `AGENTS.md` Conventions (commits), `.claude/commands/release.md`.
