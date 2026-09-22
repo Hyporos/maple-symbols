@@ -1,5 +1,5 @@
-arcane_power_vs_requirement,damage_dealt_%,damage_taken_%,correct? (y / the right value)
-0% - 9%,10,280,
+arcane_power_vs_requirement,damage_dealt_%,damage_taken_%,correct? (y / the right value),notes
+0% - 9%,10,280,,"Outer bounds corroborated 2026-09-22: community sources agree damage dealt runs 10% to 150% and damage taken 280% down to 0 (1 damage) at 150% of the requirement. The bands in between still need checking in game."
 10% - 29%,30,240,
 30% - 49%,60,180,
 50% - 69%,70,160,
