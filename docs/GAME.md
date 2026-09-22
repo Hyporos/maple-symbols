@@ -99,6 +99,8 @@ Also worth knowing: JMS has Tallahart but not Geardock. The meso tables for TMS 
 
 ## 6. When the game changes
 
+`pnpm check:data` compares our daily, extra-quest and weekly numbers with the MapleStory Wiki, which mirrors GMS within a day of a patch, and flags recent symbol wording in the two regions that patch before GMS (Korea and Southeast Asia). `.github/workflows/game-data.yml` runs it every Monday and opens an issue when something moved. It never edits the data: a patch note can describe another region, a temporary event bonus, or a change GMS has not received, so a person decides. Nexon's own GMS pages cannot be read by a script at all (they render in JavaScript), which is why the wiki is the yardstick.
+
 On a GMS patch that touches symbols:
 
 1. Compare each number the patch mentions with §1 and §2 and with `symbols.json` / `ratioData.ts`.

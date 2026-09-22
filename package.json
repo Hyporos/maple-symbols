@@ -15,7 +15,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "preview": "vite preview",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "check:data": "node scripts/check-game-data.mjs"
   },
   "dependencies": {
     "@floating-ui/react": "^0.24.3",
