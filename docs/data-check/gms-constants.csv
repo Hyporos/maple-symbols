@@ -1,0 +1,13 @@
+rule,arcane,sacred,correct? (y / the right value),notes
+Max level,20,11,,
+Weekly quest symbols per reset,120,n/a,,
+Extra quest daily multiplier,2,1.5,,
+Catalyst keeps this share of total EXP,0.8,0.6,,
+Catalyst minimum level,2,2,,
+Catalyst world restriction,Interactive only,Interactive only,,
+Power per symbol level,10,10,,
+Base power at level 1 (on top of level x 10),20,0,,
+Max power per symbol,220,110,,
+Main stat per symbol level,100,200,,
+Demon Avenger HP per level,2100,4200,,
+Xenon All Stat per level,48,96,,

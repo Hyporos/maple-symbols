@@ -31,6 +31,8 @@ Twelve symbols in two families. Arcane Symbols (Arcane River regions) level to 2
 
 <!-- symbols:end -->
 
+**The daily and weekly counts in this table are disputed** (KI-014): maplestorywiki.net gives roughly double the arcane dailies and 1.5x the sacred ones, and a weekly of 80 per clear up to 3 clears a week. The EXP and meso tables below match the wiki exactly. Nothing changes until someone confirms in game.
+
 "Mesos to max" is the sum of the symbol's `mesosRequired`, level 1 to max. The per-level EXP tables are shared by every symbol of a type (`arcaneExpRequired`, `sacredExpRequired` in `symbols.json`, loaded as each symbol's `symbolsRequired`); the per-level meso tables are per symbol. The Handbook page renders all of them.
 
 ## 2. Rules and constants
@@ -68,14 +70,17 @@ How the calculator uses them (the code-facing version is AGENTS.md's domain chea
 
 ## 4. Grand Sacred symbols (in 2.0, not yet modelled)
 
-Brian decided on 2026-09-16 that 2.0 includes them (V2_PLAN). Tallahart and Geardrak are the regions named so far (SEO A-2). Nothing about them is in the code, and none of the following is known here yet; each needs a sourced answer (§6) before the data model is designed:
+Brian decided on 2026-09-16 that 2.0 includes them (V2_PLAN). Two exist: **Tallahart** and **Geardock** (the site copy and SEO doc say "Geardrak"; the in-game spelling still needs confirming). They are the Western Grandis symbols for level 290+ characters.
 
-- Max level, the per-level EXP table and per-level meso costs.
-- Daily quest names and symbol counts; whether there are weekly or extra quests.
-- Which power they give (their own stat, or Sacred Power) and the power per level; the damage-ratio table for their maps.
-- Main stat per level, and the Demon Avenger / Xenon equivalents.
-- Whether a Catalyst and a Symbol Selector exist for them, and their retention.
-- The official GMS names of the symbols and quests, and the image assets.
+Everything below is from maplestorywiki.net on 2026-09-22 and is **not confirmed in game**; the full sheet with sources is `docs/data-check/grand-sacred.csv`. Confirm before any of it reaches the code.
+
+- **Max level 11, and the same symbols-per-level table as Sacred** (29 … 1100, 4565 to max). The meso costs are their own: 16,072,800,000 to max for Tallahart, 24,181,300,000 for Geardock.
+- **One daily quest each, 15 symbols a day**, no weekly and no extra quest.
+- **Sacred Power / Authentic Force +10 per level**, the same as a Sacred Symbol (110 at max).
+- **No main stat.** They give EXP, meso and drop rate instead (+50 %, +15 %, +15 % at max). Every other symbol gives main stat, and the next-level panel is built around that, so this is the one finding most likely to change the 2.0 design.
+- **No Catalyst and no Symbol Selector.**
+- **Not found yet:** the damage ratio table for their maps (entry requirements seen: 630 / 660 / 700 Authentic Force), the Demon Avenger and Xenon equivalents, and the symbol images.
+- **Something we do not model at all:** the wiki describes Authentic Symbol bonuses that depend on how many unique symbols are equipped (Demon Avenger +6,300 HP, Xenon +144 all stat per symbol), on top of the per-force amounts we do use.
 
 ## 5. When the game changes
 
@@ -91,6 +96,9 @@ On a GMS patch that touches symbols:
 
 One row per check against the game or a source. Newest last.
 
-| Date       | What was checked            | Against | By    | Result                                                                                                    |
-| ---------- | --------------------------- | ------- | ----- | --------------------------------------------------------------------------------------------------------- |
-| 2026-09-22 | Where the numbers came from | Brian   | Brian | Unknown: built from the Credits resources, never re-checked. Heroic uses the same numbers as Interactive. |
+| Date       | What was checked                                                        | Against            | By     | Result                                                                                                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------- | ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-09-22 | Where the numbers came from                                             | Brian              | Brian  | Unknown: built from the Credits resources, never re-checked. Heroic uses the same numbers as Interactive.                                                                                                                  |
+| 2026-09-22 | All 12 symbols: EXP tables, meso tables, per-level stat and power gains | maplestorywiki.net | Claude | **Match exactly**, digit for digit (2679 / 4565 symbols to max; all 12 meso tables; arcane force 30 at level 1 then +10, sacred power 10 then +10; main stat 300/+100 and 500/+200; Demon Avenger 2100/4200; Xenon 48/96). |
+| 2026-09-22 | Daily and weekly symbol rates                                           | maplestorywiki.net | Claude | **Differ** from ours by a uniform 2x (arcane) and 1.5x (sacred), weekly 240/week vs 120. Logged as KI-014, unconfirmed.                                                                                                    |
+| 2026-09-22 | Grand Sacred (Tallahart, Geardock): levels, costs, dailies, stats       | maplestorywiki.net | Claude | Collected into `docs/data-check/grand-sacred.csv`; wiki-sourced, unconfirmed in game. Meso figures re-derived from the wiki cost formula and agree.                                                                        |

@@ -6,6 +6,8 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ## Open
 
+### KI-014 · H (if confirmed) · open (found 2026-09-22) · Daily and weekly symbol rates look outdated, so every completion date may be too far away. maplestorywiki.net gives arcane dailies as 20/day (40 after the extra quest) against our 10/20, sacred as 30/day for Cernium and 15 for the rest against our 20/10, and the arcane weekly as 80 per clear up to 3 clears a week (240) against our flat 120 on each Monday. The EXP and meso tables match the wiki exactly, so only the acquisition rates are in question. The ratios are uniform (arcane 2x, sacred 1.5x), which reads like a game-side rate buff we never picked up. Unconfirmed: needs a look in game before `dailySymbols` or `WEEKLY_SYMBOLS` change. Sheet: `docs/data-check/gms-symbols.csv`; the weekly also needs a modelling decision (3 player-chosen clears vs one Monday lump), and the wiki mentions an announced change to 240 in one clear.
+
 ### KI-013 · M · open (found 2026-09-22) · Day counts use the visitor's local calendar, not the game's reset. `advanceDayCount` (`src/lib/utils.ts`) steps local days from `dayjs()` and credits the weekly when the local day is a Monday. GMS resets dailies at 00:00 UTC and weekly quests on Monday 00:00 UTC (as far as anyone here knows; GAME §3), so a player far from UTC can see a completion date and a Monday credit one day off, depending on the time of day. Not pinned by a test yet. Fixing it (count reset boundaries in UTC) is a 2.0 decision; the reset times need verifying first.
 
 ## Resolved

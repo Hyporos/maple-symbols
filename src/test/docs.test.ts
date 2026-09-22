@@ -17,11 +17,15 @@ import {
   WEEKLY_SYMBOLS,
 } from "../lib/game";
 
-const DOC_FILES = [
-  "AGENTS.md",
-  ...readdirSync("docs").map((f) => `docs/${f}`),
-  ...readdirSync(".claude/commands").map((f) => `.claude/commands/${f}`),
-];
+// Every markdown doc, including the ones in subfolders such as docs/data-check.
+const markdownIn = (dir: string): string[] =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = `${dir}/${entry.name}`;
+    if (entry.isDirectory()) return markdownIn(path);
+    return entry.name.endsWith(".md") ? [path] : [];
+  });
+
+const DOC_FILES = ["AGENTS.md", ...markdownIn("docs"), ...markdownIn(".claude/commands")];
 const read = (path: string) => readFileSync(path, "utf8");
 
 // Backticked strings that look like repo paths. Globs and JSX snippets are skipped.

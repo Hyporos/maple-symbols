@@ -1,0 +1,13 @@
+id,symbol,type,daily_quest,our_daily_symbols,wiki_daily_symbols (2026-09-22),weekly_quest,our_weekly,wiki_weekly,extra_quest,our_extra_multiplier,wiki_extra,correct? (y / the right value),notes
+1,Vanishing Journey,arcane,Vanishing Journey Research,10,20,Erda Spectrum,120 per Monday,"80 per clear, up to 3 clears per week (240)",Reverse City,2,doubles the daily (20 to 40),, 
+2,Chu Chu Island,arcane,Chu Chu's Finest Cuisine,10,20,Hungry Muto,120 per Monday,"80 per clear, up to 3 clears per week (240)",Yum Yum Island,2,doubles the daily (20 to 40),, 
+3,Lachelein,arcane,A Night's Peace in Lachelein,20,40,Midnight Chaser,120 per Monday,"80 per clear, up to 3 clears per week (240)",,,,, 
+4,Arcana,arcane,Peace in Arcana,20,40,Spirit Savior,120 per Monday,"80 per clear, up to 3 clears per week (240)",,,,, 
+5,Morass,arcane,Save the Morass,20,40,Ranheim Defense,120 per Monday,"80 per clear, up to 3 clears per week (240)",,,,, 
+6,Esfera,arcane,Esfera Research Orders,20,40,Esfera Guardian,120 per Monday,"80 per clear, up to 3 clears per week (240)",,,,, 
+7,Cernium,sacred,Cernium Research,20,30,,,,,,,, 
+8,Hotel Arcus,sacred,Clean Up Around Hotel Arcus,10,15,,,,,,,,"The wiki item is called Sacred Symbol: Arcus; Hotel Arcus is the region. Display name only - the id stays 8, so saved progress is unaffected."
+9,Odium,sacred,Odium Area Expedition,10,15,,,,,,,, 
+10,Shangri-La,sacred,Shangri-La Contamination Purification,10,15,,,,,,,, 
+11,Arteria,sacred,Defeat the Arteria Remnants,10,15,,,,,,,, 
+12,Carcion,sacred,Carcion Recovery Support,10,15,,,,,,,, 
