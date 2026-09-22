@@ -99,8 +99,7 @@ export const INITIAL_DAY_COUNT: DayCountState = { days: 0, credited: 0 };
 
 /** dayjs weekday index of the weekly quest reset (0 is Sunday), Thursday in GMS.
  *  Confirmed in game by Brian on 2026-09-22; GMS moved it from Monday in v.264.
- *  Other regions still reset on Monday (GAME §5), which matters if the site ever
- *  shows their numbers. */
+ *  Every region has made the same move (GAME §3), each at 00:00 in its own time zone. */
 const WEEKLY_RESET_DAY = 4;
 
 /**

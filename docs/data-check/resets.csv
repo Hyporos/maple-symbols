@@ -1,7 +1,7 @@
 server,daily quest reset (UTC),weekly quest reset (day + UTC time),source,confirmed? (y / the right value),notes
 GMS,00:00,Thursday 00:00 UTC,Brian, confirmed in game 2026-09-22 (GMS v.264 moved it off Monday),y,"Applied: WEEKLY_RESET_DAY in src/lib/utils.ts. The daily reset hour is still only inferred from patch-note language about daily counters."
-KMS,00:00 KST (15:00 UTC previous day),Monday 00:00 KST,namu.wiki / Nexon KR guide,,"Researched 2026-09-22, not confirmed in game"
-JMS,00:00 JST (15:00 UTC previous day),Monday 00:00 JST,maplestory.nexon.co.jp game guide,,"Researched 2026-09-22, not confirmed in game"
-TMS,unconfirmed (server runs UTC+8),unconfirmed,-,,"Community reports conflict"
-CMS,unconfirmed (server runs UTC+8),unconfirmed,-,,"Community reports conflict"
-MSEA,00:00 SGT (16:00 UTC previous day),Monday 00:00 SGT,maplesea.com v223 patch notes,,"Weekly reset day is official; daily time inferred from MSEA using SGT throughout"
+KMS,00:00 KST (15:00 UTC previous day),Thursday 00:00 KST (Wednesday 15:00 UTC),"Assemble update, 2025-06-19: weekly content reset unified on Thursday, including the Arcane weeklies (orangemushroom.net/2025/06/07)",,"Was Monday until the change"
+JMS,00:00 JST (15:00 UTC previous day),Thursday 00:00 JST (Wednesday 15:00 UTC),"ver4.38 ASSEMBLE notice, first Thursday reset 2025-12-11; lists all six Arcane River weeklies (maplestory.nexon.co.jp)",,"Was Monday until the change"
+TMS,unconfirmed (server runs UTC+8),Thursday (time unconfirmed),"beanfun 系統改善 notice, eventAdId=14773: weekly content moved from Monday to Thursday, lists all six Arcane River weeklies",,"Notice is undated"
+CMS,unconfirmed (server runs UTC+8),probably Thursday,"No official CMS source found; CMS takes the same Korean updates",,"Only region still unconfirmed"
+MSEA,00:00 SGT (16:00 UTC previous day),Thursday 00:00 SGT (Wednesday 16:00 UTC),"v246 ASSEMBLE patch notes, 2025-11-11: Erda Spectrum, Hungry Muto, Midnight Chaser, Spirit Savior, Enheim Defense, Protect Esfera moved Monday to Thursday",,"Was Monday until the change (v223, 2023)"

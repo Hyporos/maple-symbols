@@ -16,6 +16,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Platform config is validated by the platform, not by reading it.** `vercel.json` passed lint, tests and two reviews, and Vercel still rejected the deployment. Check syntax against the platform's docs before shipping config that CI cannot run, and deploy a preview before DNS moves (M-008).
 - **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
 - **Stage files by name, never `git add -A`**: leftover worktrees and scratch folders get swept in (M-011).
+- **Game facts need a source dated after the last relevant patch**, or they are recorded as unverified. When GMS changes something, KMS almost always changed it first (M-012).
 
 ## Log
 
@@ -97,3 +98,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Staged everything instead of the files the change touched, in a tree known to hold untracked worktree folders.
 - **Rule**: Stage files by name (`git add <paths>`), never `git add -A` or `commit -a`; clean up agent worktrees when their work is recovered.
 - **Where**: `AGENTS.md` Conventions (commits), `.claude/commands/release.md`.
+
+### M-012 · 2026-09-22 · research
+
+- **What**: Told Brian, and wrote into `utils.ts`, `AGENTS.md`, GAME §3 and the reset sheet, that KMS, JMS and MSEA "still reset weekly quests on Monday". All three moved to Thursday in 2025 (KMS 2025-06-19, MSEA 2025-11-11, JMS 2025-12-11). Brian asked me to confirm and a targeted search overturned it in minutes.
+- **Root cause**: Took a date-sensitive fact from research agents without checking how old their sources were. The Monday values came from a 2023 MSEA patch note and game-guide pages written before the change, and I repeated them as current. GMS usually follows KMS, so a GMS change was itself a hint that KMS had changed first.
+- **Rule**: A game fact that can change by patch gets a source dated after the most recent relevant patch, or is recorded as unverified. When GMS changes something, check KMS first: it almost always got there earlier.
+- **Where**: `src/lib/utils.ts` (`WEEKLY_RESET_DAY`), GAME §3 and §7, `docs/data-check/resets.csv`.
