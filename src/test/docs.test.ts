@@ -5,6 +5,17 @@
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import symbolsJson from "../lib/symbols.json";
+import {
+  ARCANE_BASE_POWER,
+  CATALYST_RETENTION,
+  EXTRA_MULTIPLIER,
+  MAIN_STAT_PER_LEVEL,
+  MAX_LEVEL,
+  MAX_POWER_PER_SYMBOL,
+  POWER_PER_LEVEL,
+  WEEKLY_SYMBOLS,
+} from "../lib/game";
 
 const DOC_FILES = [
   "AGENTS.md",
@@ -49,6 +60,60 @@ describe("docs stay honest", () => {
     expect(cited.filter((v) => !defined.has(v))).toEqual([]);
     // and the table is complete: every theme variable is documented
     expect([...defined].filter((v) => !cited.includes(v))).toEqual([]);
+  });
+
+  it("GAME.md's symbol and constants tables match symbols.json and game.ts", () => {
+    const game = read("docs/GAME.md");
+    const rows = (name: string) => {
+      const region = game.match(
+        new RegExp(`<!-- ${name}:start -->([\\s\\S]*?)<!-- ${name}:end -->`)
+      );
+      expect(region, `${name}:start / ${name}:end markers`).toBeTruthy();
+      return region![1]
+        .split("\n")
+        .filter((line) => line.startsWith("|") && !/^\|\s*-/.test(line))
+        .slice(1) // header
+        .map((line) =>
+          line
+            .split("|")
+            .slice(1, -1)
+            .map((cell) => cell.trim())
+        );
+    };
+    const sum = (table: number[]) => table.reduce((a, b) => a + b, 0);
+    const dash = (value: string | undefined) => value ?? "–";
+
+    const expected = symbolsJson.symbols.map((s) => [
+      String(s.id),
+      s.name,
+      s.type,
+      s.dailyName,
+      String(s.dailySymbols),
+      dash(s.weeklyName),
+      dash(s.extraName),
+      sum(s.mesosRequired).toLocaleString("en-US"),
+    ]);
+    expect(rows("symbols")).toEqual(expected);
+
+    const constants = Object.fromEntries(rows("constants").map(([rule, a, s]) => [rule, [a, s]]));
+    const pair = (a: number | string, s: number | string) => [String(a), String(s)];
+    expect(constants).toEqual({
+      "Max level": pair(MAX_LEVEL.arcane, MAX_LEVEL.sacred),
+      "Symbols from level 1 to max": pair(
+        sum(symbolsJson.arcaneExpRequired),
+        sum(symbolsJson.sacredExpRequired)
+      ),
+      "Weekly quest symbols (per weekly reset)": pair(WEEKLY_SYMBOLS, "–"),
+      "Extra quest daily multiplier": pair(EXTRA_MULTIPLIER.arcane, EXTRA_MULTIPLIER.sacred),
+      "Catalyst keeps this share of total EXP": pair(
+        CATALYST_RETENTION.arcane,
+        CATALYST_RETENTION.sacred
+      ),
+      "Power per level": pair(POWER_PER_LEVEL, POWER_PER_LEVEL),
+      "Base power at level 1 (on top)": pair(ARCANE_BASE_POWER, 0),
+      "Max power per symbol": pair(MAX_POWER_PER_SYMBOL.arcane, MAX_POWER_PER_SYMBOL.sacred),
+      "Main stat per level": pair(MAIN_STAT_PER_LEVEL.arcane, MAIN_STAT_PER_LEVEL.sacred),
+    });
   });
 
   it("every KI-nnn referenced in the docs is defined in KNOWN_ISSUES.md", () => {

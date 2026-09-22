@@ -12,6 +12,7 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 4. **Keep the docs honest.** After changing code, update the docs the table at the bottom points to. The pre-commit hook prints a reminder when `src/lib`, `src/state`, `src/contexts`, or `global.css` change without a docs change; `/sync-docs` does the reconciliation.
 5. **Be creative when asked for ideas**, and offer better alternatives when you see them. Otherwise deliver the requested scope, whole.
 6. **Real bugs you find go in `docs/KNOWN_ISSUES.md`**, not silently fixed or worked around. Fixing one is a scoped decision (rule 1).
+7. **Propose a new doc, don't just write one.** When a new topic comes up that no doc covers and you think it is worth recording, ask Brian whether to create a new `docs/*.md` for it (say what it would hold and why); otherwise add to the closest existing doc.
 
 ## Commands
 
@@ -32,23 +33,21 @@ Package manager is **pnpm** (never npm/yarn). Node 26 locally and in CI (`engine
 
 ```
 src/
-  main.tsx, App.tsx            entry; RouterProvider > App > BreakpointProvider; PageContent switches on path
-  contexts/  RouterContext (pushState router: { path, navigate }), BreakpointContext (isMobile <768, isTablet <1150)
-  state/store.ts               the one Zustand store (symbols, mode, selectedId, lastSelected per type; useSelectedSymbol)
+  main.tsx, App.tsx            entry: RouterProvider > App > BreakpointProvider; PageContent switches on path
+  contexts/  RouterContext (pushState: { path, navigate }), BreakpointContext (isMobile <768, isTablet <1150)
+  state/store.ts               the one Zustand store (useSelectedSymbol) · hooks/ usePower (power total), useBreakpoint
   lib/       symbols.json + data.ts + types.ts   game data → createInitialSymbols() → SymbolData[]
              game.ts, utils.ts, inputs.ts         constants; core maths (updateSymbol, calculateDaysRemaining); input clamping
              calculator.ts, tools.ts, overview.ts, graph.ts   pure maths + labels behind each card
              routes.ts (pages, SEO, sitemap) · persistence.ts (saves) · format.ts (locale numbers/dates/plurals)
              analytics.ts (typed Umami events) · changelog.ts · ratioData.ts · dayjs.ts (the only dayjs import)
-  hooks/     usePower (arcane/sacred power total), useBreakpoint (re-export)
   components/  Header, Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
     Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
-    Handbook/, Extras/  TabLayout pages: ExpTable, CostTable, RatioTable; Changelog, Credits
-    ui/          RadioButton, SlideButton, TabLayout (reusable primitives)
-  i18n/      en/*.ts (English catalogue per area; its type is every language's contract), index.ts (useMessages,
-             interpolate), Message.tsx (renders <b>…</b>), gameNames.ts (translated names, English fallback)
-  test/      setup.ts (mocks), helpers.ts (store/viewport/time/head helpers), docs + seo meta-tests
-docs/ (see "Which doc when") · scripts/ docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session banner)
+    Handbook/, Extras/  TabLayout pages (ExpTable, CostTable, RatioTable; Changelog, Credits) · ui/ RadioButton, SlideButton, TabLayout
+  i18n/      en/*.ts (English catalogue = every language's contract) · index.ts (useMessages, interpolate) ·
+             Message.tsx (renders <b>…</b>) · gameNames.ts (translated names, English fallback)
+  test/      setup.ts (mocks), helpers.ts (store/viewport/time/head), docs + seo meta-tests
+docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session banner)
 ```
 
 ## Architecture in brief
@@ -79,7 +78,7 @@ docs/ (see "Which doc when") · scripts/ docs-drift.mjs (pre-commit reminder), d
 - Days/dates: `calculateDaysRemaining(needed, daily, hasWeekly)` returns 0 (nothing needed), `Infinity` (no progress possible), or `NaN` (bad input); completion = today + days (`YYYY-MM-DD`). Overview shows 0 as "Complete" / "Ready for upgrade"; Infinity, NaN, or no quest enabled as "Indefinite" / "? days" (keyed on `daily`/`weekly`/`experience`, not on the number).
 - `NaN` means **unset** for `level`/`experience` (`isValid`); inputs render `""` for NaN. Number inputs (`clampNumberInput`) treat blank and negative as unset and floor everything else with a minimum of 1, so "0", "00", "0.5" and "-0" all give level 1.
 - `locked` (default) caps experience at the next-level requirement; unlocked caps at the full-table total and the check icon converts overflow into levels. Catalyst keeps 80% (arcane) / 60% (sacred) of cumulative exp and needs level ≥ 2; +100/+200 main stat per level.
-- Game constants live in `src/lib/game.ts` (max levels, weekly 120, extra/catalyst multipliers, power formula, main stat); `symbols.json` holds the tables and `ratioData.ts` the damage ratios. Still outside `game.ts`: the `-20%/-40% EXP` catalyst copy (literal in `src/i18n/en/tools.ts`) and the Demon Avenger HP / Xenon all-stat numbers (constants at the top of `Calculator.tsx`).
+- What each number means, where it came from and how far to trust it (GMS only, unverified): `docs/GAME.md`. Constants live in `src/lib/game.ts`, tables in `symbols.json` and `ratioData.ts`.
 
 ## Gotchas (the ones that bite)
 
@@ -102,13 +101,14 @@ docs/ (see "Which doc when") · scripts/ docs-drift.mjs (pre-commit reminder), d
 - `docs/I18N.md`: before adding a user-facing string, touching `src/lib/routes.ts`, or any work on the language selector. Korean, Japanese, Traditional and Simplified Chinese are planned; §5 has the rules that apply to new copy **today** (whole sentences, no `<br>` in copy, locale-aware formatting, `Intl.PluralRules`).
 - `docs/ANALYTICS.md`: before adding, changing or removing any tracking. Umami Cloud (free Hobby plan) plus Google Search Console read side by side; §3 is the event catalogue and every event must name the decision it informs.
 - `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd. `docs/MISTAKES.md`: distilled rules at the top, log below.
+- `docs/GAME.md`: game data and mechanics, provenance, Grand Sacred unknowns, the patch checklist. `docs/PLAYERS.md`: who uses the site, and what is still unknown about them.
 - `docs/V2_PLAN.md`: the 2.0 overhaul: scope, branch, what is pinned, what is reusable, upgrade order, and the decisions already made.
 
 ## Keep the docs honest
 
 | If you change…                                                                                  | Update…                                                                                            |
 | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `src/lib/utils.ts`, `data.ts`, `symbols.json`, `hooks/usePower.ts`                              | Domain cheat sheet above; ARCHITECTURE §4 Data; KNOWN_ISSUES if an issue moved                     |
+| `src/lib/utils.ts`, `data.ts`, `game.ts`, `symbols.json`, `ratioData.ts`, `hooks/usePower.ts`   | Cheat sheet above; ARCHITECTURE §4; GAME §1–2 tables (the docs test fails) and §6 provenance log   |
 | `src/state/store.ts`, `lib/types.ts`                                                            | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                               |
 | `src/contexts/*`, `src/lib/routes.ts`, `App.tsx` routes                                         | ARCHITECTURE §2 Routing and §9 (the seo test fails on drift)                                       |
 | `components/Calculator/*` effects, quest toggles, Overview labels                               | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
