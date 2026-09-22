@@ -177,7 +177,7 @@ export const changelogEntries: ChangelogEntry[] = [
   },
   {
     version: "v1.4.2",
-    date: "Sep 16, 2026",
+    date: "2026-09-16",
     link: "https://github.com/Hyporos/maple-symbols/pull/20",
     fixes: [
       "Buttons show the pointer cursor again when you hover them.",
