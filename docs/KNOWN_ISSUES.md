@@ -6,7 +6,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ## Open
 
-### KI-013 · M · open (found 2026-09-22) · Day counts use the visitor's local calendar, not the game's reset. `advanceDayCount` (`src/lib/utils.ts`) steps local days from `dayjs()` and credits the weekly when the local day is a Monday. GMS resets dailies at 00:00 UTC and weekly quests on Monday 00:00 UTC (as far as anyone here knows; GAME §3), so a player far from UTC can see a completion date and a Monday credit one day off, depending on the time of day. Other regions reset on their own clocks (GAME §5). Not pinned by a test yet. Fixing it (count reset boundaries in UTC) is a 2.0 decision; the reset times need verifying first.
+### KI-013 · M · open (found 2026-09-22) · Day counts use the visitor's local calendar, not the game's reset. `advanceDayCount` (`src/lib/utils.ts`) steps local days from `dayjs()` and credits the weekly when the local day is a Monday. GMS resets dailies at 00:00 UTC, so a player far from UTC can see a completion date one day off, depending on the time of day. The weekly is worse: which day it resets is disputed (Monday in Korea, Japan and Southeast Asia; one GMS source says Thursday since v.264), and a weekly-only estimate is the distance to the next reset, so the wrong day can be several days out (GAME §3). Other regions reset on their own clocks (GAME §5). Not pinned by a test yet. Fixing it (count reset boundaries in UTC) is a 2.0 decision; the reset times need verifying first.
 
 ## Resolved
 

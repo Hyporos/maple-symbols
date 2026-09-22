@@ -61,12 +61,15 @@ How the calculator uses them (the code-facing version is AGENTS.md's domain chea
 - **Catalyst** (Interactive worlds only): transfers a symbol once within a world, keeping 80 % (arcane) or 60 % (sacred) of its cumulative EXP; needs level 2 or higher. The Tools copy states this as "-20% EXP" / "-40% EXP" (literal in `src/i18n/en/tools.ts`, not derived from `CATALYST_RETENTION`).
 - **Symbol Selector**: adds a chosen number of symbols and levels up as far as they reach.
 - **Class exceptions** in the next-level panel: Demon Avenger gains HP instead of main stat (2,100 arcane / 4,200 sacred per level) and Xenon gains all stat (48 / 96); constants at the top of `src/components/Calculator/Calculator.tsx`.
-- **Damage ratios** (Handbook): arcane by the percentage of the map's requirement met, sacred by the difference from the requirement; values in `src/lib/ratioData.ts`.
+- **Damage ratios** (Handbook): arcane by the percentage of the map's requirement met, sacred by the difference from the requirement; values in `src/lib/ratioData.ts`. Both tables are confirmed against the official Korean and Japanese guides; only our label for the lowest sacred band differs (we say under −100, they say −95 or lower).
+
+Two real sources of symbols the calculator deliberately ignores, because both are optional and per-character: the **Champion's Renown perk**, which adds up to +5 symbols to each regional daily, and **event coupons**, which arrive in bulk. A player with either finishes sooner than the site says.
 
 ## 3. Resets and time
 
 - The code assumes the daily reset gives one day's symbols per calendar day and the weekly quest pays on Monday.
-- GMS resets dailies at 00:00 UTC, and weekly quests on Monday 00:00 UTC as far as anyone here knows (unverified). The calculator counts the visitor's **local** calendar days instead, so for players far from UTC the day count and the Monday credit can be one day off. Logged as KI-013; fixing it is a 2.0 decision.
+- GMS resets dailies at 00:00 UTC. The calculator counts the visitor's **local** calendar days instead, so for players far from UTC the day count can be one day off. Logged as KI-013; fixing it is a 2.0 decision.
+- **Which day the weekly resets is unsettled.** The calculator credits the week on Monday. KMS, JMS and MSEA all reset weekly quests on Monday (in their own time zones), but one GMS source says a v.264 change (2025-11-12) moved GMS weekly content to Thursday 00:00 UTC, and a Korean wiki describes Erda Spectrum as resetting Thursday. Nothing could be read from Nexon's own patch notes, whose pages do not render for a plain fetch. **If the day is Thursday, a weekly-only estimate can be several days out.** Brian is checking in game (`docs/data-check/resets.csv`); do not change `advanceDayCount` until he has.
 
 ## 4. Grand Sacred symbols (in 2.0, not yet modelled)
 
