@@ -68,9 +68,9 @@ describe("getDailySymbols", () => {
   });
 
   it("doubles arcane and multiplies sacred by 1.5 when extra is on", () => {
-    expect(getDailySymbols({ ...vj(), daily: true })).toBe(10);
-    expect(getDailySymbols({ ...vj(), daily: true, extra: true })).toBe(20);
-    expect(getDailySymbols({ ...cernium(), daily: true, extra: true })).toBe(30);
+    expect(getDailySymbols({ ...vj(), daily: true })).toBe(20);
+    expect(getDailySymbols({ ...vj(), daily: true, extra: true })).toBe(40);
+    expect(getDailySymbols({ ...cernium(), daily: true, extra: true })).toBe(45);
   });
 });
 
@@ -117,21 +117,21 @@ describe("calculateDaysRemaining", () => {
       ["Monday", MON, 7], // today's reset is spent; the next one is a week out
       ["Wednesday", WED, 5],
       ["Saturday", SAT, 2],
-    ])("%s: one weekly's worth (120) takes %i days", (_day, date, expected) => {
+    ])("%s: one weekly's worth (240) takes %i days", (_day, date, expected) => {
       vi.setSystemTime(date);
-      expect(calculateDaysRemaining(120, 0, true)).toBe(expected);
+      expect(calculateDaysRemaining(240, 0, true)).toBe(expected);
       expect(calculateDaysRemaining(1, 0, true)).toBe(expected);
     });
 
-    it("needs a second reset once the first 120 is exceeded", () => {
+    it("needs a second reset once the first 240 is exceeded", () => {
       vi.setSystemTime(WED);
-      expect(calculateDaysRemaining(121, 0, true)).toBe(12); // Mondays at day 5 and day 12
+      expect(calculateDaysRemaining(241, 0, true)).toBe(12); // Mondays at day 5 and day 12
     });
   });
 
   it("daily + weekly combine (Wednesday)", () => {
     vi.setSystemTime(WED);
-    expect(calculateDaysRemaining(200, 20, true)).toBe(5); // 100 from dailies + 120 on Monday
+    expect(calculateDaysRemaining(200, 20, true)).toBe(5); // 100 from dailies + 240 on Monday
     expect(calculateDaysRemaining(200, 20, false)).toBe(10);
   });
 });
@@ -155,7 +155,7 @@ describe("advanceDayCount", () => {
   it("credits the weekly on a counted Monday, and keeps it across a threaded call", () => {
     vi.setSystemTime(WED); // the next Monday is 5 days out
     const toMonday = advanceDayCount(INITIAL_DAY_COUNT, 200, 20, true);
-    expect(toMonday).toEqual({ days: 5, credited: 220 }); // 5 × 20 + 120
+    expect(toMonday).toEqual({ days: 5, credited: 340 }); // 5 × 20 + 240
     // Already past the new target, so the walk does not move.
     expect(advanceDayCount(toMonday, 150, 20, true)).toEqual(toMonday);
   });

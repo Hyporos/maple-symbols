@@ -11,8 +11,10 @@ export const MAX_LEVEL: Record<SymbolType, number> = { arcane: 20, sacred: 11 };
 /** Max level for a symbol type (the former `!swapped ? 20 : 11` literal). */
 export const maxLevelFor = (type: SymbolType): number => MAX_LEVEL[type];
 
-/** Symbols granted by a weekly quest at each Monday reset (arcane only). */
-export const WEEKLY_SYMBOLS = 120;
+/** Symbols from a week of weekly content, credited at each Monday reset (arcane only).
+ *  The game pays 80 per clear with up to 3 clears a week; the calculator credits the week
+ *  in one go (GAME §2). GMS v.271 raised it from 40 per clear. */
+export const WEEKLY_SYMBOLS = 240;
 
 /** Daily-rate multiplier when the extra quest is unlocked. */
 export const EXTRA_MULTIPLIER: Record<SymbolType, number> = { arcane: 2, sacred: 1.5 };

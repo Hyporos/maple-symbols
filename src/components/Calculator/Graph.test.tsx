@@ -37,8 +37,8 @@ describe("Graph", () => {
     fireEvent.change(targetInput(), { target: { value: "60" } });
     expect(screen.getByText("Target must be greater than 70")).toBeInTheDocument();
 
-    fireEvent.change(targetInput(), { target: { value: "80" } }); // level 6 = +10 power, 36 symbols at 10/day
-    expect(screen.getByText("2026-09-20")).toBeInTheDocument();
+    fireEvent.change(targetInput(), { target: { value: "80" } }); // level 6 = +10 power, 36 symbols at 20/day
+    expect(screen.getByText("2026-09-18")).toBeInTheDocument();
 
     fireEvent.change(targetInput(), { target: { value: "9999" } }); // clamps to max reachable power (220)
     expect(targetInput()).toHaveValue(220);

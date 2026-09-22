@@ -26,12 +26,12 @@ describe("progressToMax", () => {
   it("derives symbols, days and completion date from level/exp/quests", () => {
     expect(progressToMax(vj({ level: 1, experience: 0, daily: true }), NOW)).toEqual({
       symbolsRemaining: 2679,
-      daysRemaining: 268,
-      completion: "2027-06-11",
+      daysRemaining: 134, // 20/day
+      completion: "2027-01-28",
     });
     expect(progressToMax(cernium({ level: 1, experience: 0, daily: true }), NOW)).toMatchObject({
       symbolsRemaining: 4565,
-      daysRemaining: 229, // 20/day
+      daysRemaining: 153, // 30/day
     });
   });
 

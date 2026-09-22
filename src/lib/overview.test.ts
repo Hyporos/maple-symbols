@@ -13,11 +13,11 @@ const ARCANE = createInitialSymbols()[0].symbolsRequired;
 
 describe("collapsedRowLabels", () => {
   it("derives date, days and symbols remaining from level/exp/quests (frozen Wednesday)", () => {
-    // 2605 symbols to max at 10/day → 261 days → 2027-06-04
+    // 2605 symbols to max at 20/day → 131 days → 2027-01-25
     expect(collapsedRowLabels(active(), 20, m, NOW)).toEqual({
       target: "20",
-      completion: "2027-06-04",
-      days: "261 days",
+      completion: "2027-01-25",
+      days: "131 days",
       remaining: "2605",
     });
     // level 19 with 10 short of the last step → 1 day
@@ -31,7 +31,7 @@ describe("collapsedRowLabels", () => {
 
   it("is fresh for every symbol, not just the selected one (KI-002 resolved)", () => {
     const lachelein = { ...createInitialSymbols()[2], level: 5, experience: 0, daily: true };
-    expect(collapsedRowLabels(lachelein, 20, m, NOW).days).toBe("131 days"); // 2605 at 20/day
+    expect(collapsedRowLabels(lachelein, 20, m, NOW).days).toBe("66 days"); // 2605 at 40/day
   });
 
   it("blanks everything but the target column for unset and maxed symbols", () => {

@@ -1,0 +1,17 @@
+id,gms_name,zh_Hans_name,confidence,source
+1,Vanishing Journey,神秘徽章：消亡旅途,client string,mxd.dvg.cn item database
+2,Chu Chu Island,神秘徽章：啾啾岛,client string,mxd.dvg.cn item database
+3,Lachelein,神秘徽章：拉克兰,client string,mxd.dvg.cn item database
+4,Arcana,神秘徽章：阿尔卡那,client string,mxd.dvg.cn item database
+5,Morass,神秘徽章：莫拉斯,client string,mxd.dvg.cn item database
+6,Esfera,神秘徽章：埃斯佩拉,client string,mxd.dvg.cn item database
+7,Cernium,原初徽章：塞尔提乌,client string,mxd.dvg.cn item database
+8,Hotel Arcus,原初徽章：亚克斯,client string,mxd.dvg.cn item database
+9,Odium,原初徽章：奥迪乌姆,client string,mxd.dvg.cn item database
+10,Shangri-La,原初徽章：桃源境,client string,mxd.dvg.cn item database
+11,Arteria,原初徽章：阿尔特里亚,client string,mxd.dvg.cn item database
+12,Carcion,原初徽章：卡西翁,client string,mxd.dvg.cn item database
+G1,Tallahart,豪华原初徽章：塔拉哈特,client string,mxd.dvg.cn item database
+G2,Geardock,豪华原初徽章：神烬之地,client string (not a transliteration),mxd.dvg.cn item database
+,Arcane Force,神秘之力,official,CMS V226 patch notes
+,Sacred Power,原初之力,official,CMS V226 patch notes

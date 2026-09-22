@@ -1,0 +1,17 @@
+id,gms_name,zh_Hant_name,confidence,source
+1,Vanishing Journey,祕法符文：消逝的旅途,client string,mxd.dvg.cn item database
+2,Chu Chu Island,祕法符文：啾啾艾爾蘭,client string,mxd.dvg.cn item database
+3,Lachelein,祕法符文：拉契爾恩,client string,mxd.dvg.cn item database
+4,Arcana,祕法符文：阿爾卡娜,client string,mxd.dvg.cn item database
+5,Morass,祕法符文：魔菈斯,client string,mxd.dvg.cn item database
+6,Esfera,祕法符文：艾斯佩拉,client string,mxd.dvg.cn item database
+7,Cernium,真實符文：賽爾尼溫,client string,mxd.dvg.cn item database
+8,Hotel Arcus,真實符文：阿爾克斯,client string (region 飯店阿爾克斯),mxd.dvg.cn item database
+9,Odium,真實符文：奧迪溫,client string,mxd.dvg.cn item database
+10,Shangri-La,真實符文：桃源境,client string,mxd.dvg.cn item database
+11,Arteria,真實符文：阿爾特利亞,client string,mxd.dvg.cn item database
+12,Carcion,真實符文：卡爾西溫,client string,mxd.dvg.cn item database
+G1,Tallahart,豪華真實符文：塔拉哈特,client string,mxd.dvg.cn item database
+G2,Geardock,豪華真實符文：基爾德拉,client string,mxd.dvg.cn item database
+,Arcane Force,祕法之力,official,beanfun patch notes
+,Sacred Power,真實之力,official,beanfun patch notes

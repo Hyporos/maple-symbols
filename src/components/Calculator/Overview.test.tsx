@@ -26,21 +26,21 @@ describe("Overview — collapsed rows", () => {
 
   it("derives the completion date, days and symbols remaining (frozen Wednesday)", () => {
     vi.setSystemTime(WED);
-    seedSymbol(1, { level: 5, experience: 0, daily: true }); // 2605 symbols at 10/day
+    seedSymbol(1, { level: 5, experience: 0, daily: true }); // 2605 symbols at 20/day
     render(<Overview />);
     const row = within(rowOf("Vanishing Journey"));
-    expect(row.getByText("2027-06-04")).toBeInTheDocument();
-    expect(row.getByText("261 days")).toBeInTheDocument();
+    expect(row.getByText("2027-01-25")).toBeInTheDocument();
+    expect(row.getByText("131 days")).toBeInTheDocument();
     expect(row.getByText("2605")).toBeInTheDocument();
   });
 
   it("is fresh for every row, not only the selected symbol (KI-002 resolved)", () => {
     vi.setSystemTime(WED);
-    seedSymbol(3, { level: 5, experience: 0, daily: true }, false); // Lachelein, 20/day
+    seedSymbol(3, { level: 5, experience: 0, daily: true }, false); // Lachelein, 40/day
     seedSymbol(1, { level: 5, experience: 0, daily: true }); // selects Vanishing Journey
     render(<Overview />);
     const lachelein = within(rowOf("Lachelein"));
-    expect(lachelein.getByText("131 days")).toBeInTheDocument();
+    expect(lachelein.getByText("66 days")).toBeInTheDocument(); // 2605 at 40/day
     expect(lachelein.getByText("2605")).toBeInTheDocument();
     expect(lachelein.queryByText("Complete")).not.toBeInTheDocument();
   });
@@ -92,16 +92,16 @@ describe("Overview — target level panel", () => {
     render(<Overview />);
     const row = openRow("Vanishing Journey");
 
-    typeTarget(row, "6"); // 36 symbols at 10/day → 4 days → 2026-09-20
+    typeTarget(row, "6"); // 36 symbols at 20/day → 2 days → 2026-09-18
     expect(row.getByText("36")).toBeInTheDocument();
-    expect(row.getByText("4 days")).toBeInTheDocument();
-    expect(row.getByText("2026-09-20")).toBeInTheDocument();
+    expect(row.getByText("2 days")).toBeInTheDocument();
+    expect(row.getByText("2026-09-18")).toBeInTheDocument();
 
-    typeTarget(row, "25"); // clamps to 20: 2605 symbols → 261 days → 2027-06-04
+    typeTarget(row, "25"); // clamps to 20: 2605 symbols → 131 days → 2027-01-25
     // At max target the panel agrees with the collapsed row, so each string appears twice.
     expect(row.getAllByText("2605")).toHaveLength(2);
-    expect(row.getAllByText("261 days")).toHaveLength(2);
-    expect(row.getAllByText("2027-06-04")).toHaveLength(2);
+    expect(row.getAllByText("131 days")).toHaveLength(2);
+    expect(row.getAllByText("2027-01-25")).toHaveLength(2);
   });
 
   it("explains a target at or below the current level, and an empty target", () => {

@@ -98,13 +98,13 @@ describe("Calculator — quests and the next-level panel", () => {
     expect(screen.getByText("0 symbols / day")).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("Daily"));
-    expect(screen.getByText("10 symbols / day")).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText("Extra"));
     expect(screen.getByText("20 symbols / day")).toBeInTheDocument();
 
+    fireEvent.click(screen.getByText("Extra"));
+    expect(screen.getByText("40 symbols / day")).toBeInTheDocument();
+
     fireEvent.click(screen.getByText("Weekly"));
-    expect(screen.getByText("120 symbols / week")).toBeInTheDocument();
+    expect(screen.getByText("240 symbols / week")).toBeInTheDocument();
   });
 
   it("sacred symbols have no weekly rate line", () => {
@@ -128,10 +128,10 @@ describe("Calculator — quests and the next-level panel", () => {
     vi.setSystemTime(WED);
     seedSymbol(1, { level: 1, experience: 0, daily: true });
     render(<Calculator />);
-    expect(screen.getByText(fullText("2 days to go"))).toBeInTheDocument(); // 12 symbols at 10/day
+    expect(screen.getByText(fullText("1 day to go"))).toBeInTheDocument(); // 12 symbols at 20/day
 
     fireEvent.click(screen.getByText("Extra"));
-    expect(screen.getByText(fullText("1 day to go"))).toBeInTheDocument(); // 20/day
+    expect(screen.getByText(fullText("1 day to go"))).toBeInTheDocument(); // 40/day, still one day
   });
 
   it("shows the meso cost and main-stat gain for the next level", () => {

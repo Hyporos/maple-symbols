@@ -17,7 +17,7 @@ describe("buildDateSymbols", () => {
     expect(buildDateSymbols(symbols, "arcane", now)).toEqual([]);
   });
 
-  it("dates every future level from the daily rate (VJ level 18, 10/day)", () => {
+  it("dates every future level from the daily rate (VJ level 18, 20/day)", () => {
     const [entry] = buildDateSymbols(
       [vj({ level: 18, experience: 0, daily: true })],
       "arcane",
@@ -25,8 +25,8 @@ describe("buildDateSymbols", () => {
     );
     expect(entry.name).toBe("Vanishing Journey");
     expect(entry.progress).toEqual([
-      { level: 19, date: "2026-10-20" }, // 335 symbols → 34 days
-      { level: 20, date: "2026-11-26" }, // 335 + 372 = 707 → 71 days
+      { level: 19, date: "2026-10-03" }, // 335 symbols → 17 days
+      { level: 20, date: "2026-10-22" }, // 335 + 372 = 707 → 36 days
     ]);
   });
 });
