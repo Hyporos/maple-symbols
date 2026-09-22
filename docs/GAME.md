@@ -63,7 +63,10 @@ How the calculator uses them (the code-facing version is AGENTS.md's domain chea
 - **Class exceptions** in the next-level panel: Demon Avenger gains HP instead of main stat (2,100 arcane / 4,200 sacred per level) and Xenon gains all stat (48 / 96); constants at the top of `src/components/Calculator/Calculator.tsx`.
 - **Damage ratios** (Handbook): arcane by the percentage of the map's requirement met, sacred by the difference from the requirement; values in `src/lib/ratioData.ts`. Both tables are confirmed against the official Korean and Japanese guides; only our label for the lowest sacred band differs (we say under −100, they say −95 or lower).
 
-Two real sources of symbols the calculator deliberately ignores, because both are optional and per-character: the **Champion's Renown perk**, which adds up to +5 symbols to each regional daily, and **event coupons**, which arrive in bulk. A player with either finishes sooner than the site says.
+Two real sources of symbols the calculator ignores, because both are temporary and per-character. A player using either finishes sooner than the site says.
+
+- **Event perks that raise the daily rate.** Recurring events (the Night Troupe festivals, seasonal passes) sell a perk with event currency that adds symbols to every regional daily — the v.271 Night Troupe sells +1, then +2, then +2 more, so +5 a day per region at maximum, for the length of the event. Not to be confused with **Champion's Renown**, a monthly Legion Champion buff that grants stats and bonus EXP for 30 minutes and no symbols at all.
+- **Event coupons in bulk.** Symbol Selector coupons arrive by the hundred from events, and Hyper Burning hands out pre-levelled symbols. These are a lump of symbols, not a rate.
 
 ## 3. Resets and time
 
