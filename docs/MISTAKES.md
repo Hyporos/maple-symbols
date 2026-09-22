@@ -15,6 +15,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Claims about hosting or search-engine behaviour get checked against the live site and the platform's current docs, not memory**; a second, independent review pass before shipping a reference doc pays for itself (M-007).
 - **Platform config is validated by the platform, not by reading it.** `vercel.json` passed lint, tests and two reviews, and Vercel still rejected the deployment. Check syntax against the platform's docs before shipping config that CI cannot run, and deploy a preview before DNS moves (M-008).
 - **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
+- **Stage files by name, never `git add -A`**: leftover worktrees and scratch folders get swept in (M-011).
 
 ## Log
 
@@ -89,3 +90,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Wrote the entry from the commit list instead of from what a player sees.
 - **Rule**: Changelog entries describe only what a player can see or feel; internal, tooling and analytics work stays in commits and PRs.
 - **Where**: `src/lib/changelog.ts`.
+
+### M-011 · 2026-09-16 · git
+
+- **What**: Committed the merge with `git add -A`, which staged eight leftover agent worktrees under `.claude/worktrees/` as embedded repositories. lint-staged then linted all of their files and blocked the commit, which was the only reason it did not land.
+- **Root cause**: Staged everything instead of the files the change touched, in a tree known to hold untracked worktree folders.
+- **Rule**: Stage files by name (`git add <paths>`), never `git add -A` or `commit -a`; clean up agent worktrees when their work is recovered.
+- **Where**: `AGENTS.md` Conventions (commits), `.claude/commands/release.md`.

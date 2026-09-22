@@ -19,49 +19,36 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm dev`                                     | Vite dev server (no type-check in dev)                                                                                                      |
 | `pnpm build`                                   | `tsc` type-gate (src incl. tests) then Vite build to `dist/`                                                                                |
-| `pnpm lint`                                    | ESLint over `src/`; Prettier violations are errors; any warning fails                                                                       |
-| `pnpm typecheck`                               | `tsc --noEmit`                                                                                                                              |
+| `pnpm lint`, `pnpm typecheck`                  | ESLint over `src/` (Prettier violations are errors, any warning fails); `tsc --noEmit`                                                      |
 | `pnpm test [filter]`                           | Vitest single run; `pnpm test utils` filters (never `pnpm test -- utils`: pnpm passes the `--` through). Also `test:watch`, `test:coverage` |
 | `/release X.Y.Z`                               | Whole release: version, changelog entry (newest entry goes **last**), sitemap, README badge, PR `development → main`, tag, back-merge       |
 | `/sync-docs`, `/log-mistake`, `/new-component` | Reconcile docs with code; log a mistake; scaffold a component in the house style with a test. Full list: `docs/COMMANDS.md`                 |
 
 Package manager is **pnpm** (never npm/yarn). Node 26 locally and in CI (`engines`: ^22.22 || ^24.15 || >=26). Pre-commit (simple-git-hooks) runs lint-staged (ESLint, related Vitest tests, Prettier on staged files) and then `scripts/docs-drift.mjs`. CI (`.github/workflows/ci.yml`) runs lint, typecheck, test, build on pushes and PRs to `main`/`development`.
 
-## Stack
-
-React 19 + TypeScript 5 (strict) + Vite 8 (rolldown) · Tailwind 4 (`cn()` = clsx + tailwind-merge) · Zustand 5 with `persist` · custom History-API router (no react-router) · @floating-ui/react tooltips · Recharts 3 · dayjs (import from `src/lib/dayjs.ts` only) · react-icons · Vitest 5 + Testing Library + jsdom.
+**Stack:** React 19 + TypeScript 5 (strict) + Vite 8 (rolldown) · Tailwind 4 (`cn()` = clsx + tailwind-merge) · Zustand 5 with `persist` · custom History-API router (no react-router) · @floating-ui/react tooltips · Recharts 3 · dayjs (import from `src/lib/dayjs.ts` only) · react-icons · Vitest 5 + Testing Library + jsdom.
 
 ## Map
 
 ```
 src/
   main.tsx, App.tsx            entry; RouterProvider > App > BreakpointProvider; PageContent switches on path
-  contexts/  RouterContext     pushState/popstate router: { path, navigate }
-             BreakpointContext isMobile (<768px) / isTablet (<1150px); two matchMedia listeners app-wide
+  contexts/  RouterContext (pushState router: { path, navigate }), BreakpointContext (isMobile <768, isTablet <1150)
   state/store.ts               the one Zustand store (symbols, mode, selectedId, lastSelected per type; useSelectedSymbol)
-  lib/       symbols.json      exp tables, the 12 symbol definitions, meso tables (other constants: see cheat sheet)
-             data.ts           createInitialSymbols(): json → SymbolData[]
-             types.ts          SymbolData, SymbolType
-             utils.ts          cn, isValid, isMaxLevel, updateSymbol, getDailySymbols,
-                               getRemainingSymbols, advanceDayCount, calculateDaysRemaining
-             game.ts           MAX_LEVEL/maxLevelFor, WEEKLY_SYMBOLS, extra/catalyst/power/main-stat constants
-             inputs.ts         clampNumberInput, levelInputPatch, expCapFor, experienceInputValue
-             calculator.ts, tools.ts, overview.ts, graph.ts   pure maths + label strings behind each card
-             dayjs.ts          singleton with plugins; changelog.ts; ratioData.ts
-  hooks/     usePower          arcane/sacred power total; useBreakpoint (re-export)
-  components/
-    Header, Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
-    Calculator/  Calculator (inputs + next-level panel), Tools (Symbol Selector / Catalyst previews),
-                 Overview (per-symbol target table), Graph (power-over-time chart)
-    Handbook/    TabLayout page: ExpTable, CostTable, RatioTable
-    Extras/      TabLayout page: Changelog (/changelog), Credits (/credits)
+  lib/       symbols.json + data.ts + types.ts   game data → createInitialSymbols() → SymbolData[]
+             game.ts, utils.ts, inputs.ts         constants; core maths (updateSymbol, calculateDaysRemaining); input clamping
+             calculator.ts, tools.ts, overview.ts, graph.ts   pure maths + labels behind each card
+             routes.ts (pages, SEO, sitemap) · persistence.ts (saves) · format.ts (locale numbers/dates/plurals)
+             analytics.ts (typed Umami events) · changelog.ts · ratioData.ts · dayjs.ts (the only dayjs import)
+  hooks/     usePower (arcane/sacred power total), useBreakpoint (re-export)
+  components/  Header, Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
+    Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
+    Handbook/, Extras/  TabLayout pages: ExpTable, CostTable, RatioTable; Changelog, Credits
     ui/          RadioButton, SlideButton, TabLayout (reusable primitives)
-  i18n/      en/*.ts           English catalogue, one file per area; `Catalogue<typeof en>` is every language's contract
-             index.ts          LOCALES, useMessages(), interpolate/pluralMessage; Message.tsx renders <b>…</b> copy
-             gameNames.ts      symbol/quest names per language by id, falling back to symbols.json English
+  i18n/      en/*.ts (English catalogue per area; its type is every language's contract), index.ts (useMessages,
+             interpolate), Message.tsx (renders <b>…</b>), gameNames.ts (translated names, English fallback)
   test/      setup.ts (mocks), helpers.ts (store/viewport/time/head helpers), docs + seo meta-tests
-docs/        ARCHITECTURE, DESIGN_SYSTEM, TESTING, SEO, I18N, ANALYTICS, KNOWN_ISSUES, MISTAKES
-scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-start banner)
+docs/ (see "Which doc when") · scripts/ docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session banner)
 ```
 
 ## Architecture in brief
@@ -70,18 +57,18 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - **Pages are declared once** in `src/lib/routes.ts` (path, title, description, nav entry, sitemap fields). `App.tsx`, `Header`, `Extras` and `SEO.tsx` read it; the routes plugin in `vite.config.ts` fills the `__PLACEHOLDER__` tokens in `index.html` and emits `sitemap.xml` (no file under `public/`). `src/test/seo.test.tsx` checks the generated output; ARCHITECTURE §2 explains the double head write.
 - **State**: one store. Only `symbols` persists (localStorage key `maple-symbols-v2`, `STORAGE_VERSION` 3), and only each symbol's `id` plus the player's fields (`src/lib/persistence.ts`); UI state resets on reload. On load, `merge` rebuilds from `symbols.json` and restores those fields by id; `migrate` sends older saves through the same rebuild, so nothing is wiped.
 - **Data flow**: `symbols.json` → `createInitialSymbols()` → store → components read via selectors; inputs write with `updateSymbol(symbols, id, patch)`. Nothing derived is stored: symbols/days remaining and the completion date come from `progressToMax` (`src/lib/calculator.ts`) at read time, Graph builds its own series, power from `usePower`.
-- **Responsive**: Tailwind `md:` for style-only differences; `useBreakpoint()` when markup, prop values, or copy differ.
 
 ## Conventions
 
 - Components: `const Name = () => { … }; export default Name;` with `interface NameProps` above and the three-line `―――` banner comment (copy one from a sibling). Lib files use the `// ---` banner with `file.ts — purpose`. PascalCase component files, camelCase lib/hooks.
 - Store access is one selector per line: `const symbols = useAppStore((s) => s.symbols);`. Imperative reads inside handlers/effects use `useAppStore.getState()`.
-- Conditional classes go through `cn()`; template-literal classNames exist in older files but don't add more. Never hand-order Tailwind classes (Prettier sorts them).
+- Conditional classes go through `cn()`; template-literal classNames exist in older files but don't add more. Never hand-order Tailwind classes (Prettier sorts them). Responsive: `md:` for style-only differences, `useBreakpoint()` when markup, props or copy differ.
 - Reusable primitives live in `components/ui/`; feature components take store state directly rather than props.
-- Tooltips: `<Tooltip placement="…"><TooltipTrigger>…</TooltipTrigger><TooltipContent className="tooltip">…</TooltipContent></Tooltip>`; pick the trigger form by what it wraps (gotcha 4: icon → plain trigger, single DOM element → `asChild`, inputs or buttons → `as="div"`); accent words are bare `<span>`s (global CSS colours every span). **No English literal in JSX**: copy goes in `src/i18n/en/<area>.ts` as a whole sentence with `<b>…</b>` for accent words and `{name}` placeholders, never a fragment around a `<span>` and never `<br>`; read it with `const m = useMessages().<area>;` and render markup through `<Message text={m.key} values={…} count={…} />`. Plain strings (placeholders, aria-labels) use `m.key` or `interpolate()`. Analytics values and anything keyed on a name stay English.
+- **No English literal in JSX.** Copy is a whole sentence in `src/i18n/en/<area>.ts`, `<b>…</b>` for accent words and `{name}` placeholders, never `<br>`; read it with `const m = useMessages().<area>;`, render markup with `<Message text={m.key} values={…} count={…} />`, plain strings with `m.key`/`interpolate()`. Analytics values and anything keyed on a name stay English (I18N §5).
+- Tooltips: `<Tooltip placement="…"><TooltipTrigger>…</TooltipTrigger><TooltipContent className="tooltip">…</TooltipContent></Tooltip>`; the trigger form depends on what it wraps (gotcha 4).
 - Prettier: 100 columns, double quotes, semicolons, LF. ESLint: `_`-prefixed unused vars allowed; `any` fails lint; the react-hooks dependency rules are **off**, so effect deps are curated by hand and on purpose.
 - Tests are colocated `Name.test.ts(x)` with explicit `import { … } from "vitest"` (no globals). See `docs/TESTING.md`.
-- Commits: short capitalised imperative subject, no prefix, no period ("Add weekly toggle to Cernium"). Work on `development`, PR into `main`.
+- Commits: short capitalised imperative subject, no prefix, no period ("Add weekly toggle to Cernium"). Stage files by name, never `git add -A`. 1.x fixes on `development` (PR into `main`), 2.0 work on `v2`.
 
 ## Domain cheat sheet
 
@@ -92,7 +79,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - Days/dates: `calculateDaysRemaining(needed, daily, hasWeekly)` returns 0 (nothing needed), `Infinity` (no progress possible), or `NaN` (bad input); completion = today + days (`YYYY-MM-DD`). Overview shows 0 as "Complete" / "Ready for upgrade"; Infinity, NaN, or no quest enabled as "Indefinite" / "? days" (keyed on `daily`/`weekly`/`experience`, not on the number).
 - `NaN` means **unset** for `level`/`experience` (`isValid`); inputs render `""` for NaN. Number inputs (`clampNumberInput`) treat blank and negative as unset and floor everything else with a minimum of 1, so "0", "00", "0.5" and "-0" all give level 1.
 - `locked` (default) caps experience at the next-level requirement; unlocked caps at the full-table total and the check icon converts overflow into levels. Catalyst keeps 80% (arcane) / 60% (sacred) of cumulative exp and needs level ≥ 2; +100/+200 main stat per level.
-- Game constants live in `src/lib/game.ts` (max levels, weekly 120, extra/catalyst multipliers, power formula, main stat); `symbols.json` holds the tables and `ratioData.ts` the damage ratios. Still literal: the `-20%/-40% EXP` copy in `Tools.tsx` and the HP/all-stat tooltip in `Calculator.tsx`.
+- Game constants live in `src/lib/game.ts` (max levels, weekly 120, extra/catalyst multipliers, power formula, main stat); `symbols.json` holds the tables and `ratioData.ts` the damage ratios. Still outside `game.ts`: the `-20%/-40% EXP` catalyst copy (literal in `src/i18n/en/tools.ts`) and the Demon Avenger HP / Xenon all-stat numbers (constants at the top of `Calculator.tsx`).
 
 ## Gotchas (the ones that bite)
 
@@ -114,8 +101,7 @@ scripts/     docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session-st
 - `docs/SEO.md`: anything search engines see: `routes.ts` entries, `index.html`, `SEO.tsx`, `vercel.json`, headings, copy, images, performance. Numbered rules (cite as `SEO-n`), the query map, and the audit backlog. The goal is rank one, so treat its rules as requirements, not advice.
 - `docs/I18N.md`: before adding a user-facing string, touching `src/lib/routes.ts`, or any work on the language selector. Korean, Japanese, Traditional and Simplified Chinese are planned; §5 has the rules that apply to new copy **today** (whole sentences, no `<br>` in copy, locale-aware formatting, `Intl.PluralRules`).
 - `docs/ANALYTICS.md`: before adding, changing or removing any tracking. Umami Cloud (free Hobby plan) plus Google Search Console read side by side; §3 is the event catalogue and every event must name the decision it informs.
-- `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd.
-- `docs/MISTAKES.md`: distilled rules at the top, log below.
+- `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd. `docs/MISTAKES.md`: distilled rules at the top, log below.
 - `docs/V2_PLAN.md`: the 2.0 overhaul: scope, branch, what is pinned, what is reusable, upgrade order, and the decisions already made.
 
 ## Keep the docs honest
