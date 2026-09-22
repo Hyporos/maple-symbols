@@ -97,8 +97,11 @@ export interface DayCountState {
 /** Fresh starting state for a walk that begins today. */
 export const INITIAL_DAY_COUNT: DayCountState = { days: 0, credited: 0 };
 
-/** dayjs weekday index for Monday (0 is Sunday). */
-const MONDAY = 1;
+/** dayjs weekday index of the weekly quest reset (0 is Sunday), Thursday in GMS.
+ *  Confirmed in game by Brian on 2026-09-22; GMS moved it from Monday in v.264.
+ *  Other regions still reset on Monday (GAME §5), which matters if the site ever
+ *  shows their numbers. */
+const WEEKLY_RESET_DAY = 4;
 
 /**
  * Advances an existing DayCountState until `credited` reaches `symbolsNeeded`, which is
@@ -107,7 +110,7 @@ const MONDAY = 1;
  *
  * The walk starts tomorrow, because the Calculator's tooltip promises the estimate assumes
  * today's quests are already done. Each counted day pays the daily rate, and a counted
- * Monday also pays the weekly reset.
+ * Thursday also pays the weekly reset.
  *
  * KI-003 was the previous version: it located "next Monday" with `dayjs().day(8)`, which is
  * Monday of the *following* week in dayjs's Sunday-start weeks, and credited the reset one
@@ -133,7 +136,7 @@ export function advanceDayCount(
   for (let i = 0; i < 1000 && credited < symbolsNeeded; i++) {
     days++;
     credited += dailySymbols;
-    if (hasWeekly && now.add(days, "day").day() === MONDAY) credited += WEEKLY_SYMBOLS;
+    if (hasWeekly && now.add(days, "day").day() === WEEKLY_RESET_DAY) credited += WEEKLY_SYMBOLS;
   }
 
   return { days, credited };
@@ -141,9 +144,9 @@ export function advanceDayCount(
 
 /**
  * Calculates the number of days required to accumulate `symbolsNeeded`
- * symbols, given a daily rate and an optional weekly reset (+120 symbols).
+ * symbols, given a daily rate and an optional weekly reset (`WEEKLY_SYMBOLS`).
  *
- * The function accounts for the fact that the first upcoming Monday resets
+ * The function accounts for the fact that the first upcoming Thursday resets
  * weekly quests before settling into the regular 7-day cadence.
  *
  * Returns 0 when no symbols are needed, and Infinity when no daily progress

@@ -60,7 +60,7 @@ export function buildDateSymbols(
       const dailySymbols = getDailySymbols(symbol);
 
       for (let nextLevel = symbol.level + 1; nextLevel <= maxLevel; nextLevel++) {
-        // Absolute symbols needed since today; the threaded state carries the Monday tracking.
+        // Absolute symbols needed since today; the threaded state carries the weekly tracking.
         const remaining = getRemainingSymbols(nextLevel, symbol);
         dayState = advanceDayCount(dayState, remaining, dailySymbols, !!symbol.weekly, now);
         progress.push({

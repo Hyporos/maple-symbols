@@ -6,7 +6,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ## Open
 
-### KI-013 · M · open (found 2026-09-22) · Day counts use the visitor's local calendar, not the game's reset. `advanceDayCount` (`src/lib/utils.ts`) steps local days from `dayjs()` and credits the weekly when the local day is a Monday. GMS resets dailies at 00:00 UTC, so a player far from UTC can see a completion date one day off, depending on the time of day. The weekly is worse: which day it resets is disputed (Monday in Korea, Japan and Southeast Asia; one GMS source says Thursday since v.264), and a weekly-only estimate is the distance to the next reset, so the wrong day can be several days out (GAME §3). Other regions reset on their own clocks (GAME §5). Not pinned by a test yet. Fixing it (count reset boundaries in UTC) is a 2.0 decision; the reset times need verifying first.
+### KI-013 · M · open (found 2026-09-22) · Day counts use the visitor's local calendar, not the game's reset. `advanceDayCount` (`src/lib/utils.ts`) steps local days from `dayjs()` and credits the weekly when the local day is a Thursday. GMS resets dailies at 00:00 UTC, so a player far from UTC can see a completion date one day off, depending on the time of day. The weekly reset day itself is now right (Thursday, confirmed 2026-09-22), but it is still located on the visitor's local calendar, so the same one-day skew applies to it (GAME §3). Other regions reset on their own clocks (GAME §5). Not pinned by a test yet. Fixing it (count reset boundaries in UTC) is a 2.0 decision; the reset times need verifying first.
 
 ## Resolved
 
@@ -24,7 +24,7 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ### KI-008 · resolved on `v2` (tooltip hygiene, 2026-09-16) · `buildGraphSeries` counts whole days between the start of today and the entry date, so midnight no longer adds one; `yAxisTicks`/`xAxisTicks` sort and dedupe their ticks and return `[]` only when a single value is left; Tools' `tabIndex` uses `maxLevelFor(currentSymbol.type)`; `catalystPreview` walks from index 1. The unit-less Monday comparison went with the `advanceDayCount` rewrite (KI-003). (Was: `diff(now, "day") + 1`; the "bandaid" `ticks[0] === ticks[2]` check, which let `[70, 70, 80, 80]` through; `level === 20`; `symbolsRequired[-1]`.)
 
-### KI-003 · resolved on `v2` (calculator correctness, 2026-09-16) · `advanceDayCount` now walks from tomorrow and credits the weekly on each counted Monday; its state is `{ days, credited }`. One weekly takes Sun 1, Mon 7, Wed 5, Sat 2 days. (Was: next Monday found with `dayjs().day(8)`, credited one iteration late, so 9, 8, 6, 3.)
+### KI-003 · resolved on `v2` (calculator correctness, 2026-09-16) · `advanceDayCount` now walks from tomorrow and credits the weekly on each counted reset day; its state is `{ days, credited }`. The reset day was Monday when this was fixed and became Thursday on 2026-09-22 (GAME §3), so one weekly now takes Sun 4, Mon 3, Wed 1, Sat 5 days. (Was: next Monday found with `dayjs().day(8)`, credited one iteration late, so 9, 8, 6, 3.)
 
 ### KI-004 · resolved on `v2` (calculator correctness, 2026-09-16) · `expCapFor` returns 0 at max level, locked or not, so the experience field stores 0 there. (Was: `symbolsRequired[max]` is `undefined`, every comparison against it was false, and the field accepted any number.)
 

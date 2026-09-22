@@ -1,5 +1,5 @@
 server,daily quest reset (UTC),weekly quest reset (day + UTC time),source,confirmed? (y / the right value),notes
-GMS,00:00,DISPUTED: Monday or Thursday,"Daily: patch-note language about daily counters. Weekly: one source says GMS v.264 (2025-11-12) moved weekly content to Thursday 00:00 UTC; Korea, Japan and Southeast Asia all use Monday",,"Most important cell on this sheet. The calculator credits the weekly on Monday; if GMS is Thursday, weekly-only estimates are wrong by days. Check in game: open a weekly and see when it next resets. The weekly BOSS reset (Thursday) is a different thing."
+GMS,00:00,Thursday 00:00 UTC,Brian, confirmed in game 2026-09-22 (GMS v.264 moved it off Monday),y,"Applied: WEEKLY_RESET_DAY in src/lib/utils.ts. The daily reset hour is still only inferred from patch-note language about daily counters."
 KMS,00:00 KST (15:00 UTC previous day),Monday 00:00 KST,namu.wiki / Nexon KR guide,,"Researched 2026-09-22, not confirmed in game"
 JMS,00:00 JST (15:00 UTC previous day),Monday 00:00 JST,maplestory.nexon.co.jp game guide,,"Researched 2026-09-22, not confirmed in game"
 TMS,unconfirmed (server runs UTC+8),unconfirmed,-,,"Community reports conflict"

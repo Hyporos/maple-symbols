@@ -56,7 +56,7 @@ Twelve symbols in two families. Arcane Symbols (Arcane River regions) level to 2
 How the calculator uses them (the code-facing version is AGENTS.md's domain cheat sheet):
 
 - **Daily rate** = daily symbols × extra multiplier when the extra quest is on, 0 when the daily is off. Only Vanishing Journey and Chu Chu have an extra quest; only arcane symbols have a weekly. The sacred extra multiplier (1.5) has no counterpart in the game, since no sacred region has an extra quest, so it never applies.
-- **Days to go** count from tomorrow (today's quests are assumed done) and credit the weekly on each counted Monday. The calendar is the visitor's local one; see §3.
+- **Days to go** count from tomorrow (today's quests are assumed done) and credit the weekly on each counted Thursday. The calendar is the visitor's local one; see §3.
 - **Power**: arcane `level × 10 + 20`, sacred `level × 10`. The Graph adds +10 per level-up.
 - **Catalyst** (Interactive worlds only): transfers a symbol once within a world, keeping 80 % (arcane) or 60 % (sacred) of its cumulative EXP; needs level 2 or higher. The Tools copy states this as "-20% EXP" / "-40% EXP" (literal in `src/i18n/en/tools.ts`, not derived from `CATALYST_RETENTION`).
 - **Symbol Selector**: adds a chosen number of symbols and levels up as far as they reach.
@@ -70,9 +70,9 @@ Two real sources of symbols the calculator ignores, because both are temporary a
 
 ## 3. Resets and time
 
-- The code assumes the daily reset gives one day's symbols per calendar day and the weekly quest pays on Monday.
+- The code assumes the daily reset gives one day's symbols per calendar day and the weekly quest pays on Thursday.
 - GMS resets dailies at 00:00 UTC. The calculator counts the visitor's **local** calendar days instead, so for players far from UTC the day count can be one day off. Logged as KI-013; fixing it is a 2.0 decision.
-- **Which day the weekly resets is unsettled.** The calculator credits the week on Monday. KMS, JMS and MSEA all reset weekly quests on Monday (in their own time zones), but one GMS source says a v.264 change (2025-11-12) moved GMS weekly content to Thursday 00:00 UTC, and a Korean wiki describes Erda Spectrum as resetting Thursday. Nothing could be read from Nexon's own patch notes, whose pages do not render for a plain fetch. **If the day is Thursday, a weekly-only estimate can be several days out.** Brian is checking in game (`docs/data-check/resets.csv`); do not change `advanceDayCount` until he has.
+- **The weekly resets Thursday 00:00 UTC in GMS**, confirmed in game by Brian on 2026-09-22. GMS moved it off Monday in v.264 (2025-11-12); Korea, Japan and Southeast Asia still reset weekly quests on Monday in their own time zones (§5), which matters only if the site ever shows their numbers. `WEEKLY_RESET_DAY` in `src/lib/utils.ts` holds the day.
 
 ## 4. Grand Sacred symbols (in 2.0, not yet modelled)
 
@@ -121,3 +121,4 @@ One row per check against the game or a source. Newest last.
 | 2026-09-22 | Daily and weekly rates, against the official GMS v.271 patch notes (2026-09-09) | nexon.com/maplestory/news/update/44597                                    | Claude | **Ours were stale.** Arcane daily 20 to 40, arcane weekly 40 to 80 per clear, sacred 20/10 to 30/15, grand 10 to 15. Applied to the data and the tests on v2 (KI-014). Not yet confirmed in game.                          |
 | 2026-09-22 | KMS, JMS, TMS, CMS and MSEA: rosters, tables, rates, names, resets              | Official Nexon KR/JP, beanfun, maplesea, 17173, namu.wiki, orangemushroom | Claude | Structurally identical everywhere; only the rates (by patch date) and the names differ, and JMS is still on the old rates. Recorded in §5 and in `docs/data-check/`.                                                       |
 | 2026-09-22 | Grand Sacred (Tallahart, Geardock): levels, costs, dailies, stats               | maplestorywiki.net                                                        | Claude | Collected into `docs/data-check/grand-sacred.csv`; wiki-sourced, unconfirmed in game. Meso figures re-derived from the wiki cost formula and agree.                                                                        |
+| 2026-09-22 | The weekly quest reset day                                                      | Brian, in game                                                            | Brian  | **Thursday 00:00 UTC**, not Monday. The day count now credits the weekly on Thursday and the tests were recomputed.                                                                                                        |
