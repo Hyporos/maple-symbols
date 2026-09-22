@@ -4,6 +4,9 @@ name: Game data check
 # watched for it (KI-014). This compares our numbers with the MapleStory Wiki every
 # Monday and opens an issue when they disagree. It never edits the data itself:
 # a patch can describe another region or a temporary event bonus, so a person decides.
+#
+# NOTE: GitHub only runs scheduled workflows from the default branch, so the Monday run
+# starts once this file reaches `main`. Until then use `pnpm check:data` or Run workflow.
 
 on:
   schedule:
