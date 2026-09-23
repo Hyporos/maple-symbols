@@ -7,6 +7,7 @@ export const handbook = {
     cost: { label: "強化費用表", mobileLabel: "費用" },
     ratio: { label: "ダメージ比率表", mobileLabel: "ダメージ" },
   },
+  regionName: { arcane: "{arcaneRegion}", sacred: "{sacredRegion}" },
   symbolsHeading: { arcane: "{arcaneSymbols}", sacred: "{sacredSymbols}" },
   power: { arcane: "{arcanePower}", sacred: "{sacredPower}" },
   currentLevelAlt: "{symbol}：現在のレベル",

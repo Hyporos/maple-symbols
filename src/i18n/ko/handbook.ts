@@ -7,6 +7,7 @@ export const handbook = {
     cost: { label: "강화 비용 표", mobileLabel: "강화 비용" },
     ratio: { label: "데미지 비율 표", mobileLabel: "데미지" },
   },
+  regionName: { arcane: "{arcaneRegion}", sacred: "{sacredRegion}" },
   symbolsHeading: { arcane: "{arcaneSymbols}", sacred: "{sacredSymbols}" },
   power: { arcane: "{arcanePower}", sacred: "{sacredPower}" },
   currentLevelAlt: "{symbol}: 현재 레벨",

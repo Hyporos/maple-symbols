@@ -8,9 +8,6 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useMessages } from "../../i18n";
 import Message from "../../i18n/Message";
 
-// Region names are game names, kept out of the catalogue with the other symbols.json names.
-const REGION = { arcane: "Arcane River", sacred: "Grandis" } as const;
-
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The RatioTable component displays Damage Dealt and Damage Taken values, based on current power.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -34,7 +31,7 @@ const RatioTable = () => {
               className="scale-110"
             />
             <div className="h-full w-px bg-white/10"></div>
-            <h1 className="text-lg font-semibold md:text-2xl">{REGION[mode]}</h1>
+            <h1 className="text-lg font-semibold md:text-2xl">{m.regionName[mode]}</h1>
           </div>
 
           <Tooltip placement="left">
@@ -47,7 +44,7 @@ const RatioTable = () => {
             <TooltipContent className="tooltip">
               <Message
                 text={m.ratioTooltip}
-                values={{ region: REGION[mode], power: m.power[mode] }}
+                values={{ region: m.regionName[mode], power: m.power[mode] }}
               />
             </TooltipContent>
           </Tooltip>

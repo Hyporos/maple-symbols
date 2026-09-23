@@ -8,6 +8,7 @@ export const handbook: Messages["handbook"] = {
     cost: { label: "楓幣費用表", mobileLabel: "費用表" },
     ratio: { label: "傷害比例表", mobileLabel: "傷害表" },
   },
+  regionName: { arcane: "{arcaneRegion}", sacred: "{sacredRegion}" },
   symbolsHeading: { arcane: "{arcaneSymbols}", sacred: "{sacredSymbols}" },
   power: { arcane: "{arcanePower}", sacred: "{sacredPower}" },
   currentLevelAlt: "{symbol}：目前等級",

@@ -5,6 +5,7 @@ export const handbook = {
     cost: { label: "Meso Cost Table", mobileLabel: "Cost Table" },
     ratio: { label: "Damage Ratio Table", mobileLabel: "Dmg Table" },
   },
+  regionName: { arcane: "{arcaneRegion}", sacred: "{sacredRegion}" },
   symbolsHeading: { arcane: "{arcaneSymbols}", sacred: "{sacredSymbols}" },
   power: { arcane: "{arcanePower}", sacred: "{sacredPower}" },
   currentLevelAlt: "{symbol}: current level",

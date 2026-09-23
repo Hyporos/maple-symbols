@@ -57,6 +57,9 @@ export interface Terms {
   /** Class names. */
   demonAvenger: string;
   xenon: string;
+  /** The two continents the symbol families belong to (the Damage Ratio tab). */
+  arcaneRegion: string;
+  sacredRegion: string;
 }
 
 /**
@@ -104,6 +107,8 @@ export const TERMS: Readonly<
     regularServer: "Regular Server",
     demonAvenger: "Demon Avenger",
     xenon: "Xenon",
+    arcaneRegion: "Arcane River",
+    sacredRegion: "Grandis",
   },
   // MSEA English. Source: maplesea.com patch notes v251 (2026-06-03) and v252 Jupiter
   // (2026-07-20), which name "Authentic Symbol", "Authentic Force", "Arcane Force" and
@@ -128,6 +133,9 @@ export const TERMS: Readonly<
     regularServer: "Regular Server", // UNCONFIRMED (GMS wording)
     demonAvenger: "Demon Avenger", // UNCONFIRMED (GMS wording)
     xenon: "Xenon", // UNCONFIRMED (GMS wording)
+    // maplesea.com v253 Content Updates (2026-08-18): "certain Arcane River and Grandis area quests".
+    arcaneRegion: "Arcane River",
+    sacredRegion: "Grandis",
   },
   // KMS Korean (checked 2026-09-23). Sources, all maplestory.nexon.com:
   //   [G396] Guide/N23GameInformation/Articles/396 ("[스탯] 아케인포스/어센틱포스"):
@@ -166,6 +174,9 @@ export const TERMS: Readonly<
     regularServer: "일반 월드", // U677; U710 says the catalyst is not sold in 리부트 월드
     demonAvenger: "데몬 어벤져", // JOB
     xenon: "제논", // JOB
+    // news/update/806 (1.2.416, 2026-06-18): "■ 아케인리버, 그란디스 지역의 일일 퀘스트 완료에…".
+    arcaneRegion: "아케인리버",
+    sacredRegion: "그란디스",
   },
   // JMS Japanese, all from maplestory.nexon.co.jp. Japanese has no plural or article, so the
   // plural and "a…" forms repeat the bare word. Sources, each quoting the term itself:
@@ -202,6 +213,9 @@ export const TERMS: Readonly<
     regularServer: "一般ワールド", // [5]
     demonAvenger: "デーモンアヴェンジャー", // [1]
     xenon: "ゼノン", // [1]
+    // ver4.43 part 1 (2026-07-02): "以下の「アーケインリバー」および「グランディス」地域において".
+    arcaneRegion: "アーケインリバー",
+    sacredRegion: "グランディス",
   },
   // TMS Traditional Chinese (checked 2026-09-23). Sources, official beanfun notices at
   // https://maplestory-event.beanfun.com/eventad/eventad?eventadid=<id>:
@@ -238,6 +252,9 @@ export const TERMS: Readonly<
     regularServer: "一般伺服器",
     demonAvenger: "惡魔復仇者",
     xenon: "傑諾",
+    // beanfun eventadid 17655 (CROWN, 2026-06-24): "以下奧術之河、格蘭蒂斯地區的部分狩獵場".
+    arcaneRegion: "奧術之河",
+    sacredRegion: "格蘭蒂斯",
   },
   // CMS Simplified Chinese (checked 2026-09-23). Sources, all on the official site mxd.web.sdo.com
   // (its guide wiki 次元站 and its notices; the version pages are images, so not quoted):
@@ -271,6 +288,9 @@ export const TERMS: Readonly<
     regularServer: "普通世界", // [D] (the world type; whether CMS limits the Catalyst to it is not sourced)
     demonAvenger: "恶魔复仇者", // [E]
     xenon: "尖兵", // [E]
+    // mxd.web.sdo.com/wiki ArticleID 388900 (2026-05-27): "在神秘河（神秘之力）与格兰蒂斯（原初之力）地区".
+    arcaneRegion: "神秘河",
+    sacredRegion: "格兰蒂斯",
   },
 };
 
