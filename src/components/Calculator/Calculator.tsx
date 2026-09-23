@@ -17,17 +17,19 @@ import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
 import { track, trackOnce } from "../../lib/analytics";
-import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
-import { DEFAULT_REGION, REGION_PROFILES } from "../../lib/regions";
+import { MAIN_STAT_PER_LEVEL, maxLevelFor } from "../../lib/game";
+import {
+  gameToday,
+  isPublished,
+  mesosKind,
+  REGION_PROFILES,
+  weeklySymbolsFor,
+} from "../../lib/regions";
+import { editionOf } from "../../lib/routes";
 import { formatNumber } from "../../lib/format";
 import { useLocale, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
-
-// Class-specific stat gains per symbol level, shown in the main stat tooltip; they differ
-// by server (KMS raised Xenon's in 1.2.419), so they live in regions.json.
-const { demonAvengerHp: DEMON_AVENGER_HP, xenonAllStat: XENON_ALL_STAT } =
-  REGION_PROFILES[DEFAULT_REGION].classGains;
 
 const Calculator = () => {
   /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */
@@ -39,6 +41,10 @@ const Calculator = () => {
   const setSymbols = useAppStore((s) => s.setSymbols);
   const selectedId = useAppStore((s) => s.selectedId);
   const mode = useAppStore((s) => s.mode);
+  const region = useAppStore((s) => s.region);
+  // Class-specific stat gains per symbol level, shown in the main stat tooltip; they differ
+  // by server (KMS raised Xenon's in 1.2.419), so they come from the server's profile.
+  const { demonAvengerHp, xenonAllStat } = REGION_PROFILES[region].classGains;
 
   const { isMobile } = useBreakpoint();
 
@@ -58,12 +64,14 @@ const Calculator = () => {
       return calculateDaysRemaining(
         nextExperience - currentSymbol.experience,
         dailySymbols,
-        !!currentSymbol.weekly
+        !!currentSymbol.weekly,
+        gameToday(region),
+        region
       );
     } catch {
       return NaN;
     }
-  }, [nextExperience, currentSymbol.experience, dailySymbols, currentSymbol.weekly]);
+  }, [nextExperience, currentSymbol.experience, dailySymbols, currentSymbol.weekly, region]);
 
   // Derived overflow state (cap unlocked): the levels the stored experience would buy and
   // the leftover. useMemo avoids the extra render cycle from a useState+useEffect pair.
@@ -348,7 +356,7 @@ const Calculator = () => {
               <p>
                 <Message
                   text={m.symbolsPerWeek}
-                  values={{ count: currentSymbol.weekly ? WEEKLY_SYMBOLS : 0 }}
+                  values={{ count: currentSymbol.weekly ? weeklySymbolsFor(region) : 0 }}
                 />
               </p>
             )}
@@ -446,12 +454,19 @@ const Calculator = () => {
                 )}
 
                 <p className="pt-2.5 md:pt-8">
-                  <Message
-                    text={m.mesosRequired}
-                    values={{
-                      mesos: formatNumber(currentSymbol.mesosRequired[currentSymbol.level]),
-                    }}
-                  />
+                  {isPublished(region, mesosKind(currentSymbol.type)) ? (
+                    <Message
+                      text={m.mesosRequired}
+                      values={{
+                        mesos: formatNumber(currentSymbol.mesosRequired[currentSymbol.level]),
+                      }}
+                    />
+                  ) : (
+                    <Message
+                      text={m.mesosUnpublished}
+                      values={{ server: editionOf(region).name }}
+                    />
+                  )}
                 </p>
 
                 <div className="flex justify-center gap-1.5 pt-2.5 md:pt-8">
@@ -467,10 +482,10 @@ const Calculator = () => {
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
                       <div>
-                        <Message text={m.demonAvengerHp} values={{ hp: DEMON_AVENGER_HP[mode] }} />
+                        <Message text={m.demonAvengerHp} values={{ hp: demonAvengerHp[mode] }} />
                       </div>
                       <div>
-                        <Message text={m.xenonAllStat} values={{ stat: XENON_ALL_STAT[mode] }} />
+                        <Message text={m.xenonAllStat} values={{ stat: xenonAllStat[mode] }} />
                       </div>
                     </TooltipContent>
                   </Tooltip>

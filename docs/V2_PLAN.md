@@ -14,6 +14,7 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 
 ## Progress on `v2`
 
+- **Regions, phase 3** (2026-09-22): six editions (`/`, `/msea`, `/kms`, `/jms`, `/tms`, `/cms`) with prebuilt per-page HTML, hreflang, a sitemap index, `cleanUrls`, the header server menu (site version + "Numbers from"), and the cards on the shown server's data. Untranslated editions are English and `noindex` until their catalogues exist. **User-visible** once released: the server menu and the new URLs.
 - **Regions, phase 2** (2026-09-22): one save per server, `STORAGE_VERSION` 4 (older saves become the GMS save, nothing wiped), `region`/`regionOverride`/`saves`/`setRegion` in the store. No UI yet.
 - **Regions, phase 1** (2026-09-22): per-server profiles in `src/lib/regions.json` and `src/lib/regions.ts`, `createInitialSymbols(region)`, the server game clock for every day count and date (KI-013 resolved). **User-visible**: dates follow the server's reset (00:00 UTC for GMS), which needs a 2.0 changelog line. Design and the rest of the phases: `docs/REGIONS.md`.
 - **Identity by id/type** (2026-09-16): `mode: SymbolType`, `selectedId`, `lastSelected`, `selectSymbol`/`setMode`, `useSelectedSymbol()`, `updateSymbol(symbols, id, patch)`, `maxLevelFor(type)`, `isMaxLevel(level, type)`, `usePower(symbols, type)`, `buildDateSymbols(symbols, type)`. No array-index lookups remain; the Selector effect that restored selection is gone. KI-006 resolved.

@@ -169,6 +169,8 @@ Its copy goes in the catalogue (`bonus: "Bonus"`, `bonusTooltip: "<b>[Bonus Ques
 
 **Icons**: `react-icons`, always imported from the pack subpath (`react-icons/fa6`, `hi`, `hi2`, `md`, `io`, `fi`, `tb`). Filled packs (fa6, md, io) recolour with `fill-*` / `hover:fill-white`; outline packs (hi, hi2, fi) with `stroke-*` / `hover:stroke-white`. Sizes branch in JS on `isMobile` (e.g. `FaArrowRight` 20/15, question icon 30/27.5, `FaGithub` 18/16) except social icons, which size via classes: `h-[22px] w-[22px] md:h-[26px] md:w-[26px]` in the Footer, `h-3.5 w-3.5 md:h-4 md:w-4` in CreditText. Symbol images are `/symbols/*.webp` at `width={40}` (Selector desktop) / 35 (phone) / 33 (Calculator title).
 
+**Header menu** (`src/components/ServerMenu.tsx`, 2026-09-22): the trigger keeps the old language button's recipe (`h-[40px] min-w-[80px] bg-dark`, globe icon, dropped on phones); the panel is the tooltip look as a popover, `absolute right-0 z-50 mt-2 w-[230px] rounded-lg bg-[#111111] p-3 text-sm shadow-input`, with `text-xs text-tertiary` section labels, `rounded-lg px-2 py-1 hover:bg-light` rows (the current one `bg-light text-white`), a `h-px bg-white/10` divider and a native `<select>` (`rounded-lg bg-dark`). It closes on Escape and on a click outside.
+
 ## 7. Responsive rules
 
 - Two systems, kept in sync by hand: Tailwind `md:` (≥768 px) for **styling**; `useBreakpoint()` → `isMobile` (≤767 px) / `isTablet` (≤1149 px) for **different markup, prop values, assets, or copy** (icon `size`, `<img width>`, Recharts config, `logo-sm` vs `logo-lg`, `mobileLabel`, tooltip `placement`). JS-branched elements are absent on the other breakpoint; `md:hidden` ones remain in the DOM (matters for tests).

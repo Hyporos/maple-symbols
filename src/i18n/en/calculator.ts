@@ -31,6 +31,7 @@ export const calculator = {
   },
   unknownRemaining: "<b>Unknown</b> symbols remaining",
   mesosRequired: "<b>{mesos}</b> mesos required",
+  mesosUnpublished: "Meso cost not published yet for <b>{server}</b>",
   mainStat: "<b>+{stat}</b> main stat",
   demonAvengerHp: "<b>+{hp}</b> HP (Demon Avenger)",
   xenonAllStat: "<b>+{stat}</b> All Stat (Xenon)",

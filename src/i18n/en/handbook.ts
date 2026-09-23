@@ -14,6 +14,7 @@ export const handbook = {
   totalExperience: "Total Experience",
   totalSymbols: "Total Symbols",
   mesosRequired: "Mesos Required",
+  costsUnpublished: "Meso costs are not published yet for <b>{server}</b>.",
   totalCost: "Total Cost",
   damageDealt: "Damage Dealt",
   damageTaken: "Damage Taken",

@@ -1,23 +1,26 @@
 import { useState } from "react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "./Tooltip";
-import { FaEarthAmericas } from "react-icons/fa6";
 import { HiOutlineMenu } from "react-icons/hi";
+import ServerMenu from "./ServerMenu";
 import { cn } from "../lib/utils";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import { useRouter } from "../contexts/RouterContext";
-import { NAV } from "../lib/routes";
+import { useEdition } from "../hooks/useEdition";
+import { hrefFor, NAV } from "../lib/routes";
 import { useMessages } from "../i18n";
-import Message from "../i18n/Message";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-// * The Header component is the top most component of the page which includes navigation and language buttons.
+// * The Header component is the top most component of the page which includes navigation and the server menu.
+// * Links stay inside the current edition (/kms/handbook on KMS); the server menu moves between editions.
 // * On mobile devices, you can click the menu button on the top right to view all available options.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Header = () => {
   const m = useMessages().shell;
   const { isMobile, isTablet } = useBreakpoint();
-  const { path: pathname, navigate } = useRouter();
+  const { navigate } = useRouter();
+  const { edition, path: pathname } = useEdition();
+  const home = hrefFor("/", edition);
+  const hrefOf = (page: (typeof NAV)[number]) => hrefFor(page.path, edition);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -40,7 +43,7 @@ const Header = () => {
         <div className="mx-auto my-2.5 flex w-full max-w-[1125px] items-center justify-between md:my-auto">
           <div className={cn(!isTablet && "w-1/3")}>
             {!isMobile ? (
-              <a href="/" aria-label={m.goToCalculator} onClick={(e) => handleNav(e, "/")}>
+              <a href={home} aria-label={m.goToCalculator} onClick={(e) => handleNav(e, home)}>
                 <img
                   src="/main/logo-lg.webp"
                   alt="Maple Symbols"
@@ -50,7 +53,7 @@ const Header = () => {
                 />
               </a>
             ) : (
-              <a href="/" aria-label={m.goToCalculator} onClick={(e) => handleNav(e, "/")}>
+              <a href={home} aria-label={m.goToCalculator} onClick={(e) => handleNav(e, home)}>
                 <img
                   src="/main/logo-sm.webp"
                   alt="Maple Symbols"
@@ -69,8 +72,8 @@ const Header = () => {
                   {NAV.map((page) => (
                     <a
                       key={page.path}
-                      href={page.path}
-                      onClick={(e) => handleNav(e, page.path)}
+                      href={hrefOf(page)}
+                      onClick={(e) => handleNav(e, hrefOf(page))}
                       className={cn(
                         "transition-all hover:text-white",
                         isActive(page) && "text-white"
@@ -94,24 +97,8 @@ const Header = () => {
 
               <div className={cn("h-[40px] w-px bg-white/10", isMobile && "hidden")}></div>
 
-              <div className={cn("flex justify-end", isMobile && "hidden")}>
-                <Tooltip placement="bottom">
-                  <TooltipTrigger asChild={true}>
-                    <button
-                      aria-label={m.languageSelector}
-                      className={cn(
-                        "group flex h-[40px] w-[80px] cursor-default items-center justify-center gap-3 bg-dark",
-                        isMobile && "h-[45px] w-[45px]"
-                      )}
-                    >
-                      {!isMobile && <FaEarthAmericas size={23} className="fill-basic/75" />}
-                      <p>EN</p>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent className="tooltip">
-                    <Message text={m.comingSoon} />
-                  </TooltipContent>
-                </Tooltip>
+              <div className="flex justify-end">
+                <ServerMenu compact={isMobile} />
               </div>
             </div>
           ) : (
@@ -120,8 +107,8 @@ const Header = () => {
                 {NAV.map((page) => (
                   <a
                     key={page.path}
-                    href={page.path}
-                    onClick={(e) => handleNav(e, page.path)}
+                    href={hrefOf(page)}
+                    onClick={(e) => handleNav(e, hrefOf(page))}
                     className={cn(
                       "transition-all hover:text-white",
                       isActive(page) && "text-white"
@@ -133,20 +120,7 @@ const Header = () => {
               </nav>
 
               <div className="flex w-1/3 justify-end">
-                <Tooltip placement="bottom">
-                  <TooltipTrigger asChild={true}>
-                    <button
-                      aria-label={m.languageSelector}
-                      className="group flex h-[40px] w-[80px] cursor-default items-center justify-center gap-3 bg-dark"
-                    >
-                      <FaEarthAmericas size={23} className="fill-basic/75" />
-                      <p>EN</p>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent className="tooltip">
-                    <Message text={m.comingSoon} />
-                  </TooltipContent>
-                </Tooltip>
+                <ServerMenu />
               </div>
             </>
           )}
@@ -158,10 +132,10 @@ const Header = () => {
               {NAV.map((page) => (
                 <a
                   key={page.path}
-                  href={page.path}
+                  href={hrefOf(page)}
                   className={cn("transition-all hover:text-white", isActive(page) && "text-white")}
                   onClick={(e) => {
-                    handleNav(e, page.path);
+                    handleNav(e, hrefOf(page));
                     setMenuOpen(false);
                   }}
                 >

@@ -14,6 +14,7 @@
 // ---------------------------------------------------------------------------
 
 import { pages } from "../i18n/en/pages";
+import type { Region } from "./regions";
 
 export const SITE_URL = "https://maplesymbols.com";
 export const SITE_NAME = "Maple Symbols";
@@ -26,6 +27,111 @@ export const SITE_NAME = "Maple Symbols";
  * `"lang"` is a literal that `src/test/seo.test.tsx` holds equal to this value.
  */
 export const DEFAULT_LOCALE = "en";
+
+/**
+ * The languages that have a complete interface catalogue in src/i18n. `LOCALES` in
+ * src/i18n/index.ts is this list, so a language counts here only once its catalogue
+ * exists. An edition in another language falls back to English and is kept out of
+ * search (noindex, no hreflang, no sitemap) until its catalogue lands.
+ */
+export const CATALOGUE_LANGUAGES = ["en"] as const;
+
+// ---------------------------------------------------------------------------
+// Editions: one indexable site per server (docs/REGIONS.md §2, D-2 to D-4)
+// ---------------------------------------------------------------------------
+
+/** One site version: its server's numbers, in its language, at its own URL prefix. */
+export interface Edition {
+  /** The server; also the edition's id. */
+  region: Region;
+  /** Path prefix ("" for GMS at the root). Server codes, lowercase (D-3). */
+  prefix: "" | `/${string}`;
+  /** Short server name as players write it. */
+  name: string;
+  /** The BCP-47 tag of the edition's language. */
+  language: string;
+  /** The language's name in itself, for the site-version menu. */
+  languageName: string;
+  /** hreflang values for this edition's pages; GMS also takes x-default. */
+  hreflang: readonly string[];
+}
+
+export const EDITIONS: readonly Edition[] = [
+  {
+    region: "gms",
+    prefix: "",
+    name: "GMS",
+    language: "en",
+    languageName: "English",
+    hreflang: ["en", "x-default"],
+  },
+  {
+    region: "msea",
+    prefix: "/msea",
+    name: "MSEA",
+    language: "en",
+    languageName: "English",
+    hreflang: ["en-SG", "en-MY", "en-PH", "en-TH"],
+  },
+  {
+    region: "kms",
+    prefix: "/kms",
+    name: "KMS",
+    language: "ko",
+    languageName: "한국어",
+    hreflang: ["ko"],
+  },
+  {
+    region: "jms",
+    prefix: "/jms",
+    name: "JMS",
+    language: "ja",
+    languageName: "日本語",
+    hreflang: ["ja"],
+  },
+  {
+    region: "tms",
+    prefix: "/tms",
+    name: "TMS",
+    language: "zh-Hant",
+    languageName: "繁體中文",
+    hreflang: ["zh-Hant", "zh-TW", "zh-HK", "zh-MO"],
+  },
+  {
+    region: "cms",
+    prefix: "/cms",
+    name: "CMS",
+    language: "zh-Hans",
+    languageName: "简体中文",
+    hreflang: ["zh-Hans", "zh-CN"],
+  },
+];
+
+export const DEFAULT_EDITION: Edition = EDITIONS[0];
+
+/** The edition of a server (every server has exactly one). */
+export const editionOf = (region: Region): Edition =>
+  EDITIONS.find((e) => e.region === region) ?? DEFAULT_EDITION;
+
+/** Whether the edition's language has its catalogue; until then it is noindex. */
+export const isIndexable = (edition: Edition): boolean =>
+  (CATALOGUE_LANGUAGES as readonly string[]).includes(edition.language);
+
+/** The language the edition is actually served in: its own once translated, else English. */
+export const servedLocale = (edition: Edition): string =>
+  isIndexable(edition) ? edition.language : DEFAULT_LOCALE;
+
+/** Split a pathname into its edition and the page path inside it ("/kms/handbook" → kms, "/handbook"). */
+export function splitPath(pathname: string): { edition: Edition; rest: string } {
+  const clean = pathname.replace(/\/+$/, "") || "/";
+  const first = "/" + (clean.split("/")[1] ?? "");
+  const edition = EDITIONS.find((e) => e.prefix !== "" && e.prefix === first) ?? DEFAULT_EDITION;
+  const rest = edition.prefix ? clean.slice(edition.prefix.length) || "/" : clean;
+  return { edition, rest };
+}
+
+/** The edition a pathname belongs to. */
+export const editionFor = (pathname: string): Edition => splitPath(pathname).edition;
 
 /**
  * BCP-47 tag → Open Graph `og:locale` (`language_TERRITORY`). An explicit table, not
@@ -101,13 +207,37 @@ export const NAV = ROUTES.flatMap((r) =>
   r.nav ? [{ path: r.path, label: r.nav.label, activeFor: r.nav.activeFor ?? [] }] : []
 );
 
-/** Canonical URL for a path (the root keeps its trailing slash). */
-export const urlFor = (path: RoutePath): string =>
-  path === "/" ? `${SITE_URL}/` : `${SITE_URL}${path}`;
+/** The site path of a page in an edition: "/" and "/handbook" for GMS, "/kms" and "/kms/handbook". */
+export const hrefFor = (path: RoutePath, edition: Edition = DEFAULT_EDITION): string =>
+  edition.prefix + (path === "/" ? "" : path) || "/";
 
-/** The route for a pathname; unknown paths fall through to the calculator ("/"). */
-export const routeFor = (pathname: string): Route =>
-  ROUTES.find((r) => r.path === pathname) ?? ROUTES[0];
+/**
+ * Canonical URL for a page in an edition. The site root keeps its trailing slash; every
+ * other URL has none, matching vercel.json's `trailingSlash: false` (SEO-2).
+ */
+export const urlFor = (path: RoutePath, edition: Edition = DEFAULT_EDITION): string => {
+  const href = hrefFor(path, edition);
+  return href === "/" ? `${SITE_URL}/` : `${SITE_URL}${href}`;
+};
+
+/** The route for a pathname, with or without an edition prefix; unknown paths fall through to the calculator ("/"). */
+export const routeFor = (pathname: string): Route => {
+  const { rest } = splitPath(pathname);
+  return ROUTES.find((r) => r.path === rest) ?? ROUTES[0];
+};
+
+/** Whether a pathname names a real page (after its edition prefix). */
+export const isKnownPath = (pathname: string): boolean => {
+  const { rest } = splitPath(pathname);
+  return ROUTES.some((r) => r.path === rest);
+};
+
+/** The hreflang alternates of a page: every indexable edition's URL, one entry per hreflang value. */
+export function alternatesFor(path: RoutePath): { hreflang: string; href: string }[] {
+  return EDITIONS.filter(isIndexable).flatMap((edition) =>
+    edition.hreflang.map((hreflang) => ({ hreflang, href: urlFor(path, edition) }))
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Generators used by the Vite plugin (and by src/test/seo.test.tsx)
@@ -119,11 +249,18 @@ export interface PageMeta {
   url: string;
 }
 
-/** Path → title/description/url, the shape index.html's bootstrap script reads. */
-export function pageMap(): Record<RoutePath, PageMeta> {
-  const map = {} as Record<RoutePath, PageMeta>;
+/**
+ * Site path → title/description/url for one edition's pages, the shape index.html's
+ * bootstrap script reads (keyed by the full path, prefix included).
+ */
+export function pageMap(edition: Edition = DEFAULT_EDITION): Record<string, PageMeta> {
+  const map: Record<string, PageMeta> = {};
   for (const r of ROUTES) {
-    map[r.path] = { title: r.title, description: r.description, url: urlFor(r.path) };
+    map[hrefFor(r.path, edition)] = {
+      title: r.title,
+      description: r.description,
+      url: urlFor(r.path, edition),
+    };
   }
   return map;
 }
@@ -131,22 +268,38 @@ export function pageMap(): Record<RoutePath, PageMeta> {
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+/** The alternate-language links (or, for an untranslated edition, a noindex) for a page's head. */
+export function headLinks(path: RoutePath, edition: Edition = DEFAULT_EDITION): string {
+  if (!isIndexable(edition)) return '<meta name="robots" content="noindex" />';
+  return alternatesFor(path)
+    .map((a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${a.href}" />`)
+    .join("\n    ");
+}
+
 /**
- * Fill the `__PLACEHOLDER__` tokens in index.html: the root page's static tags and the
- * `pageMap` the inline bootstrap script uses before React loads. Throws on an unknown token.
+ * Fill the `__PLACEHOLDER__` tokens in index.html for one page of one edition: its static
+ * tags, its hreflang links, and the `pageMap` the inline bootstrap script uses before React
+ * loads (for URLs that fall back to this file). The build writes one filled file per page
+ * and edition (vite.config.ts). Throws on an unknown token.
  */
-export function applyToIndexHtml(html: string): string {
-  const root = routeFor("/");
+export function applyToIndexHtml(
+  html: string,
+  edition: Edition = DEFAULT_EDITION,
+  path: RoutePath = "/"
+): string {
+  const page = routeFor(path);
+  const locale = servedLocale(edition);
   const values: Record<string, string> = {
-    __LOCALE__: DEFAULT_LOCALE,
-    __OG_LOCALE__: ogLocaleFor(DEFAULT_LOCALE),
-    __ROOT_TITLE__: escapeHtml(root.title),
-    __ROOT_DESCRIPTION__: escapeHtml(root.description),
-    __ROOT_URL__: urlFor("/"),
+    __LOCALE__: locale,
+    __OG_LOCALE__: ogLocaleFor(locale),
+    __ROOT_TITLE__: escapeHtml(page.title),
+    __ROOT_DESCRIPTION__: escapeHtml(page.description),
+    __ROOT_URL__: urlFor(page.path, edition),
+    __HEAD_LINKS__: headLinks(page.path, edition),
     __OG_IMAGE__: OG_IMAGE.url,
     __OG_IMAGE_ALT__: escapeHtml(OG_IMAGE.alt),
     // Inside a <script>; "</" must not terminate it.
-    __PAGE_MAP__: JSON.stringify(pageMap()).replace(/</g, "\\u003c"),
+    __PAGE_MAP__: JSON.stringify(pageMap(edition)).replace(/</g, "\\u003c"),
   };
   return html.replace(/__[A-Z_]+__/g, (token) => {
     const value = values[token];
@@ -155,11 +308,34 @@ export function applyToIndexHtml(html: string): string {
   });
 }
 
-/** The sitemap served at /sitemap.xml (robots.txt points at it). */
-export function sitemapXml(): string {
+/** The editions that get a sitemap (and hreflang): the translated ones. */
+export const sitemapEditions = (): Edition[] => EDITIONS.filter(isIndexable);
+
+/** Where an edition's sitemap is served, e.g. /sitemaps/gms.xml. */
+export const sitemapPath = (edition: Edition): string => `/sitemaps/${edition.region}.xml`;
+
+/** The sitemap index served at /sitemap.xml (robots.txt points at it), one entry per edition. */
+export function sitemapIndexXml(): string {
+  const entries = sitemapEditions().map(
+    (e) => `  <sitemap>
+    <loc>${SITE_URL}${sitemapPath(e)}</loc>
+  </sitemap>`
+  );
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.join("\n")}
+</sitemapindex>
+`;
+}
+
+/** One edition's sitemap, each URL with its hreflang alternates (Google reads them here too). */
+export function sitemapXml(edition: Edition = DEFAULT_EDITION): string {
   const entries = ROUTES.map(
     (r) => `  <url>
-    <loc>${urlFor(r.path)}</loc>
+    <loc>${urlFor(r.path, edition)}</loc>
+${alternatesFor(r.path)
+  .map((a) => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}" />`)
+  .join("\n")}
     <lastmod>${r.sitemap.lastmod}</lastmod>
     <changefreq>${r.sitemap.changefreq}</changefreq>
     <priority>${r.sitemap.priority.toFixed(1)}</priority>
@@ -167,6 +343,7 @@ export function sitemapXml(): string {
   );
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">

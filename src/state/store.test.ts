@@ -153,3 +153,32 @@ describe("setRegion: one save per server (REGIONS D-7)", () => {
     expect(state.saves.gms?.[0].level).toBe(2);
   });
 });
+
+describe("the page's edition decides the server (REGIONS D-2)", () => {
+  it("shows the edition's own server unless the player chose another", async () => {
+    window.history.replaceState(null, "", "/kms/handbook");
+    window.localStorage.setItem(
+      KEY,
+      JSON.stringify({
+        state: { saves: { kms: [{ id: 1, level: 4 }] }, regionOverride: null },
+        version: 4,
+      })
+    );
+
+    await useAppStore.persist.rehydrate();
+
+    const state = useAppStore.getState();
+    expect(state.region).toBe("kms");
+    expect(state.symbols[0].level).toBe(4);
+    expect(state.symbols[0].mesosRequired[1]).toBe(670000);
+  });
+
+  it("clears the choice when the player picks the page's own server", () => {
+    window.history.replaceState(null, "", "/kms");
+    const { setRegion } = useAppStore.getState();
+    setRegion("gms");
+    expect(useAppStore.getState().regionOverride).toBe("gms");
+    setRegion("kms");
+    expect(useAppStore.getState()).toMatchObject({ region: "kms", regionOverride: null });
+  });
+});

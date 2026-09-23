@@ -33,7 +33,11 @@ import {
   type SavedState,
   type SavedSymbol,
 } from "../lib/persistence";
-import { DEFAULT_REGION, type Region } from "../lib/regions";
+import { type Region } from "../lib/regions";
+import { editionFor } from "../lib/routes";
+
+/** The server of the site version being viewed (its URL prefix); GMS at the root. */
+const pageRegion = (): Region => editionFor(window.location.pathname).region;
 import type { SymbolData, SymbolType } from "../lib/types";
 
 const STORAGE_VERSION = 4;
@@ -53,13 +57,17 @@ interface AppStore {
   setSymbols: (symbols: SymbolData[]) => void;
 
   // ── Server ────────────────────────────────────────────────────────────────
-  /** The server whose numbers are shown: the player's choice, else the default. */
+  /** The server whose numbers are shown: the player's choice, else the page's edition. */
   region: Region;
   /** The server the player picked, or null to follow the page's default (REGIONS D-2). */
   regionOverride: Region | null;
   /** Saved progress per server; the shown server's entry is refreshed on every write. */
   saves: Partial<Record<Region, SavedSymbol[]>>;
-  /** Show another server: keep this server's progress, load that server's data and save. */
+  /**
+   * Show another server's numbers (the header's "Numbers from"): keep this server's
+   * progress, load that server's data and save. Choosing the page's own server clears the
+   * choice, so other site versions go back to their own numbers.
+   */
   setRegion: (region: Region) => void;
 
   // ── Selection (by id) ─────────────────────────────────────────────────────
@@ -76,20 +84,21 @@ export const useAppStore = create<AppStore>()(
       mode: "arcane",
       setMode: (mode) => set({ mode, selectedId: get().lastSelected[mode] }),
 
-      symbols: createInitialSymbols(DEFAULT_REGION),
+      symbols: createInitialSymbols(pageRegion()),
       setSymbols: (symbols) => set({ symbols }),
 
-      region: DEFAULT_REGION,
+      region: pageRegion(),
       regionOverride: null,
       saves: {},
       setRegion: (region) => {
         const { region: current, symbols, saves } = get();
-        if (region === current) return set({ regionOverride: region });
+        const regionOverride = region === pageRegion() ? null : region;
+        if (region === current) return set({ regionOverride });
         const kept = { ...saves, [current]: toSaved(symbols) };
         // Symbol ids are the same on every server, so the selection carries over.
         set({
           region,
-          regionOverride: region,
+          regionOverride,
           saves: kept,
           symbols: restoreSymbols(kept[region], createInitialSymbols(region)),
         });
@@ -125,7 +134,7 @@ export const useAppStore = create<AppStore>()(
         const stored = (persisted ?? {}) as { saves?: unknown; regionOverride?: unknown };
         const saves = readSaves(stored.saves);
         const regionOverride = isRegion(stored.regionOverride) ? stored.regionOverride : null;
-        const region = regionOverride ?? DEFAULT_REGION;
+        const region = regionOverride ?? pageRegion();
         const symbols = restoreSymbols(saves[region], createInitialSymbols(region));
         return {
           ...current,

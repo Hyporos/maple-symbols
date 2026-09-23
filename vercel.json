@@ -1,6 +1,7 @@
 {
   "buildCommand": "pnpm build",
   "trailingSlash": false,
+  "cleanUrls": true,
   "outputDirectory": "dist",
   "redirects": [
     {
@@ -20,6 +21,26 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/msea/(.*)",
+      "destination": "/msea.html"
+    },
+    {
+      "source": "/kms/(.*)",
+      "destination": "/kms.html"
+    },
+    {
+      "source": "/jms/(.*)",
+      "destination": "/jms.html"
+    },
+    {
+      "source": "/tms/(.*)",
+      "destination": "/tms.html"
+    },
+    {
+      "source": "/cms/(.*)",
+      "destination": "/cms.html"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

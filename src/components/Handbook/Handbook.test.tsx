@@ -64,6 +64,21 @@ describe("CostTable", () => {
     expect(cells(rows[2])).toEqual(["3", "1,230,000", "2,200,000"]);
   });
 
+  it("hides a server's meso costs when nobody has published them (CMS)", () => {
+    useAppStore.getState().setRegion("cms");
+    render(<CostTable />);
+    expect(screen.getByText(/not published yet for/)).toHaveTextContent(
+      "Meso costs are not published yet for CMS."
+    );
+    for (const row of dataRows()) expect(cells(row).slice(1)).toEqual(["-", "-"]);
+  });
+
+  it("shows KMS's own arcane costs after its 30 % cut", () => {
+    useAppStore.getState().setRegion("kms");
+    render(<CostTable />);
+    expect(cells(dataRows()[1])).toEqual(["2", "670,000", "670,000"]);
+  });
+
   it("follows the selected symbol (Cernium: 11 rows)", () => {
     seedSymbol(7, { level: 2, experience: 0 });
     render(<CostTable />);

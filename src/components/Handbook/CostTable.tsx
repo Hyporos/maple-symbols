@@ -2,7 +2,9 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
 import { formatNumber } from "../../lib/format";
-import { useSelectedSymbol } from "../../state/store";
+import { useAppStore, useSelectedSymbol } from "../../state/store";
+import { isPublished, mesosKind } from "../../lib/regions";
+import { editionOf } from "../../lib/routes";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { interpolate, useLocale, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
@@ -17,6 +19,9 @@ const CostTable = () => {
   const locale = useLocale();
   const { isMobile } = useBreakpoint();
   const symbol = useSelectedSymbol();
+  const region = useAppStore((s) => s.region);
+  // An unpublished table is hidden, never guessed (REGIONS D-6).
+  const published = isPublished(region, mesosKind(symbol.type));
   let totalCost = 0;
 
   return (
@@ -58,6 +63,12 @@ const CostTable = () => {
 
           <div className="mt-4 mb-6 h-px bg-white/10" aria-hidden="true" />
 
+          {!published && (
+            <p className="pb-4 text-center text-sm text-tertiary">
+              <Message text={m.costsUnpublished} values={{ server: editionOf(region).name }} />
+            </p>
+          )}
+
           {/* TABLE */}
           <div className="flex overflow-y-auto">
             <table className="mb-1 w-full md:mr-10">
@@ -97,10 +108,10 @@ const CostTable = () => {
                         </div>
                       </td>
                       <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
-                        {isFirstRow ? "-" : formatNumber(cost)}
+                        {isFirstRow || !published ? "-" : formatNumber(cost)}
                       </td>
                       <td className="border border-white/5 py-[5px] text-center text-xs md:text-sm">
-                        {isFirstRow ? "-" : formatNumber(totalCost)}
+                        {isFirstRow || !published ? "-" : formatNumber(totalCost)}
                       </td>
                     </tr>
                   );

@@ -20,6 +20,7 @@ const Overview = () => {
 
   const symbols = useAppStore((s) => s.symbols);
   const mode = useAppStore((s) => s.mode);
+  const region = useAppStore((s) => s.region);
 
   const { isMobile, isTablet } = useBreakpoint();
   const [targetId, setTargetId] = useState(1); // Vanishing Journey
@@ -42,17 +43,24 @@ const Overview = () => {
 
   const targetDays = useMemo(() => {
     try {
-      return calculateDaysRemaining(targetSymbols, dailySymbols, !!currentSymbol.weekly);
+      return calculateDaysRemaining(
+        targetSymbols,
+        dailySymbols,
+        !!currentSymbol.weekly,
+        gameToday(region),
+        region
+      );
     } catch {
       return NaN;
     }
-  }, [targetSymbols, dailySymbols, currentSymbol.weekly]);
+  }, [targetSymbols, dailySymbols, currentSymbol.weekly, region]);
 
-  const targetDate = gameToday().add(targetDays, "day").format("YYYY-MM-DD");
+  const targetDate = gameToday(region).add(targetDays, "day").format("YYYY-MM-DD");
   const maxLevel = maxLevelFor(mode);
 
   // Row strings (collapsed line and target panel) are pure functions of state; see lib/overview.
-  const rowLabels = symbols.map((symbol) => collapsedRowLabels(symbol, maxLevel, m));
+  const today = gameToday(region);
+  const rowLabels = symbols.map((symbol) => collapsedRowLabels(symbol, maxLevel, m, today, region));
   const panelLabels = symbols.map((symbol) =>
     targetPanelLabels({
       rowLevel: symbol.level,

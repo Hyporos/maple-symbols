@@ -14,7 +14,7 @@ import {
   isValid,
 } from "./utils";
 import { MAX_LEVEL, POWER_PER_LEVEL } from "./game";
-import { gameToday } from "./regions";
+import { DEFAULT_REGION, gameToday, type Region } from "./regions";
 
 export type DateSymbols = {
   name: string;
@@ -44,7 +44,8 @@ export interface GraphSeries {
 export function buildDateSymbols(
   symbols: SymbolData[],
   type: SymbolType,
-  now: Dayjs = gameToday()
+  now: Dayjs = gameToday(),
+  region: Region = DEFAULT_REGION
 ): DateSymbols[] {
   const maxLevel = MAX_LEVEL[type];
   return symbols
@@ -63,7 +64,7 @@ export function buildDateSymbols(
       for (let nextLevel = symbol.level + 1; nextLevel <= maxLevel; nextLevel++) {
         // Absolute symbols needed since today; the threaded state carries the weekly tracking.
         const remaining = getRemainingSymbols(nextLevel, symbol);
-        dayState = advanceDayCount(dayState, remaining, dailySymbols, !!symbol.weekly, now);
+        dayState = advanceDayCount(dayState, remaining, dailySymbols, !!symbol.weekly, now, region);
         progress.push({
           level: nextLevel,
           date: now.add(dayState.days, "day").format("YYYY-MM-DD"),

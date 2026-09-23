@@ -120,6 +120,49 @@ describe("rendering each route writes its metadata into <head>", () => {
   );
 });
 
+describe("an edition's page", () => {
+  it("names its own canonical URL and, while untranslated, keeps out of search", async () => {
+    seedHeadMeta();
+    window.history.replaceState(null, "", "/kms/handbook");
+
+    render(
+      <RouterProvider>
+        <App />
+      </RouterProvider>
+    );
+
+    await waitFor(() => expect(document.title).toBe("Symbol Handbook | Maple Symbols"));
+    expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
+      "https://maplesymbols.com/kms/handbook"
+    );
+    expect(content('meta[name="robots"]')).toBe("noindex");
+    expect(document.head.querySelectorAll('link[rel="alternate"]')).toHaveLength(0);
+    expect(document.documentElement.lang).toBe("en");
+  });
+
+  it("an indexable edition lists its alternates in the head", async () => {
+    seedHeadMeta();
+    window.history.replaceState(null, "", "/msea/credits");
+
+    render(
+      <RouterProvider>
+        <App />
+      </RouterProvider>
+    );
+
+    await waitFor(() =>
+      expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
+        "https://maplesymbols.com/msea/credits"
+      )
+    );
+    expect(document.head.querySelector('meta[name="robots"]')).toBeNull();
+    const hreflangs = [...document.head.querySelectorAll('link[rel="alternate"]')].map((l) =>
+      l.getAttribute("hreflang")
+    );
+    expect(hreflangs).toEqual(["en", "x-default", "en-SG", "en-MY", "en-PH", "en-TH"]);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // The rules in docs/SEO.md that can be checked without a browser. Each assertion
 // cites the rule it enforces; a rule with no assertion is marked "[test: todo]"

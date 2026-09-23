@@ -6,7 +6,8 @@ import SEO from "./components/SEO";
 import { ErrorBoundary } from "react-error-boundary";
 import { BreakpointProvider } from "./contexts/BreakpointContext";
 import { useRouter } from "./contexts/RouterContext";
-import { ROUTES, routeFor, urlFor } from "./lib/routes";
+import { isKnownPath, routeFor, urlFor } from "./lib/routes";
+import { useEdition } from "./hooks/useEdition";
 import { notFoundPath, track } from "./lib/analytics";
 import { useMessages } from "./i18n";
 
@@ -20,15 +21,18 @@ import Extras from "./components/Extras/Extras";
 
 function PageContent() {
   const { path: pathname } = useRouter();
-  // Unknown paths resolve to the calculator page.
+  const { edition } = useEdition();
+  // Unknown paths resolve to the calculator page of their edition.
   const route = routeFor(pathname);
-  const isKnownPath = ROUTES.some((r) => r.path === pathname);
+  const known = isKnownPath(pathname);
 
   // Evidence for SEO-3: do unknown URLs get real traffic? (docs/ANALYTICS.md §3)
   useEffect(() => {
-    if (!isKnownPath) track("not_found", { path: notFoundPath(pathname) });
-  }, [pathname, isKnownPath]);
-  const seo = <SEO title={route.title} description={route.description} url={urlFor(route.path)} />;
+    if (!known) track("not_found", { path: notFoundPath(pathname) });
+  }, [pathname, known]);
+  const seo = (
+    <SEO title={route.title} description={route.description} url={urlFor(route.path, edition)} />
+  );
 
   if (route.path === "/handbook") {
     return (

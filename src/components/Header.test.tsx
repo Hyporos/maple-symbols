@@ -4,6 +4,7 @@ import Header from "./Header";
 import { RouterProvider } from "../contexts/RouterContext";
 import { BreakpointProvider } from "../contexts/BreakpointContext";
 import { setViewport } from "../test/helpers";
+import { useAppStore } from "../state/store";
 
 const renderHeader = () =>
   render(
@@ -32,10 +33,60 @@ describe("Header", () => {
     push.mockRestore();
   });
 
-  it("shows the language selector as coming soon (not functional yet)", () => {
+  it("the server menu lists every site version for the same page, the current one marked", () => {
+    window.history.replaceState(null, "", "/handbook");
     renderHeader();
-    const button = screen.getByRole("button", { name: "Language selector (coming soon)" });
-    expect(button).toHaveTextContent("EN");
+    const button = screen.getByRole("button", { name: "Choose your server" });
+    expect(button).toHaveTextContent("GMS");
+    expect(button).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(button);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    const hrefs = Object.fromEntries(
+      ["GMS", "MSEA", "KMS", "JMS", "TMS", "CMS"].map((name) => [
+        name,
+        screen.getByRole("link", { name: new RegExp(`^${name}`) }).getAttribute("href"),
+      ])
+    );
+    expect(hrefs).toEqual({
+      GMS: "/handbook",
+      MSEA: "/msea/handbook",
+      KMS: "/kms/handbook",
+      JMS: "/jms/handbook",
+      TMS: "/tms/handbook",
+      CMS: "/cms/handbook",
+    });
+    expect(screen.getByRole("link", { name: /^GMS/ })).toHaveAttribute("aria-current", "page");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(button).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("inside an edition, every link keeps its prefix", () => {
+    window.history.replaceState(null, "", "/kms/handbook");
+    renderHeader();
+    expect(screen.getByRole("link", { name: "Calculator" })).toHaveAttribute("href", "/kms");
+    expect(screen.getByRole("link", { name: "Handbook" })).toHaveAttribute("href", "/kms/handbook");
+    expect(screen.getByRole("link", { name: "Extras" })).toHaveAttribute("href", "/kms/changelog");
+    expect(screen.getByRole("link", { name: "Go to calculator" })).toHaveAttribute("href", "/kms");
+    expect(screen.getByRole("button", { name: "Choose your server" })).toHaveTextContent("KMS");
+  });
+
+  it("'Numbers from' swaps the numbers without leaving the page, and the page's own server resets it", () => {
+    renderHeader();
+    fireEvent.click(screen.getByRole("button", { name: "Choose your server" }));
+    const select = screen.getByRole("combobox", { name: "Numbers from" });
+    expect(select).toHaveValue("gms");
+
+    fireEvent.change(select, { target: { value: "kms" } });
+    expect(useAppStore.getState()).toMatchObject({ region: "kms", regionOverride: "kms" });
+    expect(window.location.pathname).toBe("/");
+    expect(screen.getByRole("button", { name: "Choose your server" })).toHaveTextContent(
+      "GMS · KMS"
+    );
+
+    fireEvent.change(select, { target: { value: "gms" } });
+    expect(useAppStore.getState()).toMatchObject({ region: "gms", regionOverride: null });
   });
 
   it("on a phone, a menu button toggles the page links and a link click closes the menu", () => {
@@ -50,11 +101,11 @@ describe("Header", () => {
     expect(window.location.pathname).toBe("/handbook");
   });
 
-  it("on a tablet, shows the links inline and keeps the language button", () => {
+  it("on a tablet, shows the links inline and keeps the server menu", () => {
     setViewport("tablet");
     renderHeader();
     expect(screen.getByRole("link", { name: "Handbook" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /navigation menu/i })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /language selector/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Choose your server" })).toBeInTheDocument();
   });
 });

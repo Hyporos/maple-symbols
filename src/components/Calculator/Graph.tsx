@@ -25,7 +25,7 @@ import {
 import { clampNumberInput } from "../../lib/inputs";
 import { MAX_POWER_PER_SYMBOL } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
-import { gameToday } from "../../lib/regions";
+import { gameToday, type Region } from "../../lib/regions";
 import RadioButton from "../ui/RadioButton";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
@@ -42,6 +42,8 @@ interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
   mode: SymbolType;
   symbols: SymbolData[];
   flatDateSymbols: GraphSymbols[];
+  /** The shown server, whose game clock dates the entries. */
+  region: Region;
 }
 
 // Defined outside Graph so the function reference is stable across re-renders,
@@ -56,6 +58,7 @@ const CustomTooltip = ({
   mode,
   symbols,
   flatDateSymbols,
+  region,
 }: CustomTooltipProps) => {
   const m = useMessages().graph;
   const locale = useLocale();
@@ -73,7 +76,7 @@ const CustomTooltip = ({
     >
       <p className={isMobile ? "text-sm" : ""}>{`${
         graphDynamic
-          ? gameToday()
+          ? gameToday(region)
               .add(label as number, "day")
               .format("YYYY-MM-DD")
           : label
@@ -95,7 +98,8 @@ const CustomTooltip = ({
 
             const occurrences = symbolEntries.length - 1;
 
-            const isSecondEntry = label === (graphDynamic ? 0 : gameToday().format("YYYY-MM-DD"));
+            const isSecondEntry =
+              label === (graphDynamic ? 0 : gameToday(region).format("YYYY-MM-DD"));
 
             const upgradeReady = symbol.experience >= symbol.symbolsRequired[symbol.level];
 
@@ -131,6 +135,7 @@ const Graph = () => {
 
   const symbols = useAppStore((s) => s.symbols);
   const mode = useAppStore((s) => s.mode);
+  const region = useAppStore((s) => s.region);
 
   const { isMobile, isTablet } = useBreakpoint();
 
@@ -149,17 +154,17 @@ const Graph = () => {
   // Calculate every symbol's date needed to reach future levels
   const dateSymbols = useMemo((): DateSymbols[] => {
     try {
-      return buildDateSymbols(symbols, mode);
+      return buildDateSymbols(symbols, mode, gameToday(region), region);
     } catch (e) {
       console.error(e);
       return [];
     }
-  }, [symbols, mode]);
+  }, [symbols, mode, region]);
 
   // Derive graph entries from dateSymbols
   const { graphSymbols, flatDateSymbols, maxPower, maxDays } = useMemo(
-    () => buildGraphSeries(dateSymbols, currentPower, graphDynamic),
-    [dateSymbols, currentPower, graphDynamic]
+    () => buildGraphSeries(dateSymbols, currentPower, graphDynamic, gameToday(region)),
+    [dateSymbols, currentPower, graphDynamic, region]
   );
 
   // Stable tooltip content reference — deps listed so it only re-creates when
@@ -174,9 +179,10 @@ const Graph = () => {
         mode={mode}
         symbols={symbols}
         flatDateSymbols={flatDateSymbols}
+        region={region}
       />
     ),
-    [currentPower, isMobile, graphDynamic, mode, symbols, flatDateSymbols]
+    [currentPower, isMobile, graphDynamic, mode, symbols, flatDateSymbols, region]
   );
 
   const yTicks = useMemo(() => yAxisTicks(currentPower, maxPower), [currentPower, maxPower]);
@@ -191,8 +197,8 @@ const Graph = () => {
 
   // Derive the attainment date for the target power
   const attainmentDate = useMemo(
-    () => dateToPower(targetPower, currentPower, graphSymbols, graphDynamic),
-    [currentPower, targetPower, graphSymbols, graphDynamic]
+    () => dateToPower(targetPower, currentPower, graphSymbols, graphDynamic, gameToday(region)),
+    [currentPower, targetPower, graphSymbols, graphDynamic, region]
   );
 
   // Get the date or error message for the attainment date of the target power
@@ -222,7 +228,7 @@ const Graph = () => {
 
   // Format the X axis (change from days to date)
   const formatXAxis = (tick: number) => {
-    return gameToday().add(tick, "day").format("YYYY-MM-DD");
+    return gameToday(region).add(tick, "day").format("YYYY-MM-DD");
   };
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */

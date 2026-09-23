@@ -2,20 +2,22 @@ import TabLayout from "../ui/TabLayout";
 import Changelog from "./Changelog";
 import Credits from "./Credits";
 import { useRouter } from "../../contexts/RouterContext";
-import { EXTRAS_TABS } from "../../lib/routes";
+import { useEdition } from "../../hooks/useEdition";
+import { EXTRAS_TABS, hrefFor } from "../../lib/routes";
 import { track } from "../../lib/analytics";
 import { useMessages } from "../../i18n";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Extras component acts as a page for the Changelog and Credits components.
-// * Tab selection is reflected in the URL (/changelog, /credits).
+// * Tab selection is reflected in the URL (/changelog, /credits, or /kms/changelog in an edition).
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const TAB_PATHS: readonly string[] = EXTRAS_TABS;
 
 const Extras = () => {
   const m = useMessages().extras;
-  const { path: pathname, navigate } = useRouter();
+  const { navigate } = useRouter();
+  const { edition, path: pathname } = useEdition();
 
   const activeTab = TAB_PATHS.indexOf(pathname) + 1 || 1;
 
@@ -28,9 +30,9 @@ const Extras = () => {
       activeTab={activeTab}
       onSelect={(index) => track("extras_tab", { tab: index === 2 ? "credits" : "changelog" })}
       onTabChange={(index) => {
-        const targetPath = TAB_PATHS[index - 1];
+        const targetPath = EXTRAS_TABS[index - 1];
         if (targetPath && targetPath !== pathname) {
-          navigate(targetPath);
+          navigate(hrefFor(targetPath, edition));
         }
       }}
     />

@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 
 import type { Dayjs } from "dayjs";
-import { gameToday } from "./regions";
+import { DEFAULT_REGION, gameToday, type Region } from "./regions";
 import { maxLevelFor } from "./game";
 import type { SymbolData } from "./types";
 import { calculateDaysRemaining, getDailySymbols, getRemainingSymbols, isMaxLevel } from "./utils";
@@ -26,13 +26,18 @@ export interface Progress {
  * Progress towards max level, derived from level/experience/quests at read time.
  * Replaces the fields the store used to cache for the selected symbol only (KI-002).
  */
-export function progressToMax(symbol: SymbolData, now: Dayjs = gameToday()): Progress {
+export function progressToMax(
+  symbol: SymbolData,
+  now: Dayjs = gameToday(),
+  region: Region = DEFAULT_REGION
+): Progress {
   const symbolsRemaining = getRemainingToMax(symbol, maxLevelFor(symbol.type));
   const daysRemaining = calculateDaysRemaining(
     symbolsRemaining,
     getDailySymbols(symbol),
     !!symbol.weekly,
-    now
+    now,
+    region
   );
   return {
     symbolsRemaining,

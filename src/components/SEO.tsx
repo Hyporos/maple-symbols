@@ -1,5 +1,15 @@
 import { useLayoutEffect } from "react";
-import { DEFAULT_LOCALE, OG_IMAGE, routeFor, SITE_NAME, urlFor } from "../lib/routes";
+import {
+  alternatesFor,
+  editionFor,
+  EDITIONS,
+  isIndexable,
+  OG_IMAGE,
+  routeFor,
+  servedLocale,
+  SITE_NAME,
+  urlFor,
+} from "../lib/routes";
 
 const ROOT = routeFor("/");
 const ROOT_URL = urlFor("/");
@@ -23,6 +33,27 @@ const setMeta = (selector: string, attr: string, val: string) => {
   if (el) el.setAttribute(attr, val);
 };
 
+/** Keep the head's hreflang links and robots meta in step with the page (they start in the built HTML). */
+const setAlternates = (pathname: string) => {
+  const edition = editionFor(pathname);
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+  document.head.querySelector('meta[name="robots"]')?.remove();
+  if (!isIndexable(edition)) {
+    const robots = document.createElement("meta");
+    robots.name = "robots";
+    robots.content = "noindex";
+    document.head.appendChild(robots);
+    return;
+  }
+  for (const { hreflang, href } of alternatesFor(routeFor(pathname).path)) {
+    const link = document.createElement("link");
+    link.rel = "alternate";
+    link.hreflang = hreflang;
+    link.href = href;
+    document.head.appendChild(link);
+  }
+};
+
 const setOrCreateLdJson = (json: object[]) => {
   let el = document.head.querySelector<HTMLScriptElement>("script[data-seo-ld]");
   if (!el) {
@@ -42,7 +73,12 @@ function SEO({
   imageAlt = OG_IMAGE.alt,
 }: SEOProps) {
   useLayoutEffect(() => {
-    const isRoot = url === ROOT_URL;
+    const pathname = new URL(url).pathname;
+    const locale = servedLocale(editionFor(pathname));
+    // Every edition's calculator is a root: it carries the WebApplication data.
+    const isRoot = EDITIONS.some((e) => urlFor("/", e) === url);
+    document.documentElement.lang = locale;
+    setAlternates(pathname);
 
     document.title = title;
 
@@ -65,7 +101,7 @@ function SEO({
       url,
       name: title,
       description,
-      inLanguage: DEFAULT_LOCALE,
+      inLanguage: locale,
       isPartOf: { "@type": "WebSite", name: SITE_NAME, url: ROOT_URL },
     };
 
@@ -74,11 +110,11 @@ function SEO({
         "@context": "https://schema.org",
         "@type": "WebApplication",
         name: SITE_NAME,
-        url: ROOT_URL,
+        url,
         description: ROOT.description,
         applicationCategory: "GameApplication",
         operatingSystem: "Web",
-        inLanguage: DEFAULT_LOCALE,
+        inLanguage: locale,
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         author: { "@type": "Person", name: "Hyporos" },

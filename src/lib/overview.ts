@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------
 
 import type { Dayjs } from "dayjs";
-import { gameToday } from "./regions";
+import { DEFAULT_REGION, gameToday, type Region } from "./regions";
 import { progressToMax } from "./calculator";
 import { interpolate, pluralMessage } from "../i18n/interpolate";
 import type { Messages } from "../i18n";
@@ -34,9 +34,10 @@ export function collapsedRowLabels(
   symbol: SymbolData,
   maxLevel: number,
   m: OverviewMessages,
-  now: Dayjs = gameToday()
+  now: Dayjs = gameToday(),
+  region: Region = DEFAULT_REGION
 ): CollapsedRowLabels {
-  const { symbolsRemaining, daysRemaining, completion: date } = progressToMax(symbol, now);
+  const { symbolsRemaining, daysRemaining, completion: date } = progressToMax(symbol, now, region);
   const atMax = symbol.level === maxLevel;
   const unset = isNaN(symbol.level);
   const noQuests = !symbol.daily && !symbol.weekly;

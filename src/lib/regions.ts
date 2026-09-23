@@ -65,6 +65,17 @@ export const REGION_PROFILES: Readonly<Record<Region, RegionProfile>> = regionsJ
   RegionProfile
 >;
 
+/**
+ * Whether a server's number of this kind may be shown: everything except "unpublished"
+ * (REGIONS D-6; inferred numbers are shown, Brian 2026-09-22).
+ */
+export const isPublished = (region: Region, kind: DataKind): boolean =>
+  REGION_PROFILES[region].status[kind] !== "unpublished";
+
+/** The status kind that covers a symbol type's meso costs. */
+export const mesosKind = (type: SymbolType): DataKind =>
+  type === "arcane" ? "mesosArcane" : "mesosSacred";
+
 /** Symbols one week of weekly content pays on a server (240 everywhere today). */
 export const weeklySymbolsFor = (region: Region): number => {
   const { perClear, clears } = REGION_PROFILES[region].weekly;

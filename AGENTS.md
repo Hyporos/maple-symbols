@@ -43,7 +43,7 @@ src/
              calculator.ts, tools.ts, overview.ts, graph.ts   pure maths + labels behind each card
              routes.ts (pages, SEO, sitemap) · persistence.ts (saves) · format.ts (locale numbers/dates/plurals)
              analytics.ts (typed Umami events) · changelog.ts · ratioData.ts · dayjs.ts (the only dayjs import)
-  components/  Header, Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
+  components/  Header, ServerMenu (site version + "Numbers from"), Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
     Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
     Handbook/, Extras/  TabLayout pages (ExpTable, CostTable, RatioTable; Changelog, Credits) · ui/ RadioButton, SlideButton, TabLayout
   i18n/      en/*.ts (English catalogue = every language's contract) · index.ts (useMessages, interpolate) ·
@@ -55,7 +55,7 @@ docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-stalenes
 ## Architecture in brief
 
 - **Routes**: `/` (calculator page: Selector, Calculator, Tools, Overview, Graph), `/handbook`, `/changelog`, `/credits`. Unknown paths fall through to `/`. Calculator/Tools/Overview/Graph are `React.lazy`; the page sits in `ErrorBoundary` > `Suspense fallback={null}`.
-- **Pages are declared once** in `src/lib/routes.ts` (path, title, description, nav entry, sitemap fields). `App.tsx`, `Header`, `Extras` and `SEO.tsx` read it; the routes plugin in `vite.config.ts` fills the `__PLACEHOLDER__` tokens in `index.html` and emits `sitemap.xml` (no file under `public/`). `src/test/seo.test.tsx` checks the generated output; ARCHITECTURE §2 explains the double head write.
+- **Pages are declared once** in `src/lib/routes.ts` (path, title, description, nav entry, sitemap fields), and exist once per server edition (`EDITIONS`: GMS at `/`, others at `/msea`, `/kms`…; `splitPath`, `hrefFor(path, edition)`, `useEdition()`; ARCHITECTURE §2). `App.tsx`, `Header`, `Extras` and `SEO.tsx` read it; the routes plugin in `vite.config.ts` fills the `__PLACEHOLDER__` tokens in `index.html` and emits `sitemap.xml` (no file under `public/`). `src/test/seo.test.tsx` checks the generated output; ARCHITECTURE §2 explains the double head write.
 - **State**: one store. What persists (localStorage key `maple-symbols-v2`, `STORAGE_VERSION` 4) is one save per server plus the server the player chose, and per symbol only its `id` and the player's fields (`src/lib/persistence.ts`); UI state resets on reload. `symbols` is always the shown server's list (`region`); `setRegion(region)` stores it and loads the other server's data and save. On load, `merge` rebuilds the chosen server's list from its game data and restores those fields by id; `migrate` turns an older single list into the GMS save, so nothing is wiped.
 - **Data flow**: `symbols.json` → `createInitialSymbols()` → store → components read via selectors; inputs write with `updateSymbol(symbols, id, patch)`. Nothing derived is stored: symbols/days remaining and the completion date come from `progressToMax` (`src/lib/calculator.ts`) at read time, Graph builds its own series, power from `usePower`.
 
