@@ -75,4 +75,11 @@ describe("SlideButton", () => {
     fireEvent.click(screen.getByText("Credits"));
     expect(setSelectedInfo).toHaveBeenCalledWith(2);
   });
+
+  it("keeps its label out of a <span>, which global.css colours accent purple", () => {
+    render(
+      <SlideButton label="Credits" selectedInfo={1} setSelectedInfo={vi.fn()} targetInfo={2} />
+    );
+    expect(screen.getByText("Credits").tagName).toBe("P");
+  });
 });

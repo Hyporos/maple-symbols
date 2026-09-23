@@ -135,3 +135,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Assumed a rewrite destination behaves like a file path; with `cleanUrls` on, Vercel serves pages by their clean path and does not rewrite to a `.html` destination.
 - **Rule**: Hosting behaviour (redirects, rewrites, clean URLs, headers) is verified against a real deployment before it merges; a test of the config file only proves the file says what we meant.
 - **Where**: `vercel.json`, `src/lib/routes.test.ts`.
+
+### M-017 · 2026-09-22 · ui
+
+- **What**: "Apply the SEO quick wins" (f9300ec, v2) turned the Handbook and Extras tab labels in `SlideButton` from `<h1>` into `<span>` to stop them counting as headings. Every `<span>` is accent purple in `global.css`, so the labels turned purple; Brian spotted it.
+- **Root cause**: Changed an element's tag for its semantics without checking the global element rules (AGENTS gotcha 5), and no test or screenshot compared the look.
+- **Rule**: Changing an element's tag is a visual change too: check gotcha 5's global rules (`span`, `button`, `input`, `img`) and look at the result in a browser.
+- **Where**: `src/components/ui/SlideButton.tsx`, pinned by `src/components/ui/primitives.test.tsx`.

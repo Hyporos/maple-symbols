@@ -20,7 +20,8 @@ const SlideButton = ({ label, selectedInfo, setSelectedInfo, targetInfo }: Slide
       )}
       onClick={() => setSelectedInfo(targetInfo)}
     >
-      <span className="text-sm md:text-base">{label}</span>
+      {/* A <p>, not a <span>: every span is accent purple (global.css), and not an <h1> (SEO-8). */}
+      <p className="text-sm md:text-base">{label}</p>
       <div
         className={cn(
           "absolute right-0 bottom-0 left-0 mx-auto h-px w-0 bg-accent transition-all",
