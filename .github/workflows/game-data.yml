@@ -2,8 +2,9 @@ name: Game data check
 
 # The site shipped GMS v.271's doubled symbol rates two weeks late because nothing
 # watched for it (KI-014). Every Monday this compares our numbers with the MapleStory
-# Wiki and reads the patch notes of GMS and of the regions that patch before it
-# (scripts/check-game-data.mjs; the sources are listed at its top and in GAME §6).
+# Wiki, reads the patch notes of all six servers, and compares each server's community
+# tables with that server's own numbers (scripts/check-game-data.mjs; the sources are
+# listed at its top and in GAME §6). The issue has one section per server.
 #
 # It writes to GitHub only when something changed: it opens an issue (label
 # `game-data`) the first time the report is not clean, comments only when the report
@@ -76,9 +77,21 @@ jobs:
             const headline = {
               1: "our numbers no longer match the game",
               2: "a source could not be read",
-              3: "a patch note mentions symbols",
+              3: "a patch note or a community table mentions symbols",
             }[status] ?? `the check exited with ${status}`;
-            const block = "```\n" + report + "\n```";
+            // The report is a preamble, then one section per server with findings, each
+            // starting with a "## GMS" line: one heading and one code block per server.
+            const [preamble, ...sections] = report.split(/^## /m);
+            const servers = sections.map((s) => s.split("\n")[0].trim());
+            const block = [
+              "```\n" + preamble.trim() + "\n```",
+              ...sections.map((s) => {
+                const [name, ...rest] = s.split("\n");
+                return `### ${name.trim()}\n\n` + "```\n" + rest.join("\n").trim() + "\n```";
+              }),
+            ].join("\n\n");
+            const title = `Game data check: ${headline}` +
+              (servers.length ? ` (${servers.join(", ")})` : "");
             const body = [
               `The weekly game-data check: ${headline}.`,
               "",
@@ -92,9 +105,7 @@ jobs:
             ].join("\n");
 
             if (!issue) {
-              await github.rest.issues.create({
-                owner, repo, title: `Game data check: ${headline}`, body, labels: ["game-data"],
-              });
+              await github.rest.issues.create({ owner, repo, title, body, labels: ["game-data"] });
               return;
             }
 
@@ -110,7 +121,6 @@ jobs:
               return;
             }
             await github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body });
-            const title = `Game data check: ${headline}`;
             if (issue.title !== title) {
               await github.rest.issues.update({ owner, repo, issue_number: issue.number, title });
             }

@@ -139,14 +139,14 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 6. World rules per region (Catalyst).
 7. Optional Nexon Open API character import (KMS, TMS and MSEA only). Needs a Vercel function, so it ends "no backend".
 8. Analytics: `region_switch`, `edition_suggest`, `language_switch`; editions come free by path. The first two are built (2026-09-23) with `edition_switch` for the "Site version" links; `language_switch` waits for a language selector.
-9. Watcher per region:
-   - KMS: official notices; Open API notices (key in a secret).
-   - JMS: notices; kiiten.
-   - TMS: beanfun or Open API.
-   - CMS: BWIKI is MediaWiki, so the same parser as GMS works.
+9. Watcher per region (built 2026-09-23; GAME §6 has the table of what is read and what is left to a person):
+   - KMS: official notices, and its arcane overrides against the 1.2.419 rule. Open API notices not set up (they need a key in a secret).
+   - JMS: notices; kiiten (daily caps, per-level costs and gains).
+   - TMS: beanfun bulletins and the event pages they link (the Open API is not used).
+   - CMS: the official text notices (the version pages are images); BWIKI's cost formulas and per-level gains, in one MediaWiki request because its firewall blocks bursts. Its prose dailies are not parsed.
    - MSEA: official updates.
 
-   Expected values come from each overlay; label issues per region.
+   Expected values come from each overlay (`expectedFor` in `scripts/game-data.mjs`, pinned against `createInitialSymbols` by `src/test/dataWatcher.test.ts`); the report and the issue have one section per server. The community tables report only differences that are new since the last recorded read (`KNOWN_DIFFERENCES`), as information.
 
 10. Off-page per region: Inven and Naver Cafe, X and wikiwiki, Bahamut, NGA / Tieba / bilibili, MSEA Facebook and Reddit.
 
@@ -160,7 +160,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 5. ~~Terms table, `formatMesos`, CJK font stacks, width-based title test~~ (built 2026-09-22), ~~Intl dates~~ (2026-09-23).
 6. All six editions together (Brian, 2026-09-22): the five translations and overlays are built side by side and ship in one release. Build `/msea/` first inside the branch anyway, because it needs no translation and proves the overlay machinery before the translated editions depend on it.
 7. Measure every edition after launch (PageSpeed mobile, Search Console, Naver Search Advisor) and fix per edition.
-8. Search-engine registrations and the watcher per region.
+8. Search-engine registrations and ~~the watcher per region~~ (the watcher built 2026-09-23, §7 item 9; its first scheduled runs from GitHub are still to watch, since BWIKI's firewall may refuse GitHub's addresses).
 9. Optional: Open API import, event bonuses, "coming to GMS", extra GMS languages.
 
 ## 9. Decisions
