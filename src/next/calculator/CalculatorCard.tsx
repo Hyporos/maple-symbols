@@ -16,6 +16,7 @@ import { cn, isMaxLevel, isValid } from "../../lib/utils";
 import { interpolate, useLocale, useMessages, useNameSet } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
+import type { Mode } from "../../lib/types";
 import { useAppStore } from "../../state/store";
 import { Card, NumberField, ProgressBar, StatBox } from "../ui";
 import QuestRow from "./QuestRow";
@@ -46,6 +47,8 @@ const CalculatorCard = () => {
   const nameSet = useNameSet();
 
   const region = useAppStore((s) => s.region);
+  const selectedId = useAppStore((s) => s.selectedId);
+  const mode = useAppStore((s) => s.mode);
 
   const {
     symbol,
@@ -63,6 +66,16 @@ const CalculatorCard = () => {
   const [openTool, setOpenTool] = useState<Tool | null>(null);
   const [toolAnchor, setToolAnchor] = useState<HTMLElement | null>(null);
 
+  // A tool belongs to the selection that opened it: the desktop popover is not modal, so the
+  // picker stays usable while it is open. A new symbol or family closes it, during render (local
+  // state only, no store write), so no frame shows one symbol's tool for another.
+  const selection = `${selectedId}|${mode}`;
+  const [toolSelection, setToolSelection] = useState(selection);
+  if (toolSelection !== selection) {
+    setToolSelection(selection);
+    setOpenTool(null);
+  }
+
   const names = symbolNames(symbol, nameSet);
   const { type } = symbol;
   const levelSet = isValid(symbol.level);
@@ -70,8 +83,14 @@ const CalculatorCard = () => {
   const mainStat = MAIN_STAT_PER_LEVEL[type];
   const extraMultiplier = EXTRA_MULTIPLIER[type] ?? 1;
   const catalystRetention = CATALYST_RETENTION[type];
-  // Class-specific gains per level for the main stat tooltip; they differ by server.
+  // Class-specific gains per level for the main stat tooltip; they differ by server. Read only
+  // where `mainStat` is not null, which is exactly the families classGains covers (`as Mode`).
   const { demonAvengerHp, xenonAllStat } = REGION_PROFILES[region].classGains;
+  // A tool shows only where the symbol has it, whatever state is left open.
+  const toolAllowed: Record<Tool, boolean> = {
+    selector: selectorWorksOn(symbol),
+    catalyst: catalystRetention !== null,
+  };
 
   // The cap controls, with the current Calculator's visibility rules: unlocking is offered once
   // the experience reaches the next level; locking and applying the overflow while unlocked.
@@ -228,7 +247,7 @@ const CalculatorCard = () => {
                 <Message text={c.mesosUnpublished} values={{ server: editionOf(region).name }} />
               )}
             </StatBox>
-            {mainStat !== null && type !== "grand" && (
+            {mainStat !== null && (
               <StatBox caption={m.mainStat}>
                 <span className="inline-flex items-center gap-1.5 text-primary">
                   {`+${formatNumber(mainStat, locale)}`}
@@ -238,10 +257,16 @@ const CalculatorCard = () => {
                     </TooltipTrigger>
                     <TooltipContent className="tooltip">
                       <div>
-                        <Message text={c.demonAvengerHp} values={{ hp: demonAvengerHp[type] }} />
+                        <Message
+                          text={c.demonAvengerHp}
+                          values={{ hp: demonAvengerHp[type as Mode] }}
+                        />
                       </div>
                       <div>
-                        <Message text={c.xenonAllStat} values={{ stat: xenonAllStat[type] }} />
+                        <Message
+                          text={c.xenonAllStat}
+                          values={{ stat: xenonAllStat[type as Mode] }}
+                        />
                       </div>
                     </TooltipContent>
                   </Tooltip>
@@ -264,13 +289,13 @@ const CalculatorCard = () => {
       </div>
 
       {/* TOOLS */}
-      {(selectorWorksOn(symbol) || catalystRetention !== null) && (
+      {(toolAllowed.selector || toolAllowed.catalyst) && (
         <div className="mt-4">
           <p className="mb-2 text-[11px] tracking-[0.08em] text-tertiary uppercase">
             {m.toolsLabel}
           </p>
           <div className="flex gap-2">
-            {selectorWorksOn(symbol) && (
+            {toolAllowed.selector && (
               <button
                 type="button"
                 disabled={!levelSet}
@@ -290,7 +315,7 @@ const CalculatorCard = () => {
                 {t.symbolSelector}
               </button>
             )}
-            {catalystRetention !== null && (
+            {toolAllowed.catalyst && (
               <button
                 type="button"
                 disabled={!levelSet}
@@ -316,7 +341,7 @@ const CalculatorCard = () => {
 
       <ToolsSheet
         tool={openTool ?? "selector"}
-        open={openTool !== null}
+        open={openTool !== null && toolAllowed[openTool]}
         onClose={() => setOpenTool(null)}
         anchor={toolAnchor}
       />

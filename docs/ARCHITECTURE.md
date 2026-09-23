@@ -47,15 +47,15 @@ The strings themselves exist once, in `routes.ts`: `SEO.tsx` defaults come from 
 
 **`src/state/store.ts`** is the only store (Zustand 5 + `persist`). Replaced Redux + RTK in the 1.4 refactor.
 
-| Field            | Default                    | Persisted            | Meaning                                                                      |
-| ---------------- | -------------------------- | -------------------- | ---------------------------------------------------------------------------- |
+| Field            | Default                               | Persisted            | Meaning                                                                                                                                                        |
+| ---------------- | ------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mode`           | `"arcane"`                            | no                   | the family the store shows (`SymbolType`: arcane, sacred, or grand); the current UI reads it through `useMode()`, which folds a grand selection back to sacred |
-| `symbols`        | `createInitialSymbols()`              | **yes**              | the 14 `SymbolData` entries of the shown server (saved into `saves[region]`) |
-| `region`         | `"gms"`                               | via `regionOverride` | the server whose numbers are shown (`Region`, `src/lib/regions.ts`)          |
-| `regionOverride` | `null`                                | **yes**              | the server the player picked; `null` follows the page's default              |
-| `saves`          | `{}`                                  | **yes**              | per-server saved lists; `setRegion(region)` swaps them (REGIONS D-7)         |
-| `selectedId`     | `1`                                   | no                   | id of the symbol shown in Calculator/Tools/Handbook (`useSelectedSymbol()`)  |
-| `lastSelected`   | `{ arcane: 1, sacred: 7, grand: 13 }` | no                   | per-family memory; `setMode(type)` restores it, `selectSymbol(id)` records it |
+| `symbols`        | `createInitialSymbols()`              | **yes**              | the 14 `SymbolData` entries of the shown server (saved into `saves[region]`)                                                                                   |
+| `region`         | `"gms"`                               | via `regionOverride` | the server whose numbers are shown (`Region`, `src/lib/regions.ts`)                                                                                            |
+| `regionOverride` | `null`                                | **yes**              | the server the player picked; `null` follows the page's default                                                                                                |
+| `saves`          | `{}`                                  | **yes**              | per-server saved lists; `setRegion(region)` swaps them (REGIONS D-7)                                                                                           |
+| `selectedId`     | `1`                                   | no                   | id of the symbol shown in Calculator/Tools/Handbook (`useSelectedSymbol()`)                                                                                    |
+| `lastSelected`   | `{ arcane: 1, sacred: 7, grand: 13 }` | no                   | per-family memory; `setMode(type)` restores it, `selectSymbol(id)` records it                                                                                  |
 
 Persistence details:
 
@@ -96,16 +96,18 @@ Tools' selector-count clamp and its Apply handler (`selectorCount < remainingToM
 
 ## 5. Effects that write to the store or the document
 
-| Where                     | Trigger deps                                          | Writes                                                 | Loop guard                                                            |
-| ------------------------- | ----------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------- |
-| `Calculator.tsx` (clamp)  | `locked, readyForUpgrade, nextExperience, selectedId` | `experience = nextExperience` when ready and locked    | none beyond the condition; would loop if `symbols` were added to deps |
-| `Calculator.tsx` (relock) | `experience, level, locked, mode, selectedId`         | `locked = true` at max level with 0 exp                | self-terminating                                                      |
-| `SEO.tsx` (layout effect) | title/description/url/image/imageAlt                  | `document.title`, meta/link attributes, JSON-LD script | n/a                                                                   |
-| `RouterContext.tsx`       | mount                                                 | `popstate` listener                                    | cleanup                                                               |
-| `BreakpointContext.tsx`   | mount (×2)                                            | `matchMedia` change listeners                          | cleanup                                                               |
-| `App.tsx`                 | mount                                                 | `alert()` on Samsung Internet                          | mount-only                                                            |
-| `SuggestionBanner.tsx`    | `edition.region`                                      | local state (the suggestion); `edition_suggest` shown  | none needed; reads `navigator` and localStorage after mount only      |
-| `useLocalResetTime.ts`    | `region, locale`                                      | local state (the reset on the visitor's clock)         | none needed; after mount only, so prerender and hydration agree       |
+| Where                                | Trigger deps                                          | Writes                                                 | Loop guard                                                                            |
+| ------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `Calculator.tsx` (clamp)             | `locked, readyForUpgrade, nextExperience, selectedId` | `experience = nextExperience` when ready and locked    | none beyond the condition; would loop if `symbols` were added to deps                 |
+| `Calculator.tsx` (relock)            | `experience, level, locked, mode, selectedId`         | `locked = true` at max level with 0 exp                | self-terminating                                                                      |
+| `useSymbolEditor.ts` (clamp, /next)  | `locked, readyForUpgrade, nextExperience, selectedId` | `experience = nextExperience` when ready and locked    | as Calculator's clamp: the condition only; would loop if `symbols` were added to deps |
+| `useSymbolEditor.ts` (relock, /next) | `experience, level, locked, mode, selectedId`         | `locked = true` at max level with 0 exp                | self-terminating                                                                      |
+| `SEO.tsx` (layout effect)            | title/description/url/image/imageAlt                  | `document.title`, meta/link attributes, JSON-LD script | n/a                                                                                   |
+| `RouterContext.tsx`                  | mount                                                 | `popstate` listener                                    | cleanup                                                                               |
+| `BreakpointContext.tsx`              | mount (×2)                                            | `matchMedia` change listeners                          | cleanup                                                                               |
+| `App.tsx`                            | mount                                                 | `alert()` on Samsung Internet                          | mount-only                                                                            |
+| `SuggestionBanner.tsx`               | `edition.region`                                      | local state (the suggestion); `edition_suggest` shown  | none needed; reads `navigator` and localStorage after mount only                      |
+| `useLocalResetTime.ts`               | `region, locale`                                      | local state (the reset on the visitor's clock)         | none needed; after mount only, so prerender and hydration agree                       |
 
 Overview has three effects (on `mode`; on `targetId`/`selectedNone`; on the target symbol's `level`/`mode`) and Graph two (`mode`, `currentPower`) that only reset local state. Because `react-hooks/exhaustive-deps` is off (see §7), the dependency arrays above are hand-curated and intentionally incomplete; treat them as part of the design, not as omissions.
 
@@ -131,7 +133,7 @@ Each of these looks like something to "fix". Don't, without a decision.
 - **D2 Zustand over Redux + RTK.** One small store, per-field selectors, `persist` middleware for the one thing that needs saving. `partialize`/`merge`/`migrate` are where all persistence policy lives.
 - **D3 NaN as "unset".** Keeps `level`/`experience` numeric everywhere; the price is the `null → NaN` rehydration and NaN-safe comparisons (`Object.is`). Don't switch to `null | number` piecemeal.
 - **D4 Exactly two `matchMedia` listeners.** `BreakpointContext` owns them; `useBreakpoint` is a re-export so components never register their own. Breakpoints (767/1149 px) mirror Tailwind's `md` and the custom `laptop` screen, which must be kept in sync by hand.
-- **D5 Nothing derived is stored (v2).** 1.x cached `daysRemaining`/`symbolsRemaining`/`completion` in the store, written by one effect in Calculator for the selected symbol only (KI-002) and guarded with `Object.is` against a `NaN !== NaN` loop. On `v2` those fields are gone: `progressToMax` derives them wherever they are read. The only store-writing effects left are Calculator's clamp and relock; keep it that way and derive new values in `src/lib`.
+- **D5 Nothing derived is stored (v2).** 1.x cached `daysRemaining`/`symbolsRemaining`/`completion` in the store, written by one effect in Calculator for the selected symbol only (KI-002) and guarded with `Object.is` against a `NaN !== NaN` loop. On `v2` those fields are gone: `progressToMax` derives them wherever they are read. The only store-writing effects left are Calculator's clamp and relock and their /next port in `src/next/calculator/useSymbolEditor.ts` (the same two, same guards); keep it that way and derive new values in `src/lib`.
 - **D6 One dayjs instance.** `dayjs.extend()` mutates a global; `src/lib/dayjs.ts` extends the plugins once and everything imports from there, so no file depends on load order.
 - **D7 Lazy calculator sections + vendor chunks.** Handbook/Extras are small and eager; the four calculator sections and recharts are the heavy part.
 - **D8 Head metadata set in `index.html` and again in `SEO.tsx`, from one source.** The inline script covers the pre-React window; `useLayoutEffect` avoids a visible title flicker on client navigation. Both read `src/lib/routes.ts` (the HTML through the routes plugin's placeholders), so the double write costs no duplicated strings; `seo.test.tsx` checks the generated output.

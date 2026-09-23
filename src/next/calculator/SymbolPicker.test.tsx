@@ -52,6 +52,19 @@ describe("SymbolPicker", () => {
     );
   });
 
+  it("restores a family's last selection after visiting another family", () => {
+    renderPicker();
+    fireEvent.click(screen.getByRole("button", { name: /Chu Chu Island/ }));
+    fireEvent.click(screen.getByRole("radio", { name: "Grand" }));
+    expect(useAppStore.getState().selectedId).toBe(13);
+    fireEvent.click(screen.getByRole("radio", { name: "Arcane" }));
+    expect(useAppStore.getState().selectedId).toBe(2);
+    expect(screen.getByRole("button", { name: /Chu Chu Island/ })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+  });
+
   it("shows an unset symbol with an empty ring and a dash", () => {
     renderPicker();
     expect(screen.getByRole("img", { name: /Esfera, level 0 of 20/ })).toHaveAttribute(

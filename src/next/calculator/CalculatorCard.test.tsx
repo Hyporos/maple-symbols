@@ -65,6 +65,20 @@ describe("CalculatorCard", () => {
     expect(vj().weekly).toBe(true);
   });
 
+  it("describes each quest switch with the quest's in-game name, for keyboard users", () => {
+    seedSymbol(1, { level: 12, experience: 40 });
+    renderCard();
+    expect(screen.getByRole("switch", { name: "Daily" })).toHaveAccessibleDescription(
+      "[Daily Quest] Vanishing Journey Research"
+    );
+    expect(screen.getByRole("switch", { name: "Weekly" })).toHaveAccessibleDescription(
+      "[Weekly Quest] Erda Spectrum"
+    );
+    expect(screen.getByRole("switch", { name: /Extra/ })).toHaveAccessibleDescription(
+      "[Unlocked] Reverse City"
+    );
+  });
+
   it("puts every quest switch in the tab order and inside no other button", () => {
     seedSymbol(1, { level: 12, experience: 40 });
     renderCard();

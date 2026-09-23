@@ -5,18 +5,21 @@ interface SwitchProps {
   onChange: (checked: boolean) => void;
   label: string;
   disabled?: boolean;
+  /** Id of an element that describes the switch (e.g. the quest it toggles). */
+  describedBy?: string;
 }
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * Switch is the redesign's on/off toggle for a quest flag (daily, weekly, extra).
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const Switch = ({ checked, onChange, label, disabled }: SwitchProps) => (
+const Switch = ({ checked, onChange, label, disabled, describedBy }: SwitchProps) => (
   <button
     type="button"
     role="switch"
     aria-checked={checked}
     aria-label={label}
+    aria-describedby={describedBy}
     disabled={disabled}
     onClick={() => onChange(!checked)}
     className={cn(

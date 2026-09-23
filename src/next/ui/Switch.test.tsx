@@ -13,6 +13,17 @@ describe("Switch", () => {
     fireEvent.click(screen.getByRole("switch", { name: "Daily" }));
     expect(onChange).toHaveBeenCalledWith(true);
   });
+  it("takes its description from the element describedBy names", () => {
+    render(
+      <>
+        <p id="quest">Vanishing Journey Research</p>
+        <Switch checked={false} onChange={() => {}} label="Daily" describedBy="quest" />
+      </>
+    );
+    expect(screen.getByRole("switch", { name: "Daily" })).toHaveAccessibleDescription(
+      "Vanishing Journey Research"
+    );
+  });
   it("is disabled and ignores clicks", () => {
     const onChange = vi.fn();
     render(<Switch checked={false} onChange={onChange} label="Daily" disabled />);

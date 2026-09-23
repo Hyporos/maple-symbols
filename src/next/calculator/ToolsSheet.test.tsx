@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import CalculatorCard from "./CalculatorCard";
+import SymbolPicker from "./SymbolPicker";
 import { BreakpointProvider } from "../../contexts/BreakpointContext";
 import { useAppStore } from "../../state/store";
 import { fullText, seedSymbol, setViewport, type Viewport } from "../../test/helpers";
@@ -96,5 +97,47 @@ describe("ToolsSheet", () => {
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(document.activeElement).toBe(opener);
+  });
+});
+
+// The desktop popover is not modal, so the picker stays usable while a tool is open.
+describe("ToolsSheet, when the selection changes under it", () => {
+  const renderPickerAndCard = () => {
+    setViewport("desktop");
+    return render(
+      <BreakpointProvider>
+        <SymbolPicker />
+        <CalculatorCard />
+      </BreakpointProvider>
+    );
+  };
+
+  it("closes the Selector opened on Tallahart when Geardock (which has none) is selected", () => {
+    seedSymbol(14, { level: 3, experience: 0 }, false);
+    seedSymbol(13, { level: 3, experience: 0 });
+    renderPickerAndCard();
+    openTool(/Symbol Selector/);
+    expect(screen.getByRole("dialog", { name: "Symbol Selector" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Geardock/ }));
+    expect(useAppStore.getState().selectedId).toBe(14);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("closes the Catalyst opened on an Arcane symbol when the family switches to Grand", () => {
+    seedSymbol(1, { level: 5, experience: 0 });
+    renderPickerAndCard();
+    openTool(/Arcane Catalyst/);
+    expect(screen.getByRole("dialog", { name: "Arcane Catalyst" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("radio", { name: "Grand" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("closes on a new symbol even when that symbol has the same tool", () => {
+    seedSymbol(2, { level: 5, experience: 0 }, false);
+    seedSymbol(1, { level: 5, experience: 0 });
+    renderPickerAndCard();
+    openTool(/Symbol Selector/);
+    fireEvent.click(screen.getByRole("button", { name: /Chu Chu Island/ }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
