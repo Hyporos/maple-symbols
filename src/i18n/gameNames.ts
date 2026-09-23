@@ -19,9 +19,10 @@ export type SymbolNames = Pick<SymbolData, "name" | "dailyName" | "weeklyName" |
 /**
  * Verified names per name set, per symbol id. GMS English is absent on purpose: it is
  * symbols.json. Each set records its source; docs/I18N.md §9 is the status table.
- * `ko` and `zh-Hans` stay out until their sheets cite an official source (the research in
- * docs/data-check/names-ko.csv cites namu.wiki, names-zh-Hans.csv a client-string database).
- * The `ja` and `zh-Hant` sets are dormant: only a page served in that language reads them.
+ * Only official sources: `ko` and `zh-Hans` come from Nexon Korea's and the CMS site's own
+ * pages, not from their research sheets (docs/data-check/names-ko.csv cites namu.wiki,
+ * names-zh-Hans.csv a client-string database). The `ko`, `ja`, `zh-Hant` and `zh-Hans` sets
+ * are dormant: only a page served in that language reads them.
  */
 export const GAME_NAMES: Readonly<
   Partial<Record<NameSet, Readonly<Record<number, Partial<SymbolNames>>>>>
@@ -132,6 +133,38 @@ export const GAME_NAMES: Readonly<
     10: { name: "桃源境", dailyName: "桃源境汙染淨化" },
     11: { name: "阿爾特利亞", dailyName: "消滅阿爾特利亞殘黨" },
     12: { name: "卡爾西溫", dailyName: "卡爾西溫重建支援" },
+  },
+  // CMS (checked 2026-09-23), only from the official site's guide wiki (mxd.web.sdo.com/wiki/,
+  // 次元站), never from names-zh-Hans.csv (mxd.dvg.cn, a fan database):
+  //   names: #/Article?ArticleID=357578 (神秘徽章与原初徽章, 2024-01-25), its table columns
+  //   dailies and weeklies: #/Article?ArticleID=388901 (日常与周常的优先级, 2026-05-27)
+  //   extras: #/Article?ArticleID=376041 (成就列表, 2025-06-27): "完成反转城所有的每日任务",
+  //     "完成真香岛的所有每日任务"
+  // Symbol 6's daily is written 爱斯佩拉 there, though the same site writes the region 埃斯佩拉
+  // everywhere else: kept as published, for the native review to settle.
+  "zh-Hans": {
+    1: {
+      name: "消亡旅途",
+      dailyName: "调查消亡旅途",
+      weeklyName: "艾尔达光谱",
+      extraName: "反转城",
+    },
+    2: {
+      name: "啾啾岛",
+      dailyName: "啾啾岛的顶级美食",
+      weeklyName: "饥饿的穆托",
+      extraName: "真香岛",
+    },
+    3: { name: "拉克兰", dailyName: "拉克兰的宁静夜晚", weeklyName: "午夜追踪者" },
+    4: { name: "阿尔卡那", dailyName: "阿尔卡那的祥和之风", weeklyName: "灵魂拯救者" },
+    5: { name: "莫拉斯", dailyName: "为了莫拉斯的平静", weeklyName: "安哈因防御" },
+    6: { name: "埃斯佩拉", dailyName: "爱斯佩拉研究命令", weeklyName: "保护埃斯佩拉" },
+    7: { name: "塞尔提乌", dailyName: "调查塞尔提乌" },
+    8: { name: "亚克斯", dailyName: "打扫亚克斯旅馆周边" },
+    9: { name: "奥迪乌姆", dailyName: "探索奥迪乌姆一带" },
+    10: { name: "桃源境", dailyName: "净化桃源境的污染" },
+    11: { name: "阿尔特里亚", dailyName: "消灭阿尔特里亚残余势力" },
+    12: { name: "卡西翁", dailyName: "卡西翁重建支援" },
   },
 };
 
