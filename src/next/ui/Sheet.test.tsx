@@ -64,6 +64,54 @@ describe("Sheet", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(opener).toHaveFocus();
   });
+  it("closes on Escape after focus moved inside, wherever the key event lands", () => {
+    setViewport("mobile");
+    const onClose = vi.fn();
+    render(
+      <BreakpointProvider>
+        <Sheet open title="Symbol Selector" closeLabel="Close" onClose={onClose}>
+          <input aria-label="Count" />
+          <button>Apply</button>
+        </Sheet>
+      </BreakpointProvider>
+    );
+    const apply = screen.getByRole("button", { name: "Apply" });
+    apply.focus();
+    expect(apply).toHaveFocus();
+    // The old panel-only handler missed a key that reached the document (focus had left the panel).
+    fireEvent.keyDown(document.body, { key: "Escape" });
+    expect(onClose).toHaveBeenCalled();
+  });
+  it("closes on a click outside it on desktop", () => {
+    setViewport("desktop");
+    const onClose = vi.fn();
+    renderSheet(onClose);
+    fireEvent.pointerDown(screen.getByRole("button", { name: "opener" }));
+    expect(onClose).toHaveBeenCalled();
+  });
+  it("does not close on a click inside it", () => {
+    setViewport("desktop");
+    const onClose = vi.fn();
+    renderSheet(onClose);
+    fireEvent.pointerDown(screen.getByRole("textbox", { name: "Count" }));
+    expect(onClose).not.toHaveBeenCalled();
+  });
+  it("focuses the content's first field, not the header's close button", () => {
+    setViewport("mobile");
+    renderSheet();
+    expect(screen.getByRole("textbox", { name: "Count" })).toHaveFocus();
+  });
+  it("is modal on phones and not on desktop, and caps the phone sheet's height", () => {
+    setViewport("mobile");
+    const { unmount } = renderSheet();
+    const phone = screen.getByRole("dialog");
+    expect(phone).toHaveAttribute("aria-modal", "true");
+    expect(phone).toHaveClass("max-h-[85dvh]", "overflow-y-auto");
+    unmount();
+    setViewport("desktop");
+    renderSheet();
+    expect(screen.getByRole("dialog")).not.toHaveAttribute("aria-modal");
+  });
   it("renders nothing while closed", () => {
     render(
       <BreakpointProvider>
