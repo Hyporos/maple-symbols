@@ -18,6 +18,7 @@ import { changelog } from "./changelog";
 import { extras } from "./extras";
 import { graph } from "./graph";
 import { handbook } from "./handbook";
+import { next } from "./next";
 import { overview } from "./overview";
 import { pages } from "./pages";
 import { shell } from "./shell";
@@ -29,6 +30,7 @@ export const en = {
   extras,
   graph,
   handbook,
+  next,
   overview,
   pages,
   shell,

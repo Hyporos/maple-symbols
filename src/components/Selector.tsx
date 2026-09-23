@@ -1,6 +1,6 @@
 import { isValid, cn } from "../lib/utils";
 import RadioButton from "./ui/RadioButton";
-import { useAppStore } from "../state/store";
+import { useAppStore, useMode } from "../state/store";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import { track } from "../lib/analytics";
 import type { Mode } from "../lib/types";
@@ -30,7 +30,7 @@ const Selector = () => {
   const nameSet = useNameSet();
 
   const symbols = useAppStore((s) => s.symbols);
-  const mode = useAppStore((s) => s.mode);
+  const mode = useMode();
   const setMode = useAppStore((s) => s.setMode);
   const selectedId = useAppStore((s) => s.selectedId);
   const selectSymbol = useAppStore((s) => s.selectSymbol);

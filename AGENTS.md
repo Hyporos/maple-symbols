@@ -46,7 +46,8 @@ src/
   components/  Header, ServerMenu (site version + "Numbers from"), SuggestionBanner (D-9), Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
     Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
     Handbook/, Extras/  TabLayout pages (ExpTable, CostTable, RatioTable; Changelog, Credits) · ui/ RadioButton, SlideButton, TabLayout
-  i18n/      en/*.ts (English catalogue = every language's contract) · index.ts (useMessages, interpolate) ·
+  next/      the 2.0 redesign at /next (ARCHITECTURE §2): a deletable UI copy sharing lib/state/i18n/hooks; routing.ts (NEXT_UI), NextApp.tsx, shell/, pages/
+  i18n/      en/*.ts (English catalogue = every language's contract, incl. next.ts for /next-only copy) · index.ts (useMessages, interpolate) ·
              Message.tsx (renders <b>…</b>) · terms.ts (game terms per name set) · gameNames.ts (official names, GMS fallback)
   test/      setup.ts (mocks), helpers.ts (store/viewport/time/head), docs + seo meta-tests
 docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session banner)
@@ -73,7 +74,7 @@ docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-stalenes
 
 ## Domain cheat sheet
 
-- 14 symbols: **arcane ids 1–6 (max level 20)**, **sacred ids 7–12 (max level 11)**, **grand ids 13–14** (Tallahart, Geardock: Sacred table, max 11, no weekly, extra, Catalyst or main stat; `null` in `game.ts` where a rule is absent). `mode` (`Mode`: `"arcane"` | `"sacred"`) is the type the UI shows, and grand is never a mode: every list filters on `symbol.type === mode` and `selectSymbol` ignores a grand id (REGIONS D-18). Selection is by `id` (`selectedId`, with `lastSelected` remembered per type). JSON order only affects display order (gotcha 1).
+- 14 symbols: **arcane ids 1–6 (max level 20)**, **sacred ids 7–12 (max level 11)**, **grand ids 13–14** (Tallahart, Geardock: Sacred table, max 11, no weekly, extra, Catalyst or main stat; `null` in `game.ts` where a rule is absent). The store's `mode` (`SymbolType`) can be `"grand"` and `selectSymbol` accepts 13/14, but the current UI (`src/components/`) has no Grand tab: its lists read the family through `useMode()` (`Mode`: `"arcane"` | `"sacred"`, folding a grand selection back to sacred), so every one of its lists still filters on `symbol.type === mode`. Only `/next` (`src/next/`) offers Grand. `inFamily(type, family)` in `game.ts` is true for a family's own type and for `"grand"` inside `"sacred"`: `usePower` and the Graph's `buildDateSymbols` use it, so Grand Sacred's power counts toward the Sacred total everywhere (REGIONS D-18). Selection is by `id` (`selectedId`, with `lastSelected` remembered per family). JSON order only affects display order (gotcha 1).
 - `symbolsRequired[L]` = symbols needed to go from level L to L+1 (`[0]` is 0). Totals: arcane 2679, sacred 4565. `mesosRequired[L]` likewise = cost of the L→L+1 upgrade.
 - Power: arcane `level*10 + 20` (max 220/symbol), sacred `level*10` (max 110). Every level-up is +10 in the Graph.
 - Daily rate: `dailySymbols × (extra ? (arcane 2 : sacred 1.5) : 1)`, 0 when the daily toggle is off. Weekly quests exist only on arcane and add **240 per weekly reset**. Day counts start **tomorrow** on the server's game clock (`gameToday()`: 00:00 UTC for GMS, not the visitor's calendar) and the weekly lands on each counted **Thursday** (the reset day in every region since 2025–26; GAME §3), so a weekly-only answer is the distance to next Thursday. Extra exists only on Vanishing Journey and Chu Chu.

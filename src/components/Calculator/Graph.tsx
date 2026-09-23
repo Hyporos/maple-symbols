@@ -28,7 +28,7 @@ import { MAX_POWER_PER_SYMBOL } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
 import { gameToday, type Region } from "../../lib/regions";
 import RadioButton from "../ui/RadioButton";
-import { useAppStore } from "../../state/store";
+import { useAppStore, useMode } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
 import type { Mode, SymbolData } from "../../lib/types";
@@ -136,7 +136,7 @@ const Graph = () => {
   const locale = useLocale();
 
   const symbols = useAppStore((s) => s.symbols);
-  const mode = useAppStore((s) => s.mode);
+  const mode = useMode();
   const region = useAppStore((s) => s.region);
 
   const { isMobile, isTablet } = useBreakpoint();

@@ -41,19 +41,21 @@ PageContent:
 
 The strings themselves exist once, in `routes.ts`: `SEO.tsx` defaults come from `routeFor("/")`, `/sitemap.xml` is a sitemap index (`sitemapIndexXml()`) pointing at one sitemap per indexable edition (`sitemapXml(edition)` at `/sitemaps/<server>.xml`, each URL with its hreflang alternates), all emitted into `dist/` by the plugin and served by a dev middleware; there is no file under `public/`, and `robots.txt` points at it. `src/test/seo.test.tsx` checks the generated `index.html` and sitemap against `ROUTES` and renders the app at every route.
 
+**`/next` is the 2.0 visual redesign** (docs/superpowers/specs/2026-09-23-visual-redesign-design.md), a deletable copy of the UI in `src/next/` beside `src/components/`, sharing `src/lib`, `src/state`, `src/i18n` and `src/hooks`. `src/next/routing.ts`'s `NEXT_UI` (`import.meta.env.DEV || SERVES_DRAFTS`) gates it: on in `pnpm dev` and any build that serves drafts (every Vercel preview, or `SERVE_DRAFTS=1`), off in production, where `/next` is simply an unknown path and falls back to the edition's calculator. `splitNext(rest)` recognises a `/next` segment right after the edition prefix (`/next`, `/next/handbook`, `/kms/next`) and returns the page path inside it; `nextHref(path, edition)` builds a link into it; `useNextRoute()` resolves the edition and `Route` the current `/next` URL names. `App.tsx` checks `NEXT_UI && splitNext(splitPath(path).rest).next` right after its own hooks and, when true, renders `<NextApp/>` (lazy-loaded) instead of the current UI's tree — so `/next` never reaches `Header`/`Footer`/`PageContent` and brings its own `BreakpointProvider`. `NextApp` adds a `<meta name="robots" content="noindex">` on mount (removed on unmount) and picks `CalculatorPage`/`HandbookPage`/`ExtrasPage` from the resolved path, each wrapped in `NextShell`. `main.tsx` renders `/next` fresh (`createRoot`, clearing `#root` first) rather than hydrating, since a preview's prebuilt HTML for that path is the calculator's (an unknown path was never prerendered as `/next`). `/next` is never prebuilt, never in a sitemap, and carries `noindex`; removing the redesign is deleting `src/next/` and its one `App.tsx` branch.
+
 ## 3. State
 
 **`src/state/store.ts`** is the only store (Zustand 5 + `persist`). Replaced Redux + RTK in the 1.4 refactor.
 
 | Field            | Default                    | Persisted            | Meaning                                                                      |
 | ---------------- | -------------------------- | -------------------- | ---------------------------------------------------------------------------- |
-| `mode`           | `"arcane"`                 | no                   | which symbol type the UI shows (`Mode`: arcane or sacred, never grand)       |
-| `symbols`        | `createInitialSymbols()`   | **yes**              | the 14 `SymbolData` entries of the shown server (saved into `saves[region]`) |
-| `region`         | `"gms"`                    | via `regionOverride` | the server whose numbers are shown (`Region`, `src/lib/regions.ts`)          |
-| `regionOverride` | `null`                     | **yes**              | the server the player picked; `null` follows the page's default              |
-| `saves`          | `{}`                       | **yes**              | per-server saved lists; `setRegion(region)` swaps them (REGIONS D-7)         |
-| `selectedId`     | `1`                        | no                   | id of the symbol shown in Calculator/Tools/Handbook (`useSelectedSymbol()`)  |
-| `lastSelected`   | `{ arcane: 1, sacred: 7 }` | no                   | per-mode memory; `setMode(type)` restores it, `selectSymbol(id)` records it  |
+| `mode`           | `"arcane"`                            | no                   | the family the store shows (`SymbolType`: arcane, sacred, or grand); the current UI reads it through `useMode()`, which folds a grand selection back to sacred |
+| `symbols`        | `createInitialSymbols()`              | **yes**              | the 14 `SymbolData` entries of the shown server (saved into `saves[region]`) |
+| `region`         | `"gms"`                               | via `regionOverride` | the server whose numbers are shown (`Region`, `src/lib/regions.ts`)          |
+| `regionOverride` | `null`                                | **yes**              | the server the player picked; `null` follows the page's default              |
+| `saves`          | `{}`                                  | **yes**              | per-server saved lists; `setRegion(region)` swaps them (REGIONS D-7)         |
+| `selectedId`     | `1`                                   | no                   | id of the symbol shown in Calculator/Tools/Handbook (`useSelectedSymbol()`)  |
+| `lastSelected`   | `{ arcane: 1, sacred: 7, grand: 13 }` | no                   | per-family memory; `setMode(type)` restores it, `selectSymbol(id)` records it |
 
 Persistence details:
 
@@ -63,7 +65,7 @@ Persistence details:
 - `migrate` is `migrateSaved`: a version 1–3 state (one `symbols` list, full `SymbolData` records in 2 and 3) becomes `{ saves: { gms: symbols }, regionOverride: null }`, since those saves were all made on the GMS-only site, and then goes through the same by-id rebuild. Version 4 was a real change of meaning (saves became per server). A version bump is not a wipe; bump only if a player field changes meaning, and then write the conversion in `migrateSaved`.
 - Every `set` (including per-keystroke input handlers) serialises to localStorage through the middleware.
 
-**Grand Sacred is data, not interface** (REGIONS D-18): its two symbols are in `symbols`, saved and restored like the rest, but `Mode` (`src/lib/types.ts`) leaves out `grand`, so `mode` and `lastSelected` cannot hold it and `selectSymbol` ignores a grand id (`isMode` in `src/lib/game.ts`). Every card lists symbols with `symbol.type === mode`, so none shows them; `src/test/grandHidden.test.tsx` pins that.
+**Grand Sacred is selectable in the store, but only `/next` (`src/next/`) offers it** (REGIONS D-18, spec §1): `selectSymbol(13 | 14)` and `setMode("grand")` work, `DEFAULT_SELECTION.grand` is Tallahart (13). The current UI (`src/components/`) has no Grand tab: its seven files read the family through `useMode()` (`src/state/store.ts`), which folds a `"grand"` mode back to `"sacred"` for that UI only, and `Mode` (`src/lib/types.ts`, `Exclude<SymbolType, "grand">`) still keeps `grand` out of what that UI's lists filter on (`symbol.type === mode`), so none of its cards shows a Grand symbol; `src/test/grandHidden.test.tsx` pins that. `inFamily(type, family)` (`src/lib/game.ts`) is the one place that says a Grand symbol also counts toward the Sacred family: `usePower` and `buildDateSymbols` (`src/lib/graph.ts`) sum `inFamily(symbol.type, family)`, so the current UI's Sacred Power total (Graph) includes Grand Sacred's power even though Grand itself stays invisible there (GAME §4).
 
 **NaN is the "unset" sentinel** for `level` and `experience` (`isValid = !isNaN`). Inputs render `""` for NaN; comparisons with NaN are silently false and the code relies on that (`readyForUpgrade`, `level > 0`, `level < max`). Local component state uses the same convention (`targetLevel`, `selectorCount`, `targetPower`).
 

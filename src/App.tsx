@@ -6,10 +6,11 @@ import SEO from "./components/SEO";
 import { ErrorBoundary } from "react-error-boundary";
 import { BreakpointProvider } from "./contexts/BreakpointContext";
 import { useRouter } from "./contexts/RouterContext";
-import { isKnownPath, pageMetaFor, routeFor } from "./lib/routes";
+import { isKnownPath, pageMetaFor, routeFor, splitPath } from "./lib/routes";
 import { useEdition } from "./hooks/useEdition";
 import { notFoundPath, track } from "./lib/analytics";
 import { useMessages } from "./i18n";
+import { NEXT_UI, splitNext } from "./next/routing";
 
 // Heavy calculator sections are lazily loaded to keep initial parse cost low.
 const Calculator = lazy(() => import("./components/Calculator/Calculator"));
@@ -18,6 +19,10 @@ const Overview = lazy(() => import("./components/Calculator/Overview"));
 const Graph = lazy(() => import("./components/Calculator/Graph"));
 import Handbook from "./components/Handbook/Handbook";
 import Extras from "./components/Extras/Extras";
+
+// The /next redesign (docs/superpowers/specs/2026-09-23-visual-redesign-design.md), a deletable
+// copy of the UI beside this one, gated behind NEXT_UI (dev and draft-serving builds only).
+const NextApp = lazy(() => import("./next/NextApp"));
 
 function PageContent() {
   const { path: pathname } = useRouter();
@@ -78,6 +83,15 @@ function App() {
       );
     }
   }, []);
+
+  const { path } = useRouter();
+  if (NEXT_UI && splitNext(splitPath(path).rest).next) {
+    return (
+      <Suspense fallback={null}>
+        <NextApp />
+      </Suspense>
+    );
+  }
 
   return (
     <BreakpointProvider>

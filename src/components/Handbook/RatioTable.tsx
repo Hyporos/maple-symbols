@@ -3,7 +3,7 @@ import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { MdOutlineInfo } from "react-icons/md";
 import { cn } from "../../lib/utils";
 import { arcaneRatioData, sacredRatioData } from "../../lib/ratioData";
-import { useAppStore } from "../../state/store";
+import { useMode } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useMessages } from "../../i18n";
 import Message from "../../i18n/Message";
@@ -14,7 +14,7 @@ import Message from "../../i18n/Message";
 
 const RatioTable = () => {
   const m = useMessages().handbook;
-  const mode = useAppStore((s) => s.mode);
+  const mode = useMode();
 
   const { isMobile } = useBreakpoint();
 

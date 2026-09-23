@@ -60,6 +60,8 @@ export interface Terms {
   /** The two continents the symbol families belong to (the Damage Ratio tab). */
   arcaneRegion: string;
   sacredRegion: string;
+  /** The Grand Sacred family's short name (the picker's third tab). */
+  grand: string;
 }
 
 /**
@@ -109,6 +111,7 @@ export const TERMS: Readonly<
     xenon: "Xenon",
     arcaneRegion: "Arcane River",
     sacredRegion: "Grandis",
+    grand: "Grand",
   },
   // MSEA English, every term from maplesea.com patch notes (all 825 notices searched,
   // 2026-09-23; https://www.maplesea.com/updates/view/<slug>/):
@@ -141,6 +144,8 @@ export const TERMS: Readonly<
     xenon: "Xenon",
     arcaneRegion: "Arcane River",
     sacredRegion: "Grandis",
+    // maplesea.com v238 patch notes: "Grand Authentic Symbol: Talahart" (MSEA's spelling).
+    grand: "Grand",
   },
   // KMS Korean (checked 2026-09-23). Sources, all maplestory.nexon.com:
   //   [G396] Guide/N23GameInformation/Articles/396 ("[스탯] 아케인포스/어센틱포스"):
@@ -182,6 +187,8 @@ export const TERMS: Readonly<
     // news/update/806 (1.2.416, 2026-06-18): "■ 아케인리버, 그란디스 지역의 일일 퀘스트 완료에…".
     arcaneRegion: "아케인리버",
     sacredRegion: "그란디스",
+    // news/update/797: "그랜드 어센틱심볼 : 기어드락".
+    grand: "그랜드",
   },
   // JMS Japanese, all from maplestory.nexon.co.jp. Japanese has no plural or article, so the
   // plural and "a…" forms repeat the bare word. Sources, each quoting the term itself:
@@ -221,6 +228,8 @@ export const TERMS: Readonly<
     // ver4.43 part 1 (2026-07-02): "以下の「アーケインリバー」および「グランディス」地域において".
     arcaneRegion: "アーケインリバー",
     sacredRegion: "グランディス",
+    // ver4.44 notice: 「グランドオーセンティックシンボル:ギアードラック」.
+    grand: "グランド",
   },
   // TMS Traditional Chinese (checked 2026-09-23). Sources, official beanfun notices at
   // https://maplestory-event.beanfun.com/eventad/eventad?eventadid=<id>:
@@ -263,6 +272,9 @@ export const TERMS: Readonly<
     // beanfun eventadid 17655 (CROWN, 2026-06-24): "以下奧術之河、格蘭蒂斯地區的部分狩獵場".
     arcaneRegion: "奧術之河",
     sacredRegion: "格蘭蒂斯",
+    // The client's "豪華真實符文" (Tallahart); no official page names the word alone
+    // (official text not found beyond the compound, Brian 2026-09-23).
+    grand: "豪華",
   },
   // CMS Simplified Chinese (checked 2026-09-23). Sources, all on the official site mxd.web.sdo.com
   // (its guide wiki 次元站 and its notices; the version pages are images, so not quoted):
@@ -305,6 +317,8 @@ export const TERMS: Readonly<
     // mxd.web.sdo.com/wiki ArticleID 388900 (2026-05-27): "在神秘河（神秘之力）与格兰蒂斯（原初之力）地区".
     arcaneRegion: "神秘河",
     sacredRegion: "格兰蒂斯",
+    // V227 page: "豪华原初徽章：神烬之地" (Tallahart).
+    grand: "豪华",
   },
 };
 

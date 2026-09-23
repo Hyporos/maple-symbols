@@ -3,6 +3,7 @@ import { createInitialSymbols } from "./data";
 import {
   CATALYST_RETENTION,
   EXTRA_MULTIPLIER,
+  inFamily,
   isMode,
   MAIN_STAT_PER_LEVEL,
   MAX_POWER_PER_SYMBOL,
@@ -65,5 +66,15 @@ describe("Grand Sacred rules (GAME §2, §4)", () => {
     expect(isMode("arcane")).toBe(true);
     expect(isMode("sacred")).toBe(true);
     expect(isMode("grand")).toBe(false);
+  });
+});
+
+describe("inFamily", () => {
+  it("puts Grand Sacred inside the Sacred family, and nothing else across families", () => {
+    expect(inFamily("grand", "sacred")).toBe(true);
+    expect(inFamily("sacred", "sacred")).toBe(true);
+    expect(inFamily("grand", "grand")).toBe(true);
+    expect(inFamily("sacred", "grand")).toBe(false);
+    expect(inFamily("arcane", "sacred")).toBe(false);
   });
 });

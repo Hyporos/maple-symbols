@@ -17,6 +17,13 @@ type NoneForGrand = Readonly<Record<Mode, number> & { grand: null }>;
 /** Whether the interface can list this family as a mode: not Grand Sacred yet (REGIONS D-18). */
 export const isMode = (type: SymbolType): type is Mode => type !== "grand";
 
+/**
+ * Whether a symbol of `type` counts toward `family`'s power and graph: its own family, and
+ * Grand Sacred inside Sacred (their power adds to Sacred Power, Brian 2026-09-23).
+ */
+export const inFamily = (type: SymbolType, family: SymbolType): boolean =>
+  type === family || (family === "sacred" && type === "grand");
+
 /** Highest level per symbol type. */
 export const MAX_LEVEL: Record<SymbolType, number> = { arcane: 20, sacred: 11, grand: 11 };
 

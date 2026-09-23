@@ -66,18 +66,20 @@ describe("Grand Sacred stays out of the interface", () => {
     });
   }
 
-  it("does not add Grand power to the Sacred total", () => {
+  it("adds Grand power to the Sacred total (spec §1, Brian 2026-09-23)", () => {
     seedSymbol(7, { level: 5, experience: 0, daily: true });
     render(<Graph />);
-    expect(screen.getByText("50 / 110")).toBeInTheDocument();
+    // Sacred (id 7, level 5) 50 + Grand (id 13, level 5) 50 + Grand (id 14, level 8) 80 = 180;
+    // the denominator only counts the one enabled Sacred symbol the current UI lists.
+    expect(screen.getByText("180 / 110")).toBeInTheDocument();
   });
 
-  it("cannot be selected: the mode and the remembered selection stay put", () => {
-    const before = useAppStore.getState();
-    for (const id of [13, 14]) useAppStore.getState().selectSymbol(id);
-    const after = useAppStore.getState();
-    expect(after.selectedId).toBe(before.selectedId);
-    expect(after.mode).toBe(before.mode);
-    expect(after.lastSelected).toEqual({ arcane: 1, sacred: 7 });
-  });
+  for (const mode of ["arcane", "sacred"] as const) {
+    it(`the current Selector offers no Grand symbol in ${mode} mode`, () => {
+      useAppStore.getState().setMode(mode);
+      render(<Selector />);
+      expect(screen.getAllByText(/^Lv\. /)).toHaveLength(6);
+      expectNoGrand();
+    });
+  }
 });

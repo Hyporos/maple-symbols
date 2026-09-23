@@ -7,7 +7,7 @@ import { getRemainingToMax } from "../../lib/calculator";
 import { clampNumberInput } from "../../lib/inputs";
 import { CATALYST_RETENTION, maxLevelFor } from "../../lib/game";
 import { REGION_PROFILES } from "../../lib/regions";
-import { useAppStore, useSelectedSymbol } from "../../state/store";
+import { useAppStore, useMode, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
 import { useNameSet, useMessages } from "../../i18n";
@@ -26,7 +26,7 @@ const Tools = () => {
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
   const selectedId = useAppStore((s) => s.selectedId);
-  const mode = useAppStore((s) => s.mode);
+  const mode = useMode();
   const region = useAppStore((s) => s.region);
 
   const { isMobile } = useBreakpoint();

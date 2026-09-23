@@ -2,7 +2,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
 import { formatNumber } from "../../lib/format";
-import { useAppStore, useSelectedSymbol } from "../../state/store";
+import { useMode, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import symbolsJson from "../../lib/symbols.json";
 import { interpolate, useNameSet, useMessages } from "../../i18n";
@@ -16,7 +16,7 @@ import Message from "../../i18n/Message";
 const ExpTable = () => {
   const m = useMessages().handbook;
   const nameSet = useNameSet();
-  const mode = useAppStore((s) => s.mode);
+  const mode = useMode();
 
   const { isMobile } = useBreakpoint();
   let totalExp = 0;

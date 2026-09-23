@@ -13,7 +13,7 @@ import {
   INITIAL_DAY_COUNT,
   isValid,
 } from "./utils";
-import { MAX_LEVEL, POWER_PER_LEVEL } from "./game";
+import { inFamily, MAX_LEVEL, POWER_PER_LEVEL } from "./game";
 import { DEFAULT_REGION, gameToday, type Region } from "./regions";
 
 export type DateSymbols = {
@@ -47,16 +47,16 @@ export function buildDateSymbols(
   now: Dayjs = gameToday(),
   region: Region = DEFAULT_REGION
 ): DateSymbols[] {
-  const maxLevel = MAX_LEVEL[type];
   return symbols
     .filter(
       (symbol) =>
         (symbol.weekly || symbol.daily) &&
         isValid(symbol.level) &&
         isValid(symbol.experience) &&
-        symbol.type === type
+        inFamily(symbol.type, type)
     )
     .map((symbol) => {
+      const maxLevel = MAX_LEVEL[symbol.type];
       const progress: DateSymbols["progress"] = [];
       let dayState = INITIAL_DAY_COUNT;
       const dailySymbols = getDailySymbols(symbol);

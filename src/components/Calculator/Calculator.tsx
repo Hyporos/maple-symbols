@@ -14,7 +14,7 @@ import {
 } from "../../lib/utils";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useLocalResetTime } from "../../hooks/useLocalResetTime";
-import { useAppStore, useSelectedSymbol } from "../../state/store";
+import { useAppStore, useMode, useSelectedSymbol } from "../../state/store";
 import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
 import { track, trackOnce } from "../../lib/analytics";
@@ -42,7 +42,7 @@ const Calculator = () => {
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
   const selectedId = useAppStore((s) => s.selectedId);
-  const mode = useAppStore((s) => s.mode);
+  const mode = useMode();
   const region = useAppStore((s) => s.region);
   // Class-specific stat gains per symbol level, shown in the main stat tooltip; they differ
   // by server (KMS raised Xenon's in 1.2.419), so they come from the server's profile.

@@ -15,17 +15,31 @@ describe("usePower", () => {
     expect(result.current).toBe(70);
   });
 
-  it("sacred mode: level*10 per valid sacred symbol, no base bonus", () => {
+  // Grand Sacred counts toward the Sacred total (spec §1, Brian 2026-09-23): sacred(3)*10 = 30
+  // plus grand(4)*10 = 40.
+  it("sacred mode: level*10 per valid sacred symbol, plus Grand Sacred, no base bonus", () => {
     const { result } = renderHook(() => usePower(symbols, "sacred"));
-    expect(result.current).toBe(30);
+    expect(result.current).toBe(70);
   });
 
-  it("grand: level*10, no base bonus, and never counted in the sacred total", () => {
+  it("grand: level*10, no base bonus (spec §1)", () => {
     expect(renderHook(() => usePower(symbols, "grand")).result.current).toBe(40);
   });
 
   it("is 0 with no valid symbols", () => {
     const { result } = renderHook(() => usePower([{ type: "arcane", level: NaN }], "arcane"));
     expect(result.current).toBe(0);
+  });
+
+  it("counts Grand Sacred toward the Sacred Power total (spec §1)", () => {
+    const symbols = [
+      { type: "sacred" as const, level: 5 },
+      { type: "grand" as const, level: 2 },
+      { type: "arcane" as const, level: 3 },
+    ];
+    const { result } = renderHook(() => usePower(symbols, "sacred"));
+    expect(result.current).toBe(70); // 50 + 20
+    const { result: grand } = renderHook(() => usePower(symbols, "grand"));
+    expect(grand.current).toBe(20);
   });
 });

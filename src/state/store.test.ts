@@ -154,6 +154,22 @@ describe("setRegion: one save per server (REGIONS D-7)", () => {
   });
 });
 
+describe("Grand Sacred selection (spec §1)", () => {
+  it("selects a Grand Sacred symbol and remembers it for the grand family", () => {
+    useAppStore.getState().selectSymbol(13);
+    expect(useAppStore.getState().selectedId).toBe(13);
+    expect(useAppStore.getState().mode).toBe("grand");
+    useAppStore.getState().setMode("arcane");
+    useAppStore.getState().setMode("grand");
+    expect(useAppStore.getState().selectedId).toBe(13);
+  });
+
+  it("starts the grand family on Tallahart", () => {
+    useAppStore.getState().setMode("grand");
+    expect(useAppStore.getState().selectedId).toBe(13);
+  });
+});
+
 describe("the page's edition decides the server (REGIONS D-2)", () => {
   it("shows the edition's own server unless the player chose another", async () => {
     window.history.replaceState(null, "", "/kms/handbook");

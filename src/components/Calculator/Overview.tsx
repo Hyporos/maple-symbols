@@ -7,7 +7,7 @@ import { calculateDaysRemaining, cn, getDailySymbols } from "../../lib/utils";
 import { collapsedRowLabels, targetPanelLabels } from "../../lib/overview";
 import { clampNumberInput } from "../../lib/inputs";
 import { maxLevelFor } from "../../lib/game";
-import { useAppStore } from "../../state/store";
+import { useAppStore, useMode } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { targetBucket, trackOnce } from "../../lib/analytics";
 import { useLocale, useNameSet, useMessages } from "../../i18n";
@@ -20,7 +20,7 @@ const Overview = () => {
   const nameSet = useNameSet();
 
   const symbols = useAppStore((s) => s.symbols);
-  const mode = useAppStore((s) => s.mode);
+  const mode = useMode();
   const region = useAppStore((s) => s.region);
 
   const { isMobile, isTablet } = useBreakpoint();
