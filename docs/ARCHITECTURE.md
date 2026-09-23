@@ -43,19 +43,22 @@ The strings themselves exist once, in `routes.ts`: `SEO.tsx` defaults come from 
 
 **`src/state/store.ts`** is the only store (Zustand 5 + `persist`). Replaced Redux + RTK in the 1.4 refactor.
 
-| Field          | Default                    | Persisted | Meaning                                                                     |
-| -------------- | -------------------------- | --------- | --------------------------------------------------------------------------- |
-| `mode`         | `"arcane"`                 | no        | which symbol type the UI shows (`SymbolType`)                               |
-| `symbols`      | `createInitialSymbols()`   | **yes**   | the 12 `SymbolData` entries                                                 |
-| `selectedId`   | `1`                        | no        | id of the symbol shown in Calculator/Tools/Handbook (`useSelectedSymbol()`) |
-| `lastSelected` | `{ arcane: 1, sacred: 7 }` | no        | per-type memory; `setMode(type)` restores it, `selectSymbol(id)` records it |
+| Field            | Default                    | Persisted            | Meaning                                                                      |
+| ---------------- | -------------------------- | -------------------- | ---------------------------------------------------------------------------- |
+| `mode`           | `"arcane"`                 | no                   | which symbol type the UI shows (`SymbolType`)                                |
+| `symbols`        | `createInitialSymbols()`   | **yes**              | the 12 `SymbolData` entries of the shown server (saved into `saves[region]`) |
+| `region`         | `"gms"`                    | via `regionOverride` | the server whose numbers are shown (`Region`, `src/lib/regions.ts`)          |
+| `regionOverride` | `null`                     | **yes**              | the server the player picked; `null` follows the page's default              |
+| `saves`          | `{}`                       | **yes**              | per-server saved lists; `setRegion(region)` swaps them (REGIONS D-7)         |
+| `selectedId`     | `1`                        | no                   | id of the symbol shown in Calculator/Tools/Handbook (`useSelectedSymbol()`)  |
+| `lastSelected`   | `{ arcane: 1, sacred: 7 }` | no                   | per-type memory; `setMode(type)` restores it, `selectSymbol(id)` records it  |
 
 Persistence details:
 
-- localStorage key `maple-symbols-v2`, `version: STORAGE_VERSION` (3 on `v2`; 2 on `main`).
-- `partialize` writes `{ symbols: toSaved(symbols) }`: per symbol, `id` and the player's fields only (`level` and `experience` with NaN as `null`, `daily`, `weekly`/`extra` where the quest exists, `locked`). No game data, nothing derived, no UI state.
-- `merge` calls `restoreSymbols(saved, createInitialSymbols())` (`src/lib/persistence.ts`): fresh data decides order, length and every game field; saved player fields are copied on by id when their type is right; unknown ids and unreadable values are ignored; `weekly`/`extra` are restored only on symbols that still have that quest.
-- `migrate` returns the old state unchanged, so any older save (versions 2 and 3 stored full `SymbolData` records) goes through the same by-id rebuild. A version bump is no longer a wipe; bump only if a player field changes meaning, and then write the conversion in `migrate`.
+- localStorage key `maple-symbols-v2`, `version: STORAGE_VERSION` (4 on `v2`; 2 on `main`).
+- `partialize` writes `{ saves: { ...saves, [region]: toSaved(symbols) }, regionOverride }` (`SavedState`): one list per server, and per symbol, `id` and the player's fields only (`level` and `experience` with NaN as `null`, `daily`, `weekly`/`extra` where the quest exists, `locked`). No game data, nothing derived, no UI state.
+- `merge` picks the server (`regionOverride` when it is a known server, else `DEFAULT_REGION`), drops unknown save slots (`readSaves`), and calls `restoreSymbols(saves[region], createInitialSymbols(region))` (`src/lib/persistence.ts`): fresh data decides order, length and every game field; saved player fields are copied on by id when their type is right; unknown ids and unreadable values are ignored; `weekly`/`extra` are restored only on symbols that still have that quest.
+- `migrate` is `migrateSaved`: a version 1–3 state (one `symbols` list, full `SymbolData` records in 2 and 3) becomes `{ saves: { gms: symbols }, regionOverride: null }`, since those saves were all made on the GMS-only site, and then goes through the same by-id rebuild. Version 4 was a real change of meaning (saves became per server). A version bump is not a wipe; bump only if a player field changes meaning, and then write the conversion in `migrateSaved`.
 - Every `set` (including per-keystroke input handlers) serialises to localStorage through the middleware.
 
 **NaN is the "unset" sentinel** for `level` and `experience` (`isValid = !isNaN`). Inputs render `""` for NaN; comparisons with NaN are silently false and the code relies on that (`readyForUpgrade`, `level > 0`, `level < max`). Local component state uses the same convention (`targetLevel`, `selectorCount`, `targetPower`).

@@ -7,10 +7,43 @@
 // symbol appears for them, and a removed one drops out, without wiping anyone's
 // levels (KI-001). `restoreSymbols` accepts any older save shape, including the
 // full records that STORAGE_VERSION 2 and 3 wrote, and ignores anything it cannot
-// read rather than trusting it.
+// read rather than trusting it. Since version 4 there is one such list per server.
 // ---------------------------------------------------------------------------
 
+import { REGIONS, type Region } from "./regions";
 import type { SymbolData } from "./types";
+
+/**
+ * What the store writes (STORAGE_VERSION 4): one list of saved symbols per server,
+ * since a character on one server is a different account on another (REGIONS D-7),
+ * and the server the player chose, if they chose one.
+ */
+export interface SavedState {
+  saves: Partial<Record<Region, SavedSymbol[]>>;
+  regionOverride: Region | null;
+}
+
+export const isRegion = (v: unknown): v is Region =>
+  typeof v === "string" && (REGIONS as readonly string[]).includes(v);
+
+/**
+ * The per-server saves of a stored state, keeping only known servers. The lists stay
+ * unchecked here; `restoreSymbols` reads each one defensively when its server loads.
+ */
+export function readSaves(saves: unknown): Partial<Record<Region, unknown>> {
+  if (!isRecord(saves)) return {};
+  return Object.fromEntries(Object.entries(saves).filter(([key]) => isRegion(key)));
+}
+
+/**
+ * Brings any older stored state up to version 4. Versions 1 to 3 held one `symbols`
+ * list, written while the site showed GMS only, so it becomes the GMS save; nothing
+ * is wiped (the per-symbol fields are read by `restoreSymbols` as before).
+ */
+export function migrateSaved(persisted: unknown, version: number): unknown {
+  if (version >= 4 || !isRecord(persisted)) return persisted;
+  return { saves: { gms: persisted.symbols }, regionOverride: null };
+}
 
 /** The fields a player controls; everything else is game data from symbols.json. */
 export interface SavedSymbol {
@@ -47,7 +80,7 @@ const readNumber = (v: unknown): number => (typeof v === "number" && Number.isFi
 
 /**
  * Rebuild the symbol list from fresh game data plus whatever player fields a save holds.
- * `fresh` is `createInitialSymbols()`: its order, length and game data always win.
+ * `fresh` is `createInitialSymbols(region)`: its order, length and game data always win.
  * For each fresh symbol with a saved record of the same `id`, the player fields are
  * copied over when they have the right type; `weekly`/`extra` are only restored on
  * symbols that still have that quest. Saved records for unknown ids are ignored.

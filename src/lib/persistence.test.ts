@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { restoreSymbols, toSaved } from "./persistence";
+import { isRegion, migrateSaved, readSaves, restoreSymbols, toSaved } from "./persistence";
 import { createInitialSymbols } from "./data";
 import { updateSymbol } from "./utils";
 
@@ -88,5 +88,33 @@ describe("restoreSymbols (KI-001)", () => {
     for (const junk of [undefined, null, "symbols", 42, { 1: { level: 5 } }, [null, 5, "x"]]) {
       expect(restoreSymbols(junk, fresh())).toEqual(fresh());
     }
+  });
+});
+
+describe("per-server saves (STORAGE_VERSION 4)", () => {
+  it("knows the six servers and nothing else", () => {
+    for (const region of ["gms", "msea", "kms", "jms", "tms", "cms"])
+      expect(isRegion(region)).toBe(true);
+    for (const other of ["GMS", "europe", "", null, 3]) expect(isRegion(other)).toBe(false);
+  });
+
+  it("keeps only known servers' slots", () => {
+    expect(readSaves({ gms: [1], kms: [2], europe: [3] })).toEqual({ gms: [1], kms: [2] });
+    expect(readSaves(null)).toEqual({});
+    expect(readSaves([1, 2])).toEqual({});
+  });
+
+  it("turns an older single list into the GMS save and leaves version 4 alone", () => {
+    const list = [{ id: 1, level: 3 }];
+    expect(migrateSaved({ symbols: list }, 3)).toEqual({
+      saves: { gms: list },
+      regionOverride: null,
+    });
+    expect(migrateSaved({ symbols: list }, 2)).toEqual({
+      saves: { gms: list },
+      regionOverride: null,
+    });
+    const current = { saves: { kms: list }, regionOverride: "kms" };
+    expect(migrateSaved(current, 4)).toBe(current);
   });
 });

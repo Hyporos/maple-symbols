@@ -50,7 +50,7 @@ Leaf components render without any provider: `useRouter()` and `useBreakpoint()`
 
 **Hook**: `renderHook(() => usePower(symbols, "arcane"))` → `result.current`. Re-render with a new array to recompute; memoisation is by reference.
 
-**Store** (`src/state/store.test.ts`): set state, then `JSON.parse(localStorage.getItem("maple-symbols-v2"))` to assert what `partialize` wrote (`{ state: { symbols }, version: 3 }`, NaN → `null`). To test `merge`/`migrate`, seed localStorage and `await useAppStore.persist.rehydrate()`. The store is a module singleton hydrated at import; use `vi.resetModules()` + a dynamic import only if you need "storage seeded before creation".
+**Store** (`src/state/store.test.ts`): set state, then `JSON.parse(localStorage.getItem("maple-symbols-v2"))` to assert what `partialize` wrote (`{ state: { saves: { gms: [...] }, regionOverride: null }, version: 4 }`, NaN → `null`). To test `merge`/`migrate`, seed localStorage and `await useAppStore.persist.rehydrate()`. The store is a module singleton hydrated at import; use `vi.resetModules()` + a dynamic import only if you need "storage seeded before creation".
 
 **Component that reads the store**: seed with `seedSymbol(...)` or `useAppStore.setState(...)`, `render(<Component />)`, drive with `fireEvent.change/click`, then assert on `screen` **and** on `useAppStore.getState()` (the UI often shows derived text while the store holds the number). Number inputs: `fireEvent.change(input, { target: { value: "25" } })`.
 

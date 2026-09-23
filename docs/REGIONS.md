@@ -12,7 +12,7 @@ The plan of record for serving every MapleStory server (GMS, MSEA, KMS, JMS, TMS
   - D-3 **Server codes in the address**: `/` (GMS), `/msea/`, `/kms/`, `/jms/`, `/tms/`, `/cms/`. The hreflang values still carry the languages (§2).
   - D-4 **All four pages in every edition, fully translated**, changelog and credits included: a KMS reader sees the changelog in Korean. This overturns I18N-7 (changelog history stays English) and means the changelog history is translated too.
   - D-5 **Head tags first, then full prerendered HTML** with React's own `prerender`; the custom router stays.
-  - D-6 **An unpublished number is hidden** and the page says it is not published yet for that server.
+  - D-6 **An unpublished number is hidden** and the page says it is not published yet for that server. **Inferred numbers are shown** (Brian, 2026-09-22); their status stays in the data so the page can mark them.
   - D-7 **One save per server**; existing saves become the GMS save.
   - D-8 **The server's reset clock**, with a local-time hint (fixes KI-013).
   - D-9 **A suggestion banner** from the browser's language or time zone; never a redirect.
@@ -26,7 +26,7 @@ The plan of record for serving every MapleStory server (GMS, MSEA, KMS, JMS, TMS
   - D-18 **Grand Sacred gets its own `grand` type in the data**; where it sits in the interface is settled with the 2.0 visual design.
   - D-19 **MSEA uses its own client's terms** (Authentic Symbol, Authentic Force, Road to Extinction, Chew Chew Island, Lacheln, Moras, Hotel Arcs, Talahart, Geardrock).
   - D-20 **Verification by meta tags** in the prebuilt head (Naver, Daum, Baidu) **and DNS** (Google, Bing), each recorded in SEO §5.
-- **Built on `v2`** (2026-09-22): phase 1 of §8. `src/lib/regions.json` holds every server's profile (reset offset, weekly structure, class gains, a status per kind of number, KMS's arcane costs) and `src/lib/regions.ts` reads it (`REGION_PROFILES`, `gameToday`, `weeklySymbolsFor`); `createInitialSymbols(region)` applies the overrides; every day count and date runs on the GMS game clock (KI-013 resolved); the watcher reads the GMS profile. No UI yet: the site still shows GMS only. Grand Sacred stays out of the data until the 2.0 design places it (D-18). The rest of §3–§8 is not built.
+- **Built on `v2`** (2026-09-22): phase 1 of §8. `src/lib/regions.json` holds every server's profile (reset offset, weekly structure, class gains, a status per kind of number, KMS's arcane costs) and `src/lib/regions.ts` reads it (`REGION_PROFILES`, `gameToday`, `weeklySymbolsFor`); `createInitialSymbols(region)` applies the overrides; every day count and date runs on the GMS game clock (KI-013 resolved); the watcher reads the GMS profile. No UI yet: the site still shows GMS only. Grand Sacred stays out of the data until the 2.0 design places it (D-18). Phase 2 too: saves are per server (`STORAGE_VERSION` 4, older saves become the GMS save) and the store has `region`, `regionOverride` and `setRegion`. The cards still compute with GMS; they read the store's `region` once phase 3 adds the server switch. The rest of §3–§8 is not built.
 
 ## 1. What this overturns
 
@@ -62,7 +62,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 - `createInitialSymbols(region)`. Move DEMON_AVENGER_HP / XENON_ALL_STAT / WEEKLY_SYMBOLS into data, and update the watcher's regexes in the same commit. ExpTable and CostTable read through `gameDataFor(region)`.
 - Never generate unpublished tables. The KMS arcane table is the exception: it is derived from a rule confirmed three ways (`docs/data-check/kms-mesos-arcane.csv`).
 - Grand Sacred: `SymbolType` gains "grand"; Sacred EXP table; max 11; power +10; no main stat (a bonus line instead); no Catalyst; the Sacred Symbol Selector covers Tallahart (Brian, in game, 2026-09-22) but not Geardock.
-- Persistence: STORAGE_VERSION 4, `{ saves: { [region]: SavedSymbol[] }, regionOverride? }`; existing saves migrate to gms; `setRegion`; `skipHydration` plus rehydrate on mount for SSR.
+- Persistence: STORAGE_VERSION 4, `{ saves: { [region]: SavedSymbol[] }, regionOverride }`; existing saves migrate to gms; `setRegion` (built, phase 2). Still to do with prerendering (phase 4): `skipHydration` plus a rehydrate on mount, so the server HTML and the first client render agree.
 - Reset clock (fixes KI-013): `gameToday(region)` = UTC + fixed offset. Days count game days, the weekly lands on the game Thursday, completion dates are game dates, with a local-time hint. The `dayjs()` calls in Overview, Graph, calculator.ts, overview.ts and graph.ts take the game clock. Test instants on both sides of each offset.
 
 ## 4. SEO per region
@@ -155,7 +155,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 
 0. Record the decisions (this doc, 2026-09-22) and rewrite the docs listed in §1.
 1. ~~Region data layer in `src/lib`, plus the game clock (fixes KI-013 for GMS alone) and constants moved into data (watcher updated).~~ Done 2026-09-22.
-2. State and persistence (v4, per-region saves).
+2. ~~State and persistence (v4, per-region saves).~~ Done 2026-09-22; the SSR hydration guard moves to phase 4, where prerendering starts.
 3. Editions in routing, head-only static HTML per URL, sitemap index, `vercel.json` fallbacks verified on a preview.
 4. Full SSG body plus explanatory copy.
 5. Terms table, `formatMesos`, Intl dates, CJK font stacks, width-based title test.
