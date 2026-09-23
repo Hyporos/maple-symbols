@@ -6,7 +6,7 @@ id,gms_name,zh_Hant_name,zh_Hant_daily_quest,confidence,source
 5,Morass,祕法符文：魔菈斯,[每日任務] 為了魔菈斯的穩定,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
 6,Esfera,祕法符文：艾斯佩拉,[每日任務] 艾斯佩拉研究命令,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
 7,Cernium,真實符文：賽爾尼溫,[每日任務] 調查賽爾尼溫,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
-8,Arcus,真實符文：阿爾克斯,[每日任務] 打掃飯店阿爾克斯周邊,official (V280 notice) and client string (region 飯店阿爾克斯),mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+8,Arcus,真實符文：阿爾克斯,[每日任務] 打掃飯店阿爾克斯周邊,official (V280 notice) and client string (region 阿爾克斯飯店 in the V280 notice; the quest says 飯店阿爾克斯),mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
 9,Odium,真實符文：奧迪溫,[每日任務] 奧迪溫地區勘查,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
 10,Shangri-La,真實符文：桃源境,[每日任務] 桃源境汙染淨化,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
 11,Arteria,真實符文：阿爾特利亞,[每日任務] 消滅阿爾特利亞殘黨,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)

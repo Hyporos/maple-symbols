@@ -44,7 +44,7 @@ export const fullText = (text: string) => (_content: string, element: Element | 
 
 // ── Time ──────────────────────────────────────────────────────────────────
 // Use with vi.setSystemTime(WED). Always the local-time constructor: on a UTC-4
-// machine `new Date("2026-09-16")` is Tuesday 20:00 local and shifts the Monday math.
+// machine `new Date("2026-09-16")` is Tuesday 20:00 local and shifts the weekday maths.
 export const SUN = new Date(2026, 8, 13, 10);
 export const MON = new Date(2026, 8, 14, 10);
 export const WED = new Date(2026, 8, 16, 10);

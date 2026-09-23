@@ -17,6 +17,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
 - **Stage files by name, never `git add -A`**: leftover worktrees and scratch folders get swept in (M-011).
 - **Game facts need a source dated after the last relevant patch**, or they are recorded as unverified. When GMS changes something, KMS almost always changed it first (M-012). **Guide pages lag**: a number that patches change comes from the latest patch notes, never from an official guide page alone (M-014).
+- **Recompute every total from its parts** before writing it down, and never call a number checked that nobody recomputed (M-013). **Quote the sentence that states the fact itself**: a reset time quoted from an event counter's line proves nothing about the symbol quests (M-015).
 
 ## Log
 
@@ -119,3 +120,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: The source was Nexon Japan's force guide page, which is official but was never updated after the patch. Same family as M-012: a changeable number taken from an undated page.
 - **Rule**: Rates, costs and rosters come from the region's latest patch notes; an official guide page only corroborates.
 - **Where**: GAME §5, `docs/data-check/server-differences.csv`, KI-014.
+
+### M-015 · 2026-09-22 · research
+
+- **What**: Recorded "official" reset hours for GMS, KMS, TMS and CMS from quotes that belong to unrelated counters: the Frieren Adventure Journal (GMS v.271), the Momentum Pass and event coins (KMS 808/811/813), a GM support package (TMS V280) and Guild Noblesse SP (CMS V226). The review caught it. The GMS time was right anyway (v.264 states it for the Arcane weeklies, and Brian confirmed it in game).
+- **Root cause**: Research agents matched the words "reset" and "Thursday 00:00" without checking what the sentence was about, and I recorded their quotes as official without reading them in context.
+- **Rule**: A quoted source must be the sentence that states the fact about the thing itself. Read the quote in its paragraph before calling it official.
+- **Where**: `docs/data-check/resets.csv`, GAME §3 and §7, `server-differences.csv`.

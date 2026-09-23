@@ -1,6 +1,6 @@
 question,answer (wiki-sourced 2026-09-22; confirm in game),source,confirmed? (y / the right value)
 Regions and symbol names,"Grand Sacred Symbol: Tallahart; Grand Sacred Symbol: Geardock",https://maplestorywiki.net/w/Grand_Sacred_Symbol,y (Brian 2026-09-22: Geardock)
-Character level requirement,290+ (Western Grandis),https://maplestorywiki.net/w/Grand_Sacred_Symbol,
+Character level requirement,"Tallahart 290+, Geardock 295+ (official, v.270)",https://www.nexon.com/maplestory/news/update/42415,
 Max level,11,https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Tallahart,y (Brian 2026-09-22)
 Symbols required per level (1 to 2 ... 10 to 11),"29, 76, 141, 224, 325, 444, 581, 736, 909, 1100 (identical to our Sacred table; total 4565)",https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Tallahart,y (Brian 2026-09-22)
 Meso cost per level - Tallahart,"113600000, 293300000, 535800000, 837700000, 1196000000, 1607200000, 2068300000, 2576000000, 3126900000, 3718000000 (total 16072800000)",https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Tallahart,"total confirmed: Brian saw 16.07b in game on 2026-09-22"
@@ -9,12 +9,12 @@ Daily quest - Tallahart,[Daily Quest] Investigate the Tallahart Ancient God's Po
 Daily quest - Geardock,[Daily Quest] Cleaning Up Kronos - 15 coupons per day (official: v.271 notes 'Tallahart, Geardock: 10 → 15'),https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Geardock,y (15; Brian 2026-09-22)
 Weekly quest,None mentioned on either page,https://maplestorywiki.net/w/Tallahart,y (none; Brian 2026-09-22)
 Extra quest,None mentioned,https://maplestorywiki.net/w/Grand_Sacred_Symbol,y (none; Brian 2026-09-22)
-Power stat and amount,Sacred Power / Authentic Force +10 at level 1 and +10 per level (so 110 at max - same as a Sacred Symbol),https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Tallahart,
+Power stat and amount,Sacred Power / Authentic Force +10 at level 1 and +10 per level (so 110 at max - same as a Sacred Symbol),https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Tallahart,y (official, v.270)
 Main stat per level,"None listed. Instead: EXP +10% at level 1 then +4% per level; Mesos +5% then +1%; Item Drop +5% then +1% (at max: EXP +50%, Mesos +15%, Drop +15%). Regular Sacred Symbols do give main stat, so confirm this in game - it changes what the next-level panel can show.",https://maplestorywiki.net/w/Grand_Sacred_Symbol,y (no main stat; Brian 2026-09-22)
-Demon Avenger / Xenon,"Not listed for Grand. For Authentic (Sacred) symbols the wiki gives 4200 Final HP and 96 all stat per 10 Authentic Force, plus 6300 HP / 144 all stat per unique symbol equipped - the per-symbol part is something we do not model today.",https://maplestorywiki.net/w/Sacred_Symbol,
-Catalyst / Selector,"None: the page says there is no catalyst, selector or transfer for Grand Sacred Symbols",https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Tallahart,y (neither; Brian 2026-09-22)
+Demon Avenger / Xenon,"None: Grand Sacred Symbols give no main stat, so no class conversion. (For Sacred symbols the 6300 HP / 144 all stat figure the wiki lists per symbol is just the level-1 main-stat conversion, GAME §2; nothing extra.)",https://maplestorywiki.net/w/Sacred_Symbol,
+Catalyst / Selector,"No Catalyst (official, v.270). Selector: v.271 added Tallahart to Sacred Symbol Selector Coupons (official); Geardock is excluded",https://www.nexon.com/maplestory/news/update/44597,"CONFLICT: Brian answered 'neither' on 2026-09-22; recheck the Selector in game"
 Damage ratio table for its maps,"Not found yet. Entry requirements seen: Silent Ashlands 630, Fate-Fields 660, Phantasmal Night Sanctum 700 Authentic Force; mob levels 290-294.",https://maplestorywiki.net/w/Tallahart,
-Other rewards at max level,+20% damage versus Baldrix (Tallahart),https://maplestorywiki.net/w/Grand_Sacred_Symbol:_Tallahart,
+Other rewards at max level,"+20% damage versus Baldrix (Tallahart) or Jupiter (Geardock) (official, v.270)",https://www.nexon.com/maplestory/news/update/42415,
 Symbol images,Not collected yet,,
 Other regions - KMS,"15 a day each (1.2.413, 2026-03-19); per-level costs match GMS (namu.wiki, 2026-08-20)",https://maplestory.nexon.com/news/update/799,
 Other regions - JMS,"Tallahart 15 a day (ver4.43, 2026-07-02); Geardock added in ver4.44 (2026-08-26), 15 a day; totals match GMS (kiiten)",https://maplestory.nexon.co.jp/notice/view/?alias=e01b613af7c94dcc8876d845ccd2c2cb&id=update,

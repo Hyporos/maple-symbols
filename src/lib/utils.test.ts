@@ -13,8 +13,8 @@ import {
 import { createInitialSymbols } from "./data";
 import { MON, SAT, SUN, WED } from "../test/helpers";
 
-// Fixtures: index 0 = Vanishing Journey (arcane, 10/day, weekly + extra);
-// index 6 = Cernium (sacred, 20/day, no weekly/extra).
+// Fixtures: index 0 = Vanishing Journey (arcane, 20/day, weekly + extra);
+// index 6 = Cernium (sacred, 30/day, no weekly/extra).
 const vj = () => createInitialSymbols()[0];
 const cernium = () => createInitialSymbols()[6];
 

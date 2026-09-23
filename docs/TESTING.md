@@ -46,11 +46,11 @@ Leaf components render without any provider: `useRouter()` and `useBreakpoint()`
 
 ## 4. Recipes
 
-**Pure function** (`src/lib/*.test.ts`): import, call, assert. Build fixtures from `createInitialSymbols()` (`[0]` = Vanishing Journey, id 1, arcane, 10/day, weekly + extra; `[6]` = Cernium, id 7, sacred, 20/day) and spread patches over them.
+**Pure function** (`src/lib/*.test.ts`): import, call, assert. Build fixtures from `createInitialSymbols()` (`[0]` = Vanishing Journey, id 1, arcane, 20/day, weekly + extra; `[6]` = Cernium, id 7, sacred, 30/day) and spread patches over them.
 
 **Hook**: `renderHook(() => usePower(symbols, "arcane"))` → `result.current`. Re-render with a new array to recompute; memoisation is by reference.
 
-**Store** (`src/state/store.test.ts`): set state, then `JSON.parse(localStorage.getItem("maple-symbols-v2"))` to assert what `partialize` wrote (`{ state: { symbols }, version: 2 }`, NaN → `null`). To test `merge`/`migrate`, seed localStorage and `await useAppStore.persist.rehydrate()`. The store is a module singleton hydrated at import; use `vi.resetModules()` + a dynamic import only if you need "storage seeded before creation".
+**Store** (`src/state/store.test.ts`): set state, then `JSON.parse(localStorage.getItem("maple-symbols-v2"))` to assert what `partialize` wrote (`{ state: { symbols }, version: 3 }`, NaN → `null`). To test `merge`/`migrate`, seed localStorage and `await useAppStore.persist.rehydrate()`. The store is a module singleton hydrated at import; use `vi.resetModules()` + a dynamic import only if you need "storage seeded before creation".
 
 **Component that reads the store**: seed with `seedSymbol(...)` or `useAppStore.setState(...)`, `render(<Component />)`, drive with `fireEvent.change/click`, then assert on `screen` **and** on `useAppStore.getState()` (the UI often shows derived text while the store holds the number). Number inputs: `fireEvent.change(input, { target: { value: "25" } })`.
 
@@ -70,9 +70,9 @@ Known-good values (verified by `src/lib/utils.test.ts`; counting starts tomorrow
 | any            | `(12, 10, false)` / `(100, 10, false)`               | 2 / 10 |
 | Wed 2026-09-16 | `(240, 0, true)` / `(241, 0, true)`                  | 1 / 8  |
 | Mon 2026-09-14 | `(240, 0, true)`                                     | 3      |
-| Sat 2026-09-19 | `(120, 0, true)`                                     | 2      |
-| Sun 2026-09-13 | `(120, 0, true)`                                     | 1      |
-| Wed 2026-09-16 | `(200, 20, true)` / `(200, 20, false)`               | 5 / 10 |
+| Sat 2026-09-19 | `(240, 0, true)`                                     | 5      |
+| Sun 2026-09-13 | `(240, 0, true)`                                     | 4      |
+| Wed 2026-09-16 | `(200, 20, true)` / `(200, 20, false)`               | 1 / 10 |
 
 **Head / SEO**: call `seedHeadMeta()` first (`SEO.setMeta` no-ops on missing tags), render, assert `document.title`, `meta[...]` `content`, `link[rel=canonical]` `href`, and the `script[data-seo-ld]` JSON.
 

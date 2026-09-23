@@ -43,9 +43,29 @@ const OUR_STATS = {
   "Xenon STR, DEX and LUK": pair(calculatorTsx, "XENON_ALL_STAT"),
 };
 
-/** The sacred meso formula (GAME §1), for symbols not in symbols.json yet. */
+/**
+ * The meso formulas (GAME §1). The epsilon keeps floating point from flooring
+ * 122.99… (15 × 8.2) to 122; the formula reproduces all 174 costs only with it.
+ */
+const arcaneCost = (k, level) =>
+  Math.round(1e4 * Math.floor((level ** 2 + 11) * (k + 0.1 * level) + 1e-9));
 const sacredCost = (k, level) =>
   Math.round(1e5 * Math.floor((9 * level ** 2 + 20 * level) * (k - 0.6 * level) + 1e-9));
+/** Each symbol's k, by id (arcane 1–6, sacred 7–12). A new symbol needs its k here. */
+const COST_K = {
+  1: 8,
+  2: 10,
+  3: 12,
+  4: 14,
+  5: 16,
+  6: 18,
+  7: 13.2,
+  8: 15,
+  9: 16.8,
+  10: 18.6,
+  11: 20.4,
+  12: 22.2,
+};
 
 /**
  * Symbols the game has and the site does not model yet (Grand Sacred, in 2.0:
@@ -79,7 +99,8 @@ const SOURCES = {
   msea: "https://www.maplesea.com/updates/",
 };
 const WIKI = SOURCES.wiki;
-const DAYS = Number(process.argv.find((a) => a.startsWith("--days="))?.slice(7) ?? 8);
+const DAYS_ARG = Number(process.argv.find((a) => a.startsWith("--days="))?.slice(7));
+const DAYS = DAYS_ARG > 0 ? DAYS_ARG : 8;
 const SINCE = Date.now() - DAYS * 24 * 60 * 60 * 1000;
 const AGENT = { headers: { "user-agent": "Mozilla/5.0 (maple-symbols data check)" } };
 
@@ -218,6 +239,27 @@ async function checkSymbols() {
   }
 }
 
+/** Our own tables against the formula: catches a typo the wiki cannot (it may agree with us). */
+function checkFormula() {
+  for (const symbol of symbols.symbols) {
+    const k = COST_K[symbol.id];
+    if (k === undefined) {
+      problems.push(`${symbol.name}: no cost coefficient in COST_K (a new symbol?)`);
+      continue;
+    }
+    const cost = symbol.type === "arcane" ? arcaneCost : sacredCost;
+    const off = symbol.mesosRequired.flatMap((ours, level) =>
+      level && ours !== cost(k, level)
+        ? [`${level}→${level + 1}: ${ours} (formula ${cost(k, level)})`]
+        : []
+    );
+    if (off.length)
+      problems.push(
+        `${symbol.name}: symbols.json differs from the cost formula at ${off.join("; ")}`
+      );
+  }
+}
+
 async function checkPending() {
   for (const symbol of PENDING) {
     const page = `${symbol.family}: ${symbol.name}`;
@@ -229,7 +271,9 @@ async function checkPending() {
       continue;
     }
     const found = acquisition(text);
-    if (found.daily !== symbol.daily) {
+    if (found.daily === null) {
+      unreadable.push(`${symbol.name} (2.0): no "per day" line on ${page}`);
+    } else if (found.daily !== symbol.daily) {
       problems.push(
         `${symbol.name} (2.0): daily is ${found.daily} on the wiki, ${symbol.daily} recorded`
       );
@@ -298,7 +342,11 @@ async function checkRoster() {
       listed.add(m[1]);
     }
   }
-  if (!listed.size) return;
+  if (!listed.size) {
+    return unreadable.push(
+      "Symbol lists: no entries matched on the family pages (layout changed?)"
+    );
+  }
   for (const name of listed) if (!ours.has(name)) problems.push(`New symbol on the wiki: ${name}`);
   for (const name of ours)
     if (!listed.has(name)) problems.push(`${name} is no longer listed on the wiki`);
@@ -307,8 +355,11 @@ async function checkRoster() {
 // --- Regions that patch before GMS ---------------------------------------------------------
 
 const SYMBOL_WORDS = /심볼|シンボル|symbol/i;
+/** A weekly reset day moving (as it did in 2025) is worth a line even without the word "symbol". */
+const RESET_DAY_WORDS =
+  /초기화 요일|요일.{0,20}초기화|初期化.{0,10}曜日|曜日.{0,20}(初期化|リセット)|reset (day|time).{0,40}(weekly|thursday|monday)|(weekly|thursday|monday).{0,60}reset (day|time)/i;
 const CHANGE_WORDS =
-  /증가|감소|하향|상향|변경|비용|메소|획득|초기화|増加|減少|変更|費用|コスト|メル|獲得|初期化|increase|decrease|reduc|chang|adjust|cost|meso|reward|reset|→/i;
+  /증가|감소|하향|상향|변경|비용|메소|획득|초기화|増加|減少|変更|費用|コスト|メル|獲得|初期化|increase|decrease|reduc|chang|adjust|cost|meso|reset/i;
 
 const decode = (html) =>
   html
@@ -326,19 +377,35 @@ function symbolLines(html) {
   return decode(html)
     .split(/\n/)
     .map((line) => line.replace(/\s+/g, " ").trim())
-    .filter((line) => line.length < 400 && SYMBOL_WORDS.test(line) && CHANGE_WORDS.test(line))
+    .filter(
+      (line) =>
+        line.length < 400 &&
+        ((SYMBOL_WORDS.test(line) && CHANGE_WORDS.test(line)) || RESET_DAY_WORDS.test(line))
+    )
     .filter((line, i, all) => all.indexOf(line) === i)
     .map((line) => (line.length > 160 ? `${line.slice(0, 157)}…` : line));
 }
 
 async function scanNotices(region, entries, into = notes) {
-  for (const { title, url, date, html } of entries) {
+  const day = (t) => new Date(t).toISOString().slice(0, 10);
+  for (const { title, url, date, posted, html } of entries) {
     if (!(date > SINCE)) continue;
     try {
-      const lines = symbolLines(html ?? (await (await fetch(url, AGENT)).text()));
+      let page = html;
+      if (page === undefined) {
+        const response = await fetch(url, AGENT);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        page = await response.text();
+      }
+      if (!page) throw new Error("empty page");
+      const lines = symbolLines(page);
       if (lines.length) {
+        const when =
+          posted && day(posted) !== day(date)
+            ? `${day(date)} (edited; first posted ${day(posted)})`
+            : day(date);
         into.push(
-          `${region} ${new Date(date).toISOString().slice(0, 10)} "${title}" ${url}\n` +
+          `${region} ${when} "${title}" ${url}\n` +
             lines
               .slice(0, 4)
               .map((l) => `        ${l}`)
@@ -357,7 +424,12 @@ async function scanNotices(region, entries, into = notes) {
  */
 async function checkGmsNotes() {
   try {
-    const list = await (await fetch(SOURCES.gmsNews, AGENT)).json();
+    const response = await fetch(SOURCES.gmsNews, AGENT);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const list = await response.json();
+    if (!Array.isArray(list) || !list.length || !list.every((n) => Date.parse(n.liveDate))) {
+      throw new Error("no news entries, or entries without a liveDate (API changed?)");
+    }
     const entries = list
       .filter((n) => ["update", "maintenance", "general"].includes(n.category))
       .map((n) => {
@@ -375,13 +447,16 @@ async function checkGmsNotes() {
           id: n.id,
           title: n.name,
           date,
+          posted,
           url: `https://www.nexon.com/maplestory/news/${n.category}/${n.id}`,
         };
       })
       .filter((n) => n.date > SINCE);
     for (const entry of entries) {
       const detail = await (await fetch(`${SOURCES.gmsNews}/${entry.id}`, AGENT)).json();
-      await scanNotices("GMS", [{ ...entry, html: detail.body ?? "" }], gmsNotes);
+      if (typeof detail.body !== "string")
+        throw new Error(`news ${entry.id} has no body (API changed?)`);
+      await scanNotices("GMS", [{ ...entry, html: detail.body }], gmsNotes);
     }
   } catch (error) {
     unreadable.push(`GMS patch notes (${SOURCES.gmsNews}): ${error.message}`);
@@ -451,12 +526,18 @@ async function checkAhead() {
   }
 }
 
-await checkSymbols();
-await checkPending();
-await checkRoster();
-await checkStats();
-await checkGmsNotes();
-await checkAhead();
+try {
+  await checkSymbols();
+  checkFormula();
+  await checkPending();
+  await checkRoster();
+  await checkStats();
+  await checkGmsNotes();
+  await checkAhead();
+} catch (error) {
+  // A bug or a surprise in a source must not read as "our numbers moved" (exit 1).
+  unreadable.push(`The check itself failed: ${error.stack ?? error.message}`);
+}
 
 const line = (prefix, items) => items.forEach((item) => console.log(`${prefix} ${item}`));
 
@@ -475,9 +556,9 @@ if (problems.length && !gmsNotes.length) {
     `${DAYS} day${DAYS === 1 ? "" : "s"} mentions symbols. Look for an older patch, another region, or a wiki edit error.\n`
   );
 } else if (!problems.length && gmsNotes.length) {
-  console.log("Cross-check: a GMS patch note mentions symbols, but the wiki still matches us.");
+  console.log("Cross-check: a GMS patch note mentions symbols, and the wiki still matches us.");
   console.log(
-    "The wiki may not be updated yet; read the note, and run this again in a few days.\n"
+    "Either we already applied it, or the wiki has not caught up; read the note to tell which.\n"
   );
 } else if (problems.length && gmsNotes.length) {
   console.log("Cross-check: the wiki disagrees with us and a GMS patch note mentions symbols;");
