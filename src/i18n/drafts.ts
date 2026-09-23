@@ -12,10 +12,13 @@
 // ---------------------------------------------------------------------------
 
 import type { Messages } from "./index";
+import { ja } from "./ja";
 
 /** The languages of the four translated editions (KMS, JMS, TMS, CMS). */
 export const DRAFT_LANGUAGES = ["ko", "ja", "zh-Hant", "zh-Hans"] as const;
 export type DraftLanguage = (typeof DRAFT_LANGUAGES)[number];
 
 /** Each language's draft catalogue, once one is written. */
-export const DRAFT_CATALOGUES: Partial<Record<DraftLanguage, Messages>> = {};
+export const DRAFT_CATALOGUES: Partial<Record<DraftLanguage, Messages>> = {
+  ja,
+};

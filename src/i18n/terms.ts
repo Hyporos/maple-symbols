@@ -129,6 +129,42 @@ export const TERMS: Readonly<
     demonAvenger: "Demon Avenger", // UNCONFIRMED (GMS wording)
     xenon: "Xenon", // UNCONFIRMED (GMS wording)
   },
+  // JMS Japanese, all from maplestory.nexon.co.jp. Japanese has no plural or article, so the
+  // plural and "a…" forms repeat the bare word. Sources, each quoting the term itself:
+  //  [1] ver4.43 part 1 notice (2026-07-02), notice/view/?alias=d800f7b0ac4e4007bfb6f9b7651be82d
+  //      「…入手できるアーケインシンボルの数量が増加しました。」, the same for オーセンティックシンボル;
+  //      the class sections name デーモンアヴェンジャー and ゼノン.
+  //  [2] Force guide, gameguide/growth/force/: 「…メインステータスとアーケインフォースを持っています。」
+  //      and 「…メインステータスとオーセンティックフォースを持っています。」
+  //  [3] ハイパーバーニングBEYOND notice (2025-12-10), notice/view/?alias=475941b65c1c41b391a6a76becf6e349
+  //      「「アーケインカタリスト」または「オーセンティックカタリスト」を使用してシンボルを移動した場合…」
+  //  [4] ミッドナイトパーティー notice (2024-07-03), notice/view/?alias=3f2bb705d47a4351a95b765e5fa31cfd
+  //      「「選択型シンボル交換券」を使用すると「選択型アーケインシンボル交換券」300個か
+  //      「選択型オーセンティックシンボル交換券」60個から1つを選択して獲得できます。」
+  //  [5] NEW AGE ver4.20 part 1 notice (2023-12-13), notice/view/?alias=c415a36695e84d64a227535668376c7d
+  //      「…一般ワールドと同じ量に修正しました。」 (JMS made its Reboot world a 一般ワールド too:
+  //      notice/view/?alias=72a980393e9740f9b9e34b6218848d3c, 2024-10-22.)
+  //  [6] 夜のサーカス団 IN 武陵桃源 notice (2025-11-30), notice/view/?alias=62d95a6886244b27b76651ed69a63bc1
+  //      「アーケイン/オーセンティックシンボルの獲得量増加」, the type words split off on their own.
+  ja: {
+    arcane: "アーケイン", // [6]
+    sacred: "オーセンティック", // [6]
+    sacredSymbol: "オーセンティックシンボル", // [1]
+    arcaneSymbols: "アーケインシンボル", // [1]
+    sacredSymbols: "オーセンティックシンボル", // [1]
+    aArcaneSymbol: "アーケインシンボル", // [1]
+    aSacredSymbol: "オーセンティックシンボル", // [1]
+    arcanePower: "アーケインフォース", // [2]
+    sacredPower: "オーセンティックフォース", // [2]
+    arcaneCatalyst: "アーケインカタリスト", // [3]
+    sacredCatalyst: "オーセンティックカタリスト", // [3]
+    symbolSelector: "選択型シンボル交換券", // [4]
+    arcaneSelector: "選択型アーケインシンボル交換券", // [4]
+    sacredSelector: "選択型オーセンティックシンボル交換券", // [4]
+    regularServer: "一般ワールド", // [5]
+    demonAvenger: "デーモンアヴェンジャー", // [1]
+    xenon: "ゼノン", // [1]
+  },
 };
 
 /** The terms of a name set; throws for one whose table does not exist yet. */

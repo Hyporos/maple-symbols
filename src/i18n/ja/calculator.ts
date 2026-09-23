@@ -1,0 +1,43 @@
+// Calculator card: the level/experience inputs, quest toggles and next-level panel.
+// Machine draft (2026-09-23), awaiting a native JMS player's review before it is served
+// (docs/REGIONS.md D-12). Symbol experience is 成長値, the JMS client's word.
+export const calculator = {
+  levelPlaceholder: "レベル",
+  experiencePlaceholder: "成長値",
+  experiencePlaceholderShort: "成長値",
+  inputsTooltip: "<b>シンボル</b> レベル / 成長値",
+  unlockCap: "成長値の上限を解除",
+  lockCap: "成長値の上限をロック",
+  unlockCapTooltip: "成長値の上限を<b>解除</b>",
+  lockCapTooltip: "成長値の上限を<b>ロック</b>",
+  applyOverflow: "超過した成長値を反映",
+  daily: "デイリー",
+  weekly: "ウィークリー",
+  extra: "追加",
+  dailyTooltip: "<b>[デイリークエスト]</b> {quest}",
+  weeklyTooltip: "<b>[ウィークリークエスト]</b> {quest}",
+  extraTooltip: "<b>[解放済み]</b> {quest}",
+  symbolsPerDay: "1日 {count}個",
+  symbolsPerWeek: "1週間 {count}個",
+  level: "レベル <b>{level}</b>",
+  daysToGo: { one: "あと<b>{count}</b>日", other: "あと<b>{count}</b>日" },
+  completionAssumption:
+    "完了日は<b>デイリー</b>と<b>ウィークリー</b>のクエストを両方<b>完了</b>した場合の予定です",
+  readyForUpgrade: "<b>強化</b>できます",
+  experienceNotSet: "<b>成長値</b>が未入力です",
+  questsNotSet: "<b>クエスト</b>が未設定です",
+  sufficientSymbols: "必要なシンボルが<b>揃いました</b>",
+  symbolsRemaining: {
+    one: "残り<b>{count}</b>個",
+    other: "残り<b>{count}</b>個",
+  },
+  unknownRemaining: "残りシンボル数は<b>不明</b>です",
+  mesosRequired: "<b>{mesos}</b>メルが必要",
+  mesosUnpublished: "<b>{server}</b>のシンボル強化費用はまだ公開されていません",
+  mainStat: "メインステータス <b>+{stat}</b>",
+  demonAvengerHp: "HP <b>+{hp}</b>（{demonAvenger}）",
+  xenonAllStat: "オールステータス <b>+{stat}</b>（{xenon}）",
+  maxLevel: "MAXレベル",
+  disabled: "無効",
+  disabledHint: "レベルを入力するとこのシンボルが有効になります",
+} as const;
