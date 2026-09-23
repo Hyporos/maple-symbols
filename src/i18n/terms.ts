@@ -129,6 +129,39 @@ export const TERMS: Readonly<
     demonAvenger: "Demon Avenger", // UNCONFIRMED (GMS wording)
     xenon: "Xenon", // UNCONFIRMED (GMS wording)
   },
+  // CMS Simplified Chinese (checked 2026-09-23). Sources, all on the official site mxd.web.sdo.com
+  // (its guide wiki 次元站 and its notices; the version pages are images, so not quoted):
+  //   [A] wiki/#/Article?ArticleID=388900 (2026-05-27): "神秘之力与原初之力……是在神秘河（神秘之力）
+  //       与格兰蒂斯（原初之力）地区可以触发效果的一种特殊属性", "关于神秘/原初徽章的每个等级的属性",
+  //       "通过日常/周常/活动来提升神秘徽章与原初徽章等级"
+  //   [B] wiki/#/Article?ArticleID=356913 (V204 新时代 preview, 2024-01-03): "新增原初催化剂，当提取
+  //       原初之力时，原初之力被提取后经验将损失40%"
+  //   [C] wiki/#/Article?ArticleID=386119 (2026-03-17): "通用神秘徽章素材选择型神秘徽章交换券",
+  //       "通用原初徽章素材选择型原初徽章交换券"
+  //   [D] web7/news/newsContent.html?id=375941&CategoryID=275 (2025-06-25): "挑战者世界哪些道具
+  //       无法转移到普通世界？"
+  //   [E] web7/news/newsContent.html?id=389991&CategoryID=275 (v226 class notice, 2026-06-24):
+  //       the section headings "■ 恶魔复仇者" and "■ 尖兵"
+  // Chinese has no plural or article, so the plural and "a…" forms repeat the bare word.
+  "zh-Hans": {
+    arcane: "神秘", // [A]
+    sacred: "原初", // [A]
+    sacredSymbol: "原初徽章", // [A]
+    arcaneSymbols: "神秘徽章", // [A]
+    sacredSymbols: "原初徽章", // [A]
+    aArcaneSymbol: "神秘徽章", // [A]
+    aSacredSymbol: "原初徽章", // [A]
+    arcanePower: "神秘之力", // [A]
+    sacredPower: "原初之力", // [A]
+    arcaneCatalyst: "神秘催化剂", // UNCONFIRMED (built from [B]'s 原初催化剂; no official page names it)
+    sacredCatalyst: "原初催化剂", // [B]
+    symbolSelector: "选择型徽章交换券", // UNCONFIRMED (built from [C]'s two names)
+    arcaneSelector: "选择型神秘徽章交换券", // [C]
+    sacredSelector: "选择型原初徽章交换券", // [C]
+    regularServer: "普通世界", // [D] (the world type; whether CMS limits the Catalyst to it is not sourced)
+    demonAvenger: "恶魔复仇者", // [E]
+    xenon: "尖兵", // [E]
+  },
 };
 
 /** The terms of a name set; throws for one whose table does not exist yet. */
