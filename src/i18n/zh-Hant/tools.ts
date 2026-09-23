@@ -8,8 +8,11 @@ export const tools: Messages["tools"] = {
   sacredSelectorAlt: "{sacredSelector}",
   arcaneCatalyst: "{arcaneCatalyst}",
   sacredCatalyst: "{sacredCatalyst}",
-  arcaneCatalystTooltip: "<b>[僅限{regularServer}]</b> 可在同一世界內轉移{aArcaneSymbol}一次",
-  sacredCatalystTooltip: "<b>[僅限{regularServer}]</b> 可在同一世界內轉移{aSacredSymbol}一次",
+  // The world limit, shown before either tooltip only where the server has one
+  // (`catalystRegularWorldOnly` in src/lib/regions.json).
+  catalystWorldTag: "<b>[僅限{regularServer}]</b>",
+  arcaneCatalystTooltip: "可在同一世界內轉移{aArcaneSymbol}一次",
+  sacredCatalystTooltip: "可在同一世界內轉移{aSacredSymbol}一次",
   countPlaceholder: "數量",
   apply: "套用",
   // The preview tooltip draws "[Before → After]" with an arrow icon between the two words.

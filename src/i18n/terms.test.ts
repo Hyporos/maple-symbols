@@ -64,8 +64,9 @@ describe("the terms table (docs/I18N.md §10)", () => {
     expect(m.shell.sacred).toBe("Sacred");
     expect(m.graph.targetPowerFull.arcane).toBe("Target Arcane Power");
     expect(m.handbook.symbolsHeading.sacred).toBe("Sacred Symbols");
+    expect(m.tools.catalystWorldTag).toBe("<b>[Regular Server Only]</b>");
     expect(m.tools.sacredCatalystTooltip).toBe(
-      "<b>[Regular Server Only]</b> Transfer a Sacred Symbol once within the same world"
+      "Transfer a Sacred Symbol once within the same world"
     );
     expect(m.calculator.demonAvengerHp).toBe("<b>+{hp}</b> HP (Demon Avenger)");
   });
@@ -79,8 +80,10 @@ describe("the terms table (docs/I18N.md §10)", () => {
       "The difference between <b>your Authentic Force</b> and the <b>map requirement</b>"
     );
     expect(m.tools.sacredCatalyst).toBe("Authentic Catalyst");
+    // MSEA's word, though the tag is not shown there (catalystRegularWorldOnly is false).
+    expect(m.tools.catalystWorldTag).toBe("<b>[Normal World Only]</b>");
     expect(m.tools.sacredCatalystTooltip).toBe(
-      "<b>[Normal World Only]</b> Transfer an Authentic Symbol once within the same world"
+      "Transfer an Authentic Symbol once within the same world"
     );
   });
 

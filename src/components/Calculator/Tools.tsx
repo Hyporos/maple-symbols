@@ -6,6 +6,7 @@ import { catalystPreview, formatPreview, selectorPreview } from "../../lib/tools
 import { getRemainingToMax } from "../../lib/calculator";
 import { clampNumberInput } from "../../lib/inputs";
 import { CATALYST_RETENTION, maxLevelFor } from "../../lib/game";
+import { REGION_PROFILES } from "../../lib/regions";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
@@ -26,6 +27,7 @@ const Tools = () => {
   const setSymbols = useAppStore((s) => s.setSymbols);
   const selectedId = useAppStore((s) => s.selectedId);
   const mode = useAppStore((s) => s.mode);
+  const region = useAppStore((s) => s.region);
 
   const { isMobile } = useBreakpoint();
   const [selectedTool, setSelectedTool] = useState<"selector" | "catalyst">("selector");
@@ -127,6 +129,11 @@ const Tools = () => {
                 </button>
               </TooltipTrigger>
               <TooltipContent className="tooltip">
+                {REGION_PROFILES[region].catalystRegularWorldOnly && (
+                  <>
+                    <Message text={m.catalystWorldTag} />{" "}
+                  </>
+                )}
                 <Message
                   text={mode === "arcane" ? m.arcaneCatalystTooltip : m.sacredCatalystTooltip}
                 />

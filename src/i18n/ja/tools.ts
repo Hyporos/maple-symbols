@@ -7,10 +7,11 @@ export const tools = {
   sacredSelectorAlt: "{sacredSelector}",
   arcaneCatalyst: "{arcaneCatalyst}",
   sacredCatalyst: "{sacredCatalyst}",
-  arcaneCatalystTooltip:
-    "<b>[{regularServer}限定]</b> 同じワールド内で{aArcaneSymbol}を1回移動できます",
-  sacredCatalystTooltip:
-    "<b>[{regularServer}限定]</b> 同じワールド内で{aSacredSymbol}を1回移動できます",
+  // The world limit, shown before either tooltip only where the server has one
+  // (`catalystRegularWorldOnly` in src/lib/regions.json).
+  catalystWorldTag: "<b>[{regularServer}限定]</b>",
+  arcaneCatalystTooltip: "同じワールド内で{aArcaneSymbol}を1回移動できます",
+  sacredCatalystTooltip: "同じワールド内で{aSacredSymbol}を1回移動できます",
   countPlaceholder: "個数",
   apply: "適用",
   // The preview tooltip draws "[Before → After]" with an arrow icon between the two words.

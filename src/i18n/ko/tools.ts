@@ -6,10 +6,11 @@ export const tools = {
   sacredSelectorAlt: "{sacredSelector}",
   arcaneCatalyst: "{arcaneCatalyst}",
   sacredCatalyst: "{sacredCatalyst}",
-  arcaneCatalystTooltip:
-    "<b>[{regularServer} 전용]</b> 같은 월드 내 캐릭터에게 {aArcaneSymbol}을 1회 이동",
-  sacredCatalystTooltip:
-    "<b>[{regularServer} 전용]</b> 같은 월드 내 캐릭터에게 {aSacredSymbol}을 1회 이동",
+  // The world limit, shown before either tooltip only where the server has one
+  // (`catalystRegularWorldOnly` in src/lib/regions.json).
+  catalystWorldTag: "<b>[{regularServer} 전용]</b>",
+  arcaneCatalystTooltip: "같은 월드 내 캐릭터에게 {aArcaneSymbol}을 1회 이동",
+  sacredCatalystTooltip: "같은 월드 내 캐릭터에게 {aSacredSymbol}을 1회 이동",
   countPlaceholder: "개수",
   apply: "적용",
   // The preview tooltip draws "[Before → After]" with an arrow icon between the two words.

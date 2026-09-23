@@ -66,3 +66,26 @@ describe("Tools — Catalyst", () => {
     expect(screen.getByText("-40% EXP upon use")).toBeInTheDocument();
   });
 });
+
+describe("Tools — Catalyst world limit (catalystRegularWorldOnly in regions.json)", () => {
+  const openCatalystTooltip = () => {
+    render(<Tools />);
+    fireEvent.focus(screen.getByRole("button", { name: /Catalyst/ }));
+    return screen.getByRole("tooltip");
+  };
+
+  it("tags the Catalyst as regular-world only on a server with a Reboot world (GMS)", () => {
+    seedSymbol(1, { level: 5, experience: 0 });
+    expect(openCatalystTooltip()).toHaveTextContent(
+      "[Regular Server Only] Transfer an Arcane Symbol once within the same world"
+    );
+  });
+
+  it("leaves the tag off where every world is regular (MSEA)", () => {
+    useAppStore.getState().setRegion("msea");
+    seedSymbol(1, { level: 5, experience: 0 });
+    const tooltip = openCatalystTooltip();
+    expect(tooltip).toHaveTextContent("Transfer an Arcane Symbol once within the same world");
+    expect(tooltip).not.toHaveTextContent("Only]");
+  });
+});

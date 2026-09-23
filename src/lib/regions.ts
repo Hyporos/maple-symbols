@@ -51,6 +51,13 @@ export interface RegionProfile {
   /** The weekly as the game pays it; the calculator credits the total in one go (GAME §2). */
   weekly: { perClear: number; clears: number };
   /**
+   * Whether the Catalysts work only on the server's regular (non-Reboot) worlds. True where a
+   * Reboot-type world exists and the Catalyst is not sold there (GMS; TMS, notice 9922);
+   * false where every world is regular (MSEA, CMS; KMS and JMS since their Reboot worlds
+   * became regular in 2024). Decides the Tools tooltip's "[… Only]" tag.
+   */
+  catalystRegularWorldOnly: boolean;
+  /**
    * Per-level gains shown in the next-level tooltip for the two classes without main stat.
    * Only for the families that give main stat: Grand Sacred gives none, so nothing converts.
    */
