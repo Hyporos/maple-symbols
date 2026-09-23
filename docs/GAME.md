@@ -5,7 +5,7 @@ What the calculator models about the game, where each number lives in the code, 
 ## 0. Scope and trust (read first)
 
 - **GMS only.** Every number is Global MapleStory. Brian confirmed on 2026-09-22 that Heroic (Reboot) and Interactive worlds use the same symbol numbers; the one difference the site shows is that the Catalyst is Interactive-only ("Regular Server Only" in the Tools copy).
-- **Other regions were researched, not confirmed** (§5): the same game everywhere, with rates arriving on each region's own patch date and names of their own. The i18n decision is interface only (I18N §0): translated pages still show GMS numbers, and the page must never imply they are that region's numbers.
+- **Other regions were researched, not confirmed** (§5): the same game everywhere, with rates arriving on each region's own patch date and names of their own. Today the site shows GMS numbers only, and the page must never imply they are another region's. Brian decided on 2026-09-22 that 2.0 shows each server's own numbers, each with its status (`docs/REGIONS.md`); until then this rule stands.
 - **Trust comes from §7.** The site was built from the Credits resources (MapleStory Fandom wiki, StrategyWiki, Orange Mushroom's blog) with no record of which number came from where. §7 now logs every check. A number is **confirmed** once a row says Brian saw it in game, **sourced** once a dated source agrees, and otherwise **unverified**. As of 2026-09-22 the daily and weekly rates, the reset times, the Catalyst, the per-level stat gains and the Grand Sacred basics are confirmed; the EXP and meso tables are sourced, with one EXP row confirmed.
 
 ## 1. Symbols

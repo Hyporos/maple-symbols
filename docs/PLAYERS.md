@@ -8,7 +8,7 @@ Who uses Maple Symbols and what they come to do, so design, copy, SEO and transl
 | ------------------------------------------------------------------------------------------------------------------------------------ | --------------- | ---------- |
 | The audience is mostly GMS players (the North America and Europe servers).                                                           | Brian           | 2026-09-22 |
 | Heroic (Reboot) and Interactive worlds use the same symbol numbers, so one calculator serves both; the Catalyst is Interactive-only. | Brian (GAME §0) | 2026-09-22 |
-| The site is English-only today; Korean, Japanese and both Chinese scripts are planned as interface translations over GMS numbers.    | I18N §0         | 2026-09-16 |
+| The site is English-only today; 2.0 plans one edition per server (GMS, MSEA, KMS, JMS, TMS, CMS) with its own numbers and language.  | REGIONS §0      | 2026-09-22 |
 | Players who report bugs are pointed to the Discord linked in the footer.                                                             | changelog copy  | 2026-09-16 |
 
 ## 2. Open questions, and where the answer comes from
