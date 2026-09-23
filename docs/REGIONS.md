@@ -126,7 +126,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 - **Names:** `GAME_NAMES` (`src/i18n/gameNames.ts`), keyed by name set (built 2026-09-22): `en-msea` from `server-differences.csv` and the MSEA patch notes, `ja` and `zh-Hant` from their sheets (official sources; dormant until their catalogues). `ko` from maplestory.nexon.com (2026-09-23, dormant until served); `zh-Hans` waits for an official source (I18N §9).
 - **SEO copy:** written per region, not translated.
 - **Changelog and credits:** translated in full in every edition (D-4), including the history, so each new entry is written once and translated before release.
-- **Credits:** add the regional sources.
+- **Credits:** add the regional sources. Built 2026-09-23 (Brian: the official ones): under "Resources Used", text links to the MapleStory Wiki and each server's official site (`DATA_SOURCES` in `src/components/Extras/Credits.tsx`, proper names, not catalogue copy); community tables (kiiten, BWIKI) stay in GAME §6 only.
 - **Workflow:** a translator sheet per locale (key, English, context, maximum display width, screenshot, locked glossary). Machine draft plus a native player's review for UI copy only; names and terms only from official sources.
 - **Formatting:**
   - `formatMesos`: 39억 3,010만 / 39億3010万 / 39億3010萬 / 39亿3010万. `Intl` compact notation rounds, so it needs a custom function. Built on `v2` 2026-09-22 in `src/lib/format.ts`, for prose only (the Calculator's meso line); 조/兆 above 10^12, none in Simplified Chinese, where 兆 is ambiguous.
