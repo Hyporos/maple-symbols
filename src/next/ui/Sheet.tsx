@@ -66,7 +66,7 @@ const Sheet = ({ open, onClose, title, closeLabel, anchor, children }: SheetProp
   if (isMobile) {
     return createPortal(
       <>
-        <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
+        <div className="fixed inset-0 z-40 bg-dark/70" onClick={onClose} />
         <div
           ref={setPanelRef}
           role="dialog"
