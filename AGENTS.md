@@ -12,6 +12,7 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 4. **Keep the docs honest.** After changing code, update the docs the table at the bottom points to. The pre-commit hook prints a reminder when `src/lib`, `src/state`, `src/contexts`, or `global.css` change without a docs change; `/sync-docs` does the reconciliation.
 5. **Be creative when asked for ideas**, and offer better alternatives when you see them. Otherwise deliver the requested scope, whole.
 6. **Real bugs you find go in `docs/KNOWN_ISSUES.md`**, not silently fixed or worked around. Fixing one is a scoped decision (rule 1).
+7. **Propose a new doc, don't just write one.** When a new topic comes up that no doc covers and you think it is worth recording, ask Brian whether to create a new `docs/*.md` for it (say what it would hold and why); otherwise add to the closest existing doc.
 
 ## Commands
 
