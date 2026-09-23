@@ -477,7 +477,7 @@ git commit -m "Add the /next redesign entry, Grand Sacred selection and the next
 
 After Task 1. One agent. Each component: test first, then implementation, then run.
 
-**Files:** Create in `src/next/ui/`: `Card.tsx`, `SegmentedSwitch.tsx`, `Switch.tsx`, `ProgressRing.tsx`, `ProgressBar.tsx`, `StatBox.tsx`, `NumberField.tsx`, `Sheet.tsx`, `Tabs.tsx`, `BottomTabBar.tsx`, `DataTable.tsx`, each with a colocated `.test.tsx`, and `index.ts` re-exporting all of them.
+**Files:** Create in src/next/ui/: `Card.tsx`, `SegmentedSwitch.tsx`, `Switch.tsx`, `ProgressRing.tsx`, `ProgressBar.tsx`, `StatBox.tsx`, `NumberField.tsx`, `Sheet.tsx`, `Tabs.tsx`, `BottomTabBar.tsx`, `DataTable.tsx`, each with a colocated `.test.tsx`, and `index.ts` re-exporting all of them.
 
 **Interfaces (Produces):**
 
@@ -703,7 +703,7 @@ Test: `getByRole("table", { name: caption })`; headers render; a `current` row h
 
 - [ ] **Step 9: index.ts, verify, commit**
 
-`src/next/ui/index.ts` re-exports every component as named exports (`export { default as Card } from "./Card";` …). Run lint, typecheck, all tests, build. Docs: DESIGN_SYSTEM gains a short "§12 The /next kit (redesign in progress)" listing each component and its class recipe. Commit: "Add the component kit for the /next redesign".
+src/next/ui/index.ts re-exports every component as named exports (`export { default as Card } from "./Card";` …). Run lint, typecheck, all tests, build. Docs: DESIGN_SYSTEM gains a short "§12 The /next kit (redesign in progress)" listing each component and its class recipe. Commit: "Add the component kit for the /next redesign".
 
 ---
 
@@ -711,7 +711,7 @@ Test: `getByRole("table", { name: caption })`; headers render; a `current` row h
 
 After Task 2, in parallel with Tasks 4–6.
 
-**Files:** Replace `src/next/shell/NextShell.tsx`; create `src/next/shell/NextHeader.tsx`, `CharacterChip.tsx`, `AccessibilityButton.tsx`, `FeedbackButton.tsx`, `ComingSoonNote.tsx`, `NextFooter.tsx`, `NextServerMenu.tsx`, and tests `NextHeader.test.tsx`, `FeedbackButton.test.tsx`, `NextShell.test.tsx`.
+**Files:** Replace `src/next/shell/NextShell.tsx`; create src/next/shell/NextHeader.tsx, `CharacterChip.tsx`, `AccessibilityButton.tsx`, `FeedbackButton.tsx`, `ComingSoonNote.tsx`, `NextFooter.tsx`, `NextServerMenu.tsx`, and tests `NextHeader.test.tsx`, `FeedbackButton.test.tsx`, `NextShell.test.tsx`.
 
 **Interfaces:**
 - Consumes: kit (`Sheet`), `nextHref`, `useNextRoute`, `useMessages().next.shell`, `useMessages().shell` (nav, serverMenu, siteVersion, numbersFrom…), `NAV` and `pageMetaFor` from src/lib/routes.ts, `EDITIONS`, `useAppStore` region/regionOverride/setRegion, `SuggestionBanner` from src/components (reused as-is).
@@ -787,7 +787,7 @@ Run the three tests, then lint, typecheck, all tests, build. Add the shell to sr
 
 After Task 2, parallel with 3, 5, 6. Imports `OverviewCard` and `GraphCard` from Task 5 by path; until Task 5 lands, create them as `const OverviewCard = () => null` in this worktree only if they are missing, and delete those stubs when merging.
 
-**Files:** Replace `src/next/pages/CalculatorPage.tsx`; create `src/next/calculator/SymbolPicker.tsx`, `CalculatorCard.tsx`, `useSymbolEditor.ts`, `QuestRow.tsx`, `ToolsSheet.tsx`, tests `SymbolPicker.test.tsx`, `CalculatorCard.test.tsx`, `useSymbolEditor.test.ts`, `ToolsSheet.test.tsx`, `CalculatorPage.test.tsx`.
+**Files:** Replace `src/next/pages/CalculatorPage.tsx`; create src/next/calculator/SymbolPicker.tsx, `CalculatorCard.tsx`, `useSymbolEditor.ts`, `QuestRow.tsx`, `ToolsSheet.tsx`, tests `SymbolPicker.test.tsx`, `CalculatorCard.test.tsx`, `useSymbolEditor.test.ts`, `ToolsSheet.test.tsx`, `CalculatorPage.test.tsx`.
 
 **Interfaces:**
 - Consumes: kit; store (`mode`, `setMode`, `selectSymbol`, `symbols`, `setSymbols`, `selectedId`, `region`); `useSelectedSymbol`; src/lib: `updateSymbol`, `getDailySymbols`, `calculateDaysRemaining`, `isMaxLevel`, `isValid`, `getOverflow`, `levelInputPatch`, `experienceInputValue`, `expCapFor`, `maxLevelFor`, `MAIN_STAT_PER_LEVEL`, `EXTRA_MULTIPLIER`, `CATALYST_RETENTION`, `MAX_POWER_PER_SYMBOL`, `inFamily`, `selectorWorksOn`, `selectorPreview`, `catalystPreview`, `formatPreview`, `getRemainingToMax`, `clampNumberInput`, `gameToday`, `weeklySymbolsFor`, `isPublished`, `mesosKind`, `REGION_PROFILES`, `formatMesos`; `usePower`; `track`/`trackOnce`; `symbolNames`, `useNameSet`, `useLocale`, `useMessages`.
@@ -1011,7 +1011,7 @@ Run all Task 4 tests, add `/next` to src/test/interactiveNesting.test.tsx (deskt
 
 After Task 2, parallel with 3, 4, 6.
 
-**Files:** Create `src/next/calculator/OverviewCard.tsx`, `GraphCard.tsx`, `allMaxedOn.ts`, tests `OverviewCard.test.tsx`, `GraphCard.test.tsx`, `allMaxedOn.test.ts`.
+**Files:** Create src/next/calculator/OverviewCard.tsx, `GraphCard.tsx`, `allMaxedOn.ts`, tests `OverviewCard.test.tsx`, `GraphCard.test.tsx`, `allMaxedOn.test.ts`.
 
 **Interfaces:**
 - Consumes: kit (`Card`, `DataTable`, `ProgressBar`, `NumberField`, `StatBox`, `SegmentedSwitch`); src/lib/overview.ts `collapsedRowLabels`, `targetPanelLabels`, `BLANK`; src/lib/calculator.ts `progressToMax`; src/lib/graph.ts `buildDateSymbols`, `buildGraphSeries`, `dateToPower`, `yAxisTicks`, `xAxisTicks`; `usePower`, `inFamily`, `MAX_POWER_PER_SYMBOL`, `formatDay`, `gameToday`, store (`symbols`, `mode`, `selectedId`, `region`, `selectSymbol`), `useMessages().overview/graph/next`.
@@ -1107,7 +1107,7 @@ Run the three test files, then lint, typecheck, all tests, build. Commit: "Build
 
 After Task 2, parallel with 3, 4, 5.
 
-**Files:** Replace `src/next/pages/HandbookPage.tsx`, `src/next/pages/ExtrasPage.tsx`; create `src/next/handbook/ExpPanel.tsx`, `CostPanel.tsx`, `RatioPanel.tsx`, `src/next/extras/ChangelogPanel.tsx`, `CreditsPanel.tsx`, tests `HandbookPage.test.tsx`, `ExtrasPage.test.tsx`.
+**Files:** Replace `src/next/pages/HandbookPage.tsx`, `src/next/pages/ExtrasPage.tsx`; create src/next/handbook/ExpPanel.tsx, `CostPanel.tsx`, `RatioPanel.tsx`, src/next/extras/ChangelogPanel.tsx, `CreditsPanel.tsx`, tests `HandbookPage.test.tsx`, `ExtrasPage.test.tsx`.
 
 **Interfaces:**
 - Consumes: kit (`Card`, `Tabs`, `SegmentedSwitch`, `DataTable`); store (`mode`, `setMode`, `useSelectedSymbol`, `region`); the current tables' data logic (src/components/Handbook/ExpTable.tsx, CostTable.tsx, RatioTable.tsx; src/components/Extras/Changelog.tsx, Credits.tsx); `ratioData`, `changelogEntries`, `formatDate`, `formatNumber`, `isPublished`, `mesosKind`; `nextHref`, the router's `navigate`; `useMessages().handbook/extras/next`.

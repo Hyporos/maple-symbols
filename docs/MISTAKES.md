@@ -16,6 +16,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Platform config is validated by the platform, not by reading it.** `vercel.json` passed lint, tests and two reviews, and Vercel still rejected the deployment. Check syntax against the platform's docs before shipping config that CI cannot run, and deploy a preview before DNS moves (M-008).
 - **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
 - **Stage files by name, never `git add -A`**: leftover worktrees and scratch folders get swept in (M-011).
+- **A file that does not exist yet goes without backticks in a doc** (plans, specs): the docs test fails on it, and a docs-only commit runs no tests (M-021).
 - **Agent worktrees start from `main`, not the current branch**: for work on `v2`, make them yourself from `v2` and give each agent its path (M-018).
 - **Game facts need a source dated after the last relevant patch**, or they are recorded as unverified. When GMS changes something, KMS almost always changed it first (M-012). **Guide pages lag**: a number that patches change comes from the latest patch notes, never from an official guide page alone (M-014).
 - **Verify hosting config on a real deployment** (a preview) before it merges; a test of `vercel.json` only proves the file says what we meant (M-016).
@@ -164,3 +165,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Described a console I had not seen, and gave a 2.0 URL without saying plainly that production doesn't have it.
 - **Rule**: Don't describe a third-party console's fields from memory; ask for a screenshot or say it's a guess. Any URL given for registration must be checked against production with `curl` first, and 2.0-only URLs labelled as such.
 - **Where**: SEO §5.
+
+### M-021 · 2026-09-23 · docs
+
+- **What**: Committed the visual redesign spec and plan with not-yet-created files in backticks (src/next/ui/index.ts and others). `src/test/docs.test.ts` checks every backticked path in `docs/`, so `v2` failed `pnpm test` from that commit on; the docs-only commit ran no Vitest in the pre-commit hook, so nothing stopped it. The Task 1 implementer's commit was then blocked by the same test.
+- **Root cause**: Did not run `pnpm test` after a docs-only commit, and forgot that the docs test treats a plan's future files as broken links.
+- **Rule**: Run the docs test after any docs commit. In a plan or spec, write a file that doesn't exist yet without backticks (for example "src/next/ui/ (to be created)").
+- **Where**: docs/superpowers/ plans and specs.
