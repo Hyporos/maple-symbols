@@ -1,4 +1,4 @@
-// Extras pages: the Changelog and Credits chrome (changelog entries themselves stay in English, I18N-7).
+// Extras pages: the Changelog and Credits chrome (the notes per version are the `changelog` area).
 export const extras = {
   changelogTab: "Changelog",
   creditsTab: "Credits",

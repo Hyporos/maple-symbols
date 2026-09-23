@@ -14,6 +14,7 @@
 // ---------------------------------------------------------------------------
 
 import { calculator } from "./calculator";
+import { changelog } from "./changelog";
 import { extras } from "./extras";
 import { graph } from "./graph";
 import { handbook } from "./handbook";
@@ -24,6 +25,7 @@ import { tools } from "./tools";
 
 export const en = {
   calculator,
+  changelog,
   extras,
   graph,
   handbook,

@@ -159,6 +159,7 @@ export function fillTerms<T>(node: T, values: TermValues): T {
     ) as T;
   }
   if (node === null || typeof node !== "object") return node;
+  if (Array.isArray(node)) return node.map((item: unknown) => fillTerms(item, values)) as T;
   return Object.fromEntries(
     Object.entries(node).map(([key, value]) => [key, fillTerms(value, values)])
   ) as T;

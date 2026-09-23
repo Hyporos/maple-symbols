@@ -42,7 +42,7 @@ src/
              game.ts, utils.ts, inputs.ts         constants; core maths (updateSymbol, calculateDaysRemaining); input clamping
              calculator.ts, tools.ts, overview.ts, graph.ts   pure maths + labels behind each card
              routes.ts (pages, SEO, sitemap) · persistence.ts (saves) · format.ts (locale numbers/mesos/dates/plurals)
-             analytics.ts (typed Umami events) · changelog.ts · ratioData.ts · dayjs.ts (the only dayjs import)
+             analytics.ts (typed Umami events) · changelog.ts (versions; notes in i18n) · ratioData.ts · dayjs.ts (the only dayjs import)
   components/  Header, ServerMenu (site version + "Numbers from"), Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
     Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
     Handbook/, Extras/  TabLayout pages (ExpTable, CostTable, RatioTable; Changelog, Credits) · ui/ RadioButton, SlideButton, TabLayout

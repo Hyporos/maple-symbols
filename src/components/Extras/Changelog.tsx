@@ -13,7 +13,8 @@ import { interpolate, useMessages } from "../../i18n";
 
 const Changelog = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
-  const m = useMessages().extras;
+  const messages = useMessages();
+  const m = messages.extras;
   const { isMobile } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
@@ -53,6 +54,11 @@ const Changelog = () => {
       {/* PATCH NOTES */}
       {changelogEntries.map((entry, index) => {
         if (entry.version === selectedVersion) {
+          const {
+            additions = [],
+            fixes = [],
+          }: { additions?: readonly string[]; fixes?: readonly string[] } =
+            messages.changelog[entry.version];
           return (
             <div key={index} className="mx-8 flex w-full flex-col md:mx-10">
               <div className="flex justify-between">
@@ -100,11 +106,11 @@ const Changelog = () => {
 
               {/* NOTE DETAILS */}
               <div className={cn("mt-6 overflow-y-auto", !isMobile && "pr-10")}>
-                {entry.additions && entry.additions.length > 0 && (
+                {additions.length > 0 && (
                   <>
                     <h2 className="pb-6 font-semibold md:text-lg">{m.newAdditions}</h2>
                     <div className="space-y-4">
-                      {entry.additions.map((addition, index) => (
+                      {additions.map((addition, index) => (
                         <p key={index} className="text-xs md:text-sm">
                           • {addition}
                         </p>
@@ -113,21 +119,19 @@ const Changelog = () => {
                   </>
                 )}
 
-                {entry.fixes && entry.fixes.length > 0 && (
+                {fixes.length > 0 && (
                   <>
-                    {(entry.additions?.length || 0) > 0 && (
-                      <div className="mt-6 h-px bg-white/10" />
-                    )}
+                    {additions.length > 0 && <div className="mt-6 h-px bg-white/10" />}
                     <h2
                       className={cn(
                         "pb-6 font-semibold md:text-lg",
-                        (entry.additions?.length || 0) > 0 && "py-6"
+                        additions.length > 0 && "py-6"
                       )}
                     >
                       {m.bugFixes}
                     </h2>
                     <div className="space-y-4">
-                      {entry.fixes.map((fix, index) => (
+                      {fixes.map((fix, index) => (
                         <p key={index} className="text-xs md:text-sm">
                           • {fix}
                         </p>

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { changelogEntries } from "./changelog";
+import { en } from "../i18n/en";
 import { dayjs } from "./dayjs";
 import { formatDate } from "./format";
 import { arcaneRatioData, sacredRatioData } from "./ratioData";
@@ -17,7 +18,15 @@ describe("changelog entries", () => {
       // Round-trips, so "2023-02-30" (which dayjs would roll into March) fails.
       expect(dayjs(entry.date).format("YYYY-MM-DD")).toBe(entry.date);
       expect(entry.link).toMatch(/^https:\/\/github\.com\/Hyporos\/maple-symbols\/pull\/\d+$/);
-      expect((entry.additions?.length ?? 0) + (entry.fixes?.length ?? 0)).toBeGreaterThan(0);
+    }
+  });
+
+  it("each have notes in the catalogue, and the catalogue has notes for no other version", () => {
+    expect(Object.keys(en.changelog)).toEqual(changelogEntries.map((e) => e.version));
+    for (const entry of changelogEntries) {
+      const notes: { additions?: readonly string[]; fixes?: readonly string[] } =
+        en.changelog[entry.version];
+      expect((notes.additions?.length ?? 0) + (notes.fixes?.length ?? 0)).toBeGreaterThan(0);
     }
   });
 
