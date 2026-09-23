@@ -17,6 +17,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
 - **Stage files by name, never `git add -A`**: leftover worktrees and scratch folders get swept in (M-011).
 - **Game facts need a source dated after the last relevant patch**, or they are recorded as unverified. When GMS changes something, KMS almost always changed it first (M-012). **Guide pages lag**: a number that patches change comes from the latest patch notes, never from an official guide page alone (M-014).
+- **Verify hosting config on a real deployment** (a preview) before it merges; a test of `vercel.json` only proves the file says what we meant (M-016).
 - **Recompute every total from its parts** before writing it down, and never call a number checked that nobody recomputed (M-013). **Quote the sentence that states the fact itself**: a reset time quoted from an event counter's line proves nothing about the symbol quests (M-015).
 
 ## Log
@@ -127,3 +128,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Research agents matched the words "reset" and "Thursday 00:00" without checking what the sentence was about, and I recorded their quotes as official without reading them in context.
 - **Rule**: A quoted source must be the sentence that states the fact about the thing itself. Read the quote in its paragraph before calling it official.
 - **Where**: `docs/data-check/resets.csv`, GAME §3 and §7, `server-differences.csv`.
+
+### M-016 · 2026-09-22 · deploy
+
+- **What**: Phase 3 turned on `cleanUrls` in `vercel.json` and pointed the fallback rewrites at `.html` files (`/kms/(.*)` → `/kms.html`, `/(.*)` → `/index.html`). On a Vercel preview every unknown path (`/nope`, `/kms/nope`) returned 404 instead of the calculator, which breaks SEO-3. The repo tests only checked the shape of `vercel.json`, so they passed.
+- **Root cause**: Assumed a rewrite destination behaves like a file path; with `cleanUrls` on, Vercel serves pages by their clean path and does not rewrite to a `.html` destination.
+- **Rule**: Hosting behaviour (redirects, rewrites, clean URLs, headers) is verified against a real deployment before it merges; a test of the config file only proves the file says what we meant.
+- **Where**: `vercel.json`, `src/lib/routes.test.ts`.

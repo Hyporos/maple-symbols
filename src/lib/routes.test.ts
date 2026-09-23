@@ -151,7 +151,8 @@ describe("vercel.json serves every edition", () => {
     for (const edition of EDITIONS.filter((e) => e.prefix)) {
       const i = rewrites.findIndex((r) => r.source === `${edition.prefix}/(.*)`);
       expect(i).toBeGreaterThanOrEqual(0);
-      expect(rewrites[i].destination).toBe(`${edition.prefix}.html`);
+      // A clean path: with cleanUrls, Vercel will not rewrite to a .html destination.
+      expect(rewrites[i].destination).toBe(edition.prefix);
       expect(i).toBeLessThan(rewrites.findIndex((r) => r.source === "/(.*)"));
     }
   });

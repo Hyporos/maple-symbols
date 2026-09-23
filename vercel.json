@@ -23,27 +23,27 @@
   "rewrites": [
     {
       "source": "/msea/(.*)",
-      "destination": "/msea.html"
+      "destination": "/msea"
     },
     {
       "source": "/kms/(.*)",
-      "destination": "/kms.html"
+      "destination": "/kms"
     },
     {
       "source": "/jms/(.*)",
-      "destination": "/jms.html"
+      "destination": "/jms"
     },
     {
       "source": "/tms/(.*)",
-      "destination": "/tms.html"
+      "destination": "/tms"
     },
     {
       "source": "/cms/(.*)",
-      "destination": "/cms.html"
+      "destination": "/cms"
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [
