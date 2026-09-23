@@ -80,6 +80,9 @@ export const GAME_NAMES: Readonly<
     10: { name: "桃源郷", dailyName: "桃源郷の浄化作業" },
     11: { name: "アルテリア", dailyName: "アルテリアの残党退治" },
     12: { name: "カルシオン", dailyName: "カルシオンの復旧支援" },
+    // Grand Sacred (docs/data-check/names-ja.csv): ver4.43 part 2 (2026-07-22), ver4.44 (2026-08-26).
+    13: { name: "タラハート", dailyName: "タラハート:古代神の力調査" },
+    14: { name: "ギアードラック", dailyName: "ギアードラック:クロノスの残滓収集" },
   },
   // KMS (checked 2026-09-23), every name from maplestory.nexon.com, not the namu.wiki sheet
   // (docs/data-check/names-ko.csv; its symbol, daily and weekly names agree). Symbols:
@@ -133,6 +136,9 @@ export const GAME_NAMES: Readonly<
     10: { name: "桃源境", dailyName: "桃源境汙染淨化" },
     11: { name: "阿爾特利亞", dailyName: "消滅阿爾特利亞殘黨" },
     12: { name: "卡爾西溫", dailyName: "卡爾西溫重建支援" },
+    // Grand Sacred: only Tallahart's name is in an official notice (V280); its daily and
+    // Geardock (基爾德拉) are client strings so far (docs/data-check/names-zh-Hant.csv).
+    13: { name: "塔拉哈特" },
   },
   // CMS (checked 2026-09-23), only from the official site's guide wiki (mxd.web.sdo.com/wiki/,
   // 次元站), never from names-zh-Hans.csv (mxd.dvg.cn, a fan database):
