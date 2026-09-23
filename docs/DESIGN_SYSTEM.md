@@ -255,3 +255,22 @@ export default Thing;
 6. Respect the fixed geometry (360 px phone width, pane heights); content scrolls inside.
 7. Colocated `Thing.test.tsx` from `docs/TESTING.md`; then `pnpm lint && pnpm test`.
 8. Run `/new-component` to have this scaffolded for you.
+
+## 12. The /next kit (redesign in progress)
+
+`src/next/ui/` is the redesign's reusable primitive kit (V2_PLAN); Tasks 3-6 build the new pages on
+top of it, importing from `src/next/ui/index.ts`. Props only, no store access (feature components in
+`src/next/` read the store directly, same as `src/components/`). Class recipes below are the ones a
+consumer won't see from the props alone; read each file for the rest.
+
+- **Card**: the redesign's surface. `rounded-xl border border-white/6 bg-linear-to-t from-card to-card-grad p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.04),0_8px_24px_rgb(0_0_0/0.25)] md:p-5`; an optional `label` renders as an `uppercase text-[11px] tracking-[0.08em] text-tertiary` caption and names the card when `as="section"`.
+- **SegmentedSwitch**: a `role="radiogroup"` pill strip, `inline-flex gap-0.5 rounded-lg bg-dark p-1`; each option `rounded-md px-3 py-1.5 text-sm`, checked `bg-secondary text-primary`. Arrow keys move and select, wrapping; only the checked option is in the tab order.
+- **Switch**: a `role="switch"` track `h-5 w-9 rounded-full`, checked `bg-accent/35` with an `bg-accent` knob translated `translate-x-4`, unchecked `bg-secondary` track and `bg-tertiary` knob; `disabled:opacity-40`.
+- **ProgressRing**: a conic-gradient ring (`accent` sweep over `background-color-secondary`) around its child, sized by `size` (default 56); `value/max` clamp to a 0-1 fraction, NaN or a non-finite value renders empty (fraction 0), exposed as `data-fraction` for tests.
+- **ProgressBar**: a `role="progressbar"` track `h-1.5 rounded-full bg-secondary` with a `bg-accent` fill; NaN renders as 0.
+- **StatBox**: `rounded-lg bg-dark px-3 py-2`, caption `text-xs text-tertiary` over value `text-sm text-primary`.
+- **NumberField**: a centred number input, `rounded-lg bg-secondary` idle, `bg-hover text-primary` on hover/focus; NaN renders as `""`; the mouse wheel blurs it so scrolling the page cannot change the value.
+- **Sheet**: a `role="dialog"` overlay, portalled to `document.body`; a bottom sheet on phones (backdrop + `rounded-t-2xl` panel sliding up via the `sheet-in` keyframe in `src/global.css`), a `@floating-ui/react` popover at `anchor` on desktop. Takes focus on open, restores it to the opener on close, and closes on Escape or its own close button.
+- **Tabs**: a `role="tablist"` strip, `flex border-b border-white/8`; the selected tab gets an inset accent underline (`shadow-[inset_0_-2px_0_var(--color-accent)]`). Panel ids follow `${idPrefix}-panel-${value}`, matching each tab's `aria-controls`.
+- **BottomTabBar**: the phone shell's fixed section switcher, `fixed inset-x-0 bottom-0` with icon-over-label tabs, selected `text-accent`. Same tablist/arrow-key behaviour as Tabs.
+- **DataTable**: a plain `<table>` with a visually-hidden caption naming it; a `current` row gets `bg-dark text-primary` and `aria-current="true"`.

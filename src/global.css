@@ -27,6 +27,14 @@
   line-gap-override: 0%;
 }
 
+/* The /next redesign's bottom sheet slides up and fades in on open (DESIGN_SYSTEM §12). */
+@keyframes sheet-in {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+
 @theme {
   --shadow-input: 0 0 9px 0px rgb(0 0 0 / 0.25);
   --shadow-level: 0 0 2.5px 0px rgb(0 0 0 / 0.1);
