@@ -1,17 +1,17 @@
-id,gms_name,zh_Hant_name,confidence,source
-1,Vanishing Journey,祕法符文：消逝的旅途,client string,mxd.dvg.cn item database
-2,Chu Chu Island,祕法符文：啾啾艾爾蘭,client string,mxd.dvg.cn item database
-3,Lachelein,祕法符文：拉契爾恩,client string,mxd.dvg.cn item database
-4,Arcana,祕法符文：阿爾卡娜,client string,mxd.dvg.cn item database
-5,Morass,祕法符文：魔菈斯,client string,mxd.dvg.cn item database
-6,Esfera,祕法符文：艾斯佩拉,client string,mxd.dvg.cn item database
-7,Cernium,真實符文：賽爾尼溫,client string,mxd.dvg.cn item database
-8,Arcus,真實符文：阿爾克斯,client string (region 飯店阿爾克斯),mxd.dvg.cn item database
-9,Odium,真實符文：奧迪溫,client string,mxd.dvg.cn item database
-10,Shangri-La,真實符文：桃源境,client string,mxd.dvg.cn item database
-11,Arteria,真實符文：阿爾特利亞,client string,mxd.dvg.cn item database
-12,Carcion,真實符文：卡爾西溫,client string,mxd.dvg.cn item database
-G1,Tallahart,豪華真實符文：塔拉哈特,client string,mxd.dvg.cn item database
-G2,Geardock,豪華真實符文：基爾德拉,client string,mxd.dvg.cn item database
-,Arcane Force,祕法之力,official,beanfun patch notes
-,Sacred Power,真實之力,official,beanfun patch notes
+id,gms_name,zh_Hant_name,zh_Hant_daily_quest,confidence,source
+1,Vanishing Journey,祕法符文：消逝的旅途,[每日任務] 調查消逝的旅途,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+2,Chu Chu Island,祕法符文：啾啾艾爾蘭,[每日任務] 啾啾艾爾蘭最棒的料理,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+3,Lachelein,祕法符文：拉契爾恩,[每日任務] 拉契爾恩的平安夜,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+4,Arcana,祕法符文：阿爾卡娜,[每日任務] 阿爾卡娜的平靜清風,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+5,Morass,祕法符文：魔菈斯,[每日任務] 為了魔菈斯的穩定,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+6,Esfera,祕法符文：艾斯佩拉,[每日任務] 艾斯佩拉研究命令,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+7,Cernium,真實符文：賽爾尼溫,[每日任務] 調查賽爾尼溫,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+8,Arcus,真實符文：阿爾克斯,[每日任務] 打掃飯店阿爾克斯周邊,official (V280 notice) and client string (region 飯店阿爾克斯),mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+9,Odium,真實符文：奧迪溫,[每日任務] 奧迪溫地區勘查,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+10,Shangri-La,真實符文：桃源境,[每日任務] 桃源境汙染淨化,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+11,Arteria,真實符文：阿爾特利亞,[每日任務] 消滅阿爾特利亞殘黨,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+12,Carcion,真實符文：卡爾西溫,[每日任務] 卡爾西溫重建支援,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+G1,Tallahart,豪華真實符文：塔拉哈特,[每日任務] 調查塔拉哈特古代神的力量,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
+G2,Geardock,豪華真實符文：基爾德拉,,client string (also in press coverage; not in an official notice yet),mxd.dvg.cn item database
+,Arcane Force,祕法之力,,official,beanfun patch notes
+,Sacred Power,真實之力,,official,beanfun patch notes
