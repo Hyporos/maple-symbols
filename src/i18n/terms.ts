@@ -129,6 +129,44 @@ export const TERMS: Readonly<
     demonAvenger: "Demon Avenger", // UNCONFIRMED (GMS wording)
     xenon: "Xenon", // UNCONFIRMED (GMS wording)
   },
+  // KMS Korean (checked 2026-09-23). Sources, all maplestory.nexon.com:
+  //   [G396] Guide/N23GameInformation/Articles/396 ("[스탯] 아케인포스/어센틱포스"):
+  //          "아케인심볼은 최대 20레벨까지 성장 가능", "어센틱심볼은 최대 11레벨까지 성장 가능",
+  //          "캐릭터 직업에 맞는 주력 스탯과 아케인포스를 지니고 있음" (and 어센틱포스),
+  //          "아케인 카탈리스트를 사용하면 지금까지 성장에 사용된 아케인심볼의 20%를 잃게 되고",
+  //          "어센틱 카탈리스트를 사용하면 … 어센틱심볼의 40%를 잃게 되고",
+  //          "원하는 지역의 아케인심볼로 교환할 수 있는 '선택 아케인심볼 교환권' 획득 가능",
+  //          "각 지역의 어센틱심볼로 교환할 수 있는 심볼 교환권 획득 가능".
+  //   [U813] news/update/813 (2026-09-17): "※ 아케인, 어센틱 카탈리스트를 사용하여 심볼을
+  //          옮긴 경우에는" (the type words on their own), "선택 어센틱심볼 교환권".
+  //   [U710] news/update/710 (1.2.378, 2023-06-15): "어센틱 카탈리스트는 유니온 코인샵에서
+  //          구매할 수 있으며, 리부트 월드에서는 판매하지 않습니다."
+  //   [U677] news/update/677 (1.2.366, 2022-06-30): "일반 월드의 캐릭터로는 일반 월드 전용
+  //          하이퍼 버닝 이벤트에만 … 참여할 수 있습니다."
+  //   [JOB]  Guide/N23Job (the class list): "데몬 어벤져", "제논".
+  // Korean has no plural or article, so the plural and "a…" forms repeat the bare word, and
+  // the client writes 아케인심볼 / 어센틱심볼 with no space.
+  ko: {
+    arcane: "아케인", // U813
+    sacred: "어센틱", // U813
+    sacredSymbol: "어센틱심볼", // G396
+    arcaneSymbols: "아케인심볼", // G396
+    sacredSymbols: "어센틱심볼", // G396
+    aArcaneSymbol: "아케인심볼", // G396
+    aSacredSymbol: "어센틱심볼", // G396
+    arcanePower: "아케인포스", // G396
+    sacredPower: "어센틱포스", // G396
+    arcaneCatalyst: "아케인 카탈리스트", // G396
+    sacredCatalyst: "어센틱 카탈리스트", // G396, U710
+    // G396's generic wording for the tickets. The client also has an item "선택 심볼
+    // 교환권" (U813), but it opens into 5 arcane or 1 authentic ticket, so it is not this.
+    symbolSelector: "심볼 교환권",
+    arcaneSelector: "선택 아케인심볼 교환권", // G396
+    sacredSelector: "선택 어센틱심볼 교환권", // U813
+    regularServer: "일반 월드", // U677; U710 says the catalyst is not sold in 리부트 월드
+    demonAvenger: "데몬 어벤져", // JOB
+    xenon: "제논", // JOB
+  },
 };
 
 /** The terms of a name set; throws for one whose table does not exist yet. */

@@ -77,6 +77,41 @@ export const GAME_NAMES: Readonly<
     11: { name: "アルテリア", dailyName: "アルテリアの残党退治" },
     12: { name: "カルシオン", dailyName: "カルシオンの復旧支援" },
   },
+  // KMS (checked 2026-09-23), every name from maplestory.nexon.com, not the namu.wiki sheet
+  // (docs/data-check/names-ko.csv; its symbol, daily and weekly names agree). Symbols:
+  // news/update/813 (2026-09-17: "10레벨 아케인심볼 : 소멸의 여로" … "에스페라") and
+  // Guide/N23GameInformation/Articles/396 (the table "어센틱심볼 : 세르니움" … "카르시온").
+  // Arcane dailies: news/update/633 (1.2.349, 2021-06-17: "· [일일 퀘스트] 소멸의 여로 조사" …
+  // "에스페라 연구 명령"). Sacred dailies: news/update/794 (1.2.411, 2026-01-15: the table
+  // "[일일 퀘스트] 세르니움 조사" … "카르시온 복구 지원"). Weeklies: Guide/N23GameInformation/
+  // Articles/465 ("소멸의 여로의 에르다 스펙트럼" … "에스페라의 프로텍트 에스페라"). Extra
+  // regions: news/update/633 ("리버스 시티, 얌얌 아일랜드, 신의도시 세르니움, 호텔 아르크스의
+  // 일일 퀘스트가"), named by region as GMS names them. The "[일일 퀘스트]" tag is left off.
+  // Symbol 8 is 아르크스 (its region is 호텔 아르크스). Dormant until the ko catalogue is served.
+  ko: {
+    1: {
+      name: "소멸의 여로",
+      dailyName: "소멸의 여로 조사",
+      weeklyName: "에르다 스펙트럼",
+      extraName: "리버스 시티",
+    },
+    2: {
+      name: "츄츄 아일랜드",
+      dailyName: "츄츄 아일랜드 최고의 요리",
+      weeklyName: "배고픈 무토",
+      extraName: "얌얌 아일랜드",
+    },
+    3: { name: "레헬른", dailyName: "레헬른의 평온한 밤", weeklyName: "미드나잇 체이서" },
+    4: { name: "아르카나", dailyName: "아르카나의 평온한 바람", weeklyName: "스피릿 세이비어" },
+    5: { name: "모라스", dailyName: "모라스의 안정을 위해", weeklyName: "엔하임 디펜스" },
+    6: { name: "에스페라", dailyName: "에스페라 연구 명령", weeklyName: "프로텍트 에스페라" },
+    7: { name: "세르니움", dailyName: "세르니움 조사" },
+    8: { name: "아르크스", dailyName: "호텔 아르크스 주변 청소" },
+    9: { name: "오디움", dailyName: "오디움 일대 탐사" },
+    10: { name: "도원경", dailyName: "도원경 오염 정화" },
+    11: { name: "아르테리아", dailyName: "아르테리아 잔당 처치" },
+    12: { name: "카르시온", dailyName: "카르시온 복구 지원" },
+  },
   // TMS (docs/data-check/names-zh-Hant.csv, every row "official (V280 notice) and client
   // string"): the V280 notice (2026-06-24) and the client strings on mxd.dvg.cn. The item
   // prefix (祕法符文： / 真實符文：) and the quest tag ([每日任務]) are left off, as the GMS

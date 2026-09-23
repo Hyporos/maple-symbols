@@ -33,7 +33,7 @@ describe("the terms table (docs/I18N.md §10)", () => {
       ["cms", "en-gms"],
     ]);
     for (const edition of EDITIONS) expect(() => termsFor(nameSetFor(edition))).not.toThrow();
-    expect(() => termsFor("ko")).toThrow(/ko/);
+    expect(() => termsFor("ko")).not.toThrow(); // the KMS draft's table (src/i18n/ko)
   });
 
   it("gives every table the same terms, none of them blank", () => {
