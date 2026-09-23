@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { HiXMark } from "react-icons/hi2";
-import { editionOf, hrefFor, routeFor } from "../lib/routes";
+import { editionOf, hrefFor, routeFor, servedLocale } from "../lib/routes";
 import type { Region } from "../lib/regions";
 import { readAnswered, rememberAnswered, suggestedEdition } from "../lib/suggestion";
 import { track, trackOnce } from "../lib/analytics";
 import { useEdition } from "../hooks/useEdition";
-import { interpolate, useMessages } from "../i18n";
+import { editionMessages, interpolate } from "../i18n";
 import Message from "../i18n/Message";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -26,7 +26,6 @@ const browserTimeZone = (): string | undefined => {
 };
 
 const SuggestionBanner = () => {
-  const m = useMessages().shell;
   const { edition, path } = useEdition();
 
   const [suggestion, setSuggestion] = useState<Region | null>(null);
@@ -43,13 +42,20 @@ const SuggestionBanner = () => {
   if (suggestion === null) return null;
 
   const target = editionOf(suggestion);
+  // Written in the suggested edition's language, for the visitor this page may not suit
+  // (Brian, 2026-09-23); English until that edition's catalogue is served.
+  const m = editionMessages(target).shell;
+  const lang = servedLocale(target);
   const answer = (action: "clicked" | "dismissed") => {
     rememberAnswered(suggestion);
     track("edition_suggest", { action, to: suggestion });
   };
 
   return (
-    <aside className="absolute inset-x-0 top-full z-10 flex justify-center bg-light shadow-input">
+    <aside
+      lang={lang}
+      className="absolute inset-x-0 top-full z-10 flex justify-center bg-light shadow-input"
+    >
       <div className="flex w-full max-w-[1125px] items-center justify-between gap-3 px-4 py-2 text-xs md:justify-center md:gap-6 md:px-8 md:text-sm">
         <p>
           <Message text={m.suggestion} values={{ server: target.name }} />{" "}

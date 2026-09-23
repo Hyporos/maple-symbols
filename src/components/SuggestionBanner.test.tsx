@@ -32,6 +32,8 @@ describe("SuggestionBanner", () => {
       "href",
       "/kms/handbook"
     );
+    // Written in the suggested edition's served language: English while KMS is a draft.
+    expect(screen.getByRole("complementary")).toHaveAttribute("lang", "en");
   });
 
   it("suggests MSEA from a Singapore time zone on an English browser", () => {
