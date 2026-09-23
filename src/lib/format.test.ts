@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatNumber, plural } from "./format";
+import { formatDate, formatMesos, formatNumber, plural } from "./format";
+import { createInitialSymbols } from "./data";
 import { DEFAULT_LOCALE } from "./routes";
 import { dayjs } from "./dayjs";
 
@@ -19,6 +20,70 @@ describe("formatNumber", () => {
   it("renders an absent value as an empty string, not 'undefined'", () => {
     // Calculator reads mesosRequired[level], which is undefined past the table.
     expect(formatNumber(undefined)).toBe("");
+  });
+});
+
+describe("formatMesos", () => {
+  it("is formatNumber in English, for every cost in the tables", () => {
+    expect(formatMesos(3_930_100_000)).toBe("3,930,100,000");
+    expect(formatMesos(3_930_100_000, "en")).toBe("3,930,100,000");
+    for (const symbol of createInitialSymbols()) {
+      for (const cost of symbol.mesosRequired) expect(formatMesos(cost)).toBe(formatNumber(cost));
+    }
+  });
+
+  it("falls back to formatNumber for locales without a unit system", () => {
+    expect(formatMesos(3_930_100_000, "de")).toBe("3.930.100.000");
+    expect(formatMesos(3_930_100_000, "en-SG")).toBe("3,930,100,000");
+  });
+
+  it("uses 억 and 만 in Korean, grouped inside, spaced between, zero groups left out", () => {
+    expect(formatMesos(3_930_100_000, "ko")).toBe("39억 3,010만");
+    expect(formatMesos(100_000_000, "ko")).toBe("1억");
+    expect(formatMesos(12_345, "ko")).toBe("1만 2,345");
+    expect(formatMesos(9_999, "ko")).toBe("9,999");
+    expect(formatMesos(100_000_005, "ko")).toBe("1억 5");
+    expect(formatMesos(123_456_789_012, "ko")).toBe("1,234억 5,678만 9,012");
+  });
+
+  it("uses bare digits run together in Japanese and both Chinese scripts", () => {
+    expect(formatMesos(3_930_100_000, "ja")).toBe("39億3010万");
+    expect(formatMesos(12_345, "ja")).toBe("1万2345");
+    expect(formatMesos(9_999, "ja")).toBe("9999");
+    expect(formatMesos(3_930_100_000, "zh-Hant")).toBe("39億3010萬");
+    expect(formatMesos(3_930_100_000, "zh-Hans")).toBe("39亿3010万");
+    expect(formatMesos(100_000_000, "zh-Hans")).toBe("1亿");
+  });
+
+  it("adds 조 / 兆 at 10^12, except in Simplified Chinese, where 亿 keeps growing", () => {
+    expect(formatMesos(1_234_500_000_000, "ko")).toBe("1조 2,345억");
+    expect(formatMesos(1_000_000_000_000, "ja")).toBe("1兆");
+    expect(formatMesos(1_000_000_000_000, "zh-Hant")).toBe("1兆");
+    expect(formatMesos(1_234_500_000_000, "zh-Hans")).toBe("12345亿");
+  });
+
+  it("resolves tags with a region by language and script", () => {
+    expect(formatMesos(3_930_100_000, "ko-KR")).toBe("39억 3,010만");
+    expect(formatMesos(3_930_100_000, "ja-JP")).toBe("39億3010万");
+    expect(formatMesos(3_930_100_000, "zh-Hant-TW")).toBe("39億3010萬");
+    expect(formatMesos(3_930_100_000, "zh-TW")).toBe("39億3010萬");
+    expect(formatMesos(3_930_100_000, "zh-CN")).toBe("39亿3010万");
+    expect(formatMesos(3_930_100_000, "zh")).toBe("39亿3010万");
+  });
+
+  it("writes zero as 0 and rounds a stray fraction to whole mesos", () => {
+    expect(formatMesos(0, "ko")).toBe("0");
+    expect(formatMesos(0, "ja")).toBe("0");
+    expect(formatMesos(12_345.4, "ja")).toBe("1万2345");
+  });
+
+  it("renders unset or off-table amounts as an empty string", () => {
+    for (const locale of ["en", "ko", "ja", "zh-Hant", "zh-Hans"]) {
+      expect(formatMesos(undefined, locale)).toBe("");
+      expect(formatMesos(NaN, locale)).toBe("");
+      expect(formatMesos(Infinity, locale)).toBe("");
+      expect(formatMesos(-Infinity, locale)).toBe("");
+    }
   });
 });
 

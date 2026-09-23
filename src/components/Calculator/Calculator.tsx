@@ -26,7 +26,7 @@ import {
   weeklySymbolsFor,
 } from "../../lib/regions";
 import { editionOf } from "../../lib/routes";
-import { formatNumber } from "../../lib/format";
+import { formatMesos } from "../../lib/format";
 import { useLocale, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
@@ -458,7 +458,10 @@ const Calculator = () => {
                     <Message
                       text={m.mesosRequired}
                       values={{
-                        mesos: formatNumber(currentSymbol.mesosRequired[currentSymbol.level]),
+                        mesos: formatMesos(
+                          currentSymbol.mesosRequired[currentSymbol.level],
+                          locale
+                        ),
                       }}
                     />
                   ) : (
