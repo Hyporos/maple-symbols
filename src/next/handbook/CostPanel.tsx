@@ -1,5 +1,3 @@
-import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../components/Tooltip";
 import Message from "../../i18n/Message";
 import { interpolate, useLocale, useMessages, useNameSet } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
@@ -8,7 +6,8 @@ import { isPublished, mesosKind } from "../../lib/regions";
 import { editionOf } from "../../lib/routes";
 import { cn } from "../../lib/utils";
 import { useAppStore, useMode, useSelectedSymbol } from "../../state/store";
-import { DataTable, SegmentedSwitch } from "../ui";
+import { DataTable } from "../ui";
+import FamilyHeader from "./FamilyHeader";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * CostPanel is the Handbook's Meso cost tab: the selected symbol's own cost table (a picker
@@ -23,7 +22,6 @@ const CostPanel = () => {
   const nameSet = useNameSet();
 
   const mode = useAppStore((s) => s.mode);
-  const setMode = useAppStore((s) => s.setMode);
   const family = useMode(); // Grand folds to Sacred for the heading term only.
   const symbols = useAppStore((s) => s.symbols);
   const region = useAppStore((s) => s.region);
@@ -32,12 +30,6 @@ const CostPanel = () => {
 
   const shown = symbols.filter((s) => s.type === mode);
   const published = isPublished(region, mesosKind(symbol.type));
-
-  const familyOptions = [
-    { value: "arcane" as const, label: messages.shell.arcane },
-    { value: "sacred" as const, label: messages.shell.sacred },
-    { value: "grand" as const, label: messages.next.calculator.familyGrand },
-  ];
 
   let total = 0;
   const rows = symbol.mesosRequired.map((cost, index) => {
@@ -69,28 +61,10 @@ const CostPanel = () => {
 
   return (
     <div>
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <h2 className="text-lg font-semibold text-primary">{handbook.symbolsHeading[family]}</h2>
-          <Tooltip placement="right">
-            <TooltipTrigger>
-              <HiOutlineQuestionMarkCircle
-                size={20}
-                className="cursor-default text-tertiary transition-colors hover:text-primary motion-reduce:transition-none"
-              />
-            </TooltipTrigger>
-            <TooltipContent className="tooltip">
-              <Message text={handbook.costTooltip} />
-            </TooltipContent>
-          </Tooltip>
-        </div>
-        <SegmentedSwitch
-          label={messages.next.calculator.familyLabel}
-          options={familyOptions}
-          value={mode}
-          onChange={setMode}
-        />
-      </div>
+      <FamilyHeader
+        heading={handbook.symbolsHeading[family]}
+        tooltip={<Message text={handbook.costTooltip} />}
+      />
 
       <div
         role="group"

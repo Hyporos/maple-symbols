@@ -1,5 +1,3 @@
-import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../components/Tooltip";
 import Message from "../../i18n/Message";
 import { interpolate, useLocale, useMessages, useNameSet } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
@@ -7,8 +5,9 @@ import { inFamily } from "../../lib/game";
 import { formatNumber } from "../../lib/format";
 import symbolsJson from "../../lib/symbols.json";
 import { isValid } from "../../lib/utils";
-import { useAppStore, useMode, useSelectedSymbol } from "../../state/store";
-import { DataTable, SegmentedSwitch } from "../ui";
+import { useMode, useSelectedSymbol } from "../../state/store";
+import { DataTable } from "../ui";
+import FamilyHeader from "./FamilyHeader";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * ExpPanel is the Handbook's Experience tab: the current ExpTable's numbers as a DataTable,
@@ -21,16 +20,8 @@ const ExpPanel = () => {
   const locale = useLocale();
   const nameSet = useNameSet();
 
-  const mode = useAppStore((s) => s.mode);
-  const setMode = useAppStore((s) => s.setMode);
   const family = useMode(); // Grand folds to Sacred: the exp table and the term it names.
   const symbol = useSelectedSymbol();
-
-  const familyOptions = [
-    { value: "arcane" as const, label: messages.shell.arcane },
-    { value: "sacred" as const, label: messages.shell.sacred },
-    { value: "grand" as const, label: messages.next.calculator.familyGrand },
-  ];
 
   const expTable =
     family === "arcane" ? symbolsJson.arcaneExpRequired : symbolsJson.sacredExpRequired;
@@ -66,28 +57,10 @@ const ExpPanel = () => {
 
   return (
     <div>
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <h2 className="text-lg font-semibold text-primary">{handbook.symbolsHeading[family]}</h2>
-          <Tooltip placement="right">
-            <TooltipTrigger>
-              <HiOutlineQuestionMarkCircle
-                size={20}
-                className="cursor-default text-tertiary transition-colors hover:text-primary motion-reduce:transition-none"
-              />
-            </TooltipTrigger>
-            <TooltipContent className="tooltip">
-              <Message text={handbook.expTooltip} />
-            </TooltipContent>
-          </Tooltip>
-        </div>
-        <SegmentedSwitch
-          label={messages.next.calculator.familyLabel}
-          options={familyOptions}
-          value={mode}
-          onChange={setMode}
-        />
-      </div>
+      <FamilyHeader
+        heading={handbook.symbolsHeading[family]}
+        tooltip={<Message text={handbook.expTooltip} />}
+      />
 
       <DataTable
         caption={handbook.tabs.exp.label}
