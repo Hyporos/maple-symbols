@@ -462,7 +462,7 @@ else {
 
 - [ ] **Step 11: Verify and commit**
 
-Run: `pnpm lint && pnpm typecheck && pnpm exec vitest run --maxWorkers=2 && pnpm build`. Expected: all PASS, and `git diff --stat dist` is irrelevant (dist is ignored): check instead that `dist/index.html` has no `next-app` (`grep -c next-app dist/index.html` prints 0).
+Run: `pnpm lint && pnpm typecheck && pnpm exec vitest run --maxWorkers=2 && pnpm build`. Expected: all PASS, and the prebuilt pages don't contain the redesign (`grep -c next-app dist/index.html` prints 0).
 
 Docs: ARCHITECTURE §2 (the `/next` segment, `NEXT_UI`), §3 (mode includes grand, `useMode` for the current UI), GAME §4 (Grand power counts toward Sacred), AGENTS map line (`next/` redesign copy), I18N §10 (`grand` term).
 
