@@ -6,6 +6,8 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ## Open
 
+### KI-016 · open · L · The Damage Ratio table's area names bypass the name sets. `src/components/Handbook/RatioTable.tsx` keeps `REGION = { arcane: "Arcane River", sacred: "Grandis" }` as literals, shown as the tab heading and in the ratio tooltip, so a Korean, Japanese or Chinese edition would show them in English, and MSEA can only match by luck. They are game names, so they belong with the others in a name set (`GAME_NAMES`, or two terms in `src/i18n/terms.ts`) with official client wording (D-12). Found while building the terms table (2026-09-23); harmless until a translated edition ships.
+
 ## Resolved
 
 ### KI-013 · resolved on `v2` (2026-09-22) · Day counts used the visitor's local calendar, not the game's reset, so a player far from UTC could see a completion date one day off. `gameToday(region)` (`src/lib/regions.ts`) now gives the server's game day (UTC plus the server's fixed offset; no server observes DST), and every day count and date label reads it: `advanceDayCount`/`calculateDaysRemaining` default to it, as do `progressToMax`, `collapsedRowLabels` and the graph builders, and Overview and Graph label dates from it. Pinned by `src/lib/regions.test.ts` (a New York Wednesday evening after 00:00 UTC is game Thursday: a weekly is 7 days away, not 1). **User-visible**: 2.0 changelog line.

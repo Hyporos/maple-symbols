@@ -6,7 +6,7 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import App from "../App";
 import { RouterProvider } from "../contexts/RouterContext";
 import {
@@ -17,6 +17,7 @@ import {
   OG_LOCALES,
   ogLocaleFor,
   pageMap,
+  pageMetaFor,
   ROUTES,
   sitemapXml,
   urlFor,
@@ -162,6 +163,27 @@ describe("an edition's page", () => {
       l.getAttribute("hreflang")
     );
     expect(hreflangs).toEqual(["en", "x-default", "en-SG", "en-MY", "en-PH", "en-TH"]);
+  });
+
+  it("writes the edition's own title and description, in its own terms", async () => {
+    seedHeadMeta();
+    window.history.replaceState(null, "", "/msea/handbook");
+
+    render(
+      <RouterProvider>
+        <App />
+      </RouterProvider>
+    );
+
+    const msea = EDITIONS.find((e) => e.region === "msea")!;
+    const meta = pageMetaFor("/handbook", msea);
+    expect(meta.description).toContain(
+      "Arcane and Authentic Symbol reference for MapleStory (MSEA)"
+    );
+    await waitFor(() => expect(content('meta[name="description"]')).toBe(meta.description));
+    expect(document.title).toBe(meta.title);
+    // The page itself reads MSEA's words too: the symbol-type toggle.
+    expect(screen.getByRole("radio", { name: "Authentic" })).toBeTruthy();
   });
 });
 

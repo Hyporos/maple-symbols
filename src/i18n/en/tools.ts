@@ -1,14 +1,14 @@
 // Tools card: the Symbol Selector and Catalyst previews.
 export const tools = {
-  symbolSelector: "Symbol Selector",
-  arcaneSelectorAlt: "Arcane Symbol Selector",
-  sacredSelectorAlt: "Sacred Symbol Selector",
-  arcaneCatalyst: "Arcane Catalyst",
-  sacredCatalyst: "Sacred Catalyst",
+  symbolSelector: "{symbolSelector}",
+  arcaneSelectorAlt: "{arcaneSelector}",
+  sacredSelectorAlt: "{sacredSelector}",
+  arcaneCatalyst: "{arcaneCatalyst}",
+  sacredCatalyst: "{sacredCatalyst}",
   arcaneCatalystTooltip:
-    "<b>[Regular Server Only]</b> Transfer an Arcane Symbol once within the same world",
+    "<b>[{regularServer} Only]</b> Transfer {aArcaneSymbol} once within the same world",
   sacredCatalystTooltip:
-    "<b>[Regular Server Only]</b> Transfer a Sacred Symbol once within the same world",
+    "<b>[{regularServer} Only]</b> Transfer {aSacredSymbol} once within the same world",
   countPlaceholder: "Count",
   apply: "Apply",
   // The preview tooltip draws "[Before → After]" with an arrow icon between the two words.

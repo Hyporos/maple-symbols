@@ -6,7 +6,7 @@ import SEO from "./components/SEO";
 import { ErrorBoundary } from "react-error-boundary";
 import { BreakpointProvider } from "./contexts/BreakpointContext";
 import { useRouter } from "./contexts/RouterContext";
-import { isKnownPath, routeFor, urlFor } from "./lib/routes";
+import { isKnownPath, pageMetaFor, routeFor } from "./lib/routes";
 import { useEdition } from "./hooks/useEdition";
 import { notFoundPath, track } from "./lib/analytics";
 import { useMessages } from "./i18n";
@@ -30,9 +30,8 @@ function PageContent() {
   useEffect(() => {
     if (!known) track("not_found", { path: notFoundPath(pathname) });
   }, [pathname, known]);
-  const seo = (
-    <SEO title={route.title} description={route.description} url={urlFor(route.path, edition)} />
-  );
+  const meta = pageMetaFor(route.path, edition);
+  const seo = <SEO title={meta.title} description={meta.description} url={meta.url} />;
 
   if (route.path === "/handbook") {
     return (

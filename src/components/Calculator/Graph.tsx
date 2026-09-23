@@ -32,7 +32,7 @@ import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
 import type { SymbolData, SymbolType } from "../../lib/types";
-import { interpolate, useLocale, useMessages } from "../../i18n";
+import { interpolate, useLocale, useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
@@ -62,7 +62,7 @@ const CustomTooltip = ({
   region,
 }: CustomTooltipProps) => {
   const m = useMessages().graph;
-  const locale = useLocale();
+  const nameSet = useNameSet();
 
   if (!active || !payload || payload.length === 0) {
     return null;
@@ -109,7 +109,7 @@ const CustomTooltip = ({
                 <div className="flex items-center space-x-1.5">
                   <p className={isMobile ? "text-xs" : "text-sm"}>
                     {interpolate(m.tooltipSymbolLevel, {
-                      symbol: symbolNames(symbol, locale).name,
+                      symbol: symbolNames(symbol, nameSet).name,
                       level: String(symbolEntries[0].entryLevel - 1),
                     })}
                   </p>

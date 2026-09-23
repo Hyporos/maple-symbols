@@ -27,7 +27,7 @@ import {
 } from "../../lib/regions";
 import { editionOf } from "../../lib/routes";
 import { formatMesos } from "../../lib/format";
-import { useLocale, useMessages } from "../../i18n";
+import { useLocale, useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
@@ -36,6 +36,7 @@ const Calculator = () => {
 
   const m = useMessages().calculator;
   const locale = useLocale();
+  const nameSet = useNameSet();
 
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
@@ -107,9 +108,13 @@ const Calculator = () => {
         <div className="flex w-full max-w-[360px] flex-col justify-between px-10 md:h-[250px]">
           <div className="flex items-center justify-center gap-4 pb-5 md:pb-6">
             {/* SYMBOL TITLE */}
-            <img src={currentSymbol.img} alt={symbolNames(currentSymbol, locale).name} width={33} />
+            <img
+              src={currentSymbol.img}
+              alt={symbolNames(currentSymbol, nameSet).name}
+              width={33}
+            />
             <p className="text-lg font-semibold tracking-wider text-primary uppercase md:text-xl">
-              {symbolNames(currentSymbol, locale).name}
+              {symbolNames(currentSymbol, nameSet).name}
             </p>
           </div>
 
@@ -280,7 +285,7 @@ const Calculator = () => {
               <TooltipContent className="tooltip">
                 <Message
                   text={m.dailyTooltip}
-                  values={{ quest: symbolNames(currentSymbol, locale).dailyName }}
+                  values={{ quest: symbolNames(currentSymbol, nameSet).dailyName }}
                 />
               </TooltipContent>
             </Tooltip>
@@ -309,7 +314,7 @@ const Calculator = () => {
               <TooltipContent className="tooltip">
                 <Message
                   text={m.weeklyTooltip}
-                  values={{ quest: symbolNames(currentSymbol, locale).weeklyName ?? "" }}
+                  values={{ quest: symbolNames(currentSymbol, nameSet).weeklyName ?? "" }}
                 />
               </TooltipContent>
             </Tooltip>
@@ -336,7 +341,7 @@ const Calculator = () => {
               <TooltipContent className="tooltip">
                 <Message
                   text={m.extraTooltip}
-                  values={{ quest: symbolNames(currentSymbol, locale).extraName ?? "" }}
+                  values={{ quest: symbolNames(currentSymbol, nameSet).extraName ?? "" }}
                 />
               </TooltipContent>
             </Tooltip>

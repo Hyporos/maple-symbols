@@ -10,13 +10,14 @@ import { maxLevelFor } from "../../lib/game";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { targetBucket, trackOnce } from "../../lib/analytics";
-import { useLocale, useMessages } from "../../i18n";
+import { useLocale, useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
 const Overview = () => {
   const m = useMessages().overview;
   const locale = useLocale();
+  const nameSet = useNameSet();
 
   const symbols = useAppStore((s) => s.symbols);
   const mode = useAppStore((s) => s.mode);
@@ -150,7 +151,7 @@ const Overview = () => {
                     <div className="hidden w-1/4 scale-[103.5%] justify-center md:flex">
                       <img
                         src={symbol.img}
-                        alt={symbolNames(symbol, locale).name}
+                        alt={symbolNames(symbol, nameSet).name}
                         width={40}
                         className={`${isNaN(symbol.level) && "grayscale"}`}
                       ></img>
@@ -158,13 +159,13 @@ const Overview = () => {
                     <div className="flex justify-center md:hidden">
                       <img
                         src={symbol.img}
-                        alt={symbolNames(symbol, locale).name}
+                        alt={symbolNames(symbol, nameSet).name}
                         width={!isMobile ? 37.5 : 35}
                         className={`${isNaN(symbol.level) && "grayscale"}`}
                       ></img>
                     </div>
                     <p className="text-center text-sm tracking-wider md:w-1/4 md:text-base">
-                      {symbolNames(symbol, locale).name}
+                      {symbolNames(symbol, nameSet).name}
                     </p>
                     <IoMdArrowDropdown
                       size={22.5}

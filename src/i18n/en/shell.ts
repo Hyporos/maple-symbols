@@ -14,8 +14,8 @@ export const shell = {
   donate: "Donate via PayPal",
   copyright: "© {year} Maple Symbols ━ v{version} Beta",
   symbolType: "Symbol type",
-  arcane: "Arcane",
-  sacred: "Sacred",
+  arcane: "{arcane}",
+  sacred: "{sacred}",
   symbolLevel: "Lv. {level}",
   errorFallback: "Something went wrong. Please refresh.",
 } as const;
