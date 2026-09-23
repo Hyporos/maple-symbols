@@ -46,6 +46,14 @@ Done on `development` (commits `0778e4f`, `5fbee93`, and the Tailwind 4 commit a
 
 After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; log surprises in `docs/MISTAKES.md`.
 
+## In 2.0, before launch (Brian, 2026-09-23)
+
+Each of these ships with the 2.0 release; how each works is still to design (ask before building).
+
+- **Feedback in the site.** A "note / feedback / suggestion" form players can always find (visible on every page, not buried), where they can say what is wrong or inaccurate with the details that make a report useful: the server, the page or symbol, what they see versus what the game shows, and optionally a screenshot or contact. It replaces native reviewers for the translations (players report problems) and catches stale game data faster than the weekly watcher. Where the reports land is open: the site has no backend, so it needs a service (a Vercel function writing to GitHub issues, Discord or email, or a form service); the choice comes with the design (ARCHITECTURE, ANALYTICS for any tracking).
+- **Accessibility mode.** A setting for higher contrast and other needs (for example larger text, reduced motion, no colour-only cues), remembered in the browser. Builds on what exists: keyboard radios (KI-011), the keyboard-only focus ring, `prefers-reduced-motion` rules (DESIGN_SYSTEM).
+- **Character profiles.** Several characters per server: each server's save (`saves[region]`, `src/lib/persistence.ts`) becomes a list of named characters with one selected, so a player with a main and alts keeps each one's levels. Needs a storage migration (`STORAGE_VERSION` 5, with `migrate` turning today's per-server save into that server's first character, so nothing is lost; AGENTS gotcha 2) and a character switcher in the interface.
+
 ## Open questions for 2.0 (ask before designing)
 
 - Event symbol sources (GAME §2). Two kinds, and they want different shapes: a **rate bonus** ("+5 symbols per regional daily while the event runs") and a **lump** (a pile of Selector coupons, or a Hyper Burning symbol). Tools already previews a lump through the Symbol Selector, but neither feeds the completion dates. Options: keep ignoring both and say so in the copy; add a per-day bonus field; let the Symbol Selector count carry into the date maths; or all three.
