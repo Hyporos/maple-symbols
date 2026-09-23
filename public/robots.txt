@@ -3,3 +3,6 @@ Allow: /
 
 # Sitemap
 Sitemap: https://maplesymbols.com/sitemap.xml
+
+# Daum Webmaster Tools ownership (2026-09-23)
+#DaumWebMasterTool:f96dfa1ee26198e7eff02848d05b6a23a69c2eb7231036f9106e36632fa3b694:IVo50ycyVx8SdYO9rhhbsA==
