@@ -81,8 +81,10 @@ describe("CalculatorPage (/next)", () => {
     const { container } = renderAt("/next");
     await screen.findByRole("tablist", { name: "Calculator sections" }); // the lazy page is in
     for (const el of container.querySelectorAll("[class*='w-[']")) {
-      const px = Number(/w-\[(\d+)px\]/.exec(el.className)?.[1] ?? 0);
-      expect(px).toBeLessThanOrEqual(360);
+      // w-[…] and min-w-[…] fix a width; max-w-[…] only caps it, so it is allowed.
+      for (const [, px] of el.className.matchAll(/(?:^|\s)(?:min-)?w-\[(\d+)px\]/g)) {
+        expect(Number(px)).toBeLessThanOrEqual(360);
+      }
     }
   });
 });
