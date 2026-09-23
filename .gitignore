@@ -29,3 +29,6 @@ dist-ssr
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# Brainstorming companion mockups
+.superpowers/
