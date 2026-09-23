@@ -393,7 +393,7 @@ export const markdownUrl = (path: RoutePath, edition: Edition): string =>
  * `content` of that engine's tag, pasted from its console; an empty one emits nothing.
  */
 export const SITE_VERIFICATION: Readonly<Record<"naver" | "baidu", string>> = {
-  naver: "",
+  naver: "9e4e9b595dc2c7dc249628e794bd4a40893d9ecc",
   baidu: "",
 };
 

@@ -124,7 +124,7 @@ Closed on 2026-09-16 (commit "Self-host Maven Pro and drop pre-compression"): **
 - **Search engines per edition** (REGIONS D-20; ownership recorded here once done):
   - Google Search Console: the domain property (DNS) already covers every edition; submit `/sitemap.xml` (the index) once 2.0 is live.
   - Bing Webmaster Tools: DNS; submit the index. IndexNow: key file `public/6ac832e798949809df731e3ffe349221.txt`, submitted by `pnpm indexnow` after each release (Bing, Naver, Yandex and Seznam share it).
-  - Naver Search Advisor (KMS): meta tag, paste the token into `SITE_VERIFICATION.naver` in `src/lib/routes.ts` (every prebuilt page then carries it); submit `/sitemaps/kms.xml`.
+  - Naver Search Advisor (KMS): meta tag. Token set on 2026-09-23 in `SITE_VERIFICATION.naver` (`src/lib/routes.ts`, every prebuilt page carries it) and, for 1.x, directly in `index.html` on `development` (PR #21), because verification has to pass on production before 2.0 ships. When `development` is next merged into `v2`, keep `v2`'s templated `index.html`: the tag comes from `SITE_VERIFICATION` there. After verifying, submit `/sitemap.xml`, and `/sitemaps/kms.xml` once KMS is published.
   - Daum Webmaster Tools (KMS): **a PIN line in `robots.txt`**, not a meta tag (`#DaumWebMasterTool:<hash>:<pin>`, from Daum's console, checked 2026-09-23); add the line to `public/robots.txt` when registering.
   - Baidu 搜索资源平台 (CMS): meta tag, `SITE_VERIFICATION.baidu`; submit `/sitemaps/cms.xml`.
   - Register an edition only once it is indexable (its catalogue served); until then its pages are `noindex`.
