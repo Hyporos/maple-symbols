@@ -90,10 +90,10 @@
       "mesosSacred": "sourced",
       "mesosGrand": "sourced",
       "resetDay": "sourced",
-      "resetHour": "inferred",
+      "resetHour": "sourced",
       "classGains": "sourced"
     },
-    "sources": "KMS updates 799 (rates), 806 (one weekly clear of 240), 812 (Xenon), 813 (arcane costs -30 %, docs/data-check/kms-mesos-arcane.csv)",
+    "sources": "KMS updates 774 (Thursday weekly), guide 465 (Thursday 00:00), 762 (00:00 daily boundary), 799 (rates), 806 (one weekly clear of 240), 812 (Xenon), 813 (arcane costs -30 %, docs/data-check/kms-mesos-arcane.csv)",
     "symbols": {
       "1": {
         "mesosRequired": [
@@ -159,14 +159,14 @@
     "status": {
       "dailySymbols": "sourced",
       "weekly": "sourced",
-      "mesosArcane": "unpublished",
-      "mesosSacred": "unpublished",
+      "mesosArcane": "sourced",
+      "mesosSacred": "sourced",
       "mesosGrand": "sourced",
       "resetDay": "sourced",
-      "resetHour": "inferred",
+      "resetHour": "sourced",
       "classGains": "inferred"
     },
-    "sources": "JMS ver4.38 (Thursday), ver4.43 (rates); no trustworthy current cost table except Grand Sacred (kiiten totals match GMS)",
+    "sources": "JMS ver4.17 (2023-09-20: Arcane and Authentic costs, equal to GMS), ver4.38 (Thursday 0:00 weekly), ver4.34 (0:00 daily boundary), ver4.43 (rates); Grand Sacred totals match GMS (kiiten)",
     "symbols": {}
   },
   "tms": {
@@ -221,14 +221,14 @@
     "status": {
       "dailySymbols": "sourced",
       "weekly": "sourced",
-      "mesosArcane": "unpublished",
-      "mesosSacred": "unpublished",
-      "mesosGrand": "unpublished",
+      "mesosArcane": "sourced",
+      "mesosSacred": "sourced",
+      "mesosGrand": "inferred",
       "resetDay": "sourced",
       "resetHour": "inferred",
       "classGains": "inferred"
     },
-    "sources": "CMS V222 (Thursday), V226 (rates); no current cost table",
+    "sources": "CMS V222 (Thursday), V226 (rates); official guide wiki 357578 (Arcane, Sacred and Tallahart costs, equal to GMS; Geardock inferred equal)",
     "symbols": {}
   }
 }

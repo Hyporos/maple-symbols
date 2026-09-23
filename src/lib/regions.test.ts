@@ -66,13 +66,15 @@ describe("region profiles (regions.json)", () => {
     }
   });
 
-  it("marks the meso tables nobody has published as unpublished", () => {
-    for (const region of ["jms", "cms"] as const) {
-      expect(REGION_PROFILES[region].status.mesosArcane).toBe("unpublished");
-      expect(REGION_PROFILES[region].status.mesosSacred).toBe("unpublished");
+  it("records every server's meso tables with their trust status (GAME §5, 2026-09-23)", () => {
+    // Every Arcane and Sacred table is now published somewhere official: JMS ver4.17, the CMS
+    // guide wiki 357578 (both equal to GMS); MSEA's are inferred from its 2023 cut.
+    for (const region of REGIONS) {
+      expect(REGION_PROFILES[region].status.mesosArcane, region).not.toBe("unpublished");
+      expect(REGION_PROFILES[region].status.mesosSacred, region).not.toBe("unpublished");
     }
     // Grand Sacred costs: published for KMS, JMS (kiiten) and TMS, all matching GMS; MSEA
-    // inferred from them; CMS not published (GAME §5).
+    // inferred from them; CMS has Tallahart in its guide and Geardock inferred equal.
     const grand = Object.fromEntries(REGIONS.map((r) => [r, REGION_PROFILES[r].status.mesosGrand]));
     expect(grand).toEqual({
       gms: "sourced",
@@ -80,7 +82,7 @@ describe("region profiles (regions.json)", () => {
       kms: "sourced",
       jms: "sourced",
       tms: "sourced",
-      cms: "unpublished",
+      cms: "inferred",
     });
   });
 });

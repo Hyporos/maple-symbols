@@ -124,6 +124,9 @@ const RULES = [
  * a new difference, record it in GAME §5 or §7 and copy the line here.
  */
 const KNOWN_DIFFERENCES = {
+  // The cost lines are kiiten's own errors: JMS's official ver4.17 notice (2023-09-20) lists
+  // the same costs as ours cell for cell (GAME §7, 2026-09-23). The class-gain lines stay a
+  // real open difference (JMS gains are inferred from GMS; Brian kept the inference).
   jms: [
     "Vanishing Journey: 8 of 19 meso costs differ on kiiten, total 249,700,000 (ours 252,470,000): 12→13 14,230,000 (ours 14,260,000); 13→14 16,670,000 (ours 16,740,000); …",
     "Chu Chu Island: 8 of 19 meso costs differ on kiiten, total 301,300,000 (ours 306,050,000): 12→13 17,310,000 (ours 17,360,000); 13→14 20,190,000 (ours 20,340,000); …",

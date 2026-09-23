@@ -10,6 +10,7 @@ import {
 import { createInitialSymbols } from "./data";
 import { formatNumber } from "./format";
 import { EDITIONS } from "./routes";
+import { REGION_PROFILES } from "./regions";
 
 const DAY = "2026-09-23";
 const byRegion = (region: string) => EDITIONS.find((e) => e.region === region)!;
@@ -62,9 +63,17 @@ describe("the Markdown copies of the pages (docs/AI_SEARCH.md)", () => {
   });
 
   it("say a cost is not published rather than show one (REGIONS D-6)", () => {
-    expect(pageMarkdown("/handbook", byRegion("jms"), DAY)).toContain(
-      "Meso costs are not published yet for JMS."
-    );
+    // No server's table is unpublished today, so mark one for the test.
+    const status = REGION_PROFILES.msea.status;
+    const saved = status.mesosArcane;
+    status.mesosArcane = "unpublished";
+    try {
+      expect(pageMarkdown("/handbook", msea, DAY)).toContain(
+        "Meso costs are not published yet for MSEA."
+      );
+    } finally {
+      status.mesosArcane = saved;
+    }
   });
 });
 

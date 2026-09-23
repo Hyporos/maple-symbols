@@ -6,6 +6,7 @@ import CostTable from "./CostTable";
 import RatioTable from "./RatioTable";
 import { seedSymbol } from "../../test/helpers";
 import { useAppStore } from "../../state/store";
+import { REGION_PROFILES } from "../../lib/regions";
 
 const dataRows = () => within(screen.getByRole("table")).getAllByRole("row").slice(1);
 const cells = (row: HTMLElement) =>
@@ -64,13 +65,21 @@ describe("CostTable", () => {
     expect(cells(rows[2])).toEqual(["3", "1,230,000", "2,200,000"]);
   });
 
-  it("hides a server's meso costs when nobody has published them (CMS)", () => {
-    useAppStore.getState().setRegion("cms");
-    render(<CostTable />);
-    expect(screen.getByText(/not published yet for/)).toHaveTextContent(
-      "Meso costs are not published yet for CMS."
-    );
-    for (const row of dataRows()) expect(cells(row).slice(1)).toEqual(["-", "-"]);
+  it("hides a server's meso costs when nobody has published them (REGIONS D-6)", () => {
+    // No server's table is unpublished today, so mark one for the test.
+    const status = REGION_PROFILES.cms.status;
+    const saved = status.mesosArcane;
+    status.mesosArcane = "unpublished";
+    try {
+      useAppStore.getState().setRegion("cms");
+      render(<CostTable />);
+      expect(screen.getByText(/not published yet for/)).toHaveTextContent(
+        "Meso costs are not published yet for CMS."
+      );
+      for (const row of dataRows()) expect(cells(row).slice(1)).toEqual(["-", "-"]);
+    } finally {
+      status.mesosArcane = saved;
+    }
   });
 
   it("shows KMS's own arcane costs after its 30 % cut", () => {
