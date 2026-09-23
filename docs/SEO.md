@@ -113,6 +113,13 @@ Closed on 2026-09-16 (commit "Self-host Maven Pro and drop pre-compression"): **
 ## 5. Off-page and monitoring (no code change covers this)
 
 - **Search Console and Bing Webmaster Tools**: verify the domain (record which method; there is no verification meta in `index.html`, so it is presumably DNS, and a host move must keep it), submit `https://maplesymbols.com/sitemap.xml`, and after each release read the Pages report and URL Inspection for the four URLs. A `site:` query is not an indexing check. Umami has no Search Console integration, so the two are read side by side; `docs/ANALYTICS.md` §7 has the setup and its limits.
+- **Search engines per edition** (REGIONS D-20; ownership recorded here once done):
+  - Google Search Console: the domain property (DNS) already covers every edition; submit `/sitemap.xml` (the index) once 2.0 is live.
+  - Bing Webmaster Tools: DNS; submit the index. IndexNow: key file `public/6ac832e798949809df731e3ffe349221.txt`, submitted by `pnpm indexnow` after each release (Bing, Naver, Yandex and Seznam share it).
+  - Naver Search Advisor (KMS): meta tag, paste the token into `SITE_VERIFICATION.naver` in `src/lib/routes.ts` (every prebuilt page then carries it); submit `/sitemaps/kms.xml`.
+  - Daum Webmaster Tools (KMS): **a PIN line in `robots.txt`**, not a meta tag (`#DaumWebMasterTool:<hash>:<pin>`, from Daum's console, checked 2026-09-23); add the line to `public/robots.txt` when registering.
+  - Baidu 搜索资源平台 (CMS): meta tag, `SITE_VERIFICATION.baidu`; submit `/sitemaps/cms.xml`.
+  - Register an edition only once it is indexable (its catalogue served); until then its pages are `noindex`.
 - **After every release**: SEO-25 live check; PageSpeed Insights on `/` and `/handbook` (mobile); validator.schema.org on `/`.
 - **Links that count**: the GitHub README (links already), the Discord, the MapleStory subreddit's tools thread, the MapleStory wiki and StrategyWiki resource lists (both credited on `/credits`, so a reciprocal listing is a fair ask), the creators in the Credits. One link from a wiki outranks a hundred directory listings.
 - **Brand**: "Maple Symbols" should appear as text on every page (Header logo `alt`, Footer) so branded queries resolve to the site rather than the GitHub repo.

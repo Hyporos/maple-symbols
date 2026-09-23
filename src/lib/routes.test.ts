@@ -16,6 +16,7 @@ import {
   sitemapXml,
   splitPath,
   urlFor,
+  verificationTags,
 } from "./routes";
 import { REGIONS } from "./regions";
 
@@ -127,6 +128,18 @@ describe("each edition's built HTML", () => {
     const map = JSON.parse(html.match(/const pageMap = (\{.*\});/)![1]);
     expect(Object.keys(map)).toEqual(["/kms", "/kms/handbook", "/kms/changelog", "/kms/credits"]);
     expect(map["/kms"].url).toBe("https://maplesymbols.com/kms");
+  });
+});
+
+describe("search-engine verification (REGIONS D-20)", () => {
+  it("emits a meta tag only for the engines whose token is set", () => {
+    expect(verificationTags({ naver: "", baidu: "" })).toEqual([]);
+    expect(verificationTags({ naver: "abc123", baidu: "" })).toEqual([
+      '<meta name="naver-site-verification" content="abc123" />',
+    ]);
+    expect(verificationTags({ naver: "", baidu: "codeva-x&y" })).toEqual([
+      '<meta name="baidu-site-verification" content="codeva-x&amp;y" />',
+    ]);
   });
 });
 

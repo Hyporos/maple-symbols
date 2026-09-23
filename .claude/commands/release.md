@@ -45,5 +45,6 @@ Brian's request to release is the go-ahead for the commit, push and PR; still sa
    - `https://maplesymbols.com/sitemap.xml` is identical to the build's (`dist/sitemap.xml` on 2.0, public/sitemap.xml on 1.x; strip `\r` before diffing).
    - The deployed bundle is the new one: the version string is in the entry script (`curl -s https://maplesymbols.com/ | grep -o '/assets/index-[^"]*\.js'`, then grep that file for `X.Y.Z`).
    - Report any mismatch; the release is not done until they agree.
+10. **IndexNow**: once the live check passes, `pnpm indexnow` (it reads the live sitemaps, so it runs after the deploy). Report its status line; 200 or 202 is success.
 
 `--dry-run`: do steps 1–5 as a diff preview only; commit nothing.

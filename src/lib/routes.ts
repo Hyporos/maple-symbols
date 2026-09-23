@@ -326,11 +326,33 @@ const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** The alternate-language links (or, for an untranslated edition, a noindex) for a page's head. */
+/**
+ * Search-engine ownership tokens (docs/REGIONS.md D-20, SEO §5). Google and Bing verify the
+ * domain by DNS; these engines read a meta tag in the prebuilt head. Each value is the
+ * `content` of that engine's tag, pasted from its console; an empty one emits nothing.
+ */
+export const SITE_VERIFICATION: Readonly<Record<"naver" | "baidu", string>> = {
+  naver: "",
+  baidu: "",
+};
+
+const VERIFICATION_TAGS = { naver: "naver-site-verification", baidu: "baidu-site-verification" };
+
+/** The verification meta tags for the tokens that are set (every page carries them). */
+export const verificationTags = (
+  tokens: Readonly<Record<string, string>> = SITE_VERIFICATION
+): string[] =>
+  Object.entries(VERIFICATION_TAGS)
+    .filter(([engine]) => tokens[engine])
+    .map(([engine, name]) => `<meta name="${name}" content="${escapeHtml(tokens[engine])}" />`);
+
 export function headLinks(path: RoutePath, edition: Edition = DEFAULT_EDITION): string {
-  if (!isIndexable(edition)) return '<meta name="robots" content="noindex" />';
-  return alternatesFor(path)
-    .map((a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${a.href}" />`)
-    .join("\n    ");
+  const links = isIndexable(edition)
+    ? alternatesFor(path).map(
+        (a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${a.href}" />`
+      )
+    : ['<meta name="robots" content="noindex" />'];
+  return [...links, ...verificationTags()].join("\n    ");
 }
 
 /**
