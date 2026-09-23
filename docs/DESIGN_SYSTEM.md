@@ -199,6 +199,7 @@ Its copy goes in the catalogue (`bonus: "Bonus"`, `bonusTooltip: "<b>[Bonus Ques
 - `img { select-none pointer-events-none }`: images cannot be dragged or clicked; put handlers and `cursor-pointer` on the parent.
 - `input::placeholder` is tertiary, secondary on hover/focus; number-input spinners are removed; scrollbars are thin, `#444444` thumb on `#212121` track (15 px in WebKit).
 - `.tooltip` (see §6).
+- `@keyframes sheet-in`: the /next bottom sheet's slide-up and fade-in (the kit's Sheet, §12); nothing in the current UI uses it.
 
 ## 10. Preferred going forward
 
@@ -271,10 +272,10 @@ read each file for the rest.
 - **ProgressBar**: a `role="progressbar"` track `h-1.5 rounded-full bg-secondary` with a `bg-accent` fill; NaN renders as 0.
 - **StatBox**: `rounded-lg bg-dark px-3 py-2`, caption `text-xs text-tertiary` over value `text-sm text-primary`.
 - **NumberField**: a centred number input, `rounded-lg bg-secondary` idle, `bg-hover text-primary` on hover/focus; NaN renders as `""`; the mouse wheel blurs it so scrolling the page cannot change the value.
-- **Sheet**: a `role="dialog"` overlay, portalled to `document.body`; a bottom sheet on phones (backdrop + `rounded-t-2xl` panel sliding up via the `sheet-in` keyframe in `src/global.css`), a `@floating-ui/react` popover at `anchor` on desktop. Takes focus on open, restores it to the opener on close, and closes on Escape or its own close button.
+- **Sheet**: a `role="dialog"` overlay, portalled to `document.body`; a bottom sheet on phones (backdrop + `rounded-t-2xl` panel sliding up via the `sheet-in` keyframe in `src/global.css`), a `@floating-ui/react` popover at `anchor` on desktop. The phone sheet is modal (`aria-modal`, focus trapped by `FloatingFocusManager`, `max-h-[85dvh] overflow-y-auto`, the backdrop closes it); the desktop popover is not (no `aria-modal`, follows its anchor with `autoUpdate`, a click outside or focus leaving closes it). Escape closes either wherever focus is (`useDismiss`). Focus goes to the content's first enabled field on open (the close button when there is none) and back to the opener on close, unless it already moved elsewhere.
 - **Tabs**: a `role="tablist"` strip, `flex border-b border-white/8`; the selected tab gets an inset accent underline (`shadow-[inset_0_-2px_0_var(--color-accent)]`). Panel ids follow `${idPrefix}-panel-${value}`, matching each tab's `aria-controls`.
-- **BottomTabBar**: the phone shell's fixed section switcher, `fixed inset-x-0 bottom-0` with icon-over-label tabs, selected `text-accent`. Same tablist/arrow-key behaviour as Tabs.
-- **DataTable**: a plain `<table>` with a visually-hidden caption naming it; a `current` row gets `bg-dark text-primary` and `aria-current="true"`.
+- **BottomTabBar**: the phone shell's fixed section switcher, `fixed inset-x-0 bottom-0` with icon-over-label tabs, selected `text-accent`. Same tablist/arrow-key behaviour as Tabs. SegmentedSwitch, Tabs and BottomTabBar share the arrow-key step in `src/next/ui/rovingIndex.ts`.
+- **DataTable**: a plain `w-full` `<table>` inside an `overflow-x-auto` wrapper (a wide table scrolls in its card, never the page), with a visually-hidden caption naming it; a `current` row gets `bg-dark text-primary` and `aria-current="true"`.
 
 **Page layouts** (`src/next/shell/`, `src/next/pages/`): `NextShell` is the /next frame — a `sticky top-0 z-30` wrapper around `NextHeader` and `SuggestionBanner` (so the banner docks `top-full` under the header, DESIGN_SYSTEM §6), `<main id="main" className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-24 md:px-8 md:pb-16">` for the page, a floating `FeedbackButton` (`fixed right-4 bottom-20 z-30`, `md:bottom-6`; opens a `ComingSoonNote` since reporting a wrong number is a later 2.0 feature), and `NextFooter` (a plain `border-t border-white/6` strip, not the gradient panel). `NextHeader` is `border-b border-white/6 bg-linear-to-t from-card to-card-grad`, `h-16`; on phones the nav, `NextServerMenu` and `AccessibilityButton` collapse into a `☰` menu while `CharacterChip` stays in the bar.
 

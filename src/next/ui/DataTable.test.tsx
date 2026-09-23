@@ -20,4 +20,10 @@ describe("DataTable", () => {
     const currentRow = screen.getByText("200").closest("tr")!;
     expect(currentRow).toHaveAttribute("aria-current", "true");
   });
+  it("fills its container and scrolls sideways inside it, not the page", () => {
+    render(<DataTable columns={columns} rows={rows} caption="Exp table" />);
+    const table = screen.getByRole("table", { name: "Exp table" });
+    expect(table).toHaveClass("w-full");
+    expect(table.parentElement).toHaveClass("overflow-x-auto");
+  });
 });

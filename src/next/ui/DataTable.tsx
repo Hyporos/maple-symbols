@@ -15,48 +15,51 @@ const ALIGN_CLASS: Record<"left" | "right" | "center", string> = {
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * DataTable is a plain reference table (exp, cost, ratio) with an optional highlighted current row.
+// * It fills its container and scrolls sideways inside it rather than widening the page.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const DataTable = ({ columns, rows, caption }: DataTableProps) => (
-  <table>
-    <caption className="sr-only">{caption}</caption>
-    <thead>
-      <tr>
-        {columns.map((column) => (
-          <th
-            key={column.key}
-            className={cn(
-              "px-2 py-2 text-xs font-normal text-tertiary",
-              ALIGN_CLASS[column.align ?? "left"]
-            )}
-          >
-            {column.header}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {rows.map((row) => (
-        <tr
-          key={row.key}
-          aria-current={row.current ? "true" : undefined}
-          className={cn(row.current && "bg-dark text-primary")}
-        >
-          {row.cells.map((cell, index) => (
-            <td
-              key={columns[index]?.key ?? index}
+  <div className="overflow-x-auto">
+    <table className="w-full">
+      <caption className="sr-only">{caption}</caption>
+      <thead>
+        <tr>
+          {columns.map((column) => (
+            <th
+              key={column.key}
               className={cn(
-                "border-t border-white/5 px-2 py-2 text-sm",
-                ALIGN_CLASS[columns[index]?.align ?? "left"]
+                "px-2 py-2 text-xs font-normal text-tertiary",
+                ALIGN_CLASS[column.align ?? "left"]
               )}
             >
-              {cell}
-            </td>
+              {column.header}
+            </th>
           ))}
         </tr>
-      ))}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr
+            key={row.key}
+            aria-current={row.current ? "true" : undefined}
+            className={cn(row.current && "bg-dark text-primary")}
+          >
+            {row.cells.map((cell, index) => (
+              <td
+                key={columns[index]?.key ?? index}
+                className={cn(
+                  "border-t border-white/5 px-2 py-2 text-sm",
+                  ALIGN_CLASS[columns[index]?.align ?? "left"]
+                )}
+              >
+                {cell}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 );
 
 export default DataTable;

@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from "react";
 import { cn } from "../../lib/utils";
+import { rovingIndex } from "./rovingIndex";
 
 interface SegmentedSwitchProps<T extends string> {
   label: string;
@@ -8,14 +9,6 @@ interface SegmentedSwitchProps<T extends string> {
   onChange: (value: T) => void;
   className?: string;
 }
-
-// Arrow keys that move to the previous (-1) or next (+1) option, wrapping around.
-const ARROW_STEP: Record<string, number> = {
-  ArrowUp: -1,
-  ArrowLeft: -1,
-  ArrowDown: 1,
-  ArrowRight: 1,
-};
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * SegmentedSwitch is a radiogroup rendered as a pill-shaped tab strip (the family switch, tools tab).
@@ -30,18 +23,13 @@ const SegmentedSwitch = <T extends string>({
   className,
 }: SegmentedSwitchProps<T>) => {
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    const step = ARROW_STEP[event.key];
-    if (!step) return;
+    const index = options.findIndex((option) => option.value === value);
+    const next = rovingIndex(options.length, index, event.key);
+    if (next === null) return;
 
     event.preventDefault();
-    const index = options.findIndex((option) => option.value === value);
-    const next = options[(index + step + options.length) % options.length];
-    onChange(next.value);
-    (
-      event.currentTarget.parentElement?.children[
-        (index + step + options.length) % options.length
-      ] as HTMLElement | undefined
-    )?.focus();
+    onChange(options[next].value);
+    (event.currentTarget.parentElement?.children[next] as HTMLElement | undefined)?.focus();
   };
 
   return (

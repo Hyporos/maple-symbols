@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from "react";
 import { cn } from "../../lib/utils";
+import { rovingIndex } from "./rovingIndex";
 
 interface TabsProps<T extends string> {
   label: string;
@@ -9,14 +10,6 @@ interface TabsProps<T extends string> {
   idPrefix: string;
 }
 
-// Arrow keys that move to the previous (-1) or next (+1) tab, wrapping around.
-const ARROW_STEP: Record<string, number> = {
-  ArrowUp: -1,
-  ArrowLeft: -1,
-  ArrowDown: 1,
-  ArrowRight: 1,
-};
-
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * Tabs renders a tablist whose panels the caller owns; panel ids follow `${idPrefix}-panel-${value}`
 // * so a `Tabs` and its panel markup stay linked without the caller re-deriving the id scheme.
@@ -24,17 +17,13 @@ const ARROW_STEP: Record<string, number> = {
 
 const Tabs = <T extends string>({ label, tabs, value, onChange, idPrefix }: TabsProps<T>) => {
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    const step = ARROW_STEP[event.key];
-    if (!step) return;
+    const index = tabs.findIndex((tab) => tab.value === value);
+    const next = rovingIndex(tabs.length, index, event.key);
+    if (next === null) return;
 
     event.preventDefault();
-    const index = tabs.findIndex((tab) => tab.value === value);
-    const next = tabs[(index + step + tabs.length) % tabs.length];
-    onChange(next.value);
-    (
-      event.currentTarget.parentElement?.children[(index + step + tabs.length) % tabs.length] as
-        HTMLElement | undefined
-    )?.focus();
+    onChange(tabs[next].value);
+    (event.currentTarget.parentElement?.children[next] as HTMLElement | undefined)?.focus();
   };
 
   return (
