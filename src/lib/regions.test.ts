@@ -119,13 +119,9 @@ describe("createInitialSymbols(region)", () => {
     expect(arcaneTotal).toBe(1_622_560_000);
   });
 
-  it("gives MSEA Geardrock its 10 a day (v252) and changes nothing else", () => {
-    const msea = createInitialSymbols("msea");
-    expect(msea.find((s) => s.id === 14)!.dailySymbols).toBe(10);
-    expect(msea.filter((s) => s.id !== 14)).toEqual(gms.filter((s) => s.id !== 14));
-    const { dailySymbols: _a, ...rest } = msea.find((s) => s.id === 14)!;
-    const { dailySymbols: _b, ...base } = gms.find((s) => s.id === 14)!;
-    expect(rest).toEqual(base);
+  it("gives MSEA the GMS data unchanged (Geardrock 15: the printed 10 in v252 read as a copy slip)", () => {
+    // Brian, 2026-09-23 (GAME §5): MSEA had already raised Grand dailies to 15 in v251.
+    expect(createInitialSymbols("msea")).toEqual(gms);
   });
 
   it("keeps every other field of the base symbol", () => {
