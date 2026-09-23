@@ -2,6 +2,7 @@
 // helpers.ts — shared test utilities. Import what you need from "../test/helpers".
 // ---------------------------------------------------------------------------
 
+import { vi } from "vitest";
 import { useAppStore } from "../state/store";
 import { createInitialSymbols } from "../lib/data";
 import type { SymbolData } from "../lib/types";
@@ -49,6 +50,25 @@ export const SUN = new Date(2026, 8, 13, 10);
 export const MON = new Date(2026, 8, 14, 10);
 export const WED = new Date(2026, 8, 16, 10);
 export const SAT = new Date(2026, 8, 19, 10);
+
+// ── Browser language and time zone (SuggestionBanner, the local reset hint) ──
+/**
+ * Pretend the browser prefers `languages` and sits in `timeZone`: spies on
+ * `navigator.languages` and on what `Intl.DateTimeFormat().resolvedOptions()` reports.
+ * Spies, so undo with `vi.restoreAllMocks()` (the calling file's afterEach, or inline).
+ * Omit `languages` to change only the zone. Formatting in an explicit zone is unaffected.
+ */
+export function mockBrowser({ languages, timeZone }: { languages?: string[]; timeZone?: string }) {
+  if (languages) vi.spyOn(navigator, "languages", "get").mockReturnValue(languages);
+  if (timeZone) {
+    const resolved = Intl.DateTimeFormat.prototype.resolvedOptions;
+    vi.spyOn(Intl.DateTimeFormat.prototype, "resolvedOptions").mockImplementation(function (
+      this: Intl.DateTimeFormat
+    ) {
+      return { ...resolved.call(this), timeZone };
+    });
+  }
+}
 
 // ── Document head (for SEO.tsx, whose setMeta() no-ops on missing tags) ──
 const HEAD_TAGS: Array<[tag: "meta" | "link", attr: string, value: string]> = [

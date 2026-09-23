@@ -16,9 +16,12 @@ import Graph from "../components/Calculator/Graph";
 import Handbook from "../components/Handbook/Handbook";
 import Extras from "../components/Extras/Extras";
 import Footer from "../components/Footer";
+import ServerMenu from "../components/ServerMenu";
+import SuggestionBanner from "../components/SuggestionBanner";
 import { RouterProvider } from "../contexts/RouterContext";
 import { resetAnalyticsSession } from "../lib/analytics";
-import { seedSymbol } from "./helpers";
+import { useAppStore } from "../state/store";
+import { mockBrowser, seedSymbol } from "./helpers";
 
 let umamiTrack: ReturnType<typeof vi.fn<(...args: unknown[]) => unknown>>;
 const sent = () => umamiTrack.mock.calls;
@@ -199,5 +202,82 @@ describe("outbound links (attribute-based, no JavaScript)", () => {
       ["outbound", "discord"],
       ["outbound", "donate"],
     ]);
+  });
+});
+
+describe("Server menu", () => {
+  const openMenu = () => {
+    render(
+      <RouterProvider>
+        <ServerMenu />
+      </RouterProvider>
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Choose your server" }));
+  };
+
+  it("region_switch names the page's server and the one picked under Numbers from", () => {
+    window.history.replaceState(null, "", "/handbook");
+    openMenu();
+    const select = screen.getByRole("combobox");
+    fireEvent.change(select, { target: { value: "kms" } });
+    fireEvent.change(select, { target: { value: "gms" } });
+    expect(sentNamed("region_switch")).toEqual([
+      ["region_switch", { page: "gms", to: "kms" }],
+      ["region_switch", { page: "gms", to: "gms" }],
+    ]);
+    expect(useAppStore.getState().regionOverride).toBeNull();
+  });
+
+  it("edition_switch fires for a Site version link to another edition, not the current one", () => {
+    window.history.replaceState(null, "", "/msea");
+    openMenu();
+    const links = screen.getAllByRole("link");
+    for (const link of links) link.addEventListener("click", (e) => e.preventDefault());
+    fireEvent.click(links.find((a) => a.getAttribute("aria-current") === "page")!);
+    fireEvent.click(links.find((a) => a.getAttribute("href") === "/jms")!);
+    expect(sentNamed("edition_switch")).toEqual([["edition_switch", { from: "msea", to: "jms" }]]);
+  });
+});
+
+describe("Suggestion banner", () => {
+  const korean = () => mockBrowser({ languages: ["ko-KR", "ko"] });
+  const renderBanner = () =>
+    render(
+      <RouterProvider>
+        <SuggestionBanner />
+      </RouterProvider>
+    );
+
+  afterEach(() => vi.restoreAllMocks());
+
+  it("edition_suggest: shown once per page load, then clicked", () => {
+    korean();
+    const { unmount } = renderBanner();
+    unmount();
+    renderBanner(); // a second mount in the same page load is not a second showing
+    const link = screen.getByRole("link", { name: "Switch to KMS" });
+    link.addEventListener("click", (e) => e.preventDefault());
+    fireEvent.click(link);
+    expect(sentNamed("edition_suggest")).toEqual([
+      ["edition_suggest", { action: "shown", to: "kms" }],
+      ["edition_suggest", { action: "clicked", to: "kms" }],
+    ]);
+  });
+
+  it("edition_suggest: dismissed", () => {
+    korean();
+    renderBanner();
+    fireEvent.click(screen.getByRole("button", { name: "Dismiss this suggestion" }));
+    expect(sentNamed("edition_suggest")).toEqual([
+      ["edition_suggest", { action: "shown", to: "kms" }],
+      ["edition_suggest", { action: "dismissed", to: "kms" }],
+    ]);
+  });
+
+  it("edition_suggest is silent when the page is already the visitor's server's", () => {
+    korean();
+    window.history.replaceState(null, "", "/kms");
+    renderBanner();
+    expect(sentNamed("edition_suggest")).toEqual([]);
   });
 });

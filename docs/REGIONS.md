@@ -27,6 +27,10 @@ The plan of record for serving every MapleStory server (GMS, MSEA, KMS, JMS, TMS
   - D-19 **MSEA uses its own client's terms** (Authentic Symbol, Authentic Force, Road to Extinction, Chew Chew Island, Lacheln, Moras, Hotel Arcs, Talahart, Geardrock). Symbol 8 is shown as "Arcs", the short form, as GMS shows "Arcus" (Brian, 2026-09-23).
   - D-20 **Verification by meta tags** in the prebuilt head (Naver, Daum, Baidu) **and DNS** (Google, Bing), each recorded in SEO §5. Built 2026-09-23: `SITE_VERIFICATION` in `src/lib/routes.ts` (Naver, Baidu; empty until Brian pastes the tokens), IndexNow (`pnpm indexnow`). Daum turned out to verify with a PIN line in `robots.txt`, not a meta tag (SEO §5).
 - **Built on `v2`** (2026-09-22): phase 1 of §8. `src/lib/regions.json` holds every server's profile (reset offset, weekly structure, class gains, a status per kind of number, KMS's arcane costs) and `src/lib/regions.ts` reads it (`REGION_PROFILES`, `gameToday`, `weeklySymbolsFor`); `createInitialSymbols(region)` applies the overrides; every day count and date runs on the GMS game clock (KI-013 resolved); the watcher reads the GMS profile. No UI yet: the site still shows GMS only. Grand Sacred stays out of the data until the 2.0 design places it (D-18). Phase 2 too: saves are per server (`STORAGE_VERSION` 4, older saves become the GMS save) and the store has `region`, `regionOverride` and `setRegion`. The cards still compute with GMS; they read the store's `region` once phase 3 adds the server switch. Phase 3 too: the six editions in the router (`EDITIONS`, prefix-aware links), one prebuilt HTML file per page and edition with its own title, canonical, language and hreflang (untranslated editions `noindex`), a sitemap index with one sitemap per indexable edition, `cleanUrls` and per-edition fallbacks in `vercel.json`, the header server menu, and every card on the shown server's clock, weekly, class gains and meso costs (unpublished costs hidden: JMS and CMS today). Still to confirm on a Vercel preview: that `cleanUrls` serves `/kms/handbook` and the fallbacks rewrite as expected. Phase 5's terms table too (2026-09-22): catalogue copy names game terms by placeholder (`{sacredSymbol}`), filled per page from `TERMS[nameSet]` in `src/i18n/terms.ts`, page titles and descriptions included (`pageMetaFor`), so `/msea` reads "Authentic Symbol" and "Arcane Force" with MSEA's own region and quest names (I18N §10). The rest of §3–§8 is not built.
+- **D-8, D-9 and D-17 built on `v2`** (2026-09-23):
+  - D-9, the suggestion banner: `suggestedEdition(languages, timeZone, current)` in `src/lib/suggestion.ts` reads `navigator.languages` and the browser's time zone, and `src/components/SuggestionBanner.tsx` offers the result as a link to the same page in that edition (`hrefFor`), never a redirect. Rules, first match wins: the first tag in one of the servers' languages when it names a server other than GMS (ko → KMS; ja → JMS; zh-TW, zh-HK, zh-MO, zh-Hant → TMS; zh-CN, zh-Hans, bare zh → CMS; zh-SG, zh-MY, en-SG, en-MY, en-PH, en-TH, ms, th, id, fil/tl, vi → MSEA); then the time zone (Asia/Seoul → KMS, Asia/Tokyo → JMS, Asia/Taipei, Hong_Kong, Macau → TMS, Asia/Shanghai and its aliases → CMS, Singapore, Kuala Lumpur, Kuching, Manila, Bangkok, Jakarta and the other Indonesian zones, Ho Chi Minh/Saigon → MSEA); then GMS, only from en-US, en-GB, en-CA, en-AU, en-NZ or en-IE. A bare "en" decides nothing; other languages (de, fr, es…) are skipped. No banner when the answer is the page's own edition. Dismissing it or taking the link stores that edition under `maple-symbols-suggestion` in localStorage, and that suggestion never comes back (another one still can). The banner is read after mount, so the prebuilt HTML and hydration show none, and it hangs in the header's bottom margin (absolutely positioned), so appearing moves nothing (no layout shift). Zh-SG/zh-MY → MSEA and the Hong Kong and Macau zones → TMS go slightly beyond the brief; see §9.
+  - D-8, the local-time hint: `localResetTime(offsetHours, timeZone, locale, now)` in `src/lib/regions.ts` gives the next reset on the visitor's clock ("8:00 PM" for GMS in New York in summer), null when that is midnight there too. `useLocalResetTime` computes it after mount; it shows as a second sentence in the Calculator's day-count tooltip (the info icon beside "N days to go"): "Days turn over at the GMS daily reset, 8:00 PM your time".
+  - D-17: `region_switch`, `edition_switch` and `edition_suggest` (ANALYTICS §3).
 
 ## 1. What this overturns
 
@@ -127,14 +131,14 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 
 ## 7. Other region-useful features
 
-1. Suggest an edition from `navigator.languages` and the time zone; never redirect.
-2. Reset countdown: "00:00 KST = 09:00 your time".
+1. Suggest an edition from `navigator.languages` and the time zone; never redirect. Built 2026-09-23 (§0, D-9).
+2. Reset countdown: "00:00 KST = 09:00 your time". The time part is built (2026-09-23, D-8) as a tooltip sentence; a live countdown is not.
 3. Data freshness and status badge per edition.
 4. "Coming to GMS" notes from KMS changes (30 % arcane cut, Xenon, one-clear weekly).
 5. An event bonus list per region, with a toggle.
 6. World rules per region (Catalyst).
 7. Optional Nexon Open API character import (KMS, TMS and MSEA only). Needs a Vercel function, so it ends "no backend".
-8. Analytics: `region_switch`, `edition_suggest`, `language_switch`; editions come free by path.
+8. Analytics: `region_switch`, `edition_suggest`, `language_switch`; editions come free by path. The first two are built (2026-09-23) with `edition_switch` for the "Site version" links; `language_switch` waits for a language selector.
 9. Watcher per region:
    - KMS: official notices; Open API notices (key in a secret).
    - JMS: notices; kiiten.
@@ -162,3 +166,6 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 ## 9. Decisions
 
 All made on 2026-09-22; the answers are in §0. New open questions go here.
+
+- **Open (2026-09-23), the suggestion banner:** its look (a full-width `bg-light` strip under the header; screenshots with the p6 work); whether its copy should be in the _suggested_ edition's language (a Korean sentence on the GMS page for a Korean browser) once catalogues exist, rather than the page's; whether zh-SG/zh-MY → MSEA and Hong Kong/Macau zones → TMS stay; whether taking the link should silence it (it does today) or only dismissing; and whether an English browser in an Asian server's zone should outrank a GMS English (it does: a Singaporean on en-US is offered MSEA).
+- **Open (2026-09-23), the reset hint:** whether it also belongs in the Overview (its completion dates run on the same clock), and whether to hide it when the visitor's day turns over with the game's (it does).

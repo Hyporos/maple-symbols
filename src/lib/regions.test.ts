@@ -4,6 +4,7 @@ import { createInitialSymbols } from "./data";
 import {
   DEFAULT_REGION,
   gameToday,
+  localResetTime,
   REGION_PROFILES,
   REGIONS,
   weeklySymbolsFor,
@@ -148,5 +149,48 @@ describe("gameToday: the server's reset clock (KI-013)", () => {
     const kmsToday = gameToday("kms", at("2026-09-23T15:30:00Z"));
     expect(kmsToday.format("YYYY-MM-DD")).toBe("2026-09-24");
     expect(calculateDaysRemaining(240, 0, true, kmsToday, "kms")).toBe(7);
+  });
+});
+
+describe("localResetTime (REGIONS D-8)", () => {
+  // Intl may put a narrow no-break space before AM/PM; compare with plain spaces.
+  const reset = (offset: number, zone: string | undefined, locale: string, iso: string) =>
+    localResetTime(offset, zone, locale, new Date(iso))?.replace(/\s/g, " ") ?? null;
+
+  it("shows the GMS reset (00:00 UTC) on the visitor's clock, daylight saving included", () => {
+    expect(reset(0, "America/New_York", "en", "2026-09-23T12:00:00Z")).toBe("8:00 PM");
+    expect(reset(0, "America/New_York", "en", "2026-12-02T12:00:00Z")).toBe("7:00 PM");
+    expect(reset(0, "America/Los_Angeles", "en", "2026-09-23T12:00:00Z")).toBe("5:00 PM");
+    expect(reset(0, "Asia/Kolkata", "en", "2026-09-23T12:00:00Z")).toBe("5:30 AM");
+  });
+
+  it("takes the next reset, so the day it falls on is the right side of a clock change", () => {
+    // New York leaves daylight saving on 2026-11-01 at 06:00 UTC. At 23:00 UTC on 31 October
+    // the next GMS reset is 00:00 UTC on 1 November, still 8:00 PM EDT; an hour later it is
+    // the reset of 2 November, 7:00 PM EST.
+    expect(reset(0, "America/New_York", "en", "2026-10-31T23:00:00Z")).toBe("8:00 PM");
+    expect(reset(0, "America/New_York", "en", "2026-11-01T00:30:00Z")).toBe("7:00 PM");
+  });
+
+  it("shows the Asian servers' resets too", () => {
+    expect(reset(9, "America/New_York", "en", "2026-09-23T12:00:00Z")).toBe("11:00 AM"); // KMS
+    expect(reset(8, "Europe/London", "en", "2026-09-23T12:00:00Z")).toBe("5:00 PM"); // MSEA
+    expect(reset(8, "Asia/Seoul", "en", "2026-09-23T12:00:00Z")).toBe("1:00 AM"); // TMS
+  });
+
+  it("writes the time in the page's language", () => {
+    expect(reset(0, "Asia/Seoul", "ko", "2026-09-23T12:00:00Z")).toBe("오전 9:00");
+    expect(reset(0, "Asia/Tokyo", "ja", "2026-09-23T12:00:00Z")).toBe("9:00");
+  });
+
+  it("says nothing when the visitor's day turns over with the game's, or the zone is unknown", () => {
+    expect(reset(0, "UTC", "en", "2026-09-23T12:00:00Z")).toBeNull();
+    expect(reset(0, "Europe/London", "en", "2026-12-02T12:00:00Z")).toBeNull(); // GMT
+    expect(reset(0, "Europe/London", "en", "2026-09-23T12:00:00Z")).toBe("1:00 AM"); // BST
+    expect(reset(9, "Asia/Seoul", "en", "2026-09-23T12:00:00Z")).toBeNull();
+    expect(reset(9, "Asia/Tokyo", "en", "2026-09-23T12:00:00Z")).toBeNull();
+    expect(reset(8, "Asia/Singapore", "en", "2026-09-23T12:00:00Z")).toBeNull();
+    expect(reset(0, undefined, "en", "2026-09-23T12:00:00Z")).toBeNull();
+    expect(reset(0, "Not/AZone", "en", "2026-09-23T12:00:00Z")).toBeNull();
   });
 });

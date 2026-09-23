@@ -21,6 +21,7 @@ export const calculator = {
   daysToGo: { one: "<b>{count}</b> day to go", other: "<b>{count}</b> days to go" },
   completionAssumption:
     "The completion date assumes that you have <b>completed</b> both your <b>daily</b> and <b>weekly</b> quests",
+  resetHint: "Days turn over at the <b>{server}</b> daily reset, <b>{time}</b> your time",
   readyForUpgrade: "<b>Ready</b> for upgrade",
   experienceNotSet: "<b>Experience</b> is not set",
   questsNotSet: "<b>Quests</b> are not set",

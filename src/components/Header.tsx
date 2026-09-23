@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { HiOutlineMenu } from "react-icons/hi";
 import ServerMenu from "./ServerMenu";
+import SuggestionBanner from "./SuggestionBanner";
 import { cn } from "../lib/utils";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import { useRouter } from "../contexts/RouterContext";
@@ -12,6 +13,7 @@ import { useMessages } from "../i18n";
 // * The Header component is the top most component of the page which includes navigation and the server menu.
 // * Links stay inside the current edition (/kms/handbook on KMS); the server menu moves between editions.
 // * On mobile devices, you can click the menu button on the top right to view all available options.
+// * The server suggestion bar hangs below it, in its bottom margin (SuggestionBanner).
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Header = () => {
@@ -33,7 +35,7 @@ const Header = () => {
     pathname === page.path || (page.activeFor as readonly string[]).includes(pathname);
 
   return (
-    <section className="mb-16 bg-linear-to-t from-card to-card-grad p-1.5 px-4 md:p-3 md:px-8">
+    <section className="relative mb-16 bg-linear-to-t from-card to-card-grad p-1.5 px-4 md:p-3 md:px-8">
       <div
         className={cn(
           "flex h-[55px] flex-col overflow-hidden transition-height",
@@ -146,6 +148,7 @@ const Header = () => {
           </>
         )}
       </div>
+      <SuggestionBanner />
     </section>
   );
 };

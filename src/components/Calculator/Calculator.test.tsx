@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import Calculator from "./Calculator";
 import { useAppStore } from "../../state/store";
-import { fullText, seedSymbol, WED } from "../../test/helpers";
+import { fullText, mockBrowser, seedSymbol, WED } from "../../test/helpers";
 
 const levelInput = () => screen.getByPlaceholderText("Level");
 const expInput = () => screen.getByPlaceholderText(/^Exp/); // "Experience" (locked) or "Exp" (unlocked)
@@ -132,6 +132,33 @@ describe("Calculator — quests and the next-level panel", () => {
 
     fireEvent.click(screen.getByText("Extra"));
     expect(screen.getByText(fullText("1 day to go"))).toBeInTheDocument(); // 40/day, still one day
+  });
+
+  it("tells a visitor far from the server when the game day turns over (REGIONS D-8)", () => {
+    vi.setSystemTime(WED);
+    const zone = (timeZone: string) => mockBrowser({ timeZone });
+    const openTooltip = () =>
+      fireEvent.focus(
+        screen.getByText(fullText("1 day to go")).parentElement!.querySelector("button")!
+      );
+    seedSymbol(1, { level: 1, experience: 0, daily: true });
+
+    zone("America/New_York");
+    const { unmount } = render(<Calculator />);
+    openTooltip();
+    const hint = screen.getByText(/Days turn over at the/).closest("p")!;
+    expect(hint.textContent?.replace(/\s/g, " ")).toBe(
+      "Days turn over at the GMS daily reset, 8:00 PM your time"
+    );
+    unmount();
+    vi.restoreAllMocks();
+
+    zone("UTC"); // the game's day and the visitor's turn over together: nothing to add
+    render(<Calculator />);
+    openTooltip();
+    expect(screen.getByText(/completion date assumes/)).toBeInTheDocument();
+    expect(screen.queryByText(/Days turn over at the/)).not.toBeInTheDocument();
+    vi.restoreAllMocks();
   });
 
   it("shows the meso cost and main-stat gain for the next level", () => {

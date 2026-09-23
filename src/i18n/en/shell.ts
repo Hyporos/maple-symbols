@@ -9,6 +9,9 @@ export const shell = {
   numbersFromPage: "{server} (this page)",
   numbersFromNote:
     "Showing {server} numbers, remembered in this browser. Pick this page's server to go back.",
+  suggestion: "Playing on <b>{server}</b>? This page has a version for {server}.",
+  suggestionLink: "Switch to {server}",
+  suggestionDismiss: "Dismiss this suggestion",
   githubRepository: "GitHub repository",
   discordServer: "Discord server",
   donate: "Donate via PayPal",

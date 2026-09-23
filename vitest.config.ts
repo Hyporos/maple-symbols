@@ -10,6 +10,9 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
+    // Every run sees the same clock zone as CI, so a machine in Seoul or Tokyo neither
+    // shows the suggestion banner in unrelated tests nor shifts a local-time hint.
+    env: { TZ: "UTC" },
     css: false,
     coverage: {
       provider: "v8",
