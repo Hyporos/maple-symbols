@@ -33,4 +33,10 @@ describe("renderPage (build-time HTML)", () => {
     expect(html).toContain("/main/logo-sm.webp");
     expect(html).not.toContain("/main/logo-lg.webp");
   });
+
+  it("leaves out everything that depends on the visitor: the server suggestion, the local reset", async () => {
+    const html = await renderPage("/");
+    expect(html).not.toContain("Playing on");
+    expect(html).not.toContain("your time");
+  });
 });

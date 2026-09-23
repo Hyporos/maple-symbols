@@ -35,13 +35,14 @@ Vitest + Testing Library + jsdom, colocated tests, explicit imports. This doc is
 
 `src/test/helpers.ts`:
 
-| Helper                                           | Use                                                                                                         |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| `setViewport("mobile" \| "tablet" \| "desktop")` | call **before** rendering a `<BreakpointProvider>`; drives the matchMedia mock                              |
-| `resetStore()`                                   | `useAppStore.setState({ ...getInitialState(), symbols: createInitialSymbols() }, true)`; runs automatically |
-| `seedSymbol(id, patch, select = true)`           | patch one symbol by id (1–6 arcane, 7–12 sacred) and select it via `selectSymbol` (switches `mode` too)     |
-| `SUN`, `MON`, `WED`, `SAT`                       | `Date` fixtures for `vi.setSystemTime` (13–19 Sept 2026, 10:00 local)                                       |
-| `seedHeadMeta()`                                 | recreate the `<meta>`/`<link>` tags `index.html` ships so `SEO.tsx` has something to update                 |
+| Helper                                           | Use                                                                                                                                                                 |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `setViewport("mobile" \| "tablet" \| "desktop")` | call **before** rendering a `<BreakpointProvider>`; drives the matchMedia mock                                                                                      |
+| `resetStore()`                                   | `useAppStore.setState({ ...getInitialState(), symbols: createInitialSymbols() }, true)`; runs automatically                                                         |
+| `seedSymbol(id, patch, select = true)`           | patch one symbol by id (1–6 arcane, 7–12 sacred) and select it via `selectSymbol` (switches `mode` too)                                                             |
+| `SUN`, `MON`, `WED`, `SAT`                       | `Date` fixtures for `vi.setSystemTime` (13–19 Sept 2026, 10:00 local)                                                                                               |
+| `mockBrowser({ languages, timeZone })`           | spy on `navigator.languages` and on the zone `Intl.DateTimeFormat().resolvedOptions()` reports (SuggestionBanner, the reset hint); undo with `vi.restoreAllMocks()` |
+| `seedHeadMeta()`                                 | recreate the `<meta>`/`<link>` tags `index.html` ships so `SEO.tsx` has something to update                                                                         |
 
 Leaf components render without any provider: `useRouter()` and `useBreakpoint()` fall back to `/` and desktop.
 

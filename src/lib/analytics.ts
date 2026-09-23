@@ -12,6 +12,7 @@
 // silent no-op; nothing here ever throws into a click handler.
 // ---------------------------------------------------------------------------
 
+import type { Region } from "./regions";
 import type { SymbolType } from "./types";
 
 /** Bucketed target levels (AN-4: never send the raw number). */
@@ -36,6 +37,12 @@ export interface EventData {
   handbook_tab: { tab: "exp" | "cost" | "ratio" };
   extras_tab: { tab: "changelog" | "credits" };
   error_shown: { route: string };
+  /** "Numbers from" in the server menu: the page's own server and the one picked (codes). */
+  region_switch: { page: Region; to: Region };
+  /** A "Site version" link to another edition (a full page load; the tracker sends with keepalive). */
+  edition_switch: { from: Region; to: Region };
+  /** The suggestion banner (REGIONS D-9): "shown" once per page load, then the visitor's answer. */
+  edition_suggest: { action: "shown" | "clicked" | "dismissed"; to: Region };
 }
 
 export type EventName = keyof EventData;

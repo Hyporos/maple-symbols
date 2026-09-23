@@ -100,6 +100,8 @@ Tools' selector-count clamp and its Apply handler (`selectorCount < remainingToM
 | `RouterContext.tsx`       | mount                                                 | `popstate` listener                                    | cleanup                                                               |
 | `BreakpointContext.tsx`   | mount (×2)                                            | `matchMedia` change listeners                          | cleanup                                                               |
 | `App.tsx`                 | mount                                                 | `alert()` on Samsung Internet                          | mount-only                                                            |
+| `SuggestionBanner.tsx`    | `edition.region`                                      | local state (the suggestion); `edition_suggest` shown  | none needed; reads `navigator` and localStorage after mount only      |
+| `useLocalResetTime.ts`    | `region, locale`                                      | local state (the reset on the visitor's clock)         | none needed; after mount only, so prerender and hydration agree       |
 
 Overview has three effects (on `mode`; on `targetId`/`selectedNone`; on the target symbol's `level`/`mode`) and Graph two (`mode`, `currentPower`) that only reset local state. Because `react-hooks/exhaustive-deps` is off (see §7), the dependency arrays above are hand-curated and intentionally incomplete; treat them as part of the design, not as omissions.
 

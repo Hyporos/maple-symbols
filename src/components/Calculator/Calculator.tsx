@@ -13,6 +13,7 @@ import {
   updateSymbol,
 } from "../../lib/utils";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useLocalResetTime } from "../../hooks/useLocalResetTime";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
@@ -48,6 +49,8 @@ const Calculator = () => {
   const { demonAvengerHp, xenonAllStat } = REGION_PROFILES[region].classGains;
 
   const { isMobile } = useBreakpoint();
+  // The server's daily reset on the visitor's clock, for the day-count tooltip (REGIONS D-8).
+  const resetTime = useLocalResetTime(region, locale);
 
   const currentSymbol = useSelectedSymbol();
 
@@ -415,7 +418,17 @@ const Calculator = () => {
                           />
                         </TooltipTrigger>
                         <TooltipContent className="tooltip">
-                          <Message text={m.completionAssumption} />
+                          <p>
+                            <Message text={m.completionAssumption} />
+                          </p>
+                          {resetTime && (
+                            <p className="pt-1.5">
+                              <Message
+                                text={m.resetHint}
+                                values={{ server: editionOf(region).name, time: resetTime }}
+                              />
+                            </p>
+                          )}
                         </TooltipContent>
                       </Tooltip>
                     </div>

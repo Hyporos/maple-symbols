@@ -14,7 +14,7 @@ import Graph from "../components/Calculator/Graph";
 import Handbook from "../components/Handbook/Handbook";
 import { RouterProvider } from "../contexts/RouterContext";
 import { BreakpointProvider } from "../contexts/BreakpointContext";
-import { seedSymbol, setViewport, WED, type Viewport } from "./helpers";
+import { mockBrowser, seedSymbol, setViewport, WED, type Viewport } from "./helpers";
 
 // Interactive content that must never sit inside a <button>.
 const NESTED = ["button button", "button input", "button a", "button [role=radio]"];
@@ -120,6 +120,25 @@ describe("interactive nesting in the Handbook", () => {
 
       fireEvent.click(getByText("Damage Ratio Table"));
       expectNoNesting(container);
+    });
+  }
+});
+
+describe("interactive nesting in the header's suggestion banner", () => {
+  for (const viewport of ["desktop", "mobile"] as const) {
+    it(`${viewport}: the banner's link and dismiss button stand alone`, () => {
+      setViewport(viewport);
+      mockBrowser({ languages: ["ko-KR"] });
+      const { container } = render(
+        <RouterProvider>
+          <BreakpointProvider>
+            <Header />
+          </BreakpointProvider>
+        </RouterProvider>
+      );
+      expect(within(container).getByRole("complementary")).toBeInTheDocument();
+      expectNoNesting(container);
+      vi.restoreAllMocks();
     });
   }
 });

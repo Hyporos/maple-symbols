@@ -93,3 +93,40 @@ export function gameToday(region: Region = DEFAULT_REGION, now: Dayjs = dayjs())
   const shifted = new Date(now.valueOf() + REGION_PROFILES[region].resetUtcOffsetHours * 3_600_000);
   return dayjs(new Date(shifted.getUTCFullYear(), shifted.getUTCMonth(), shifted.getUTCDate()));
 }
+
+/**
+ * The server's daily reset as the visitor's clock reads it, for the hint beside a day count
+ * (REGIONS D-8): "8:00 PM" for the GMS reset (00:00 UTC) in New York in summer, "11:00 AM"
+ * for KMS (00:00 KST) there. Takes the *next* reset after `now`, so a daylight-saving change
+ * in the visitor's zone reads right. Null when the reset is midnight on the visitor's clock
+ * too (nothing worth saying: their day and the game's turn over together) or when the zone
+ * is unknown or unreadable. `locale` is the page's, never the browser's (I18N-12). Called
+ * after mount only: the visitor's zone is not known when the page is prerendered.
+ */
+export function localResetTime(
+  offsetHours: number,
+  timeZone: string | undefined,
+  locale: string,
+  now: Date = new Date()
+): string | null {
+  if (!timeZone) return null;
+  const offset = offsetHours * 3_600_000;
+  const shifted = new Date(now.valueOf() + offset);
+  const reset = new Date(
+    Date.UTC(shifted.getUTCFullYear(), shifted.getUTCMonth(), shifted.getUTCDate() + 1) - offset
+  );
+  try {
+    const clock = new Intl.DateTimeFormat("en", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+      timeZone,
+    }).format(reset);
+    if (clock === "00:00") return null;
+    return new Intl.DateTimeFormat(locale, { hour: "numeric", minute: "2-digit", timeZone }).format(
+      reset
+    );
+  } catch {
+    return null; // an unknown zone name
+  }
+}

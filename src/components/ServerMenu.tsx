@@ -17,6 +17,7 @@ import { editionOf, EDITIONS, hrefFor, routeFor } from "../lib/routes";
 import { REGIONS, type Region } from "../lib/regions";
 import { useEdition } from "../hooks/useEdition";
 import { useAppStore } from "../state/store";
+import { track } from "../lib/analytics";
 import { interpolate, useMessages } from "../i18n";
 
 interface ServerMenuProps {
@@ -90,6 +91,10 @@ const ServerMenu = ({ compact = false }: ServerMenuProps) => {
                   <a
                     href={hrefFor(page, e)}
                     aria-current={e.region === edition.region ? "page" : undefined}
+                    onClick={() => {
+                      if (e.region !== edition.region)
+                        track("edition_switch", { from: edition.region, to: e.region });
+                    }}
                     className={cn(
                       "flex justify-between rounded-lg px-2 py-1 transition-colors hover:bg-light hover:text-white",
                       e.region === edition.region && "bg-light text-white"
@@ -110,7 +115,11 @@ const ServerMenu = ({ compact = false }: ServerMenuProps) => {
               <p className="text-xs text-tertiary">{m.numbersFrom}</p>
               <select
                 value={region}
-                onChange={(e) => setRegion(e.target.value as Region)}
+                onChange={(e) => {
+                  const to = e.target.value as Region;
+                  track("region_switch", { page: edition.region, to });
+                  setRegion(to);
+                }}
                 className="rounded-lg bg-dark px-2 py-1.5 text-secondary"
               >
                 {REGIONS.map((r) => (
