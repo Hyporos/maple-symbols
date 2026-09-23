@@ -20,9 +20,13 @@ const AccessibilityButton = () => {
         aria-label={m.accessibility}
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-lg bg-light px-3 py-2 text-sm text-secondary hover:text-primary"
+        className="flex items-center gap-2 rounded-lg bg-light px-3 py-2 text-sm text-secondary transition-colors hover:text-primary motion-reduce:transition-none"
       >
-        <span className="font-semibold">Aa</span>
+        {/* A plain <b>, not a <span>: every <span> is accent purple globally (AGENTS.md
+            gotcha 5), which would make "Aa" stand out from the grey character and server
+            chips beside it. <b> carries no such override, so it inherits this button's
+            colour and hover like its siblings' icon-plus-text children do. */}
+        <b className="font-semibold">Aa</b>
       </button>
       <ComingSoonNote
         open={open}

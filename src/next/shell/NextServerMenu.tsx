@@ -35,7 +35,7 @@ const NextServerMenu = () => {
         type="button"
         aria-label={m.serverMenu}
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-lg bg-light px-3 py-2 text-sm text-secondary hover:text-primary"
+        className="flex items-center gap-2 rounded-lg bg-light px-3 py-2 text-sm text-secondary transition-colors hover:text-primary motion-reduce:transition-none"
       >
         <HiOutlineGlobeAlt />
         {editionOf(region).name}
