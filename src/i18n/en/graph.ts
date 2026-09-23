@@ -1,8 +1,8 @@
 // Graph card: the power-over-time chart and its controls.
 export const graph = {
-  power: { arcane: "Arcane Power", sacred: "Sacred Power" },
+  power: { arcane: "{arcanePower}", sacred: "{sacredPower}" },
   targetPower: "Target Power",
-  targetPowerFull: { arcane: "Target Arcane Power", sacred: "Target Sacred Power" },
+  targetPowerFull: { arcane: "Target {arcanePower}", sacred: "Target {sacredPower}" },
   targetPlaceholder: "Target",
   targetTooltip: "Calculate the date you'll achieve the <b>specified power</b>",
   dateLabel: "Date:",

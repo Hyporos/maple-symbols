@@ -98,6 +98,22 @@ describe("each edition's built HTML", () => {
     expect(html).not.toContain('name="robots"');
   });
 
+  it("carries the edition's own terms in its title, description and bootstrap page map", () => {
+    const html = applyToIndexHtml(source, msea, "/");
+    expect(html).toContain(
+      "<title>MapleStory Arcane &amp; Authentic Symbol Calculator | Maple Symbols</title>"
+    );
+    expect(html).toContain("for Arcane and Authentic symbols.");
+    const map = JSON.parse(html.match(/const pageMap = ({.*});/)![1]);
+    expect(map["/msea/handbook"].description).toBe(
+      "Complete Arcane and Authentic Symbol reference for MapleStory (MSEA): experience tables, meso upgrade costs, and damage ratios."
+    );
+    // GMS keeps its words.
+    expect(applyToIndexHtml(source)).toContain(
+      "<title>MapleStory Arcane &amp; Sacred Symbol Calculator | Maple Symbols</title>"
+    );
+  });
+
   it("marks an untranslated edition noindex, with no alternates", () => {
     const html = applyToIndexHtml(source, kms, "/handbook");
     expect(html).toContain('<meta name="robots" content="noindex" />');

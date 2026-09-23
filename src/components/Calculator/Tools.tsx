@@ -9,7 +9,7 @@ import { CATALYST_RETENTION, maxLevelFor } from "../../lib/game";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
-import { useLocale, useMessages } from "../../i18n";
+import { useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
@@ -20,7 +20,7 @@ import Message from "../../i18n/Message";
 
 const Tools = () => {
   const m = useMessages().tools;
-  const locale = useLocale();
+  const nameSet = useNameSet();
 
   const symbols = useAppStore((s) => s.symbols);
   const setSymbols = useAppStore((s) => s.setSymbols);
@@ -158,7 +158,7 @@ const Tools = () => {
                 <div className="flex items-center space-x-10 md:w-1/4 md:space-x-4">
                   <img
                     src={currentSymbol.img}
-                    alt={symbolNames(currentSymbol, locale).name}
+                    alt={symbolNames(currentSymbol, nameSet).name}
                     width={!isMobile ? 33 : 30}
                   ></img>
                   <input
@@ -273,12 +273,12 @@ const Tools = () => {
             <div className="flex items-center space-x-4 md:w-[70px]">
               <img
                 src={currentSymbol.img}
-                alt={symbolNames(currentSymbol, locale).name}
+                alt={symbolNames(currentSymbol, nameSet).name}
                 width={!isMobile ? 33 : 30}
                 className="md:p-0"
               ></img>
               <p className="text-sm md:text-base">
-                {isMobile && symbolNames(currentSymbol, locale).name}
+                {isMobile && symbolNames(currentSymbol, nameSet).name}
               </p>
             </div>
             <div className="flex items-center justify-around md:w-1/3">

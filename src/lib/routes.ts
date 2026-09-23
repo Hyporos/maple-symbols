@@ -8,12 +8,15 @@
 // in index.html and emits sitemap.xml at build time and in dev.
 // Add or change a page here and nowhere else.
 //
-// Titles, descriptions and nav labels are English catalogue messages (I18N-4). This
-// file imports the English area directly, never ../i18n (whose index imports this
-// file), and nothing it imports may contain JSX: vite.config.ts loads it at build time.
+// Titles, descriptions and nav labels are English catalogue messages (I18N-4), with
+// their game terms filled per edition (`pageMetaFor`, src/i18n/terms.ts). This file
+// imports the English area and the terms module directly, never ../i18n (whose index
+// imports this file), and nothing it imports may contain JSX: vite.config.ts loads it
+// at build time.
 // ---------------------------------------------------------------------------
 
 import { pages } from "../i18n/en/pages";
+import { fillTerms, termsFor, type NameSet, type TermValues } from "../i18n/terms";
 import type { Region } from "./regions";
 
 export const SITE_URL = "https://maplesymbols.com";
@@ -52,6 +55,8 @@ export interface Edition {
   language: string;
   /** The language's name in itself, for the site-version menu. */
   languageName: string;
+  /** Its client's vocabulary (src/i18n/terms.ts); a page uses it through `nameSetFor`. */
+  nameSet: NameSet;
   /** hreflang values for this edition's pages; GMS also takes x-default. */
   hreflang: readonly string[];
 }
@@ -63,6 +68,7 @@ export const EDITIONS: readonly Edition[] = [
     name: "GMS",
     language: "en",
     languageName: "English",
+    nameSet: "en-gms",
     hreflang: ["en", "x-default"],
   },
   {
@@ -71,6 +77,7 @@ export const EDITIONS: readonly Edition[] = [
     name: "MSEA",
     language: "en",
     languageName: "English",
+    nameSet: "en-msea",
     hreflang: ["en-SG", "en-MY", "en-PH", "en-TH"],
   },
   {
@@ -79,6 +86,7 @@ export const EDITIONS: readonly Edition[] = [
     name: "KMS",
     language: "ko",
     languageName: "한국어",
+    nameSet: "ko",
     hreflang: ["ko"],
   },
   {
@@ -87,6 +95,7 @@ export const EDITIONS: readonly Edition[] = [
     name: "JMS",
     language: "ja",
     languageName: "日本語",
+    nameSet: "ja",
     hreflang: ["ja"],
   },
   {
@@ -95,6 +104,7 @@ export const EDITIONS: readonly Edition[] = [
     name: "TMS",
     language: "zh-Hant",
     languageName: "繁體中文",
+    nameSet: "zh-Hant",
     hreflang: ["zh-Hant", "zh-TW", "zh-HK", "zh-MO"],
   },
   {
@@ -103,6 +113,7 @@ export const EDITIONS: readonly Edition[] = [
     name: "CMS",
     language: "zh-Hans",
     languageName: "简体中文",
+    nameSet: "zh-Hans",
     hreflang: ["zh-Hans", "zh-CN"],
   },
 ];
@@ -120,6 +131,20 @@ export const isIndexable = (edition: Edition): boolean =>
 /** The language the edition is actually served in: its own once translated, else English. */
 export const servedLocale = (edition: Edition): string =>
   isIndexable(edition) ? edition.language : DEFAULT_LOCALE;
+
+/**
+ * The vocabulary a page of the edition uses: its own client's once the page is served in the
+ * edition's language, GMS English until then, so an untranslated KMS page (English today)
+ * never mixes Korean game words into English copy.
+ */
+export const nameSetFor = (edition: Edition): NameSet =>
+  servedLocale(edition) === edition.language ? edition.nameSet : DEFAULT_EDITION.nameSet;
+
+/** What a page's copy fills its term placeholders with: its name set's terms and its server. */
+export const termValuesFor = (edition: Edition): TermValues => ({
+  ...termsFor(nameSetFor(edition)),
+  pageServer: edition.name,
+});
 
 /** Split a pathname into its edition and the page path inside it ("/kms/handbook" → kms, "/handbook"). */
 export function splitPath(pathname: string): { edition: Edition; rest: string } {
@@ -152,15 +177,35 @@ export const ogLocaleFor = (locale: string): string => {
   if (value === undefined) throw new Error(`routes.ts: no og:locale mapping for "${locale}"`);
   return value;
 };
+/**
+ * An edition's page copy, terms filled. English for every edition until a second catalogue
+ * lands; then this reads the edition's served language (I18N-4). Memoised per edition.
+ */
+const pageCopy = new Map<Edition, typeof pages>();
+const pagesFor = (edition: Edition): typeof pages => {
+  let copy = pageCopy.get(edition);
+  if (copy === undefined) {
+    copy = fillTerms(pages, termValuesFor(edition));
+    pageCopy.set(edition, copy);
+  }
+  return copy;
+};
+
 export const OG_IMAGE = {
   url: `${SITE_URL}/main/og-image.png`,
-  alt: pages.ogImageAlt,
+  alt: pagesFor(DEFAULT_EDITION).ogImageAlt,
 } as const;
 
 export type RoutePath = "/" | "/handbook" | "/changelog" | "/credits";
 
+/** A page's entry in the page copy (src/i18n/en/pages.ts). */
+type PageKey = "calculator" | "handbook" | "changelog" | "credits";
+
 export interface Route {
   path: RoutePath;
+  /** Where its title and description live in the page copy. */
+  page: PageKey;
+  /** The GMS title and description. Any edition's: `pageMetaFor(path, edition)`. */
   title: string;
   description: string;
   /** Present when the page has a Header link; `activeFor` lists the paths that highlight it. */
@@ -169,32 +214,38 @@ export interface Route {
   sitemap: { lastmod: string; changefreq: "weekly" | "monthly" | "yearly"; priority: number };
 }
 
+const gms = pagesFor(DEFAULT_EDITION);
+
 export const ROUTES: readonly Route[] = [
   {
     path: "/",
-    title: pages.calculator.title,
-    description: pages.calculator.description,
-    nav: { label: pages.calculator.nav },
+    page: "calculator",
+    title: gms.calculator.title,
+    description: gms.calculator.description,
+    nav: { label: gms.calculator.nav },
     sitemap: { lastmod: "2026-09-16", changefreq: "weekly", priority: 1.0 },
   },
   {
     path: "/handbook",
-    title: pages.handbook.title,
-    description: pages.handbook.description,
-    nav: { label: pages.handbook.nav },
+    page: "handbook",
+    title: gms.handbook.title,
+    description: gms.handbook.description,
+    nav: { label: gms.handbook.nav },
     sitemap: { lastmod: "2026-03-11", changefreq: "monthly", priority: 0.8 },
   },
   {
     path: "/changelog",
-    title: pages.changelog.title,
-    description: pages.changelog.description,
-    nav: { label: pages.changelog.nav, activeFor: ["/changelog", "/credits"] },
+    page: "changelog",
+    title: gms.changelog.title,
+    description: gms.changelog.description,
+    nav: { label: gms.changelog.nav, activeFor: ["/changelog", "/credits"] },
     sitemap: { lastmod: "2026-09-16", changefreq: "monthly", priority: 0.6 },
   },
   {
     path: "/credits",
-    title: pages.credits.title,
-    description: pages.credits.description,
+    page: "credits",
+    title: gms.credits.title,
+    description: gms.credits.description,
     sitemap: { lastmod: "2025-08-22", changefreq: "yearly", priority: 0.4 },
   },
 ];
@@ -249,19 +300,19 @@ export interface PageMeta {
   url: string;
 }
 
+/** A page's title, description and canonical URL in one edition, in that edition's own terms. */
+export function pageMetaFor(path: RoutePath, edition: Edition = DEFAULT_EDITION): PageMeta {
+  const { title, description } = pagesFor(edition)[routeFor(path).page];
+  return { title, description, url: urlFor(path, edition) };
+}
+
 /**
  * Site path → title/description/url for one edition's pages, the shape index.html's
  * bootstrap script reads (keyed by the full path, prefix included).
  */
 export function pageMap(edition: Edition = DEFAULT_EDITION): Record<string, PageMeta> {
   const map: Record<string, PageMeta> = {};
-  for (const r of ROUTES) {
-    map[hrefFor(r.path, edition)] = {
-      title: r.title,
-      description: r.description,
-      url: urlFor(r.path, edition),
-    };
-  }
+  for (const r of ROUTES) map[hrefFor(r.path, edition)] = pageMetaFor(r.path, edition);
   return map;
 }
 
@@ -288,13 +339,14 @@ export function applyToIndexHtml(
   path: RoutePath = "/"
 ): string {
   const page = routeFor(path);
+  const meta = pageMetaFor(page.path, edition);
   const locale = servedLocale(edition);
   const values: Record<string, string> = {
     __LOCALE__: locale,
     __OG_LOCALE__: ogLocaleFor(locale),
-    __ROOT_TITLE__: escapeHtml(page.title),
-    __ROOT_DESCRIPTION__: escapeHtml(page.description),
-    __ROOT_URL__: urlFor(page.path, edition),
+    __ROOT_TITLE__: escapeHtml(meta.title),
+    __ROOT_DESCRIPTION__: escapeHtml(meta.description),
+    __ROOT_URL__: meta.url,
     __HEAD_LINKS__: headLinks(page.path, edition),
     __OG_IMAGE__: OG_IMAGE.url,
     __OG_IMAGE_ALT__: escapeHtml(OG_IMAGE.alt),

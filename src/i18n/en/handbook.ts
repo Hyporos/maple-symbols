@@ -5,8 +5,8 @@ export const handbook = {
     cost: { label: "Meso Cost Table", mobileLabel: "Cost Table" },
     ratio: { label: "Damage Ratio Table", mobileLabel: "Dmg Table" },
   },
-  symbolsHeading: { arcane: "Arcane Symbols", sacred: "Sacred Symbols" },
-  power: { arcane: "Arcane Power", sacred: "Sacred Power" },
+  symbolsHeading: { arcane: "{arcaneSymbols}", sacred: "{sacredSymbols}" },
+  power: { arcane: "{arcanePower}", sacred: "{sacredPower}" },
   currentLevelAlt: "{symbol}: current level",
   level: "Level",
   symbolsRequired: "Symbols Required",
@@ -23,8 +23,8 @@ export const handbook = {
   ratioTooltip:
     "Displays <b>damage ratios</b> for {region} maps, <b>depending</b> on your {power}.",
   arcanePowerTooltip:
-    "The current <b>Arcane Power range</b> you meet, compared to the <b>map requirement</b>",
+    "The current <b>{arcanePower} range</b> you meet, compared to the <b>map requirement</b>",
   sacredPowerTooltip:
-    "The difference between <b>your Sacred Power</b> and the <b>map requirement</b>",
+    "The difference between <b>your {sacredPower}</b> and the <b>map requirement</b>",
   oneDamageTooltip: "Monsters will deal <b>1 damage</b> to your character",
 } as const;

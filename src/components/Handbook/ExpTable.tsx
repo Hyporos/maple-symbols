@@ -5,7 +5,7 @@ import { formatNumber } from "../../lib/format";
 import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import symbolsJson from "../../lib/symbols.json";
-import { interpolate, useLocale, useMessages } from "../../i18n";
+import { interpolate, useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
@@ -15,7 +15,7 @@ import Message from "../../i18n/Message";
 
 const ExpTable = () => {
   const m = useMessages().handbook;
-  const locale = useLocale();
+  const nameSet = useNameSet();
   const mode = useAppStore((s) => s.mode);
 
   const { isMobile } = useBreakpoint();
@@ -94,7 +94,7 @@ const ExpTable = () => {
                           <img
                             src={symbol.img}
                             alt={interpolate(m.currentLevelAlt, {
-                              symbol: symbolNames(symbol, locale).name,
+                              symbol: symbolNames(symbol, nameSet).name,
                             })}
                             className="h-3 w-3 md:h-4 md:w-4"
                           />

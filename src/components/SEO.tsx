@@ -5,14 +5,15 @@ import {
   EDITIONS,
   isIndexable,
   OG_IMAGE,
+  pageMetaFor,
   routeFor,
   servedLocale,
   SITE_NAME,
   urlFor,
 } from "../lib/routes";
 
-const ROOT = routeFor("/");
-const ROOT_URL = urlFor("/");
+const ROOT = pageMetaFor("/");
+const ROOT_URL = ROOT.url;
 
 interface SEOProps {
   title?: string;
@@ -74,7 +75,8 @@ function SEO({
 }: SEOProps) {
   useLayoutEffect(() => {
     const pathname = new URL(url).pathname;
-    const locale = servedLocale(editionFor(pathname));
+    const edition = editionFor(pathname);
+    const locale = servedLocale(edition);
     // Every edition's calculator is a root: it carries the WebApplication data.
     const isRoot = EDITIONS.some((e) => urlFor("/", e) === url);
     document.documentElement.lang = locale;
@@ -111,7 +113,7 @@ function SEO({
         "@type": "WebApplication",
         name: SITE_NAME,
         url,
-        description: ROOT.description,
+        description: pageMetaFor("/", edition).description,
         applicationCategory: "GameApplication",
         operatingSystem: "Web",
         inLanguage: locale,

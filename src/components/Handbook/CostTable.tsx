@@ -6,7 +6,7 @@ import { useAppStore, useSelectedSymbol } from "../../state/store";
 import { isPublished, mesosKind } from "../../lib/regions";
 import { editionOf } from "../../lib/routes";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
-import { interpolate, useLocale, useMessages } from "../../i18n";
+import { interpolate, useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
@@ -16,7 +16,7 @@ import Message from "../../i18n/Message";
 
 const CostTable = () => {
   const m = useMessages().handbook;
-  const locale = useLocale();
+  const nameSet = useNameSet();
   const { isMobile } = useBreakpoint();
   const symbol = useSelectedSymbol();
   const region = useAppStore((s) => s.region);
@@ -33,7 +33,7 @@ const CostTable = () => {
             <div className="flex items-center gap-5 md:gap-6">
               <img
                 src={symbol.img}
-                alt={symbolNames(symbol, locale).name}
+                alt={symbolNames(symbol, nameSet).name}
                 width={!isMobile ? 32.5 : 30}
                 className="scale-110"
               />
@@ -44,7 +44,7 @@ const CostTable = () => {
                   symbol.name === "Vanishing Journey" && "text-base"
                 )}
               >
-                {symbolNames(symbol, locale).name}
+                {symbolNames(symbol, nameSet).name}
               </h1>
             </div>
 
@@ -99,7 +99,7 @@ const CostTable = () => {
                             <img
                               src={symbol.img}
                               alt={interpolate(m.currentLevelAlt, {
-                                symbol: symbolNames(symbol, locale).name,
+                                symbol: symbolNames(symbol, nameSet).name,
                               })}
                               className="h-3 w-3 md:h-4 md:w-4"
                             />
