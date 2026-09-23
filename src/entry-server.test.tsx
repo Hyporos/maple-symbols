@@ -17,10 +17,14 @@ describe("renderPage (build-time HTML)", () => {
   });
 
   it("renders an edition's page with that edition's links and server", async () => {
-    const html = await renderPage("/kms/handbook");
+    const html = await renderPage("/msea/handbook");
     expect(html).toContain("Arcane Symbols");
-    expect(html).toContain('href="/kms/handbook"');
-    expect(html).toContain("KMS");
+    expect(html).toContain('href="/msea/handbook"');
+    expect(html).toContain("MSEA");
+    // A translated edition renders in its own language.
+    const kms = await renderPage("/kms/handbook");
+    expect(kms).toContain("아케인심볼");
+    expect(kms).toContain('href="/kms/handbook"');
   });
 
   it("renders a CMS page with its own prefixed links", async () => {

@@ -63,13 +63,23 @@ describe("Header", () => {
   });
 
   it("inside an edition, every link keeps its prefix", () => {
+    window.history.replaceState(null, "", "/msea/handbook");
+    renderHeader();
+    expect(screen.getByRole("link", { name: "Calculator" })).toHaveAttribute("href", "/msea");
+    expect(screen.getByRole("link", { name: "Handbook" })).toHaveAttribute(
+      "href",
+      "/msea/handbook"
+    );
+    expect(screen.getByRole("link", { name: "Extras" })).toHaveAttribute("href", "/msea/changelog");
+    expect(screen.getByRole("link", { name: "Go to calculator" })).toHaveAttribute("href", "/msea");
+    expect(screen.getByRole("button", { name: "Choose your server" })).toHaveTextContent("MSEA");
+  });
+
+  it("names its links in a translated edition's own language", () => {
     window.history.replaceState(null, "", "/kms/handbook");
     renderHeader();
-    expect(screen.getByRole("link", { name: "Calculator" })).toHaveAttribute("href", "/kms");
-    expect(screen.getByRole("link", { name: "Handbook" })).toHaveAttribute("href", "/kms/handbook");
-    expect(screen.getByRole("link", { name: "Extras" })).toHaveAttribute("href", "/kms/changelog");
-    expect(screen.getByRole("link", { name: "Go to calculator" })).toHaveAttribute("href", "/kms");
-    expect(screen.getByRole("button", { name: "Choose your server" })).toHaveTextContent("KMS");
+    expect(screen.getByRole("link", { name: "계산기" })).toHaveAttribute("href", "/kms");
+    expect(screen.getByRole("button", { name: "서버 선택" })).toHaveTextContent("KMS");
   });
 
   it("'Numbers from' swaps the numbers without leaving the page, and the page's own server resets it", () => {

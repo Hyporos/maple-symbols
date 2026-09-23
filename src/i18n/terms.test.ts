@@ -21,19 +21,19 @@ const isTerm = (name: string) => (TERM_NAMES as readonly string[]).includes(name
 const byRegion = (region: string) => EDITIONS.find((e) => e.region === region)!;
 
 describe("the terms table (docs/I18N.md §10)", () => {
-  it("gives every edition's page a name set that has a table, GMS English until translated", () => {
+  it("gives every edition's page its own client's name set, each with a table", () => {
     expect(DEFAULT_NAME_SET).toBe(DEFAULT_EDITION.nameSet);
     expect(EDITIONS.map((e) => [e.region, nameSetFor(e)])).toEqual([
       ["gms", "en-gms"],
       ["msea", "en-msea"],
-      // English pages until their catalogues land: never Korean words in English copy.
-      ["kms", "en-gms"],
-      ["jms", "en-gms"],
-      ["tms", "en-gms"],
-      ["cms", "en-gms"],
+      // Served in their own language since 2026-09-23 (an edition served in English would
+      // get en-gms: never Korean words in English copy).
+      ["kms", "ko"],
+      ["jms", "ja"],
+      ["tms", "zh-Hant"],
+      ["cms", "zh-Hans"],
     ]);
     for (const edition of EDITIONS) expect(() => termsFor(nameSetFor(edition))).not.toThrow();
-    expect(() => termsFor("ko")).not.toThrow(); // the KMS draft's table (src/i18n/ko)
   });
 
   it("gives every table the same terms, none of them blank", () => {
@@ -97,9 +97,9 @@ describe("the terms table (docs/I18N.md §10)", () => {
     expect(pageMetaFor("/handbook", byRegion("msea")).description).toBe(
       "Complete Arcane and Authentic Symbol reference for MapleStory (MSEA): experience tables, meso upgrade costs, and damage ratios."
     );
-    // An untranslated edition keeps GMS terms but names its own server.
+    // A translated edition reads its own language and terms, and names its own server.
     expect(pageMetaFor("/handbook", byRegion("kms")).description).toContain(
-      "Arcane and Sacred Symbol reference for MapleStory (KMS)"
+      "메이플스토리(KMS) 아케인심볼·어센틱심볼"
     );
   });
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CATALOGUES, LOCALES } from "./index";
 import { en } from "./en";
+import { TERM_NAMES } from "./terms";
 
 // Walks a catalogue and yields [dotted.key, message] for every string in it.
 function* messages(node: unknown, path = ""): Generator<[string, string]> {
@@ -13,14 +14,23 @@ function* messages(node: unknown, path = ""): Generator<[string, string]> {
   }
 }
 
+// The run-time values a message asks for. Term placeholders are left out: they are filled
+// before any component sees the message, and a translation may name a game term where the
+// English writes it out (the changelog history does).
+const isTerm = (name: string) => (TERM_NAMES as readonly string[]).includes(name);
 const placeholders = (message: string) =>
-  [...message.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
+  [...message.matchAll(/\{(\w+)\}/g)]
+    .map((m) => m[1])
+    .filter((name) => !isTerm(name))
+    .sort();
 
 describe("the catalogues (docs/I18N.md §6)", () => {
   it("every locale has exactly the English keys", () => {
     const englishKeys = [...messages(en)].map(([key]) => key);
     for (const locale of LOCALES) {
-      expect([...messages(CATALOGUES[locale])].map(([key]) => key)).toEqual(englishKeys);
+      expect([...messages(CATALOGUES[locale])].map(([key]) => key).sort()).toEqual(
+        [...englishKeys].sort()
+      );
     }
   });
 

@@ -11,21 +11,15 @@
 // language from DRAFT_LANGUAGES to PUBLISHED_LANGUAGES (src/lib/routes.ts) and its
 // catalogue from here into CATALOGUES (src/i18n/index.ts), which also makes its
 // edition indexable.
+//
+// Korean, Japanese and both Chinese scripts started here and were published on
+// 2026-09-23 (Brian: no native reviewers; players report problems). The registry
+// stays for the next language.
 // ---------------------------------------------------------------------------
 
-import type { DraftLanguage } from "../lib/routes";
 import type { Messages } from "./index";
-import { ko } from "./ko";
-import { ja } from "./ja";
-import { zhHant } from "./zh-Hant";
-import { zhHans } from "./zh-Hans";
 
-export { DRAFT_LANGUAGES, type DraftLanguage } from "../lib/routes";
+export { DRAFT_LANGUAGES } from "../lib/routes";
 
-/** Each draft language's catalogue. */
-export const DRAFT_CATALOGUES: Readonly<Record<DraftLanguage, Messages>> = {
-  ko,
-  ja,
-  "zh-Hant": zhHant,
-  "zh-Hans": zhHans,
-};
+/** Each draft language's catalogue: none since 2026-09-23, when the four were published. */
+export const DRAFT_CATALOGUES: Readonly<Record<string, Messages>> = {};

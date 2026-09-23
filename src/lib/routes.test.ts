@@ -17,6 +17,9 @@ import {
   splitPath,
   urlFor,
   verificationTags,
+  CATALOGUE_LANGUAGES,
+  PUBLISHED_LANGUAGES,
+  SERVES_DRAFTS,
 } from "./routes";
 import { REGIONS } from "./regions";
 
@@ -60,12 +63,10 @@ describe("editions (docs/REGIONS.md §2)", () => {
     expect(urlFor("/credits", msea)).toBe("https://maplesymbols.com/msea/credits");
   });
 
-  it("serves an untranslated edition in English and keeps it out of search until its catalogue lands", () => {
-    expect(isIndexable(DEFAULT_EDITION)).toBe(true);
-    expect(isIndexable(msea)).toBe(true); // English, so already translated
-    for (const region of ["kms", "jms", "tms", "cms"]) {
-      expect(isIndexable(byRegion(region))).toBe(false);
-      expect(servedLocale(byRegion(region))).toBe("en");
+  it("serves every edition in its own language and lets search index it (published 2026-09-23)", () => {
+    for (const edition of EDITIONS) {
+      expect(isIndexable(edition), edition.region).toBe(true);
+      expect(servedLocale(edition), edition.region).toBe(edition.language);
     }
   });
 
@@ -77,6 +78,14 @@ describe("editions (docs/REGIONS.md §2)", () => {
       { hreflang: "en-MY", href: "https://maplesymbols.com/msea/handbook" },
       { hreflang: "en-PH", href: "https://maplesymbols.com/msea/handbook" },
       { hreflang: "en-TH", href: "https://maplesymbols.com/msea/handbook" },
+      { hreflang: "ko", href: "https://maplesymbols.com/kms/handbook" },
+      { hreflang: "ja", href: "https://maplesymbols.com/jms/handbook" },
+      { hreflang: "zh-Hant", href: "https://maplesymbols.com/tms/handbook" },
+      { hreflang: "zh-TW", href: "https://maplesymbols.com/tms/handbook" },
+      { hreflang: "zh-HK", href: "https://maplesymbols.com/tms/handbook" },
+      { hreflang: "zh-MO", href: "https://maplesymbols.com/tms/handbook" },
+      { hreflang: "zh-Hans", href: "https://maplesymbols.com/cms/handbook" },
+      { hreflang: "zh-CN", href: "https://maplesymbols.com/cms/handbook" },
     ]);
   });
 });
@@ -115,12 +124,14 @@ describe("each edition's built HTML", () => {
     );
   });
 
-  it("marks an untranslated edition noindex, with no alternates", () => {
+  it("serves a translated edition in its own language, indexable, with its alternates", () => {
     const html = applyToIndexHtml(source, kms, "/handbook");
-    expect(html).toContain('<meta name="robots" content="noindex" />');
+    expect(html).not.toContain('name="robots"');
     expect(html).toContain('<link rel="canonical" href="https://maplesymbols.com/kms/handbook" />');
-    expect(html).not.toContain('rel="alternate"');
-    expect(html.match(/<html lang="(.*?)"/)![1]).toBe("en");
+    expect(html).toContain(
+      '<link rel="alternate" hreflang="ko" href="https://maplesymbols.com/kms/handbook" />'
+    );
+    expect(html.match(/<html lang="(.*?)"/)![1]).toBe("ko");
   });
 
   it("gives the bootstrap script only its own edition's pages, keyed by full path", () => {
@@ -133,17 +144,19 @@ describe("each edition's built HTML", () => {
 
 describe("draft translations (src/i18n/drafts.ts)", () => {
   it("are served only by a build that serves drafts: a Vercel preview, never production", async () => {
-    // This run is neither, so only the published languages are served.
-    expect(isIndexable(kms)).toBe(false);
+    // This run is not a preview: the published languages only.
+    expect(SERVES_DRAFTS).toBe(false);
+    expect(CATALOGUE_LANGUAGES).toEqual([...PUBLISHED_LANGUAGES]);
     vi.stubEnv("VERCEL_ENV", "preview");
     vi.resetModules();
     try {
       const preview = await import("./routes");
       expect(preview.SERVES_DRAFTS).toBe(true);
-      expect(preview.CATALOGUE_LANGUAGES).toEqual(["en", "ko", "ja", "zh-Hant", "zh-Hans"]);
-      const kmsOnPreview = preview.EDITIONS.find((e) => e.region === "kms")!;
-      expect(preview.servedLocale(kmsOnPreview)).toBe("ko");
-      expect(preview.pageMetaFor("/", kmsOnPreview).title).toMatch(/^메이플 심볼 계산기/);
+      // The published languages plus any drafts (none since 2026-09-23).
+      expect(preview.CATALOGUE_LANGUAGES).toEqual([
+        ...preview.PUBLISHED_LANGUAGES,
+        ...preview.DRAFT_LANGUAGES,
+      ]);
     } finally {
       vi.unstubAllEnvs();
       vi.resetModules();
@@ -181,10 +194,7 @@ describe("search-engine verification (REGIONS D-20)", () => {
 describe("sitemaps", () => {
   it("indexes one sitemap per indexable edition", () => {
     const locs = [...sitemapIndexXml().matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual([
-      "https://maplesymbols.com/sitemaps/gms.xml",
-      "https://maplesymbols.com/sitemaps/msea.xml",
-    ]);
+    expect(locs).toEqual(EDITIONS.map((e) => `https://maplesymbols.com/sitemaps/${e.region}.xml`));
   });
 
   it("lists an edition's pages, each with its alternates", () => {

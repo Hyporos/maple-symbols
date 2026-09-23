@@ -255,7 +255,7 @@ describe("Suggestion banner", () => {
     const { unmount } = renderBanner();
     unmount();
     renderBanner(); // a second mount in the same page load is not a second showing
-    const link = screen.getByRole("link", { name: "Switch to KMS" });
+    const link = screen.getByRole("link", { name: "KMS 버전으로 이동" });
     link.addEventListener("click", (e) => e.preventDefault());
     fireEvent.click(link);
     expect(sentNamed("edition_suggest")).toEqual([
@@ -267,7 +267,7 @@ describe("Suggestion banner", () => {
   it("edition_suggest: dismissed", () => {
     korean();
     renderBanner();
-    fireEvent.click(screen.getByRole("button", { name: "Dismiss this suggestion" }));
+    fireEvent.click(screen.getByRole("button", { name: "이 제안 닫기" }));
     expect(sentNamed("edition_suggest")).toEqual([
       ["edition_suggest", { action: "shown", to: "kms" }],
       ["edition_suggest", { action: "dismissed", to: "kms" }],

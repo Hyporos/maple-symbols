@@ -15,7 +15,7 @@ import {
   CATALOGUE_LANGUAGES,
   DEFAULT_EDITION,
   SERVES_DRAFTS,
-  type DraftLanguage,
+  type PublishedLanguage,
   DEFAULT_LOCALE,
   editionFor,
   nameSetFor,
@@ -25,24 +25,37 @@ import {
 } from "../lib/routes";
 import { DRAFT_CATALOGUES } from "./drafts";
 import { en } from "./en";
+import { ja } from "./ja";
+import { ko } from "./ko";
+import { zhHans } from "./zh-Hans";
+import { zhHant } from "./zh-Hant";
 import { DEFAULT_NAME_SET, fillTerms, termsFor, type NameSet, type PageValues } from "./terms";
 import type { Catalogue } from "./types";
 
 export type Messages = Catalogue<typeof en>;
 
-/** Every language that has a catalogue, published or draft. */
-export type Locale = "en" | DraftLanguage;
+/** Every language with a published catalogue. */
+export type Locale = PublishedLanguage;
 
 /** The languages this build serves: CATALOGUE_LANGUAGES in routes.ts, so the build and the app agree. */
 export const LOCALES = CATALOGUE_LANGUAGES as readonly Locale[];
 
+/** Each published language's catalogue as written, term placeholders still in it. */
+const PUBLISHED: Readonly<Record<Locale, Messages>> = {
+  en,
+  ko,
+  ja,
+  "zh-Hant": zhHant,
+  "zh-Hans": zhHans,
+};
+
 /**
- * Each served language's catalogue as written, term placeholders still in it: read it
- * through `messagesFor`. The drafts join only in a build that serves them.
+ * Each served language's catalogue: read it through `messagesFor`. Drafts join only in a
+ * build that serves them (a Vercel preview).
  */
-export const CATALOGUES: Readonly<Partial<Record<Locale, Messages>>> = SERVES_DRAFTS
-  ? { en, ...DRAFT_CATALOGUES }
-  : { en };
+export const CATALOGUES: Readonly<Partial<Record<string, Messages>>> = SERVES_DRAFTS
+  ? { ...PUBLISHED, ...DRAFT_CATALOGUES }
+  : PUBLISHED;
 
 export const isLocale = (tag: string): tag is Locale =>
   (LOCALES as readonly string[]).includes(tag);

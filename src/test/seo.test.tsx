@@ -124,7 +124,7 @@ describe("rendering each route writes its metadata into <head>", () => {
 });
 
 describe("an edition's page", () => {
-  it("names its own canonical URL and, while untranslated, keeps out of search", async () => {
+  it("names its own canonical URL and language, indexable once translated", async () => {
     seedHeadMeta();
     window.history.replaceState(null, "", "/kms/handbook");
 
@@ -134,13 +134,17 @@ describe("an edition's page", () => {
       </RouterProvider>
     );
 
-    await waitFor(() => expect(document.title).toBe("Symbol Handbook | Maple Symbols"));
+    await waitFor(() =>
+      expect(document.title).toBe("메이플 심볼 강화 비용·성장치 표 | Maple Symbols")
+    );
     expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(
       "https://maplesymbols.com/kms/handbook"
     );
-    expect(content('meta[name="robots"]')).toBe("noindex");
-    expect(document.head.querySelectorAll('link[rel="alternate"]')).toHaveLength(0);
-    expect(document.documentElement.lang).toBe("en");
+    expect(document.head.querySelector('meta[name="robots"]')).toBeNull();
+    expect(
+      document.head.querySelector('link[rel="alternate"][hreflang="ko"]')?.getAttribute("href")
+    ).toBe("https://maplesymbols.com/kms/handbook");
+    expect(document.documentElement.lang).toBe("ko");
   });
 
   it("an indexable edition lists its alternates in the head", async () => {
@@ -162,7 +166,7 @@ describe("an edition's page", () => {
     const hreflangs = [...document.head.querySelectorAll('link[rel="alternate"]')].map((l) =>
       l.getAttribute("hreflang")
     );
-    expect(hreflangs).toEqual(["en", "x-default", "en-SG", "en-MY", "en-PH", "en-TH"]);
+    expect(hreflangs).toEqual(EDITIONS.flatMap((e) => e.hreflang));
   });
 
   it("writes the edition's own title and description, in its own terms", async () => {

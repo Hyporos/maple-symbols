@@ -26,14 +26,15 @@ describe("SuggestionBanner", () => {
     browser(["ko-KR", "ko"]);
     renderAt("/handbook");
     expect(screen.getByText("KMS").closest("p")).toHaveTextContent(
-      "Playing on KMS? This page has a version for KMS."
+      "KMS에서 플레이하시나요? 이 페이지는 KMS 버전이 있어요."
     );
-    expect(screen.getByRole("link", { name: "Switch to KMS" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "KMS 버전으로 이동" })).toHaveAttribute(
       "href",
       "/kms/handbook"
     );
-    // Written in the suggested edition's served language: English while KMS is a draft.
-    expect(screen.getByRole("complementary")).toHaveAttribute("lang", "en");
+    // Written in the suggested edition's language (Brian, 2026-09-23), so a Korean browser
+    // on the GMS page reads Korean.
+    expect(screen.getByRole("complementary")).toHaveAttribute("lang", "ko");
   });
 
   it("suggests MSEA from a Singapore time zone on an English browser", () => {
@@ -56,7 +57,7 @@ describe("SuggestionBanner", () => {
   it("hides when dismissed and does not come back", () => {
     browser(["ja-JP"]);
     const { unmount } = renderAt("/");
-    fireEvent.click(screen.getByRole("button", { name: "Dismiss this suggestion" }));
+    fireEvent.click(screen.getByRole("button", { name: "この提案を閉じる" }));
     expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     expect(window.localStorage.getItem(SUGGESTION_KEY)).toBe("jms");
     unmount();
@@ -68,7 +69,7 @@ describe("SuggestionBanner", () => {
   it("remembers the edition taken, so returning to this page does not ask again", () => {
     browser(["zh-TW"]);
     renderAt("/");
-    const link = screen.getByRole("link", { name: "Switch to TMS" });
+    const link = screen.getByRole("link", { name: "前往 TMS 版本" });
     link.addEventListener("click", (e) => e.preventDefault()); // jsdom cannot load another page
     fireEvent.click(link);
     expect(window.localStorage.getItem(SUGGESTION_KEY)).toBe("tms");
@@ -78,7 +79,7 @@ describe("SuggestionBanner", () => {
     window.localStorage.setItem(SUGGESTION_KEY, "kms");
     browser(["zh-CN"]);
     renderAt("/");
-    expect(screen.getByRole("link", { name: "Switch to CMS" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "前往 CMS 版本" })).toBeInTheDocument();
   });
 
   it("renders nothing before mount, so prebuilt HTML and hydration agree", () => {

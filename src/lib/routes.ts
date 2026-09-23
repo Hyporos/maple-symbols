@@ -36,16 +36,20 @@ export const SITE_NAME = "Maple Symbols";
  */
 export const DEFAULT_LOCALE = "en";
 
-/** The languages whose catalogue is published: production serves these. */
-export const PUBLISHED_LANGUAGES = ["en"] as const;
+/**
+ * The languages whose catalogue is published: production serves these. Korean, Japanese
+ * and both Chinese scripts joined on 2026-09-23 for the 2.0 launch (Brian: there are no
+ * native reviewers, so players report what reads wrong; game terms and names are all from
+ * official sources, only the interface sentences are machine-drafted).
+ */
+export const PUBLISHED_LANGUAGES = ["en", "ko", "ja", "zh-Hant", "zh-Hans"] as const;
+export type PublishedLanguage = (typeof PUBLISHED_LANGUAGES)[number];
 
 /**
- * The languages whose catalogue is written but still a draft (src/i18n/drafts.ts): a machine
- * draft awaiting a native player's review (REGIONS D-12). Publishing one moves it to
- * PUBLISHED_LANGUAGES.
+ * Languages whose catalogue is written but not yet published (src/i18n/drafts.ts): served on
+ * Vercel previews only. Empty since the four above were published; a new language starts here.
  */
-export const DRAFT_LANGUAGES = ["ko", "ja", "zh-Hant", "zh-Hans"] as const;
-export type DraftLanguage = (typeof DRAFT_LANGUAGES)[number];
+export const DRAFT_LANGUAGES: readonly string[] = [];
 
 declare const __SERVES_DRAFTS__: boolean | undefined;
 const buildEnv = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
@@ -218,19 +222,26 @@ export const ogLocaleFor = (locale: string): string => {
 type PageCopy = Messages["pages"];
 
 /**
- * Each served language's page copy, term placeholders still in it. The drafts are here only
- * in a build that serves them (`SERVES_DRAFTS`), so a production bundle leaves them out.
+ * Each published language's page copy, term placeholders still in it. A draft language's
+ * page copy joins here, behind `SERVES_DRAFTS`, when one exists (none today).
  */
-const PAGE_COPY: Readonly<Record<string, PageCopy>> = SERVES_DRAFTS
-  ? { en: pages, ko: koPages, ja: jaPages, "zh-Hant": zhHantPages, "zh-Hans": zhHansPages }
-  : { en: pages };
+const PAGE_COPY: Readonly<Record<PublishedLanguage, PageCopy>> = {
+  en: pages,
+  ko: koPages,
+  ja: jaPages,
+  "zh-Hant": zhHantPages,
+  "zh-Hans": zhHansPages,
+};
 
 /** An edition's page copy in its served language, terms filled. Memoised per edition. */
 const pageCopy = new Map<Edition, PageCopy>();
 const pagesFor = (edition: Edition): PageCopy => {
   let copy = pageCopy.get(edition);
   if (copy === undefined) {
-    copy = fillTerms(PAGE_COPY[servedLocale(edition)] ?? pages, termValuesFor(edition));
+    copy = fillTerms(
+      PAGE_COPY[servedLocale(edition) as PublishedLanguage] ?? pages,
+      termValuesFor(edition)
+    );
     pageCopy.set(edition, copy);
   }
   return copy;
