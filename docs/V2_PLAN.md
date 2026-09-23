@@ -14,6 +14,7 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 
 ## Progress on `v2`
 
+- **Regions, phase 4** (2026-09-22): every page of every edition is prerendered into its HTML at build time (`src/entry-server.tsx`, `scripts/prerender.mjs`), as a phone layout (Brian), then hydrated; saves load after hydration. **User-visible**: faster first paint; a returning player's levels appear a moment after the page.
 - **Regions, phase 3** (2026-09-22): six editions (`/`, `/msea`, `/kms`, `/jms`, `/tms`, `/cms`) with prebuilt per-page HTML, hreflang, a sitemap index, `cleanUrls`, the header server menu (site version + "Numbers from"), and the cards on the shown server's data. Untranslated editions are English and `noindex` until their catalogues exist. **User-visible** once released: the server menu and the new URLs.
 - **Regions, phase 2** (2026-09-22): one save per server, `STORAGE_VERSION` 4 (older saves become the GMS save, nothing wiped), `region`/`regionOverride`/`saves`/`setRegion` in the store. No UI yet.
 - **Regions, phase 1** (2026-09-22): per-server profiles in `src/lib/regions.json` and `src/lib/regions.ts`, `createInitialSymbols(region)`, the server game clock for every day count and date (KI-013 resolved). **User-visible**: dates follow the server's reset (00:00 UTC for GMS), which needs a 2.0 changelog line. Design and the rest of the phases: `docs/REGIONS.md`.

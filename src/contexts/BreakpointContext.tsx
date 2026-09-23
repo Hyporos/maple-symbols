@@ -7,9 +7,14 @@
 // own listeners.
 //
 // Wrap the app root with <BreakpointProvider> (done in App.tsx).
+//
+// Prebuilt pages (src/entry-server.tsx) are rendered as phones: Google indexes the
+// phone version (mobile-first), and Brian chose it on 2026-09-22. The server snapshot
+// below is that phone answer, which React also uses while hydrating, so the prebuilt
+// HTML and the first browser render agree; the real width takes over right after.
 // ---------------------------------------------------------------------------
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useSyncExternalStore, type ReactNode } from "react";
 
 interface BreakpointContextValue {
   /** True when viewport width is below the Tailwind `md` breakpoint (767px). */
@@ -23,19 +28,19 @@ const BreakpointContext = createContext<BreakpointContextValue>({
   isTablet: false,
 });
 
+/** Both queries are max-width ones, so a phone matches both: true is the phone answer. */
+const PHONE = true;
+
 function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState<boolean>(() =>
-    typeof window !== "undefined" ? window.matchMedia(query).matches : false
+  return useSyncExternalStore(
+    (onChange) => {
+      const mql = window.matchMedia(query);
+      mql.addEventListener("change", onChange);
+      return () => mql.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(query).matches,
+    () => PHONE
   );
-
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [query]);
-
-  return matches;
 }
 
 export function BreakpointProvider({ children }: { children: ReactNode }) {

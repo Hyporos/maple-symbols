@@ -56,7 +56,8 @@ function routes(): Plugin[] {
   // The build fills after Vite's pass, so every per-page copy carries the same asset tags.
   const build: Plugin = {
     name: "maple-routes",
-    apply: "build",
+    // The client build only: the server build of src/entry-server.tsx has no HTML.
+    apply: (_config, env) => env.command === "build" && !env.isSsrBuild,
     configResolved(config) {
       outDir = resolve(config.root, config.build.outDir);
     },

@@ -37,7 +37,8 @@ import { type Region } from "../lib/regions";
 import { editionFor } from "../lib/routes";
 
 /** The server of the site version being viewed (its URL prefix); GMS at the root. */
-const pageRegion = (): Region => editionFor(window.location.pathname).region;
+const pageRegion = (): Region =>
+  typeof window === "undefined" ? "gms" : editionFor(window.location.pathname).region;
 import type { SymbolData, SymbolType } from "../lib/types";
 
 const STORAGE_VERSION = 4;
@@ -119,6 +120,9 @@ export const useAppStore = create<AppStore>()(
     {
       name: "maple-symbols-v2",
       version: STORAGE_VERSION,
+      // Saves load after the first render (RestoreSaves in main.tsx), not at import, so a
+      // prebuilt page and the browser's first render show the same, empty calculator.
+      skipHydration: true,
       // Persist only the player's fields per symbol, per server, and their server choice;
       // never game data, UI state or anything derived (lib/persistence). NaN is written
       // as null because JSON cannot encode it.

@@ -15,20 +15,24 @@ const queryMatches = (query: string) =>
   (query === "(max-width: 767px)" && getViewport() === "mobile") ||
   (query === "(max-width: 1149px)" && getViewport() !== "desktop");
 
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  configurable: true,
-  value: vi.fn((query: string) => ({
-    matches: queryMatches(query),
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-});
+// Files that opt into the node environment (src/entry-server.test.tsx) have no window.
+const browser = typeof window !== "undefined";
+
+if (browser)
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    configurable: true,
+    value: vi.fn((query: string) => ({
+      matches: queryMatches(query),
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
 
 // recharts constructs `new ResizeObserver` unguarded (ResponsiveContainer).
 // floating-ui guards its observers itself, so tooltips need nothing.
@@ -40,6 +44,7 @@ class ResizeObserverStub {
 vi.stubGlobal("ResizeObserver", ResizeObserverStub);
 
 afterEach(() => {
+  if (!browser) return;
   cleanup(); // RTL only auto-registers this when `afterEach` is a global; we don't use globals.
   vi.useRealTimers(); // also undoes vi.setSystemTime
   resetViewport();

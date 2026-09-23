@@ -27,8 +27,18 @@ const RouterContext = createContext<RouterContextValue>({
 /** Strips trailing slashes: "/handbook/" → "/handbook", "" → "/". */
 export const normalize = (p: string) => p.replace(/\/+$/, "") || "/";
 
-export function RouterProvider({ children }: { children: ReactNode }) {
-  const [path, setPath] = useState(() => normalize(window.location.pathname));
+/**
+ * `initialPath` is for rendering outside a browser (the build's prerender,
+ * src/entry-server.tsx); in the browser the path comes from the address bar.
+ */
+export function RouterProvider({
+  children,
+  initialPath,
+}: {
+  children: ReactNode;
+  initialPath?: string;
+}) {
+  const [path, setPath] = useState(() => normalize(initialPath ?? window.location.pathname));
   const [, startTransition] = useTransition();
 
   // Keep in sync when user presses back/forward.

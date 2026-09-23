@@ -13,6 +13,7 @@ Vitest + Testing Library + jsdom, colocated tests, explicit imports. This doc is
 
 - `pnpm test` (single run), `pnpm test:watch`, `pnpm test:coverage` (v8 over `src/**/*.{ts,tsx}` minus `main.tsx`, `src/test/**`, `*.d.ts` and the tests themselves; text + html).
 - Filter: `pnpm test utils` or `pnpm test src/state`. Never `pnpm test -- utils`: pnpm passes the `--` through to Vitest, which then ignores the filter and runs everything.
+- A file can opt out of jsdom with `// @vitest-environment node` on its first line; `src/entry-server.test.tsx` does, to prove the build-time render needs no browser globals (`src/test/setup.ts` skips its browser wiring there).
 - Config: `vitest.config.ts` (standalone, `plugins: [react()]`, `environment: jsdom`, `setupFiles: src/test/setup.ts`, `css: false`, `include: src/**/*.test.{ts,tsx}`). It is deliberately not merged with `vite.config.ts` so build-only plugins (the routes plugin) never run.
 - `tsc` type-checks tests as part of `pnpm build` (tsconfig `include: ["src"]`), so a type error in a test breaks the build.
 - Pre-commit runs `vitest related --run --passWithNoTests` on staged `.ts/.tsx` files (inside lint-staged), then `scripts/docs-drift.mjs` after lint-staged (outside it, because lint-staged hides the output of passing tasks); CI runs the full suite.

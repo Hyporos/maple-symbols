@@ -62,7 +62,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 - `createInitialSymbols(region)`. Move DEMON_AVENGER_HP / XENON_ALL_STAT / WEEKLY_SYMBOLS into data, and update the watcher's regexes in the same commit. ExpTable and CostTable read through `gameDataFor(region)`.
 - Never generate unpublished tables. The KMS arcane table is the exception: it is derived from a rule confirmed three ways (`docs/data-check/kms-mesos-arcane.csv`).
 - Grand Sacred: `SymbolType` gains "grand"; Sacred EXP table; max 11; power +10; no main stat (a bonus line instead); no Catalyst; the Sacred Symbol Selector covers Tallahart (Brian, in game, 2026-09-22) but not Geardock.
-- Persistence: STORAGE_VERSION 4, `{ saves: { [region]: SavedSymbol[] }, regionOverride }`; existing saves migrate to gms; `setRegion` (built, phase 2). Still to do with prerendering (phase 4): `skipHydration` plus a rehydrate on mount, so the server HTML and the first client render agree.
+- Persistence: STORAGE_VERSION 4, `{ saves: { [region]: SavedSymbol[] }, regionOverride }`; existing saves migrate to gms; `setRegion` (built, phase 2). Phase 4 added `skipHydration` and `RestoreSaves` (`src/main.tsx`), so the prebuilt HTML and the first client render agree.
 - Reset clock (fixes KI-013): `gameToday(region)` = UTC + fixed offset. Days count game days, the weekly lands on the game Thursday, completion dates are game dates, with a local-time hint. The `dayjs()` calls in Overview, Graph, calculator.ts, overview.ts and graph.ts take the game clock. Test instants on both sides of each offset.
 
 ## 4. SEO per region
@@ -157,7 +157,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 1. ~~Region data layer in `src/lib`, plus the game clock (fixes KI-013 for GMS alone) and constants moved into data (watcher updated).~~ Done 2026-09-22.
 2. ~~State and persistence (v4, per-region saves).~~ Done 2026-09-22; the SSR hydration guard moves to phase 4, where prerendering starts.
 3. ~~Editions in routing, head-only static HTML per URL, sitemap index, `vercel.json` fallbacks~~ built 2026-09-22; verifying them on a preview is still open.
-4. Full SSG body plus explanatory copy.
+4. ~~Full SSG body~~ built 2026-09-22 (every page's HTML prerendered, phone layout, saves restored after hydration); the explanatory copy (SEO-9) is still to write.
 5. Terms table, `formatMesos`, Intl dates, CJK font stacks, width-based title test.
 6. All six editions together (Brian, 2026-09-22): the five translations and overlays are built side by side and ship in one release. Build `/msea/` first inside the branch anyway, because it needs no translation and proves the overlay machinery before the translated editions depend on it.
 7. Measure every edition after launch (PageSpeed mobile, Search Console, Naver Search Advisor) and fix per edition.

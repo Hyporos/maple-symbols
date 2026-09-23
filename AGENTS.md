@@ -19,7 +19,7 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 | Command                                        | What it does                                                                                                                                       |
 | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm dev`                                     | Vite dev server (no type-check in dev)                                                                                                             |
-| `pnpm build`                                   | `tsc` type-gate (src incl. tests) then Vite build to `dist/`                                                                                       |
+| `pnpm build`                                   | `tsc` type-gate (src incl. tests), Vite build to `dist/`, then every page prerendered into its HTML (`scripts/prerender.mjs`; ARCHITECTURE §7)     |
 | `pnpm lint`, `pnpm typecheck`                  | ESLint over `src/` (Prettier violations are errors, any warning fails); `tsc --noEmit`                                                             |
 | `pnpm test [filter]`                           | Vitest single run; `pnpm test utils` filters (never `pnpm test -- utils`: pnpm passes the `--` through). Also `test:watch`, `test:coverage`        |
 | `pnpm check:data`                              | Compares every number that has moved before with the wiki and Nexon's patch notes (GAME §6); the weekly workflow opens, updates or closes an issue |
