@@ -126,7 +126,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 - **Credits:** add the regional sources.
 - **Workflow:** a translator sheet per locale (key, English, context, maximum display width, screenshot, locked glossary). Machine draft plus a native player's review for UI copy only; names and terms only from official sources.
 - **Formatting:**
-  - `formatMesos`: 39억 3,010만 / 39億3010万 / 39億3010萬 / 39亿3010万. `Intl` compact notation rounds, so it needs a custom function.
+  - `formatMesos`: 39억 3,010만 / 39億3010万 / 39億3010萬 / 39亿3010万. `Intl` compact notation rounds, so it needs a custom function. Built on `v2` 2026-09-22 in `src/lib/format.ts`, for prose only (the Calculator's meso line); 조/兆 above 10^12, none in Simplified Chinese, where 兆 is ambiguous.
   - `Intl` dates with a weekday, e.g. 2026. 9. 24.(목).
   - Counters: 개 / 個 / 个.
 
@@ -158,7 +158,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 2. ~~State and persistence (v4, per-region saves).~~ Done 2026-09-22; the SSR hydration guard moves to phase 4, where prerendering starts.
 3. ~~Editions in routing, head-only static HTML per URL, sitemap index, `vercel.json` fallbacks~~ built 2026-09-22; verifying them on a preview is still open.
 4. ~~Full SSG body~~ built 2026-09-22 (every page's HTML prerendered, phone layout, saves restored after hydration); the explanatory copy (SEO-9) is still to write.
-5. Terms table, `formatMesos`, Intl dates, CJK font stacks, width-based title test.
+5. Terms table, ~~`formatMesos`~~ (built 2026-09-22), Intl dates, CJK font stacks, width-based title test.
 6. All six editions together (Brian, 2026-09-22): the five translations and overlays are built side by side and ship in one release. Build `/msea/` first inside the branch anyway, because it needs no translation and proves the overlay machinery before the translated editions depend on it.
 7. Measure every edition after launch (PageSpeed mobile, Search Console, Naver Search Advisor) and fix per edition.
 8. Search-engine registrations and the watcher per region.
