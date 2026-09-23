@@ -1,0 +1,79 @@
+import { describe, expect, it } from "vitest";
+import { fireEvent, screen, within } from "@testing-library/react";
+import { REGION_PROFILES } from "../../lib/regions";
+import { seedSymbol } from "../../test/helpers";
+import { useAppStore } from "../../state/store";
+import { renderNextAt as renderAt } from "../testing";
+
+// NextApp is behind a top-level React.lazy (App.tsx), so the first query after a render
+// awaits its chunk before any synchronous query runs.
+describe("HandbookPage", () => {
+  it("switches Experience, Meso cost and Damage ratio with tabs, each with the family switch", async () => {
+    renderAt("/next/handbook");
+    const tabs = await screen.findByRole("tablist", { name: "Handbook" });
+    expect(within(tabs).getByRole("tab", { name: "Experience Table" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
+    expect(screen.getByRole("radiogroup", { name: "Symbol family" })).toBeInTheDocument();
+    fireEvent.click(within(tabs).getByRole("tab", { name: "Meso Cost Table" }));
+    expect(screen.getByRole("table", { name: /Meso/ })).toBeInTheDocument();
+  });
+
+  it("highlights the selected symbol's current level", async () => {
+    seedSymbol(1, { level: 12, experience: 0 });
+    renderAt("/next/handbook");
+    expect(await screen.findByRole("row", { current: true })).toHaveTextContent("12");
+  });
+
+  it("shows no highlighted row while the selected symbol is unset (NaN level)", async () => {
+    seedSymbol(1, { level: NaN, experience: NaN });
+    renderAt("/next/handbook");
+    await screen.findByRole("tablist");
+    expect(screen.queryByRole("row", { current: true })).not.toBeInTheDocument();
+  });
+
+  it("shows Grand Sacred on the Sacred EXP table and with their own costs", async () => {
+    renderAt("/next/handbook");
+    fireEvent.click(await screen.findByRole("radio", { name: "Grand" }));
+    expect(screen.getByRole("table")).toHaveTextContent("1,100"); // 10 → 11 on the Sacred table
+
+    fireEvent.click(
+      within(screen.getByRole("tablist")).getByRole("tab", { name: "Meso Cost Table" })
+    );
+    // Tallahart is selected by default in Grand mode (DEFAULT_SELECTION.grand = 13).
+    expect(screen.getByRole("button", { name: "Tallahart" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    expect(screen.getByRole("table")).toHaveTextContent("113,600,000");
+  });
+
+  it("hides a server's meso costs when nobody has published them (REGIONS D-6)", async () => {
+    const status = REGION_PROFILES.cms.status;
+    const saved = status.mesosArcane;
+    status.mesosArcane = "unpublished";
+    try {
+      useAppStore.getState().setRegion("cms");
+      renderAt("/next/handbook");
+      const tabs = await screen.findByRole("tablist");
+      fireEvent.click(within(tabs).getByRole("tab", { name: "Meso Cost Table" }));
+      expect(screen.getByText(/not published yet for/)).toHaveTextContent(
+        "Meso costs are not published yet for CMS."
+      );
+      const rows = within(screen.getByRole("table")).getAllByRole("row").slice(1); // skip the header row
+      for (const row of rows) {
+        for (const cell of within(row).getAllByRole("cell").slice(1))
+          expect(cell).toHaveTextContent("-");
+      }
+    } finally {
+      status.mesosArcane = saved;
+    }
+  });
+
+  it("has no fixed height: the card grows with its table", async () => {
+    const { container } = renderAt("/next/handbook");
+    await screen.findByRole("tablist");
+    expect(container.innerHTML).not.toMatch(/h-\[(650|700|535|555)px\]/);
+  });
+});

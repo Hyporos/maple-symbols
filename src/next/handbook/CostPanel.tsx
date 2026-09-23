@@ -1,0 +1,139 @@
+import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../components/Tooltip";
+import Message from "../../i18n/Message";
+import { interpolate, useLocale, useMessages, useNameSet } from "../../i18n";
+import { symbolNames } from "../../i18n/gameNames";
+import { formatNumber } from "../../lib/format";
+import { isPublished, mesosKind } from "../../lib/regions";
+import { editionOf } from "../../lib/routes";
+import { cn } from "../../lib/utils";
+import { useAppStore, useMode, useSelectedSymbol } from "../../state/store";
+import { DataTable, SegmentedSwitch } from "../ui";
+
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+// * CostPanel is the Handbook's Meso cost tab: the selected symbol's own cost table (a picker
+// * row lets the player switch symbols within the family), hidden when a server has not
+// * published that family's costs yet (REGIONS D-6).
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+const CostPanel = () => {
+  const messages = useMessages();
+  const handbook = messages.handbook;
+  const locale = useLocale();
+  const nameSet = useNameSet();
+
+  const mode = useAppStore((s) => s.mode);
+  const setMode = useAppStore((s) => s.setMode);
+  const family = useMode(); // Grand folds to Sacred for the heading term only.
+  const symbols = useAppStore((s) => s.symbols);
+  const region = useAppStore((s) => s.region);
+  const selectSymbol = useAppStore((s) => s.selectSymbol);
+  const symbol = useSelectedSymbol();
+
+  const shown = symbols.filter((s) => s.type === mode);
+  const published = isPublished(region, mesosKind(symbol.type));
+
+  const familyOptions = [
+    { value: "arcane" as const, label: messages.shell.arcane },
+    { value: "sacred" as const, label: messages.shell.sacred },
+    { value: "grand" as const, label: messages.next.calculator.familyGrand },
+  ];
+
+  let total = 0;
+  const rows = symbol.mesosRequired.map((cost, index) => {
+    const level = index + 1;
+    const isFirstRow = index === 0;
+    const current = symbol.level === level;
+    total += cost;
+    return {
+      key: String(index),
+      current,
+      cells: [
+        <span key="level" className="inline-flex items-center justify-center gap-2">
+          {current && (
+            <img
+              src={symbol.img}
+              alt={interpolate(handbook.currentLevelAlt, {
+                symbol: symbolNames(symbol, nameSet).name,
+              })}
+              className="h-3 w-3"
+            />
+          )}
+          {level}
+        </span>,
+        isFirstRow || !published ? "-" : formatNumber(cost, locale),
+        isFirstRow || !published ? "-" : formatNumber(total, locale),
+      ],
+    };
+  });
+
+  return (
+    <div>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2.5">
+          <h2 className="text-lg font-semibold text-primary">{handbook.symbolsHeading[family]}</h2>
+          <Tooltip placement="right">
+            <TooltipTrigger>
+              <HiOutlineQuestionMarkCircle
+                size={20}
+                className="cursor-default text-tertiary transition-colors hover:text-primary motion-reduce:transition-none"
+              />
+            </TooltipTrigger>
+            <TooltipContent className="tooltip">
+              <Message text={handbook.costTooltip} />
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <SegmentedSwitch
+          label={messages.next.calculator.familyLabel}
+          options={familyOptions}
+          value={mode}
+          onChange={setMode}
+        />
+      </div>
+
+      <div
+        role="group"
+        aria-label={messages.next.calculator.pickerLabel}
+        className="mb-5 flex flex-wrap gap-2"
+      >
+        {shown.map((s) => {
+          const selected = s.id === symbol.id;
+          return (
+            <button
+              key={s.id}
+              type="button"
+              aria-pressed={selected}
+              aria-label={symbolNames(s, nameSet).name}
+              onClick={() => selectSymbol(s.id)}
+              className={cn(
+                "rounded-lg p-1.5 transition-colors motion-reduce:transition-none",
+                selected ? "bg-secondary" : "hover:bg-light"
+              )}
+            >
+              <img src={s.img} alt="" width={24} height={24} />
+            </button>
+          );
+        })}
+      </div>
+
+      {!published && (
+        <p className="mb-5 text-sm text-tertiary">
+          <Message text={handbook.costsUnpublished} values={{ server: editionOf(region).name }} />
+        </p>
+      )}
+
+      <DataTable
+        caption={handbook.tabs.cost.label}
+        columns={[
+          { key: "level", header: handbook.level, align: "center" },
+          { key: "mesos", header: handbook.mesosRequired, align: "center" },
+          { key: "total", header: handbook.totalCost, align: "center" },
+        ]}
+        rows={rows}
+      />
+    </div>
+  );
+};
+
+export default CostPanel;
