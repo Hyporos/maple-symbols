@@ -14,6 +14,7 @@ import Graph from "../components/Calculator/Graph";
 import Handbook from "../components/Handbook/Handbook";
 import { RouterProvider } from "../contexts/RouterContext";
 import { BreakpointProvider } from "../contexts/BreakpointContext";
+import { renderNextAt } from "../next/testing";
 import { mockBrowser, seedSymbol, setViewport, WED, type Viewport } from "./helpers";
 
 // Interactive content that must never sit inside a <button>.
@@ -119,6 +120,43 @@ describe("interactive nesting in the Handbook", () => {
       expectNoNesting(container);
 
       fireEvent.click(getByText("Damage Ratio Table"));
+      expectNoNesting(container);
+    });
+  }
+});
+
+describe("interactive nesting on the /next pages", () => {
+  const NEXT_VIEWPORTS: Viewport[] = ["desktop", "mobile"];
+
+  for (const viewport of NEXT_VIEWPORTS) {
+    it(`${viewport}: /next has no nested interactive content or DOM warning`, async () => {
+      vi.setSystemTime(WED);
+      setViewport(viewport);
+      seedSymbol(3, { level: 7, experience: 30, daily: true }, false);
+      seedSymbol(1, { level: 5, experience: 20, daily: true, weekly: true });
+
+      const { container, findByTestId } = renderNextAt("/next");
+      await findByTestId("next-app");
+
+      expectNoNesting(container);
+    });
+
+    it(`${viewport}: /next/handbook has no nested interactive content or DOM warning`, async () => {
+      setViewport(viewport);
+      seedSymbol(1, { level: 5, experience: 20 });
+
+      const { container, findByTestId } = renderNextAt("/next/handbook");
+      await findByTestId("next-app");
+
+      expectNoNesting(container);
+    });
+
+    it(`${viewport}: /next/changelog has no nested interactive content or DOM warning`, async () => {
+      setViewport(viewport);
+
+      const { container, findByTestId } = renderNextAt("/next/changelog");
+      await findByTestId("next-app");
+
       expectNoNesting(container);
     });
   }
