@@ -157,3 +157,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Treated `git checkout <file>` as "undo my last change" when it restores the committed file.
 - **Rule**: Undo a mutation test with the inverse edit (or copy the file aside first), never `git checkout` on a file with uncommitted work; check `git diff` afterwards.
 - **Where**: the Grand Sacred data model (`src/test/grandHidden.test.tsx`).
+
+### M-020 · 2026-09-23 · search engines
+
+- **What**: Told Brian that Naver's sitemap box already starts with the site's address, so he should type only `sitemap.xml`. His screenshot showed the box takes a full URL. The real cause of "사이트맵/RSS 형식이 올바르지 않습니다" was that he had submitted `/sitemaps/kms.xml`, which exists only on `v2` (and only once KMS is published); production answered with the calculator's HTML. My earlier reminder ("submit `/sitemaps/kms.xml` once KMS is published") read as "now".
+- **Root cause**: Described a console I had not seen, and gave a 2.0 URL without saying plainly that production doesn't have it.
+- **Rule**: Don't describe a third-party console's fields from memory; ask for a screenshot or say it's a guess. Any URL given for registration must be checked against production with `curl` first, and 2.0-only URLs labelled as such.
+- **Where**: SEO §5.
