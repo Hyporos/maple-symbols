@@ -1,10 +1,10 @@
 id,gms_name,ko_symbol_item,ko_region,ko_daily_quest,ko_weekly,ko_extra,confidence,source
 1,Vanishing Journey,아케인심볼 : 소멸의 여로,소멸의 여로,소멸의 여로 조사,에르다 스펙트럼,리버스 시티 조사,verbatim,namu.wiki 소멸의 여로 일일 퀘스트
-2,Chu Chu Island,아케인심볼 : 츄츄 아일랜드,츄츄 아일랜드,츄츄 아일랜드 조사,배고픈 무토,얌얌 아일랜드,daily name inferred from pattern,namu.wiki 아케인포스
-3,Lachelein,아케인심볼 : 레헬른,꿈의 도시 레헬른,레헬른 조사,미드나잇 체이서,,daily name inferred from pattern,namu.wiki 아케인포스
-4,Arcana,아케인심볼 : 아르카나,신비의 숲 아르카나,아르카나 조사,스피릿 세이비어,,daily name inferred from pattern,namu.wiki 아케인포스
-5,Morass,아케인심볼 : 모라스,기억의 늪 모라스,모라스 조사,엔하임 디펜스,,daily name inferred from pattern,namu.wiki 아케인포스
-6,Esfera,아케인심볼 : 에스페라,태초의 바다 에스페라,에스페라 조사,프로텍트 에스페라,,daily name inferred from pattern,namu.wiki 아케인포스
+2,Chu Chu Island,아케인심볼 : 츄츄 아일랜드,츄츄 아일랜드,츄츄 아일랜드 최고의 요리,배고픈 무토,얌얌 아일랜드,verbatim,namu.wiki <region> 일일 퀘스트 (2026); matches the JMS official names
+3,Lachelein,아케인심볼 : 레헬른,꿈의 도시 레헬른,레헬른의 평온한 밤,미드나잇 체이서,,verbatim,namu.wiki <region> 일일 퀘스트 (2026); matches the JMS official names
+4,Arcana,아케인심볼 : 아르카나,신비의 숲 아르카나,아르카나의 평온한 바람,스피릿 세이비어,,verbatim,namu.wiki <region> 일일 퀘스트 (2026); matches the JMS official names
+5,Morass,아케인심볼 : 모라스,기억의 늪 모라스,모라스의 안정을 위해,엔하임 디펜스,,verbatim,namu.wiki <region> 일일 퀘스트 (2026); matches the JMS official names
+6,Esfera,아케인심볼 : 에스페라,태초의 바다 에스페라,에스페라 연구 명령,프로텍트 에스페라,,verbatim,namu.wiki <region> 일일 퀘스트 (2026); matches the JMS official names
 7,Cernium,어센틱심볼 : 세르니움,세르니움,세르니움 조사,,,verbatim,namu.wiki 그란디스 대륙 일일 퀘스트
 8,Arcus,어센틱심볼 : 아르크스,호텔 아르크스,호텔 아르크스 주변 청소,,,verbatim,namu.wiki 그란디스 대륙 일일 퀘스트
 9,Odium,어센틱심볼 : 오디움,오디움,오디움 일대 탐사,,,verbatim,namu.wiki 그란디스 대륙 일일 퀘스트

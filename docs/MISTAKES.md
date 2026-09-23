@@ -16,7 +16,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Platform config is validated by the platform, not by reading it.** `vercel.json` passed lint, tests and two reviews, and Vercel still rejected the deployment. Check syntax against the platform's docs before shipping config that CI cannot run, and deploy a preview before DNS moves (M-008).
 - **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
 - **Stage files by name, never `git add -A`**: leftover worktrees and scratch folders get swept in (M-011).
-- **Game facts need a source dated after the last relevant patch**, or they are recorded as unverified. When GMS changes something, KMS almost always changed it first (M-012).
+- **Game facts need a source dated after the last relevant patch**, or they are recorded as unverified. When GMS changes something, KMS almost always changed it first (M-012). **Guide pages lag**: a number that patches change comes from the latest patch notes, never from an official guide page alone (M-014).
 
 ## Log
 
@@ -112,3 +112,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: A total was written down (by a research agent, repeated by me) without adding up the numbers beside it, and then described as checked.
 - **Rule**: Recompute any total, sum or derived figure from its parts before writing it down; never record "verified" for a number nobody recomputed.
 - **Where**: `docs/data-check/grand-sacred.csv`, GAME §4.
+
+### M-014 · 2026-09-22 · research
+
+- **What**: Recorded, in GAME §5, KI-014, `server-differences.csv` and the fill-in page for Brian, that JMS "has not had the increase" and lacks Geardock. JMS got the doubled rates in ver4.43 (2026-07-02) and Geardock in ver4.44 (2026-08-26).
+- **Root cause**: The source was Nexon Japan's force guide page, which is official but was never updated after the patch. Same family as M-012: a changeable number taken from an undated page.
+- **Rule**: Rates, costs and rosters come from the region's latest patch notes; an official guide page only corroborates.
+- **Where**: GAME §5, `docs/data-check/server-differences.csv`, KI-014.

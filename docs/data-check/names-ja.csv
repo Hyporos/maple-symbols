@@ -1,25 +1,25 @@
-id,gms_name,ja_name,confidence,source
-1,Vanishing Journey,消滅の旅路,official,maplestory.nexon.co.jp
-2,Chu Chu Island,チューチューアイランド,official,maplestory.nexon.co.jp
-3,Lachelein,レヘルン,official,maplestory.nexon.co.jp
-4,Arcana,アルカナ,official,maplestory.nexon.co.jp
-5,Morass,モラス,official,maplestory.nexon.co.jp
-6,Esfera,エスフェラ,official,maplestory.nexon.co.jp
-7,Cernium,セルニウム,official,maplestory.nexon.co.jp
-8,Arcus,ホテルアルクス,official,maplestory.nexon.co.jp
-9,Odium,オーディウム,official,maplestory.nexon.co.jp
-10,Shangri-La,桃源郷,official,maplestory.nexon.co.jp
-11,Arteria,アルテリア,official,maplestory.nexon.co.jp
-12,Carcion,カルシオン,official,maplestory.nexon.co.jp
-G1,Tallahart,タラハート,official,maplestory.nexon.co.jp
-G2,Geardock,ギアードラック,"not live in JMS; name from data sites",kiiten.com
-,Arcane Symbol,アーケインシンボル,official,maplestory.nexon.co.jp
-,Sacred Symbol,オーセンティックシンボル,official,maplestory.nexon.co.jp
-,Weekly: Erda Spectrum,エルダスペクトラム,official,maplestory.nexon.co.jp
-,Weekly: Hungry Muto,腹ペコのムト,official,maplestory.nexon.co.jp
-,Weekly: Midnight Chaser,ミッドナイトチェイサー,official,maplestory.nexon.co.jp
-,Weekly: Spirit Savior,スピリットセイヴァー,official,maplestory.nexon.co.jp
-,Weekly: Ranheim Defense,エンハイムディフェンス,official,maplestory.nexon.co.jp
-,Weekly: Esfera Guardian,プロテクトエスフェラ,official,maplestory.nexon.co.jp
-,Extra: Reverse City,リバースシティー,official,maplestory.nexon.co.jp
-,Extra: Yum Yum Island,ヤムヤムアイランド,official,maplestory.nexon.co.jp
+id,gms_name,ja_name,ja_daily_quest,confidence,source
+1,Vanishing Journey,消滅の旅路,消滅の旅路調査,official,maplestory.nexon.co.jp; daily: ver4.01 notice (2021-12-15)
+2,Chu Chu Island,チューチューアイランド,チューチューアイランド最高の料理,official,maplestory.nexon.co.jp; daily: ver4.01 notice (2021-12-15)
+3,Lachelein,レヘルン,レヘルンの安らかな夜,official,maplestory.nexon.co.jp; daily: ver4.01 notice (2021-12-15)
+4,Arcana,アルカナ,アルカナの安らかな風,official,maplestory.nexon.co.jp; daily: ver4.01 notice (2021-12-15)
+5,Morass,モラス,モラスの安定のために,official,maplestory.nexon.co.jp; daily: ver4.01 notice (2021-12-15)
+6,Esfera,エスフェラ,エスフェラ研究命令,official,maplestory.nexon.co.jp; daily: ver4.01 notice (2021-12-15)
+7,Cernium,セルニウム,セルニウム調査,official,maplestory.nexon.co.jp; daily: ver4.43 part 2 notice (2026-07-22)
+8,Arcus,ホテルアルクス,ホテルアルクスの周辺掃除,official,maplestory.nexon.co.jp; daily: ver4.43 part 2 notice (2026-07-22)
+9,Odium,オーディウム,オーディウム一帯の探査,official,maplestory.nexon.co.jp; daily: ver4.43 part 2 notice (2026-07-22)
+10,Shangri-La,桃源郷,桃源郷の浄化作業,official,maplestory.nexon.co.jp; daily: ver4.43 part 2 notice (2026-07-22)
+11,Arteria,アルテリア,アルテリアの残党退治,official,maplestory.nexon.co.jp; daily: ver4.43 part 2 notice (2026-07-22)
+12,Carcion,カルシオン,カルシオンの復旧支援,official,maplestory.nexon.co.jp; daily: ver4.43 part 2 notice (2026-07-22)
+G1,Tallahart,タラハート,タラハート:古代神の力調査,official,maplestory.nexon.co.jp; daily: ver4.43 part 2 notice (2026-07-22)
+G2,Geardock,ギアードラック,ギアードラック:クロノスの残滓収集,official,ver4.44 notice (2026-08-26); symbol グランドオーセンティックシンボル:ギアードラック
+,Arcane Symbol,アーケインシンボル,,official,maplestory.nexon.co.jp
+,Sacred Symbol,オーセンティックシンボル,,official,maplestory.nexon.co.jp
+,Weekly: Erda Spectrum,エルダスペクトラム,,official,maplestory.nexon.co.jp
+,Weekly: Hungry Muto,腹ペコのムト,,official,maplestory.nexon.co.jp
+,Weekly: Midnight Chaser,ミッドナイトチェイサー,,official,maplestory.nexon.co.jp
+,Weekly: Spirit Savior,スピリットセイヴァー,,official,maplestory.nexon.co.jp
+,Weekly: Ranheim Defense,エンハイムディフェンス,,official,maplestory.nexon.co.jp
+,Weekly: Esfera Guardian,プロテクトエスフェラ,,official,maplestory.nexon.co.jp
+,Extra: Reverse City,リバースシティー,,official,maplestory.nexon.co.jp
+,Extra: Yum Yum Island,ヤムヤムアイランド,,official,maplestory.nexon.co.jp
