@@ -16,6 +16,7 @@ import { splitPath } from "./lib/routes";
 import { useAppStore } from "./state/store";
 
 export { EDITIONS, hrefFor, ROUTES } from "./lib/routes";
+export { llmsFullTxt, llmsTxt, markdownFiles } from "./lib/llms";
 
 /** The HTML inside #root for one site path ("/", "/kms/handbook", …). */
 export async function renderPage(path: string): Promise<string> {

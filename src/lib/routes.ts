@@ -371,6 +371,23 @@ const escapeHtml = (s: string) =>
 
 /** The alternate-language links (or, for an untranslated edition, a noindex) for a page's head. */
 /**
+ * The editions whose pages have a Markdown copy for AI agents (src/lib/llms.ts,
+ * docs/AI_SEARCH.md): indexable and served in English, until the translated
+ * catalogues are published.
+ */
+export const markdownEditions = (): Edition[] =>
+  EDITIONS.filter((e) => isIndexable(e) && servedLocale(e) === "en");
+
+/** A page's Markdown copy: "/" → "/index.md", "/msea/handbook" → "/msea/handbook.md". */
+export const markdownPath = (path: RoutePath, edition: Edition): string => {
+  const href = hrefFor(path, edition);
+  return href === "/" ? "/index.md" : `${href}.md`;
+};
+
+export const markdownUrl = (path: RoutePath, edition: Edition): string =>
+  SITE_URL + markdownPath(path, edition);
+
+/**
  * Search-engine ownership tokens (docs/REGIONS.md D-20, SEO §5). Google and Bing verify the
  * domain by DNS; these engines read a meta tag in the prebuilt head. Each value is the
  * `content` of that engine's tag, pasted from its console; an empty one emits nothing.
@@ -396,7 +413,15 @@ export function headLinks(path: RoutePath, edition: Edition = DEFAULT_EDITION): 
         (a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${a.href}" />`
       )
     : ['<meta name="robots" content="noindex" />'];
-  return [...links, ...verificationTags()].join("\n    ");
+  // For AI agents (docs/AI_SEARCH.md): the page's Markdown copy, and the site's llms.txt,
+  // which the llmstxt.org spec (v2, 2026-08-10) has pages point to with rel="describedby".
+  const markdown = [
+    ...(markdownEditions().includes(edition)
+      ? [`<link rel="alternate" type="text/markdown" href="${markdownUrl(path, edition)}" />`]
+      : []),
+    `<link rel="describedby" href="${SITE_URL}/llms.txt" />`,
+  ];
+  return [...links, ...markdown, ...verificationTags()].join("\n    ");
 }
 
 /**

@@ -151,6 +151,21 @@ describe("draft translations (src/i18n/drafts.ts)", () => {
   });
 });
 
+describe("links for AI agents (docs/AI_SEARCH.md)", () => {
+  const source = readFileSync("index.html", "utf8");
+
+  it("point an English edition's page at its Markdown copy, and every page at llms.txt", () => {
+    const html = applyToIndexHtml(source, msea, "/handbook");
+    expect(html).toContain(
+      '<link rel="alternate" type="text/markdown" href="https://maplesymbols.com/msea/handbook.md" />'
+    );
+    expect(html).toContain('<link rel="describedby" href="https://maplesymbols.com/llms.txt" />');
+    const kmsHtml = applyToIndexHtml(source, kms, "/");
+    expect(kmsHtml).not.toContain('type="text/markdown"');
+    expect(kmsHtml).toContain('rel="describedby"');
+  });
+});
+
 describe("search-engine verification (REGIONS D-20)", () => {
   it("emits a meta tag only for the engines whose token is set", () => {
     expect(verificationTags({ naver: "", baidu: "" })).toEqual([]);

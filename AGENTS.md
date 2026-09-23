@@ -19,7 +19,7 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 | Command                                        | What it does                                                                                                                                           |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `pnpm dev`                                     | Vite dev server (no type-check in dev)                                                                                                                 |
-| `pnpm build`                                   | `tsc` type-gate (src incl. tests), Vite build to `dist/`, then every page prerendered into its HTML (`scripts/prerender.mjs`; ARCHITECTURE §7)         |
+| `pnpm build`                                   | `tsc` type-gate (src incl. tests), Vite build to `dist/`, then every page prerendered into its HTML and the AI files written (ARCHITECTURE §7)         |
 | `pnpm lint`, `pnpm typecheck`                  | ESLint over `src/` (Prettier violations are errors, any warning fails); `tsc --noEmit`                                                                 |
 | `pnpm test [filter]`                           | Vitest single run; `pnpm test utils` filters (never `pnpm test -- utils`: pnpm passes the `--` through). Also `test:watch`, `test:coverage`            |
 | `pnpm check:data`                              | Compares every server's numbers that have moved before with its own sources (GAME §6); the weekly workflow opens, updates or closes an issue           |
@@ -41,7 +41,7 @@ src/
              regions.json + regions.ts            per-server profiles and overrides; gameToday() = the server's reset clock
              game.ts, utils.ts, inputs.ts         constants; core maths (updateSymbol, calculateDaysRemaining); input clamping
              calculator.ts, tools.ts, overview.ts, graph.ts   pure maths + labels behind each card
-             routes.ts (pages, SEO, sitemap) · persistence.ts (saves) · format.ts (locale numbers/mesos/dates/plurals)
+             routes.ts (pages, SEO, sitemap) · llms.ts (llms.txt + Markdown copies) · persistence.ts (saves) · format.ts (locale numbers/mesos/dates/plurals)
              analytics.ts (typed Umami events) · suggestion.ts (edition to suggest) · changelog.ts (versions; notes in i18n) · ratioData.ts · dayjs.ts (the only dayjs import)
   components/  Header, ServerMenu (site version + "Numbers from"), SuggestionBanner (D-9), Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
     Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
@@ -100,6 +100,7 @@ docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-stalenes
 - `docs/DESIGN_SYSTEM.md`: any UI work; tokens, recipes with exact class strings, responsive/motion rules, new-component checklist.
 - `docs/TESTING.md`: writing or fixing tests; helpers, mocks, frozen-time fixtures, recipes per layer, the traps (tooltips, Overview duplicates, lazy sections).
 - `docs/SEO.md`: anything search engines see: `routes.ts` entries, `index.html`, `SEO.tsx`, `vercel.json`, headings, copy, images, performance. Numbered rules (cite as `SEO-n`), the query map, and the audit backlog. The goal is rank one, so treat its rules as requirements, not advice.
+- `docs/AI_SEARCH.md`: anything AI agents read: `llms.txt`, the Markdown copies of the pages (`src/lib/llms.ts`, `scripts/ai-files.mjs`), the AI crawlers in `robots.txt`. Rules cite as `AI-n`.
 - `docs/I18N.md`: before adding a user-facing string, touching `src/lib/routes.ts`, or any work on the language selector. Korean, Japanese, Traditional and Simplified Chinese are planned; §5 has the rules that apply to new copy **today**. `docs/REGIONS.md`: one edition per server (GMS, MSEA, KMS, JMS, TMS, CMS) with its own data, URLs, SEO, reset clock and names; the 2.0 design for anything per region (whole sentences, no `<br>` in copy, locale-aware formatting, `Intl.PluralRules`).
 - `docs/ANALYTICS.md`: before adding, changing or removing any tracking. Umami Cloud (free Hobby plan) plus Google Search Console read side by side; §3 is the event catalogue and every event must name the decision it informs.
 - `docs/KNOWN_ISSUES.md`: before "fixing" behaviour that looks wrong, and when a test pins something odd. `docs/MISTAKES.md`: distilled rules at the top, log below.
@@ -108,15 +109,16 @@ docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-stalenes
 
 ## Keep the docs honest
 
-| If you change…                                                                                                | Update…                                                                                            |
-| ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `src/lib/utils.ts`, `data.ts`, `game.ts`, `symbols.json`, `regions.json`, `ratioData.ts`, `hooks/usePower.ts` | Cheat sheet above; ARCHITECTURE §4; GAME §1–2 tables (the docs test fails) and §7 provenance log   |
-| `src/state/store.ts`, `lib/types.ts`                                                                          | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                               |
-| `src/contexts/*`, `src/lib/routes.ts`, `App.tsx` routes                                                       | ARCHITECTURE §2 Routing and §9 (the seo test fails on drift)                                       |
-| `components/Calculator/*` effects, quest toggles, Overview labels                                             | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
-| `index.html`, `SEO.tsx`, `vercel.json`, `robots.txt`, the manifest, headings, page copy, images               | SEO §1 table / §2 rules / §4 backlog (every rule must stay true of the code)                       |
-| User-facing copy, `src/i18n/`, `src/lib/routes.ts` titles, the language selector                              | I18N §2 volumes and §3 blockers (add a row when new work introduces one)                           |
-| Any tracking call, the analytics wrapper in `src/lib/`, the analytics script in `index.html`                  | ANALYTICS §3 catalogue (a new event needs its decision column filled in the same commit)           |
-| `src/global.css` (tokens + global rules), `components/ui/*`, Tooltip                                          | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks the `@theme` variables) |
-| `package.json` scripts/deps, `vitest.config.ts`, hooks, CI, `scripts/check-game-data.mjs`                     | Commands/Stack above; TESTING §1 and §3                                                            |
-| A correction from Brian, or a wrong assumption of yours                                                       | MISTAKES (`/log-mistake`)                                                                          |
+| If you change…                                                                                                    | Update…                                                                                            |
+| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `src/lib/utils.ts`, `data.ts`, `game.ts`, `symbols.json`, `regions.json`, `ratioData.ts`, `hooks/usePower.ts`     | Cheat sheet above; ARCHITECTURE §4; GAME §1–2 tables (the docs test fails) and §7 provenance log   |
+| `src/state/store.ts`, `lib/types.ts`                                                                              | ARCHITECTURE §3 State; gotchas 2–3 above; TESTING §4 Recipes → Store                               |
+| `src/contexts/*`, `src/lib/routes.ts`, `App.tsx` routes                                                           | ARCHITECTURE §2 Routing and §9 (the seo test fails on drift)                                       |
+| `components/Calculator/*` effects, quest toggles, Overview labels                                                 | ARCHITECTURE §5 Effects table; DESIGN_SYSTEM §6 recipe names; the Days/dates line above            |
+| `index.html`, `SEO.tsx`, `vercel.json`, `robots.txt`, the manifest, headings, page copy, images                   | SEO §1 table / §2 rules / §4 backlog (every rule must stay true of the code)                       |
+| `src/lib/llms.ts`, `scripts/ai-files.mjs`, the AI crawlers in `robots.txt`, the Markdown headers in `vercel.json` | AI_SEARCH §1 table / §2 rules / §4 backlog                                                         |
+| User-facing copy, `src/i18n/`, `src/lib/routes.ts` titles, the language selector                                  | I18N §2 volumes and §3 blockers (add a row when new work introduces one)                           |
+| Any tracking call, the analytics wrapper in `src/lib/`, the analytics script in `index.html`                      | ANALYTICS §3 catalogue (a new event needs its decision column filled in the same commit)           |
+| `src/global.css` (tokens + global rules), `components/ui/*`, Tooltip                                              | DESIGN_SYSTEM §2 tokens / §6 recipes / §9 global CSS (the docs test checks the `@theme` variables) |
+| `package.json` scripts/deps, `vitest.config.ts`, hooks, CI, `scripts/check-game-data.mjs`                         | Commands/Stack above; TESTING §1 and §3                                                            |
+| A correction from Brian, or a wrong assumption of yours                                                           | MISTAKES (`/log-mistake`)                                                                          |

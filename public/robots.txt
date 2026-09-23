@@ -1,5 +1,31 @@
 User-agent: *
 Allow: /
 
+# AI crawlers, named on purpose: training, search and user-triggered fetches are all
+# welcome (Brian, 2026-09-23; docs/AI_SEARCH.md §3 has what each one is, from each
+# operator's own docs, checked 2026-09-23). Agents: start at /llms.txt.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Meta-ExternalAgent
+User-agent: Meta-WebIndexer
+User-agent: Meta-ExternalFetcher
+User-agent: Amazonbot
+User-agent: Amzn-SearchBot
+User-agent: Amzn-User
+User-agent: KimiBot
+User-agent: Kimi-SearchBot
+User-agent: Kimi-User
+User-agent: CCBot
+User-agent: Bytespider
+Allow: /
+
 # Sitemap
 Sitemap: https://maplesymbols.com/sitemap.xml
