@@ -14,6 +14,11 @@ import type { SymbolData, SymbolType } from "../../lib/types";
  * The latest completion day (`YYYY-MM-DD`) among `family`'s symbols that are not yet maxed,
  * or `null` while any of them has no computable date (an unset level, no quest enabled, or
  * any other reason `progressToMax` cannot resolve a day count).
+ *
+ * Also `null` when every symbol of the family is already maxed (there is nothing left to
+ * date): that case reads the same as "cannot be dated" here on purpose. Telling the two
+ * apart — nothing left to compute vs. everything already done — is the caller's job
+ * (OverviewCard checks `isMaxLevel` on the family before falling back to this).
  */
 export function allMaxedOn(
   symbols: SymbolData[],

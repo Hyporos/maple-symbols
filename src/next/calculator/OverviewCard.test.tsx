@@ -62,4 +62,20 @@ describe("OverviewCard", () => {
     const row = screen.getByRole("row", { name: /Vanishing Journey/ });
     expect(row).toHaveTextContent("0"); // target column for an unset symbol
   });
+
+  it("says Complete once every symbol of the family is already maxed", () => {
+    for (const id of [1, 2, 3, 4, 5, 6]) seedSymbol(id, { level: 20, experience: 0 }, false);
+    render(<OverviewCard />);
+    expect(screen.getByText("Complete")).toBeInTheDocument();
+    expect(screen.queryByText(/All maxed on/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Enter each symbol's level and quests/)).not.toBeInTheDocument();
+  });
+
+  it("lists only the Grand symbols when a Grand symbol is selected", () => {
+    seedSymbol(13, { level: 5, experience: 0 }); // Tallahart, mode → grand
+    render(<OverviewCard />);
+    expect(screen.getByRole("row", { name: /Tallahart/ })).toBeInTheDocument();
+    expect(screen.getByRole("row", { name: /Geardock/ })).toBeInTheDocument();
+    expect(screen.queryByText("Cernium")).not.toBeInTheDocument();
+  });
 });

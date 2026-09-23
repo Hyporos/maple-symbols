@@ -4,7 +4,7 @@ import { collapsedRowLabels, targetPanelLabels } from "../../lib/overview";
 import { clampNumberInput } from "../../lib/inputs";
 import { maxLevelFor } from "../../lib/game";
 import { gameToday } from "../../lib/regions";
-import { calculateDaysRemaining, cn, getDailySymbols } from "../../lib/utils";
+import { calculateDaysRemaining, cn, getDailySymbols, isMaxLevel } from "../../lib/utils";
 import { formatDay } from "../../lib/format";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
@@ -77,6 +77,11 @@ const OverviewCard = () => {
     locale,
   });
 
+  // allMaxedOn also returns null once the family is already fully maxed (nothing left to
+  // date); that state gets its own line ("Complete"), checked first.
+  const familyComplete =
+    familySymbols.length > 0 &&
+    familySymbols.every((symbol) => isMaxLevel(symbol.level, symbol.type));
   const allMaxed = allMaxedOn(symbols, mode, today, region);
 
   const columns = [
@@ -156,7 +161,9 @@ const OverviewCard = () => {
       </div>
 
       <p className="mt-3 text-center text-sm text-tertiary">
-        {allMaxed ? (
+        {familyComplete ? (
+          m.complete
+        ) : allMaxed ? (
           <Message text={mn.allMaxedOn} values={{ date: formatDay(allMaxed, locale) }} />
         ) : (
           mn.allMaxedUnknown
