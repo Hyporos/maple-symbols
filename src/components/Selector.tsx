@@ -3,7 +3,7 @@ import RadioButton from "./ui/RadioButton";
 import { useAppStore } from "../state/store";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import { track } from "../lib/analytics";
-import type { SymbolType } from "../lib/types";
+import type { Mode } from "../lib/types";
 import { interpolate, useNameSet, useMessages } from "../i18n";
 import { symbolNames } from "../i18n/gameNames";
 
@@ -37,7 +37,7 @@ const Selector = () => {
 
   const { isMobile } = useBreakpoint();
 
-  const switchMode = (to: SymbolType) => {
+  const switchMode = (to: Mode) => {
     if (to !== mode) track("mode_switch", { to });
     setMode(to);
   };

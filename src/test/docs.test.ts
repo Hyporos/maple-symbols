@@ -99,24 +99,43 @@ describe("docs stay honest", () => {
     ]);
     expect(rows("symbols")).toEqual(expected);
 
-    const constants = Object.fromEntries(rows("constants").map(([rule, a, s]) => [rule, [a, s]]));
-    const pair = (a: number | string, s: number | string) => [String(a), String(s)];
+    const constants = Object.fromEntries(
+      rows("constants").map(([rule, a, s, g]) => [rule, [a, s, g]])
+    );
+    // One column per family; "–" where the family lacks the rule (a null in game.ts).
+    const row = (a: number | null, s: number | null, g: number | null) =>
+      [a, s, g].map((v) => (v === null ? "–" : String(v)));
+    const sacredToMax = sum(symbolsJson.sacredExpRequired);
     expect(constants).toEqual({
-      "Max level": pair(MAX_LEVEL.arcane, MAX_LEVEL.sacred),
-      "Symbols from level 1 to max": pair(
+      "Max level": row(MAX_LEVEL.arcane, MAX_LEVEL.sacred, MAX_LEVEL.grand),
+      "Symbols from level 1 to max": row(
         sum(symbolsJson.arcaneExpRequired),
-        sum(symbolsJson.sacredExpRequired)
+        sacredToMax,
+        sacredToMax // Grand Sacred levels on the Sacred table (src/lib/data.ts)
       ),
-      "Weekly quest symbols (per weekly reset)": pair(WEEKLY_SYMBOLS, "–"),
-      "Extra quest daily multiplier": pair(EXTRA_MULTIPLIER.arcane, EXTRA_MULTIPLIER.sacred),
-      "Catalyst keeps this share of total EXP": pair(
+      "Weekly quest symbols (per weekly reset)": row(WEEKLY_SYMBOLS, null, null),
+      "Extra quest daily multiplier": row(
+        EXTRA_MULTIPLIER.arcane,
+        EXTRA_MULTIPLIER.sacred,
+        EXTRA_MULTIPLIER.grand
+      ),
+      "Catalyst keeps this share of total EXP": row(
         CATALYST_RETENTION.arcane,
-        CATALYST_RETENTION.sacred
+        CATALYST_RETENTION.sacred,
+        CATALYST_RETENTION.grand
       ),
-      "Power per level": pair(POWER_PER_LEVEL, POWER_PER_LEVEL),
-      "Base power at level 1 (on top)": pair(ARCANE_BASE_POWER, 0),
-      "Max power per symbol": pair(MAX_POWER_PER_SYMBOL.arcane, MAX_POWER_PER_SYMBOL.sacred),
-      "Main stat per level": pair(MAIN_STAT_PER_LEVEL.arcane, MAIN_STAT_PER_LEVEL.sacred),
+      "Power per level": row(POWER_PER_LEVEL, POWER_PER_LEVEL, POWER_PER_LEVEL),
+      "Base power at level 1 (on top)": row(ARCANE_BASE_POWER, 0, 0),
+      "Max power per symbol": row(
+        MAX_POWER_PER_SYMBOL.arcane,
+        MAX_POWER_PER_SYMBOL.sacred,
+        MAX_POWER_PER_SYMBOL.grand
+      ),
+      "Main stat per level": row(
+        MAIN_STAT_PER_LEVEL.arcane,
+        MAIN_STAT_PER_LEVEL.sacred,
+        MAIN_STAT_PER_LEVEL.grand
+      ),
     });
   });
 

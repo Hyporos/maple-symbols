@@ -8,7 +8,8 @@
 // Identity: symbols are addressed by `id` (from symbols.json), never by array
 // index. `mode` is the type the UI is showing; `selectedId` is the symbol the
 // Calculator/Tools/Handbook operate on; `lastSelected` remembers one id per type
-// so switching modes restores the previous choice.
+// so switching modes restores the previous choice. Grand Sacred symbols are in
+// `symbols` but never a mode or a selection until 2.0 places them (REGIONS D-18).
 //
 // Saved data: each symbol's `id` and the player's own fields only (lib/persistence).
 // On load the list is rebuilt from symbols.json and those fields are laid on top by
@@ -35,22 +36,23 @@ import {
 } from "../lib/persistence";
 import { type Region } from "../lib/regions";
 import { editionFor } from "../lib/routes";
+import { isMode } from "../lib/game";
 
 /** The server of the site version being viewed (its URL prefix); GMS at the root. */
 const pageRegion = (): Region =>
   typeof window === "undefined" ? "gms" : editionFor(window.location.pathname).region;
-import type { SymbolData, SymbolType } from "../lib/types";
+import type { Mode, SymbolData } from "../lib/types";
 
 const STORAGE_VERSION = 4;
 
 /** First symbol of each type in symbols.json (Vanishing Journey, Cernium). */
-export const DEFAULT_SELECTION: Record<SymbolType, number> = { arcane: 1, sacred: 7 };
+export const DEFAULT_SELECTION: Record<Mode, number> = { arcane: 1, sacred: 7 };
 
 interface AppStore {
   // ── Mode (which symbol type the UI shows) ────────────────────────────────
-  mode: SymbolType;
+  mode: Mode;
   /** Switch mode and restore the last symbol selected in that mode. */
-  setMode: (mode: SymbolType) => void;
+  setMode: (mode: Mode) => void;
 
   // ── Symbol data ───────────────────────────────────────────────────────────
   /** The shown server's symbols: its game data plus the player's fields. */
@@ -74,8 +76,11 @@ interface AppStore {
   // ── Selection (by id) ─────────────────────────────────────────────────────
   selectedId: number;
   /** Remembered selection per type; resets on reload. */
-  lastSelected: Record<SymbolType, number>;
-  /** Select a symbol of the current mode by id and remember it for that type. */
+  lastSelected: Record<Mode, number>;
+  /**
+   * Select a symbol by id, switching to its mode, and remember it for that type. An id
+   * the interface does not list (unknown, or Grand Sacred) changes nothing.
+   */
   selectSymbol: (id: number) => void;
 }
 
@@ -110,10 +115,12 @@ export const useAppStore = create<AppStore>()(
       selectSymbol: (id) => {
         const symbol = get().symbols.find((s) => s.id === id);
         if (!symbol) return;
+        const type = symbol.type;
+        if (!isMode(type)) return;
         set((state) => ({
           selectedId: id,
-          mode: symbol.type,
-          lastSelected: { ...state.lastSelected, [symbol.type]: id },
+          mode: type,
+          lastSelected: { ...state.lastSelected, [type]: id },
         }));
       },
     }),

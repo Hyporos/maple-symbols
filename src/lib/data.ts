@@ -18,6 +18,7 @@ interface SymbolDefinition {
   extraName?: string;
   dailySymbols: number;
   mesosRequired: number[];
+  selector?: false;
 }
 
 // ---------------------------------------------------------------------------
@@ -33,11 +34,17 @@ interface SymbolDefinition {
 export function createInitialSymbols(region: Region = DEFAULT_REGION): SymbolData[] {
   const { arcaneExpRequired, sacredExpRequired, symbols } = symbolsJson;
   const overrides = REGION_PROFILES[region].symbols;
+  // Grand Sacred symbols level on the Sacred table (confirmed in game, GAME §4).
+  const expTable: Record<SymbolType, number[]> = {
+    arcane: arcaneExpRequired,
+    sacred: sacredExpRequired,
+    grand: sacredExpRequired,
+  };
 
   return (symbols as SymbolDefinition[]).map((def) => ({
     ...def,
     ...overrides[String(def.id)],
-    symbolsRequired: def.type === "arcane" ? arcaneExpRequired : sacredExpRequired,
+    symbolsRequired: expTable[def.type],
     level: NaN,
     experience: NaN,
     daily: false,

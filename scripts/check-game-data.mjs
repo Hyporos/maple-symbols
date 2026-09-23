@@ -28,9 +28,9 @@ const GMS = JSON.parse(readFileSync(new URL("../src/lib/regions.json", import.me
 const WEEKLY = GMS.weekly;
 /** Our arcane extra-quest multiplier, read from the source so the two cannot drift apart. */
 const EXTRA_ARCANE = Number(gameTs.match(/EXTRA_MULTIPLIER[^=]*= \{ arcane: ([\d.]+)/)?.[1]);
-/** An `{ arcane: N, sacred: M }` constant from our source. */
+/** The arcane and sacred values of an `{ arcane: N, sacred: M, grand: … }` constant from our source. */
 const pair = (source, name) => {
-  const m = source.match(new RegExp(`${name}[^=]*= \\{ arcane: (\\d+), sacred: (\\d+) \\}`));
+  const m = source.match(new RegExp(`${name}[^=]*= \\{ arcane: (\\d+), sacred: (\\d+)[, ]`));
   return m ? { arcane: Number(m[1]), sacred: Number(m[2]) } : null;
 };
 const POWER = Number(gameTs.match(/POWER_PER_LEVEL = (\d+)/)?.[1]);
@@ -44,13 +44,13 @@ const OUR_STATS = {
 
 /**
  * The meso formulas (GAME §1). The epsilon keeps floating point from flooring
- * 122.99… (15 × 8.2) to 122; the formula reproduces all 174 costs only with it.
+ * 122.99… (15 × 8.2) to 122; the formula reproduces all 194 costs only with it.
  */
 const arcaneCost = (k, level) =>
   Math.round(1e4 * Math.floor((level ** 2 + 11) * (k + 0.1 * level) + 1e-9));
 const sacredCost = (k, level) =>
   Math.round(1e5 * Math.floor((9 * level ** 2 + 20 * level) * (k - 0.6 * level) + 1e-9));
-/** Each symbol's k, by id (arcane 1–6, sacred 7–12). A new symbol needs its k here. */
+/** Each symbol's k, by id (arcane 1–6, sacred 7–12, grand 13–14). A new symbol needs its k here. */
 const COST_K = {
   1: 8,
   2: 10,
@@ -64,17 +64,17 @@ const COST_K = {
   10: 18.6,
   11: 20.4,
   12: 22.2,
+  13: 39.8,
+  14: 48.8,
 };
 
 /**
- * Symbols the game has and the site does not model yet (Grand Sacred, in 2.0:
- * GAME §4). Their confirmed numbers live here so a change is still caught; move
- * each one into symbols.json when 2.0 adds it, and delete it from this list.
+ * Symbols the game has and the site does not model yet, each as
+ * `{ name, family, daily, costK, maxLevel }`. Their confirmed numbers live here so a
+ * change is still caught; move each one into symbols.json when the site adds it, and
+ * delete it from this list. Empty since Grand Sacred joined symbols.json (2026-09-23).
  */
-const PENDING = [
-  { name: "Tallahart", family: "Grand Sacred Symbol", daily: 15, costK: 39.8, maxLevel: 11 },
-  { name: "Geardock", family: "Grand Sacred Symbol", daily: 15, costK: 48.8, maxLevel: 11 },
-].map((s) => ({
+const PENDING = [].map((s) => ({
   ...s,
   mesosRequired: [
     0,
@@ -82,7 +82,7 @@ const PENDING = [
   ],
 }));
 
-const FAMILY = { arcane: "Arcane Symbol", sacred: "Sacred Symbol" };
+const FAMILY = { arcane: "Arcane Symbol", sacred: "Sacred Symbol", grand: "Grand Sacred Symbol" };
 const FAMILIES = ["Arcane Symbol", "Sacred Symbol", "Grand Sacred Symbol"];
 
 /**

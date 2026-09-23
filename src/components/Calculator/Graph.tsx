@@ -31,7 +31,7 @@ import RadioButton from "../ui/RadioButton";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { track } from "../../lib/analytics";
-import type { SymbolData, SymbolType } from "../../lib/types";
+import type { Mode, SymbolData } from "../../lib/types";
 import { interpolate, useLocale, useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
@@ -40,7 +40,7 @@ interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
   currentPower: number;
   isMobile: boolean;
   graphDynamic: boolean;
-  mode: SymbolType;
+  mode: Mode;
   symbols: SymbolData[];
   flatDateSymbols: GraphSymbols[];
   /** The shown server, whose game clock dates the entries. */

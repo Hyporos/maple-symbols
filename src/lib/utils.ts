@@ -60,12 +60,13 @@ export function updateSymbol(
  * extra-quest multiplier:
  *   - Arcane symbols with extra: ×2
  *   - Sacred symbols with extra: ×1.5
+ *   - Grand Sacred symbols:      no extra quest, so ×1
  *   - No daily quest enabled:   0
  */
 export function getDailySymbols(symbol: SymbolData): number {
   if (!symbol.daily) return 0;
 
-  const extraMultiplier = symbol.extra ? EXTRA_MULTIPLIER[symbol.type] : 1;
+  const extraMultiplier = symbol.extra ? (EXTRA_MULTIPLIER[symbol.type] ?? 1) : 1;
 
   return symbol.dailySymbols * extraMultiplier;
 }

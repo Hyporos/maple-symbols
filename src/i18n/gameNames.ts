@@ -28,9 +28,10 @@ export const GAME_NAMES: Readonly<
 > = {
   // MSEA (docs/data-check/server-differences.csv, checked 2026-09-22). Region names from the
   // sheet (maplesea.com v252 Jupiter, 2026-07-20); sacred dailies from the v251 patch notes
-  // (2026-06-03); weeklies from the v246 patch notes. Not published yet, so GMS English stays:
-  // the six arcane dailies, the two extra quests, and symbol 10's name (the v251 daily says
-  // "Dowonkyung", but no MSEA source names the symbol).
+  // (2026-06-03); weeklies from the v246 patch notes; the two Grand Authentic symbols from the
+  // same sheet (Talahart; Geardrock, v252). Not published yet, so GMS English stays: the six
+  // arcane dailies, the two extra quests, the two Grand dailies, and symbol 10's name (the
+  // v251 daily says "Dowonkyung", but no MSEA source names the symbol).
   "en-msea": {
     1: { name: "Road to Extinction", weeklyName: "Erda Spectrum" },
     2: { name: "Chew Chew Island", weeklyName: "Hungry Muto" },
@@ -45,6 +46,8 @@ export const GAME_NAMES: Readonly<
     10: { dailyName: "Purify the Contamination of Dowonkyung" },
     11: { dailyName: "Defeat Arteria Remnants" },
     12: { dailyName: "Carcion Recovery Support" },
+    13: { name: "Talahart" },
+    14: { name: "Geardrock" },
   },
   // JMS (docs/data-check/names-ja.csv, every row "official"): maplestory.nexon.co.jp; arcane
   // dailies from the ver4.01 notice (2021-12-15), sacred dailies from the ver4.43 part 2 notice

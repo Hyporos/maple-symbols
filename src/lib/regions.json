@@ -21,6 +21,7 @@
       "weekly": "confirmed",
       "mesosArcane": "sourced",
       "mesosSacred": "sourced",
+      "mesosGrand": "sourced",
       "resetDay": "confirmed",
       "resetHour": "confirmed",
       "classGains": "confirmed"
@@ -50,12 +51,17 @@
       "weekly": "sourced",
       "mesosArcane": "inferred",
       "mesosSacred": "inferred",
+      "mesosGrand": "inferred",
       "resetDay": "sourced",
       "resetHour": "sourced",
       "classGains": "inferred"
     },
-    "sources": "maplesea v246, v251, v252; costs inferred from v225 and no cost change since (GAME §5)",
-    "symbols": {}
+    "sources": "maplesea v246, v251, v252 (Geardrock 10 a day); costs inferred from v225 and no cost change since, Grand Sacred from every other region matching GMS (GAME §5)",
+    "symbols": {
+      "14": {
+        "dailySymbols": 10
+      }
+    }
   },
   "kms": {
     "resetUtcOffsetHours": 9,
@@ -79,6 +85,7 @@
       "weekly": "sourced",
       "mesosArcane": "sourced",
       "mesosSacred": "sourced",
+      "mesosGrand": "sourced",
       "resetDay": "sourced",
       "resetHour": "inferred",
       "classGains": "sourced"
@@ -150,11 +157,12 @@
       "weekly": "sourced",
       "mesosArcane": "unpublished",
       "mesosSacred": "unpublished",
+      "mesosGrand": "sourced",
       "resetDay": "sourced",
       "resetHour": "inferred",
       "classGains": "inferred"
     },
-    "sources": "JMS ver4.38 (Thursday), ver4.43 (rates); no trustworthy current cost table",
+    "sources": "JMS ver4.38 (Thursday), ver4.43 (rates); no trustworthy current cost table except Grand Sacred (kiiten totals match GMS)",
     "symbols": {}
   },
   "tms": {
@@ -179,6 +187,7 @@
       "weekly": "sourced",
       "mesosArcane": "sourced",
       "mesosSacred": "sourced",
+      "mesosGrand": "sourced",
       "resetDay": "sourced",
       "resetHour": "inferred",
       "classGains": "inferred"
@@ -208,6 +217,7 @@
       "weekly": "sourced",
       "mesosArcane": "unpublished",
       "mesosSacred": "unpublished",
+      "mesosGrand": "unpublished",
       "resetDay": "sourced",
       "resetHour": "inferred",
       "classGains": "inferred"
