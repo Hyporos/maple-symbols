@@ -68,7 +68,8 @@ describe("CalculatorPage (/next)", () => {
     renderAt("/next");
     fireEvent.click(await screen.findByRole("radio", { name: "Grand" }));
     expect(screen.getByRole("heading", { level: 2, name: "Tallahart" })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /Geardock/ }));
+    const picker = screen.getByRole("region", { name: "Symbols" });
+    fireEvent.click(within(picker).getByRole("button", { name: /Geardock/ }));
     expect(useAppStore.getState().selectedId).toBe(14);
     expect(screen.getByRole("heading", { level: 2, name: "Geardock" })).toBeInTheDocument();
     expect(screen.queryByRole("switch", { name: "Weekly" })).not.toBeInTheDocument();
