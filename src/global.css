@@ -118,7 +118,36 @@
 @layer base {
   body {
     @apply overflow-x-hidden bg-linear-to-t from-dark to-[#202020] tracking-wide text-secondary;
-    font-family: "Maven Pro", "Maven Pro Fallback", Arial, Helvetica, sans-serif;
+  }
+
+  /*
+    Korean, Japanese and Chinese use the system's CJK fonts, never a downloaded one (REGIONS D-10).
+    Maven Pro stays first, so Latin letters and digits look the same in every language; the
+    browser falls through to --font-cjk only for glyphs Maven Pro and Arial lack. The tag is
+    <html lang> (routes.ts servedLocale), so body carries the stack; [lang] also re-resolves it on
+    any element that names its own language (the server menu's language names).
+  */
+  body,
+  [lang] {
+    font-family: "Maven Pro", "Maven Pro Fallback", Arial, Helvetica, var(--font-cjk, sans-serif);
+  }
+
+  :lang(ko) {
+    --font-cjk: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  }
+
+  :lang(ja) {
+    --font-cjk:
+      "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", "Noto Sans JP",
+      sans-serif;
+  }
+
+  :lang(zh-Hant) {
+    --font-cjk: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  }
+
+  :lang(zh-Hans) {
+    --font-cjk: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   }
 
   /* The accent outline marks keyboard focus only (:focus-visible), never a mouse click. */

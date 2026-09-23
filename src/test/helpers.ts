@@ -75,3 +75,34 @@ export function seedHeadMeta() {
     document.head.appendChild(el);
   }
 }
+
+// ── Display width (SEO-6, SEO-7) ──────────────────────────────────────────
+// East Asian Wide and Fullwidth code points (Unicode UAX #11), which take two columns
+// in a search result: Hangul, CJK ideographs and punctuation, kana, fullwidth forms.
+// Halfwidth katakana and Hangul (U+FF61–FFDC) are narrow and stay 1.
+const WIDE_RANGES: readonly (readonly [number, number])[] = [
+  [0x1100, 0x115f], // Hangul Jamo (leading consonants)
+  [0x2e80, 0x303e], // CJK radicals, Kangxi, ideographic description, CJK symbols and punctuation
+  [0x3041, 0x33ff], // Hiragana, Katakana, Bopomofo, Hangul compatibility Jamo, CJK compatibility
+  [0x3400, 0x4dbf], // CJK Extension A
+  [0x4e00, 0x9fff], // CJK Unified Ideographs
+  [0xa000, 0xa4cf], // Yi
+  [0xa960, 0xa97f], // Hangul Jamo Extended-A
+  [0xac00, 0xd7a3], // Hangul syllables
+  [0xf900, 0xfaff], // CJK compatibility ideographs
+  [0xfe10, 0xfe19], // vertical forms
+  [0xfe30, 0xfe6f], // CJK compatibility forms, small form variants
+  [0xff00, 0xff60], // fullwidth ASCII and punctuation
+  [0xffe0, 0xffe6], // fullwidth signs
+  [0x20000, 0x3fffd], // CJK Extensions B onwards (planes 2 and 3)
+];
+
+/** Columns a string takes: 2 per East Asian wide or fullwidth character, 1 per other code point. */
+export const displayWidth = (text: string): number => {
+  let width = 0;
+  for (const char of text) {
+    const cp = char.codePointAt(0)!;
+    width += WIDE_RANGES.some(([lo, hi]) => cp >= lo && cp <= hi) ? 2 : 1;
+  }
+  return width;
+};

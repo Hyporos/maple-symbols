@@ -12,6 +12,8 @@ import { RouterProvider } from "../contexts/RouterContext";
 import {
   applyToIndexHtml,
   DEFAULT_LOCALE,
+  EDITIONS,
+  type Edition,
   OG_LOCALES,
   ogLocaleFor,
   pageMap,
@@ -21,7 +23,7 @@ import {
 } from "../lib/routes";
 import { changelogEntries } from "../lib/changelog";
 import { dayjs } from "../lib/dayjs";
-import { seedHeadMeta } from "./helpers";
+import { displayWidth, seedHeadMeta } from "./helpers";
 
 const source = readFileSync("index.html", "utf8");
 const html = applyToIndexHtml(source);
@@ -170,23 +172,46 @@ describe("an edition's page", () => {
 // ---------------------------------------------------------------------------
 
 describe("titles and descriptions follow docs/SEO.md", () => {
-  it("SEO-6: titles are unique, end with the brand, and fit the ~60 character display limit", () => {
-    const titles = ROUTES.map((r) => r.title);
-    expect(new Set(titles).size).toBe(titles.length);
-    for (const title of titles) {
-      expect(title.length).toBeLessThanOrEqual(60);
-      expect(title.endsWith("| Maple Symbols")).toBe(true);
-    }
+  // Every page of every edition, as its head gets it. pageMap is the per-edition source that
+  // the head, the bootstrap script and the prerender read; if titles move to another
+  // per-edition function, this line is the one to change.
+  const pagesOf = (edition: Edition) => Object.values(pageMap(edition));
+  const editions = EDITIONS.map((e) => [e.region, e] as const);
+
+  it("measures display width with East Asian wide characters as 2", () => {
+    expect(displayWidth("abc")).toBe(3);
+    expect(displayWidth("한국어")).toBe(6);
+    expect(displayWidth("日本語abc")).toBe(9);
+    expect(displayWidth("繁體中文 · 简体中文")).toBe(19);
+    expect(displayWidth("ＡＢ")).toBe(4); // fullwidth forms
+    expect(displayWidth("ｱｲ")).toBe(2); // halfwidth katakana stays narrow
   });
 
-  it("SEO-7: descriptions are unique, at most 155 characters, and free of superlatives", () => {
-    const descriptions = ROUTES.map((r) => r.description);
-    expect(new Set(descriptions).size).toBe(descriptions.length);
-    for (const description of descriptions) {
-      expect(description.length).toBeLessThanOrEqual(155);
-      expect(description).not.toMatch(/\b(ultimate|best|greatest|#1)\b/i);
+  it.each(editions)(
+    "SEO-6 (%s): titles are unique, end with the brand, and fit 60 columns of display width",
+    (_region, edition) => {
+      const titles = pagesOf(edition).map((p) => p.title);
+      expect(titles).toHaveLength(ROUTES.length);
+      expect(new Set(titles).size).toBe(titles.length);
+      for (const title of titles) {
+        expect(displayWidth(title), title).toBeLessThanOrEqual(60);
+        expect(title.endsWith("| Maple Symbols")).toBe(true);
+      }
     }
-  });
+  );
+
+  it.each(editions)(
+    "SEO-7 (%s): descriptions are unique, fit 155 columns of display width, no superlatives",
+    (_region, edition) => {
+      const descriptions = pagesOf(edition).map((p) => p.description);
+      expect(descriptions).toHaveLength(ROUTES.length);
+      expect(new Set(descriptions).size).toBe(descriptions.length);
+      for (const description of descriptions) {
+        expect(displayWidth(description), description).toBeLessThanOrEqual(155);
+        expect(description).not.toMatch(/\b(ultimate|best|greatest|#1)\b/i);
+      }
+    }
+  );
 
   it("SEO-1/SEO-5: every route has a dated lastmod and a path that starts with /", () => {
     for (const route of ROUTES) {
