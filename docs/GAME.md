@@ -78,7 +78,7 @@ Two real sources of symbols the calculator ignores, because both are temporary a
 
 ## 4. Grand Sacred symbols (in the data since 2026-09-23, not in the interface yet)
 
-Brian decided on 2026-09-16 that 2.0 includes them (V2_PLAN). Two exist: **Tallahart** and **Geardock**, the Western Grandis symbols (Tallahart from level 290, Geardock from 295, per v.270). GMS got Geardock on 2026-07-22 (v.270). The full sheet with sources is `docs/data-check/grand-sacred.csv`.
+Brian decided on 2026-09-16 that 2.0 includes them (V2_PLAN). Two exist: **Tallahart** and **Geardock**, the Western Grandis symbols (Tallahart from level 290, Geardock from 295, per v.270). GMS got Geardock on 2026-07-22 (v.270). The full sheet with sources is `docs/data-check/grand-sacred.csv`. When the interface shows them, their +10 per level counts toward the Sacred Power total, as it does in game (Brian, 2026-09-23).
 
 **Modelled on `v2` (2026-09-23)** as their own family, `type: "grand"` (REGIONS D-18): ids 13 (Tallahart) and 14 (Geardock) at the end of `symbols.json`, with the rules in `src/lib/game.ts` (§2 table; `null` where a rule does not exist). Where they sit in the interface is left to the 2.0 visual design, so the store's `mode` stays `"arcane" | "sacred"` (`Mode` in `src/lib/types.ts`), `selectSymbol` ignores a Grand id, and every list filters on `symbol.type === mode`: the pages are unchanged. Not in the data, because nothing reads them yet: the level requirement (290 / 295), the EXP / meso / drop bonuses and the boss damage bonus below. `img` names `/symbols/tallahart-symbol.webp` and `/symbols/geardock-symbol.webp`, which do not exist yet (the images are not collected); add them before the interface shows the family.
 
