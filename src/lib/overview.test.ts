@@ -29,6 +29,13 @@ describe("collapsedRowLabels", () => {
     });
   });
 
+  it("writes the completion date in the page's language: ISO in English, native in Korean", () => {
+    expect(collapsedRowLabels(active(), 20, m, NOW, "gms", "en").completion).toBe("2027-01-25");
+    expect(collapsedRowLabels(active(), 20, m, NOW, "gms", "ko").completion).toBe(
+      "2027. 1. 25. (월)"
+    );
+  });
+
   it("is fresh for every symbol, not just the selected one (KI-002 resolved)", () => {
     const lachelein = { ...createInitialSymbols()[2], level: 5, experience: 0, daily: true };
     expect(collapsedRowLabels(lachelein, 20, m, NOW).days).toBe("66 days"); // 2605 at 40/day

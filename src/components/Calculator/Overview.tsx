@@ -60,7 +60,9 @@ const Overview = () => {
 
   // Row strings (collapsed line and target panel) are pure functions of state; see lib/overview.
   const today = gameToday(region);
-  const rowLabels = symbols.map((symbol) => collapsedRowLabels(symbol, maxLevel, m, today, region));
+  const rowLabels = symbols.map((symbol) =>
+    collapsedRowLabels(symbol, maxLevel, m, today, region, locale)
+  );
   const panelLabels = symbols.map((symbol) =>
     targetPanelLabels({
       rowLevel: symbol.level,
@@ -71,6 +73,7 @@ const Overview = () => {
       targetDate,
       isTablet,
       m,
+      locale,
     })
   );
 

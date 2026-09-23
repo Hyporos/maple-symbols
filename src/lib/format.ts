@@ -119,8 +119,47 @@ export const plural = (
  * of Greenwich), so the day never shifts with the visitor's time zone.
  * dayjs falls back to its built-in English locale until locale data is loaded;
  * this is the one place that has to change when it is (docs/I18N.md B-5).
- * Machine-readable dates (`YYYY-MM-DD` in `<time dateTime>`, the completion
- * dates, the sitemap) are locale-neutral and stay on plain `dayjs().format()`.
+ * Machine-readable dates (`YYYY-MM-DD` in `<time dateTime>`, graph ticks, the
+ * sitemap) are locale-neutral and stay on plain `dayjs().format()`; a completion date
+ * goes through `formatDay`.
  */
 export const formatDate = (date: string, _locale: string = DEFAULT_LOCALE): string =>
   dayjs(date).format("MMM D, YYYY");
+
+const dayFormats = new Map<string, Intl.DateTimeFormat | null>();
+
+// Korean, Japanese and Chinese read their own year-month-day form with the weekday;
+// every other language keeps ISO (Brian, 2026-09-23). Resolved by language, like mesoUnits.
+const dayFormat = (locale: string): Intl.DateTimeFormat | null => {
+  if (dayFormats.has(locale)) return dayFormats.get(locale) ?? null;
+  const { language } = new Intl.Locale(locale).maximize();
+  const format = ["ko", "ja", "zh"].includes(language)
+    ? new Intl.DateTimeFormat(locale, {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        weekday: "short",
+        timeZone: "UTC",
+      })
+    : null;
+  dayFormats.set(locale, format);
+  return format;
+};
+
+const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/**
+ * A completion or attainment day as the reader writes it. English (GMS, MSEA) keeps the
+ * ISO `2027-01-28` returning players know and the 360 px cards fit; `ko` gives
+ * "2027. 1. 28. (목)", `ja` "2027/1/28(木)", `zh-Hant` "2027/1/28（週四）" and `zh-Hans`
+ * "2027/1/28周四". The day is already the server's game day (`gameToday`), so it is
+ * formatted in UTC and never shifts with the visitor's zone. Anything that is not an
+ * ISO day ("Invalid Date", a label) comes back unchanged.
+ */
+export const formatDay = (day: string, locale: string = DEFAULT_LOCALE): string => {
+  const match = ISO_DAY.exec(day);
+  const format = match && dayFormat(locale);
+  if (!match || !format) return day;
+  const [, year, month, date] = match.map(Number);
+  return format.format(new Date(Date.UTC(year, month - 1, date)));
+};

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatMesos, formatNumber, plural } from "./format";
+import { formatDate, formatDay, formatMesos, formatNumber, plural } from "./format";
 import { createInitialSymbols } from "./data";
 import { DEFAULT_LOCALE } from "./routes";
 import { dayjs } from "./dayjs";
@@ -129,5 +129,31 @@ describe("formatDate", () => {
 describe("DEFAULT_LOCALE", () => {
   it("is the English tag every formatter falls back to", () => {
     expect(DEFAULT_LOCALE).toBe("en");
+  });
+});
+
+describe("formatDay", () => {
+  it("keeps the ISO day in English and any language without its own form", () => {
+    expect(formatDay("2027-01-28")).toBe("2027-01-28");
+    expect(formatDay("2027-01-28", "en")).toBe("2027-01-28");
+    expect(formatDay("2027-01-28", "de")).toBe("2027-01-28");
+  });
+
+  it("writes the day the Korean, Japanese and Chinese way, with the weekday", () => {
+    expect(formatDay("2027-01-28", "ko")).toBe("2027. 1. 28. (목)");
+    expect(formatDay("2027-01-28", "ja")).toBe("2027/1/28(木)");
+    expect(formatDay("2027-01-28", "zh-Hant")).toBe("2027/1/28（週四）");
+    expect(formatDay("2027-01-28", "zh-Hans")).toBe("2027/1/28周四");
+    expect(formatDay("2027-01-28", "zh-TW")).toBe("2027/1/28（週四）");
+  });
+
+  it("never shifts the day, whatever the visitor's zone (the day is already the game day)", () => {
+    // 2027-01-01 is a Friday; formatted in UTC it cannot slip to the 31st.
+    expect(formatDay("2027-01-01", "ko")).toBe("2027. 1. 1. (금)");
+  });
+
+  it("passes anything that is not an ISO day through unchanged", () => {
+    expect(formatDay("Invalid Date", "ko")).toBe("Invalid Date");
+    expect(formatDay("", "ja")).toBe("");
   });
 });

@@ -23,6 +23,7 @@ import {
   type GraphSymbols,
 } from "../../lib/graph";
 import { clampNumberInput } from "../../lib/inputs";
+import { formatDay } from "../../lib/format";
 import { MAX_POWER_PER_SYMBOL } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
 import { gameToday, type Region } from "../../lib/regions";
@@ -132,6 +133,7 @@ const Graph = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
 
   const m = useMessages().graph;
+  const locale = useLocale();
 
   const symbols = useAppStore((s) => s.symbols);
   const mode = useAppStore((s) => s.mode);
@@ -204,7 +206,7 @@ const Graph = () => {
   // Get the date or error message for the attainment date of the target power
   const getTargetPowerResponse = () => {
     // If a valid target is specified, return the date
-    if (attainmentDate) return attainmentDate;
+    if (attainmentDate) return formatDay(attainmentDate, locale);
 
     // Otherwise, return an error message
     return !isValid(targetPower)

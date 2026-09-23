@@ -16,6 +16,7 @@ A record of what went wrong while working on this repo, so it is not repeated. T
 - **Platform config is validated by the platform, not by reading it.** `vercel.json` passed lint, tests and two reviews, and Vercel still rejected the deployment. Check syntax against the platform's docs before shipping config that CI cannot run, and deploy a preview before DNS moves (M-008).
 - **Changelog entries are for players**: only what they can see or feel, never analytics, tooling or advisories (M-010).
 - **Stage files by name, never `git add -A`**: leftover worktrees and scratch folders get swept in (M-011).
+- **Agent worktrees start from `main`, not the current branch**: for work on `v2`, make them yourself from `v2` and give each agent its path (M-018).
 - **Game facts need a source dated after the last relevant patch**, or they are recorded as unverified. When GMS changes something, KMS almost always changed it first (M-012). **Guide pages lag**: a number that patches change comes from the latest patch notes, never from an official guide page alone (M-014).
 - **Verify hosting config on a real deployment** (a preview) before it merges; a test of `vercel.json` only proves the file says what we meant (M-016).
 - **Recompute every total from its parts** before writing it down, and never call a number checked that nobody recomputed (M-013). **Quote the sentence that states the fact itself**: a reset time quoted from an event counter's line proves nothing about the symbol quests (M-015).
@@ -142,3 +143,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Changed an element's tag for its semantics without checking the global element rules (AGENTS gotcha 5), and no test or screenshot compared the look.
 - **Rule**: Changing an element's tag is a visual change too: check gotcha 5's global rules (`span`, `button`, `input`, `img`) and look at the result in a browser.
 - **Where**: `src/components/ui/SlideButton.tsx`, pinned by `src/components/ui/primitives.test.tsx`.
+
+### M-018 · 2026-09-22 · tooling
+
+- **What**: Dispatched two phase-5 agents with `isolation: "worktree"` while working on `v2`. The worktrees were cut from `main` (the remote's default branch, 69 commits behind), so both agents started on code without editions, regions or prerendering. Caught from `git worktree list` before they changed anything; both were stopped and relaunched in worktrees made from `v2`.
+- **Root cause**: Assumed the isolation worktree starts from the current branch; it starts from the remote's default branch.
+- **Rule**: For parallel agents on `v2`, create the worktrees yourself (`git worktree add -b <name> <path> v2`) and point each agent at its path; check `git worktree list` before any agent writes.
+- **Where**: agent dispatch; stale `.claude/worktrees/agent-*` folders were left for Brian to remove (removal needs his permission).

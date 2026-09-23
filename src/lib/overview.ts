@@ -7,6 +7,8 @@
 import type { Dayjs } from "dayjs";
 import { DEFAULT_REGION, gameToday, type Region } from "./regions";
 import { progressToMax } from "./calculator";
+import { formatDay } from "./format";
+import { DEFAULT_LOCALE } from "./routes";
 import { interpolate, pluralMessage } from "../i18n/interpolate";
 import type { Messages } from "../i18n";
 import type { SymbolData } from "./types";
@@ -29,13 +31,15 @@ export interface CollapsedRowLabels {
 /**
  * The collapsed (desktop) row: target column, completion date, days and symbols remaining,
  * derived from the symbol's level/experience/quests as of `now` (every row is fresh).
+ * The date reads in `locale` (`formatDay`).
  */
 export function collapsedRowLabels(
   symbol: SymbolData,
   maxLevel: number,
   m: OverviewMessages,
   now: Dayjs = gameToday(),
-  region: Region = DEFAULT_REGION
+  region: Region = DEFAULT_REGION,
+  locale: string = DEFAULT_LOCALE
 ): CollapsedRowLabels {
   const { symbolsRemaining, daysRemaining, completion: date } = progressToMax(symbol, now, region);
   const atMax = symbol.level === maxLevel;
@@ -51,7 +55,7 @@ export function collapsedRowLabels(
       ? m.indefinite
       : daysRemaining === 0
         ? m.complete
-        : date;
+        : formatDay(date, locale);
 
   const days = blank
     ? BLANK
@@ -84,6 +88,8 @@ export interface TargetPanelInput {
   isTablet: boolean;
   /** The Overview catalogue area the labels are worded from. */
   m: OverviewMessages;
+  /** The language the date reads in (`formatDay`); English keeps ISO. */
+  locale?: string;
 }
 
 export interface TargetPanelLabels {
@@ -96,6 +102,7 @@ export interface TargetPanelLabels {
 export function targetPanelLabels(input: TargetPanelInput): TargetPanelLabels {
   const { rowLevel, current, targetLevel, targetSymbols, targetDays, targetDate, isTablet, m } =
     input;
+  const locale = input.locale ?? DEFAULT_LOCALE;
   const noQuests = !current.daily && !current.weekly;
   const alreadyThere = targetSymbols === 0 && current.experience !== 0;
 
@@ -109,7 +116,7 @@ export function targetPanelLabels(input: TargetPanelInput): TargetPanelLabels {
       ? m.indefinite
       : targetDays <= 0
         ? m.complete
-        : targetDate;
+        : formatDay(targetDate, locale);
 
   const days = alreadyThere
     ? m.readyForUpgrade
