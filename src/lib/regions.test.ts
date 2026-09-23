@@ -16,6 +16,7 @@ const KINDS: DataKind[] = [
   "weekly",
   "mesosArcane",
   "mesosSacred",
+  "mesosGrand",
   "resetDay",
   "resetHour",
   "classGains",
@@ -69,6 +70,17 @@ describe("region profiles (regions.json)", () => {
       expect(REGION_PROFILES[region].status.mesosArcane).toBe("unpublished");
       expect(REGION_PROFILES[region].status.mesosSacred).toBe("unpublished");
     }
+    // Grand Sacred costs: published for KMS, JMS (kiiten) and TMS, all matching GMS; MSEA
+    // inferred from them; CMS not published (GAME §5).
+    const grand = Object.fromEntries(REGIONS.map((r) => [r, REGION_PROFILES[r].status.mesosGrand]));
+    expect(grand).toEqual({
+      gms: "sourced",
+      msea: "inferred",
+      kms: "sourced",
+      jms: "sourced",
+      tms: "sourced",
+      cms: "unpublished",
+    });
   });
 });
 
@@ -84,7 +96,8 @@ describe("createInitialSymbols(region)", () => {
     const kms = createInitialSymbols("kms");
     for (const symbol of kms) {
       const base = gms.find((s) => s.id === symbol.id)!;
-      if (symbol.type === "sacred") {
+      if (symbol.type !== "arcane") {
+        // Sacred and Grand Sacred costs were not cut.
         expect(symbol.mesosRequired).toEqual(base.mesosRequired);
         continue;
       }
@@ -101,6 +114,15 @@ describe("createInitialSymbols(region)", () => {
       .filter((s) => s.type === "arcane")
       .reduce((sum, s) => sum + s.mesosRequired.reduce((a, b) => a + b, 0), 0);
     expect(arcaneTotal).toBe(1_622_560_000);
+  });
+
+  it("gives MSEA Geardrock its 10 a day (v252) and changes nothing else", () => {
+    const msea = createInitialSymbols("msea");
+    expect(msea.find((s) => s.id === 14)!.dailySymbols).toBe(10);
+    expect(msea.filter((s) => s.id !== 14)).toEqual(gms.filter((s) => s.id !== 14));
+    const { dailySymbols: _a, ...rest } = msea.find((s) => s.id === 14)!;
+    const { dailySymbols: _b, ...base } = gms.find((s) => s.id === 14)!;
+    expect(rest).toEqual(base);
   });
 
   it("keeps every other field of the base symbol", () => {

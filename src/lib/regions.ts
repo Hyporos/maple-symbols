@@ -32,6 +32,7 @@ export type DataKind =
   | "weekly"
   | "mesosArcane"
   | "mesosSacred"
+  | "mesosGrand"
   | "resetDay"
   | "resetHour"
   | "classGains";
@@ -49,10 +50,13 @@ export interface RegionProfile {
   weeklyResetDay: number;
   /** The weekly as the game pays it; the calculator credits the total in one go (GAME §2). */
   weekly: { perClear: number; clears: number };
-  /** Per-level gains shown in the next-level tooltip for the two classes without main stat. */
+  /**
+   * Per-level gains shown in the next-level tooltip for the two classes without main stat.
+   * Only for the families that give main stat: Grand Sacred gives none, so nothing converts.
+   */
   classGains: {
-    demonAvengerHp: Record<SymbolType, number>;
-    xenonAllStat: Record<SymbolType, number>;
+    demonAvengerHp: Record<Exclude<SymbolType, "grand">, number>;
+    xenonAllStat: Record<Exclude<SymbolType, "grand">, number>;
   };
   status: Record<DataKind, DataStatus>;
   /** Where the numbers come from, in one line; the detail is in GAME §7. */
@@ -72,9 +76,14 @@ export const REGION_PROFILES: Readonly<Record<Region, RegionProfile>> = regionsJ
 export const isPublished = (region: Region, kind: DataKind): boolean =>
   REGION_PROFILES[region].status[kind] !== "unpublished";
 
+const MESOS_KIND: Record<SymbolType, DataKind> = {
+  arcane: "mesosArcane",
+  sacred: "mesosSacred",
+  grand: "mesosGrand",
+};
+
 /** The status kind that covers a symbol type's meso costs. */
-export const mesosKind = (type: SymbolType): DataKind =>
-  type === "arcane" ? "mesosArcane" : "mesosSacred";
+export const mesosKind = (type: SymbolType): DataKind => MESOS_KIND[type];
 
 /** Symbols one week of weekly content pays on a server (240 everywhere today). */
 export const weeklySymbolsFor = (region: Region): number => {

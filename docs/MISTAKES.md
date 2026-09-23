@@ -150,3 +150,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Assumed the isolation worktree starts from the current branch; it starts from the remote's default branch.
 - **Rule**: For parallel agents on `v2`, create the worktrees yourself (`git worktree add -b <name> <path> v2`) and point each agent at its path; check `git worktree list` before any agent writes.
 - **Where**: agent dispatch; stale `.claude/worktrees/agent-*` folders were left for Brian to remove (removal needs his permission).
+
+### M-019 · 2026-09-23 · tooling
+
+- **What**: To check that a new test catches a leak, I broke `Selector.tsx` and `Graph.tsx` with `sed`, ran the test, then undid it with `git checkout <file>`. That also threw away the real, uncommitted edits in both files (a type change). Caught at once by `git diff --stat` and redone.
+- **Root cause**: Treated `git checkout <file>` as "undo my last change" when it restores the committed file.
+- **Rule**: Undo a mutation test with the inverse edit (or copy the file aside first), never `git checkout` on a file with uncommitted work; check `git diff` afterwards.
+- **Where**: the Grand Sacred data model (`src/test/grandHidden.test.tsx`).

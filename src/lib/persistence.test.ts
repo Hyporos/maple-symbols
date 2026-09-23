@@ -118,3 +118,26 @@ describe("per-server saves (STORAGE_VERSION 4)", () => {
     expect(migrateSaved(current, 4)).toBe(current);
   });
 });
+
+describe("Grand Sacred (ids 13 and 14) and existing saves", () => {
+  it("restores a save made before they existed, and adds them unset with no version bump", () => {
+    // A version 4 save from the 12-symbol site: every symbol levelled.
+    const before = toSaved(fresh().filter((s) => s.id <= 12)).map((s) => ({ ...s, level: 4 }));
+    expect(before).toHaveLength(12);
+    const restored = restoreSymbols(JSON.parse(JSON.stringify(before)), fresh());
+    expect(restored.map((s) => s.id)).toEqual(fresh().map((s) => s.id));
+    expect(restored.filter((s) => s.id <= 12).every((s) => s.level === 4)).toBe(true);
+    for (const id of [13, 14]) {
+      const grand = restored.find((s) => s.id === id)!;
+      expect(grand.level).toBeNaN();
+      expect(grand).toMatchObject({ type: "grand", daily: false, locked: true });
+    }
+  });
+
+  it("saves and restores their player fields like any other symbol, with no weekly or extra", () => {
+    const symbols = updateSymbol(fresh(), 13, { level: 6, experience: 100, daily: true });
+    const saved = toSaved(symbols).find((s) => s.id === 13);
+    expect(saved).toEqual({ id: 13, level: 6, experience: 100, daily: true, locked: true });
+    expect(restoreSymbols(JSON.parse(JSON.stringify(toSaved(symbols))), fresh())).toEqual(symbols);
+  });
+});

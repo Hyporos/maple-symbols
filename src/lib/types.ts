@@ -2,8 +2,18 @@
 // Shared type definitions used across the entire application.
 // ---------------------------------------------------------------------------
 
-/** The two possible symbol archetypes. */
-export type SymbolType = "arcane" | "sacred";
+/**
+ * The symbol families: Arcane, Sacred, and Grand Sacred (Tallahart, Geardock). Every
+ * per-symbol rule reads `symbol.type`; src/lib/game.ts holds one value per family.
+ */
+export type SymbolType = "arcane" | "sacred" | "grand";
+
+/**
+ * The families the interface lists (the store's `mode`, the Arcane/Sacred toggle). Grand
+ * Sacred symbols are in the data but not in the interface until the 2.0 design places them
+ * (REGIONS D-18), so every list for a mode filters on `symbol.type === mode`.
+ */
+export type Mode = Exclude<SymbolType, "grand">;
 
 /**
  * A single symbol entry as it lives in application state.
@@ -16,6 +26,7 @@ export type SymbolType = "arcane" | "sacred";
  * Optional fields that only exist on certain symbols:
  *   - weeklyName / weekly  → arcane symbols only
  *   - extraName / extra    → VJ and ChuChu only
+ *   - selector: false      → a symbol the Symbol Selector cannot level (Geardock)
  */
 export interface SymbolData {
   // ── Identity ──────────────────────────────────────────────────────────────
@@ -41,4 +52,6 @@ export interface SymbolData {
   dailySymbols: number;
   symbolsRequired: number[];
   mesosRequired: number[];
+  /** `false` when Symbol Selector coupons cannot level this symbol; absent means they can. */
+  selector?: false;
 }

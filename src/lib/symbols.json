@@ -160,6 +160,31 @@
         0, 62600000, 159600000, 287600000, 443500000, 624000000, 825800000, 1045800000, 1280600000,
         1527100000, 1782000000
       ]
+    },
+    {
+      "id": 13,
+      "name": "Tallahart",
+      "img": "/symbols/tallahart-symbol.webp",
+      "type": "grand",
+      "dailyName": "Investigate the Tallahart Ancient God's Power",
+      "dailySymbols": 15,
+      "mesosRequired": [
+        0, 113600000, 293300000, 535800000, 837700000, 1196000000, 1607200000, 2068300000,
+        2576000000, 3126900000, 3718000000
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Geardock",
+      "img": "/symbols/geardock-symbol.webp",
+      "type": "grand",
+      "dailyName": "Cleaning Up Kronos",
+      "dailySymbols": 15,
+      "mesosRequired": [
+        0, 139700000, 361700000, 662700000, 1039300000, 1488500000, 2006800000, 2591200000,
+        3238400000, 3945000000, 4708000000
+      ],
+      "selector": false
     }
   ]
 }

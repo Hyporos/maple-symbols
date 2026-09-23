@@ -24,7 +24,10 @@ export function resetStore() {
   useAppStore.setState({ ...useAppStore.getInitialState(), symbols: createInitialSymbols() }, true);
 }
 
-/** Patch one symbol by id (1–6 arcane, 7–12 sacred) and, by default, select it (switching mode). */
+/**
+ * Patch one symbol by id (1–6 arcane, 7–12 sacred, 13–14 grand) and, by default, select it
+ * (switching mode). A grand id is patched but not selected: the interface does not list it.
+ */
 export function seedSymbol(id: number, patch: Partial<SymbolData>, select = true): SymbolData {
   const symbols = useAppStore.getState().symbols.map((s) => (s.id === id ? { ...s, ...patch } : s));
   useAppStore.setState({ symbols });
