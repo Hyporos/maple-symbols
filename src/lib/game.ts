@@ -3,6 +3,7 @@
 // symbols.json holds the tables; everything else about the rules lives here.
 // ---------------------------------------------------------------------------
 
+import { DEFAULT_REGION, weeklySymbolsFor } from "./regions";
 import type { SymbolType } from "./types";
 
 /** Highest level per symbol type. */
@@ -11,10 +12,11 @@ export const MAX_LEVEL: Record<SymbolType, number> = { arcane: 20, sacred: 11 };
 /** Max level for a symbol type (the former `!swapped ? 20 : 11` literal). */
 export const maxLevelFor = (type: SymbolType): number => MAX_LEVEL[type];
 
-/** Symbols from a week of weekly content, credited at each weekly reset (arcane only).
- *  The game pays 80 per clear with up to 3 clears a week; the calculator credits the week
- *  in one go (GAME §2). GMS v.271 raised it from 40 per clear. */
-export const WEEKLY_SYMBOLS = 240;
+/** Symbols from a week of weekly content on the default server, credited at each weekly
+ *  reset (arcane only). GMS pays 80 per clear with up to 3 clears a week (KMS: one clear
+ *  of 240); the calculator credits the week in one go (GAME §2). The structure per server
+ *  lives in regions.json; use `weeklySymbolsFor(region)` where the server can differ. */
+export const WEEKLY_SYMBOLS = weeklySymbolsFor(DEFAULT_REGION);
 
 /** Daily-rate multiplier when the extra quest is unlocked. */
 export const EXTRA_MULTIPLIER: Record<SymbolType, number> = { arcane: 2, sacred: 1.5 };

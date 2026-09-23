@@ -1,0 +1,218 @@
+{
+  "gms": {
+    "resetUtcOffsetHours": 0,
+    "weeklyResetDay": 4,
+    "weekly": {
+      "perClear": 80,
+      "clears": 3
+    },
+    "classGains": {
+      "demonAvengerHp": {
+        "arcane": 2100,
+        "sacred": 4200
+      },
+      "xenonAllStat": {
+        "arcane": 48,
+        "sacred": 96
+      }
+    },
+    "status": {
+      "dailySymbols": "confirmed",
+      "weekly": "confirmed",
+      "mesosArcane": "sourced",
+      "mesosSacred": "sourced",
+      "resetDay": "confirmed",
+      "resetHour": "confirmed",
+      "classGains": "confirmed"
+    },
+    "sources": "Brian in game 2026-09-22; GMS v.271 and v.264 patch notes; maplestorywiki.net (GAME §7)",
+    "symbols": {}
+  },
+  "msea": {
+    "resetUtcOffsetHours": 8,
+    "weeklyResetDay": 4,
+    "weekly": {
+      "perClear": 80,
+      "clears": 3
+    },
+    "classGains": {
+      "demonAvengerHp": {
+        "arcane": 2100,
+        "sacred": 4200
+      },
+      "xenonAllStat": {
+        "arcane": 48,
+        "sacred": 96
+      }
+    },
+    "status": {
+      "dailySymbols": "sourced",
+      "weekly": "sourced",
+      "mesosArcane": "inferred",
+      "mesosSacred": "inferred",
+      "resetDay": "sourced",
+      "resetHour": "sourced",
+      "classGains": "inferred"
+    },
+    "sources": "maplesea v246, v251, v252; costs inferred from v225 and no cost change since (GAME §5)",
+    "symbols": {}
+  },
+  "kms": {
+    "resetUtcOffsetHours": 9,
+    "weeklyResetDay": 4,
+    "weekly": {
+      "perClear": 240,
+      "clears": 1
+    },
+    "classGains": {
+      "demonAvengerHp": {
+        "arcane": 2100,
+        "sacred": 4200
+      },
+      "xenonAllStat": {
+        "arcane": 66,
+        "sacred": 132
+      }
+    },
+    "status": {
+      "dailySymbols": "sourced",
+      "weekly": "sourced",
+      "mesosArcane": "sourced",
+      "mesosSacred": "sourced",
+      "resetDay": "sourced",
+      "resetHour": "inferred",
+      "classGains": "sourced"
+    },
+    "sources": "KMS updates 799 (rates), 806 (one weekly clear of 240), 812 (Xenon), 813 (arcane costs -30 %, docs/data-check/kms-mesos-arcane.csv)",
+    "symbols": {
+      "1": {
+        "mesosRequired": [
+          0, 670000, 860000, 1160000, 1580000, 2140000, 2820000, 3650000, 4620000, 5720000, 6990000,
+          8400000, 9980000, 11710000, 13610000, 15690000, 17940000, 20370000, 22980000, 25770000
+        ]
+      },
+      "2": {
+        "mesosRequired": [
+          0, 840000, 1070000, 1440000, 1960000, 2640000, 3480000, 4490000, 5670000, 7010000,
+          8540000, 10250000, 12150000, 14230000, 16510000, 18990000, 21670000, 24570000, 27670000,
+          30980000
+        ]
+      },
+      "3": {
+        "mesosRequired": [
+          0, 1010000, 1280000, 1720000, 2330000, 3150000, 4140000, 5330000, 6720000, 8300000,
+          10100000, 12100000, 14320000, 16750000, 19410000, 22300000, 25410000, 28770000, 32360000,
+          36190000
+        ]
+      },
+      "4": {
+        "mesosRequired": [
+          0, 1180000, 1490000, 2000000, 2710000, 3650000, 4800000, 6170000, 7770000, 9590000,
+          11650000, 13950000, 16490000, 19270000, 22300000, 25600000, 29150000, 32970000, 37050000,
+          41390000
+        ]
+      },
+      "5": {
+        "mesosRequired": [
+          0, 1350000, 1700000, 2280000, 3090000, 4150000, 5460000, 7010000, 8820000, 10870000,
+          13200000, 15790000, 18660000, 21790000, 25200000, 28910000, 32890000, 37170000, 41740000,
+          46600000
+        ]
+      },
+      "6": {
+        "mesosRequired": [
+          0, 1510000, 1910000, 2560000, 3470000, 4660000, 6110000, 7850000, 9870000, 12160000,
+          14760000, 17640000, 20830000, 24310000, 28100000, 32210000, 36630000, 41370000, 46430000,
+          51810000
+        ]
+      }
+    }
+  },
+  "jms": {
+    "resetUtcOffsetHours": 9,
+    "weeklyResetDay": 4,
+    "weekly": {
+      "perClear": 80,
+      "clears": 3
+    },
+    "classGains": {
+      "demonAvengerHp": {
+        "arcane": 2100,
+        "sacred": 4200
+      },
+      "xenonAllStat": {
+        "arcane": 48,
+        "sacred": 96
+      }
+    },
+    "status": {
+      "dailySymbols": "sourced",
+      "weekly": "sourced",
+      "mesosArcane": "unpublished",
+      "mesosSacred": "unpublished",
+      "resetDay": "sourced",
+      "resetHour": "inferred",
+      "classGains": "inferred"
+    },
+    "sources": "JMS ver4.38 (Thursday), ver4.43 (rates); no trustworthy current cost table",
+    "symbols": {}
+  },
+  "tms": {
+    "resetUtcOffsetHours": 8,
+    "weeklyResetDay": 4,
+    "weekly": {
+      "perClear": 80,
+      "clears": 3
+    },
+    "classGains": {
+      "demonAvengerHp": {
+        "arcane": 2100,
+        "sacred": 4200
+      },
+      "xenonAllStat": {
+        "arcane": 48,
+        "sacred": 96
+      }
+    },
+    "status": {
+      "dailySymbols": "sourced",
+      "weekly": "sourced",
+      "mesosArcane": "sourced",
+      "mesosSacred": "sourced",
+      "resetDay": "sourced",
+      "resetHour": "inferred",
+      "classGains": "inferred"
+    },
+    "sources": "beanfun V280 (rates) and 14773 (Thursday); gamer.com.tw v282 table and the WhatTheBlock calculator (costs)",
+    "symbols": {}
+  },
+  "cms": {
+    "resetUtcOffsetHours": 8,
+    "weeklyResetDay": 4,
+    "weekly": {
+      "perClear": 80,
+      "clears": 3
+    },
+    "classGains": {
+      "demonAvengerHp": {
+        "arcane": 2100,
+        "sacred": 4200
+      },
+      "xenonAllStat": {
+        "arcane": 48,
+        "sacred": 96
+      }
+    },
+    "status": {
+      "dailySymbols": "sourced",
+      "weekly": "sourced",
+      "mesosArcane": "unpublished",
+      "mesosSacred": "unpublished",
+      "resetDay": "sourced",
+      "resetHour": "inferred",
+      "classGains": "inferred"
+    },
+    "sources": "CMS V222 (Thursday), V226 (rates); no current cost table",
+    "symbols": {}
+  }
+}

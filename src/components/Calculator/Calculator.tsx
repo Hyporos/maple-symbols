@@ -18,14 +18,16 @@ import { getOverflow } from "../../lib/calculator";
 import { expCapFor, experienceInputValue, levelInputPatch } from "../../lib/inputs";
 import { track, trackOnce } from "../../lib/analytics";
 import { MAIN_STAT_PER_LEVEL, maxLevelFor, WEEKLY_SYMBOLS } from "../../lib/game";
+import { DEFAULT_REGION, REGION_PROFILES } from "../../lib/regions";
 import { formatNumber } from "../../lib/format";
 import { useLocale, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 
-// Class-specific stat gains per symbol level, shown in the main stat tooltip.
-const DEMON_AVENGER_HP = { arcane: 2100, sacred: 4200 } as const;
-const XENON_ALL_STAT = { arcane: 48, sacred: 96 } as const;
+// Class-specific stat gains per symbol level, shown in the main stat tooltip; they differ
+// by server (KMS raised Xenon's in 1.2.419), so they live in regions.json.
+const { demonAvengerHp: DEMON_AVENGER_HP, xenonAllStat: XENON_ALL_STAT } =
+  REGION_PROFILES[DEFAULT_REGION].classGains;
 
 const Calculator = () => {
   /* ――――――――――――――――――――― Declarations ――――――――――――――――――― */

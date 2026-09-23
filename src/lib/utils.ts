@@ -4,10 +4,16 @@
 
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import { dayjs } from "./dayjs";
 import type { Dayjs } from "dayjs";
 import type { SymbolData, SymbolType } from "./types";
-import { EXTRA_MULTIPLIER, maxLevelFor, WEEKLY_SYMBOLS } from "./game";
+import { EXTRA_MULTIPLIER, maxLevelFor } from "./game";
+import {
+  DEFAULT_REGION,
+  gameToday,
+  REGION_PROFILES,
+  weeklySymbolsFor,
+  type Region,
+} from "./regions";
 
 // ---------------------------------------------------------------------------
 // Tailwind class merging helper
@@ -97,11 +103,6 @@ export interface DayCountState {
 /** Fresh starting state for a walk that begins today. */
 export const INITIAL_DAY_COUNT: DayCountState = { days: 0, credited: 0 };
 
-/** dayjs weekday index of the weekly quest reset (0 is Sunday), Thursday in GMS.
- *  Confirmed in game by Brian on 2026-09-22; GMS moved it from Monday in v.264.
- *  Every region has made the same move (GAME §3), each at 00:00 in its own time zone. */
-const WEEKLY_RESET_DAY = 4;
-
 /**
  * Advances an existing DayCountState until `credited` reaches `symbolsNeeded`, which is
  * an absolute cumulative target rather than a delta. Graph relies on that: it passes the
@@ -109,7 +110,11 @@ const WEEKLY_RESET_DAY = 4;
  *
  * The walk starts tomorrow, because the Calculator's tooltip promises the estimate assumes
  * today's quests are already done. Each counted day pays the daily rate, and a counted
- * Thursday also pays the weekly reset.
+ * weekly reset day (Thursday on every server) also pays the server's weekly.
+ *
+ * `now` is a day on the server's reset clock, `gameToday(region)`, not the visitor's
+ * calendar (KI-013, resolved): counting local days put the reset a day off for players
+ * far from the server's time zone.
  *
  * KI-003 was the previous version: it located "next Monday" with `dayjs().day(8)`, which is
  * Monday of the *following* week in dayjs's Sunday-start weeks, and credited the reset one
@@ -123,19 +128,22 @@ export function advanceDayCount(
   symbolsNeeded: number,
   dailySymbols: number,
   hasWeekly: boolean,
-  now: Dayjs = dayjs()
+  now: Dayjs = gameToday(),
+  region: Region = DEFAULT_REGION
 ): DayCountState {
   if (isNaN(symbolsNeeded)) return { ...state, days: NaN };
   if (symbolsNeeded <= 0) return state;
   if (dailySymbols === 0 && !hasWeekly) return { ...state, days: Infinity };
 
+  const resetDay = REGION_PROFILES[region].weeklyResetDay;
+  const weekly = weeklySymbolsFor(region);
   let { days, credited } = state;
 
   // Safety cap: 1000 iterations covers ~2.7 years of daily progress.
   for (let i = 0; i < 1000 && credited < symbolsNeeded; i++) {
     days++;
     credited += dailySymbols;
-    if (hasWeekly && now.add(days, "day").day() === WEEKLY_RESET_DAY) credited += WEEKLY_SYMBOLS;
+    if (hasWeekly && now.add(days, "day").day() === resetDay) credited += weekly;
   }
 
   return { days, credited };
@@ -143,10 +151,11 @@ export function advanceDayCount(
 
 /**
  * Calculates the number of days required to accumulate `symbolsNeeded`
- * symbols, given a daily rate and an optional weekly reset (`WEEKLY_SYMBOLS`).
+ * symbols, given a daily rate and an optional weekly reset (the server's weekly).
  *
  * The function accounts for the fact that the first upcoming Thursday resets
- * weekly quests before settling into the regular 7-day cadence.
+ * weekly quests before settling into the regular 7-day cadence. `now` is the
+ * server's game day (`gameToday(region)`), as in `advanceDayCount`.
  *
  * Returns 0 when no symbols are needed, and Infinity when no daily progress
  * is possible (dailySymbols === 0 and no weekly enabled).
@@ -155,7 +164,9 @@ export function calculateDaysRemaining(
   symbolsNeeded: number,
   dailySymbols: number,
   hasWeekly: boolean,
-  now: Dayjs = dayjs()
+  now: Dayjs = gameToday(),
+  region: Region = DEFAULT_REGION
 ): number {
-  return advanceDayCount(INITIAL_DAY_COUNT, symbolsNeeded, dailySymbols, hasWeekly, now).days;
+  return advanceDayCount(INITIAL_DAY_COUNT, symbolsNeeded, dailySymbols, hasWeekly, now, region)
+    .days;
 }

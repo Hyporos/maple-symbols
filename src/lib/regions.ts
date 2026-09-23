@@ -1,0 +1,84 @@
+// ---------------------------------------------------------------------------
+// regions.ts — The six MapleStory servers the site will serve (docs/REGIONS.md).
+//
+// Every server shares the GMS base in symbols.json; regions.json holds what
+// differs per server (reset clock, weekly structure, class stat gains, per-symbol
+// overrides) and how far each kind of number can be trusted. GAME §5 and
+// docs/data-check/ are the evidence; update them and regions.json together.
+// ---------------------------------------------------------------------------
+
+import type { Dayjs } from "dayjs";
+import { dayjs } from "./dayjs";
+import regionsJson from "./regions.json";
+import type { SymbolType } from "./types";
+
+/** The servers, GMS first. Their order is the order a server picker lists them in. */
+export const REGIONS = ["gms", "msea", "kms", "jms", "tms", "cms"] as const;
+export type Region = (typeof REGIONS)[number];
+
+/** The server every page uses until the site has per-server editions (REGIONS §8). */
+export const DEFAULT_REGION: Region = "gms";
+
+/**
+ * How far a kind of number can be trusted on a server (REGIONS D-6):
+ * confirmed in game, sourced from a dated source, inferred without one, or
+ * unpublished (nobody has published it; the site hides it).
+ */
+export type DataStatus = "confirmed" | "sourced" | "inferred" | "unpublished";
+
+/** The kinds of number whose trust differs by server. */
+export type DataKind =
+  | "dailySymbols"
+  | "weekly"
+  | "mesosArcane"
+  | "mesosSacred"
+  | "resetDay"
+  | "resetHour"
+  | "classGains";
+
+/** Fields a server may override on a symbol, keyed by symbol id in `symbols`. */
+export interface SymbolOverride {
+  dailySymbols?: number;
+  mesosRequired?: number[];
+}
+
+export interface RegionProfile {
+  /** The server's reset time zone as a whole-hour UTC offset; no server observes DST. */
+  resetUtcOffsetHours: number;
+  /** dayjs weekday index of the weekly reset (0 is Sunday). Thursday on every server. */
+  weeklyResetDay: number;
+  /** The weekly as the game pays it; the calculator credits the total in one go (GAME §2). */
+  weekly: { perClear: number; clears: number };
+  /** Per-level gains shown in the next-level tooltip for the two classes without main stat. */
+  classGains: {
+    demonAvengerHp: Record<SymbolType, number>;
+    xenonAllStat: Record<SymbolType, number>;
+  };
+  status: Record<DataKind, DataStatus>;
+  /** Where the numbers come from, in one line; the detail is in GAME §7. */
+  sources: string;
+  symbols: Partial<Record<string, SymbolOverride>>;
+}
+
+export const REGION_PROFILES: Readonly<Record<Region, RegionProfile>> = regionsJson as Record<
+  Region,
+  RegionProfile
+>;
+
+/** Symbols one week of weekly content pays on a server (240 everywhere today). */
+export const weeklySymbolsFor = (region: Region): number => {
+  const { perClear, clears } = REGION_PROFILES[region].weekly;
+  return perClear * clears;
+};
+
+/**
+ * Today's date on the server's reset clock, as a local-midnight dayjs, so day
+ * arithmetic, `.day()` and `format("YYYY-MM-DD")` all read in game days. The game
+ * day turns over at 00:00 in the server's zone (00:00 UTC for GMS), wherever the
+ * visitor is: this is what fixed KI-013, where a player far from UTC counted from
+ * their own calendar and could be a day off.
+ */
+export function gameToday(region: Region = DEFAULT_REGION, now: Dayjs = dayjs()): Dayjs {
+  const shifted = new Date(now.valueOf() + REGION_PROFILES[region].resetUtcOffsetHours * 3_600_000);
+  return dayjs(new Date(shifted.getUTCFullYear(), shifted.getUTCMonth(), shifted.getUTCDate()));
+}

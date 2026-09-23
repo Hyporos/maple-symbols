@@ -21,14 +21,13 @@ import { readFileSync } from "node:fs";
 const symbols = JSON.parse(readFileSync(new URL("../src/lib/symbols.json", import.meta.url)));
 const gameTs = readFileSync(new URL("../src/lib/game.ts", import.meta.url), "utf8");
 
-/** Our `WEEKLY_SYMBOLS`, read from the source so the two cannot drift apart. */
-const WEEKLY_SYMBOLS = Number(gameTs.match(/WEEKLY_SYMBOLS = (\d+)/)?.[1]);
-/** Our arcane extra-quest multiplier, likewise. */
+/** The per-server profiles; this check covers GMS, the default server (REGIONS §7 plans the rest). */
+const GMS = JSON.parse(readFileSync(new URL("../src/lib/regions.json", import.meta.url))).gms;
+
+/** Our weekly as the game pays it: per clear × clears (80 × 3 in GMS). */
+const WEEKLY = GMS.weekly;
+/** Our arcane extra-quest multiplier, read from the source so the two cannot drift apart. */
 const EXTRA_ARCANE = Number(gameTs.match(/EXTRA_MULTIPLIER[^=]*= \{ arcane: ([\d.]+)/)?.[1]);
-const calculatorTsx = readFileSync(
-  new URL("../src/components/Calculator/Calculator.tsx", import.meta.url),
-  "utf8"
-);
 /** An `{ arcane: N, sacred: M }` constant from our source. */
 const pair = (source, name) => {
   const m = source.match(new RegExp(`${name}[^=]*= \\{ arcane: (\\d+), sacred: (\\d+) \\}`));
@@ -39,8 +38,8 @@ const POWER = Number(gameTs.match(/POWER_PER_LEVEL = (\d+)/)?.[1]);
 const OUR_STATS = {
   Power: { arcane: POWER, sacred: POWER },
   "Main stat": pair(gameTs, "MAIN_STAT_PER_LEVEL"),
-  "Demon Avenger HP": pair(calculatorTsx, "DEMON_AVENGER_HP"),
-  "Xenon STR, DEX and LUK": pair(calculatorTsx, "XENON_ALL_STAT"),
+  "Demon Avenger HP": GMS.classGains.demonAvengerHp,
+  "Xenon STR, DEX and LUK": GMS.classGains.xenonAllStat,
 };
 
 /**
@@ -211,10 +210,12 @@ async function checkSymbols() {
       if (found.perClear === null) {
         unreadable.push(`${symbol.name}: no "per clear" line on ${page}`);
       } else {
-        const weekly = found.perClear * (found.clears ?? 1);
-        if (weekly !== WEEKLY_SYMBOLS) {
+        // Compared as the game pays it: a move to KMS's one clear of 240 keeps the total but
+        // changes the copy, so it counts as a change too.
+        const clears = found.clears ?? 1;
+        if (found.perClear !== WEEKLY.perClear || clears !== WEEKLY.clears) {
           problems.push(
-            `${symbol.name}: weekly is ${found.perClear} × ${found.clears ?? 1} = ${weekly} on the wiki, WEEKLY_SYMBOLS is ${WEEKLY_SYMBOLS}`
+            `${symbol.name}: weekly is ${found.perClear} × ${clears} on the wiki, ${WEEKLY.perClear} × ${WEEKLY.clears} in regions.json (gms)`
           );
         }
       }

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../Tooltip";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { dayjs } from "../../lib/dayjs";
+import { gameToday } from "../../lib/regions";
 import { calculateDaysRemaining, cn, getDailySymbols } from "../../lib/utils";
 import { collapsedRowLabels, targetPanelLabels } from "../../lib/overview";
 import { clampNumberInput } from "../../lib/inputs";
@@ -48,7 +48,7 @@ const Overview = () => {
     }
   }, [targetSymbols, dailySymbols, currentSymbol.weekly]);
 
-  const targetDate = dayjs().add(targetDays, "day").format("YYYY-MM-DD");
+  const targetDate = gameToday().add(targetDays, "day").format("YYYY-MM-DD");
   const maxLevel = maxLevelFor(mode);
 
   // Row strings (collapsed line and target panel) are pure functions of state; see lib/overview.

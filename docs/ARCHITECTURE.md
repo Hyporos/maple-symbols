@@ -62,7 +62,7 @@ Persistence details:
 
 ## 4. Data
 
-`src/lib/symbols.json` holds `arcaneExpRequired` (20 entries), `sacredExpRequired` (11), and `symbols` (12 definitions: `id`, `name`, `img`, `type`, `dailyName`, `weeklyName?`, `extraName?`, `dailySymbols`, `mesosRequired`). `createInitialSymbols()` in `src/lib/data.ts` maps each definition to a `SymbolData` (`src/lib/types.ts`): it attaches the per-type exp table as `symbolsRequired` (the same array reference for all six symbols of a type until rehydration copies it), creates `weekly: false` only when `weeklyName` exists and `extra: false` only when `extraName` exists, and sets the user fields to NaN/false/locked.
+`src/lib/symbols.json` holds `arcaneExpRequired` (20 entries), `sacredExpRequired` (11), and `symbols` (12 definitions: `id`, `name`, `img`, `type`, `dailyName`, `weeklyName?`, `extraName?`, `dailySymbols`, `mesosRequired`). `createInitialSymbols()` in `src/lib/data.ts` maps each definition to a `SymbolData` (`src/lib/types.ts`): it attaches the per-type exp table as `symbolsRequired` (the same array reference for all six symbols of a type until rehydration copies it), creates `weekly: false` only when `weeklyName` exists and `extra: false` only when `extraName` exists, and sets the user fields to NaN/false/locked. `createInitialSymbols(region)` (default `"gms"`) first spreads that server's overrides from `src/lib/regions.json` over each definition, by id (today: KMS's arcane `mesosRequired`). `src/lib/regions.ts` types the file as `REGION_PROFILES` (reset offset, weekly structure, class gains, a trust status per kind of number) and provides `gameToday(region)`, the server's game day that every day count and date label uses (KI-013). The design is `docs/REGIONS.md`.
 
 Field origins:
 

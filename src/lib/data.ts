@@ -4,6 +4,7 @@
 // ---------------------------------------------------------------------------
 
 import symbolsJson from "./symbols.json";
+import { DEFAULT_REGION, REGION_PROFILES, type Region } from "./regions";
 import type { SymbolData, SymbolType } from "./types";
 
 /** Shape of a symbol definition as stored in symbols.json (immutable fields only). */
@@ -24,15 +25,18 @@ interface SymbolDefinition {
 // ---------------------------------------------------------------------------
 
 /**
- * Returns the default SymbolData array used to initialise application state.
- * Static game data (experience tables, meso costs, symbol metadata) is read
- * from symbols.json — game patches only require editing that one JSON file.
+ * Returns the default SymbolData array used to initialise application state, for one
+ * server. Static game data (experience tables, meso costs, symbol metadata) is read from
+ * symbols.json, the GMS base; regions.json overrides what differs on `region` (for
+ * example KMS's arcane meso costs), by symbol id. A GMS patch only edits symbols.json.
  */
-export function createInitialSymbols(): SymbolData[] {
+export function createInitialSymbols(region: Region = DEFAULT_REGION): SymbolData[] {
   const { arcaneExpRequired, sacredExpRequired, symbols } = symbolsJson;
+  const overrides = REGION_PROFILES[region].symbols;
 
   return (symbols as SymbolDefinition[]).map((def) => ({
     ...def,
+    ...overrides[String(def.id)],
     symbolsRequired: def.type === "arcane" ? arcaneExpRequired : sacredExpRequired,
     level: NaN,
     experience: NaN,

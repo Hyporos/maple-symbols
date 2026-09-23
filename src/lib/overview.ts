@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------
 
 import type { Dayjs } from "dayjs";
-import { dayjs } from "./dayjs";
+import { gameToday } from "./regions";
 import { progressToMax } from "./calculator";
 import { interpolate, pluralMessage } from "../i18n/interpolate";
 import type { Messages } from "../i18n";
@@ -34,7 +34,7 @@ export function collapsedRowLabels(
   symbol: SymbolData,
   maxLevel: number,
   m: OverviewMessages,
-  now: Dayjs = dayjs()
+  now: Dayjs = gameToday()
 ): CollapsedRowLabels {
   const { symbolsRemaining, daysRemaining, completion: date } = progressToMax(symbol, now);
   const atMax = symbol.level === maxLevel;

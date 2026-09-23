@@ -26,7 +26,7 @@ The plan of record for serving every MapleStory server (GMS, MSEA, KMS, JMS, TMS
   - D-18 **Grand Sacred gets its own `grand` type in the data**; where it sits in the interface is settled with the 2.0 visual design.
   - D-19 **MSEA uses its own client's terms** (Authentic Symbol, Authentic Force, Road to Extinction, Chew Chew Island, Lacheln, Moras, Hotel Arcs, Talahart, Geardrock).
   - D-20 **Verification by meta tags** in the prebuilt head (Naver, Daum, Baidu) **and DNS** (Google, Bing), each recorded in SEO §5.
-- Nothing in §3–§8 is built yet.
+- **Built on `v2`** (2026-09-22): phase 1 of §8. `src/lib/regions.json` holds every server's profile (reset offset, weekly structure, class gains, a status per kind of number, KMS's arcane costs) and `src/lib/regions.ts` reads it (`REGION_PROFILES`, `gameToday`, `weeklySymbolsFor`); `createInitialSymbols(region)` applies the overrides; every day count and date runs on the GMS game clock (KI-013 resolved); the watcher reads the GMS profile. No UI yet: the site still shows GMS only. Grand Sacred stays out of the data until the 2.0 design places it (D-18). The rest of §3–§8 is not built.
 
 ## 1. What this overturns
 
@@ -63,7 +63,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 - Never generate unpublished tables. The KMS arcane table is the exception: it is derived from a rule confirmed three ways (`docs/data-check/kms-mesos-arcane.csv`).
 - Grand Sacred: `SymbolType` gains "grand"; Sacred EXP table; max 11; power +10; no main stat (a bonus line instead); no Catalyst; the Sacred Symbol Selector covers Tallahart (Brian, in game, 2026-09-22) but not Geardock.
 - Persistence: STORAGE_VERSION 4, `{ saves: { [region]: SavedSymbol[] }, regionOverride? }`; existing saves migrate to gms; `setRegion`; `skipHydration` plus rehydrate on mount for SSR.
-- Reset clock (fixes KI-013): `gameNow(region)` = UTC + fixed offset. Days count game days, the weekly lands on the game Thursday, completion dates are game dates, with a local-time hint. The `dayjs()` calls in Overview, Graph, calculator.ts, overview.ts and graph.ts take the game clock. Test instants on both sides of each offset.
+- Reset clock (fixes KI-013): `gameToday(region)` = UTC + fixed offset. Days count game days, the weekly lands on the game Thursday, completion dates are game dates, with a local-time hint. The `dayjs()` calls in Overview, Graph, calculator.ts, overview.ts and graph.ts take the game clock. Test instants on both sides of each offset.
 
 ## 4. SEO per region
 
@@ -154,7 +154,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 ## 8. Phases
 
 0. Record the decisions (this doc, 2026-09-22) and rewrite the docs listed in §1.
-1. Region data layer in `src/lib`, plus the game clock (fixes KI-013 for GMS alone) and constants moved into data (watcher updated).
+1. ~~Region data layer in `src/lib`, plus the game clock (fixes KI-013 for GMS alone) and constants moved into data (watcher updated).~~ Done 2026-09-22.
 2. State and persistence (v4, per-region saves).
 3. Editions in routing, head-only static HTML per URL, sitemap index, `vercel.json` fallbacks verified on a preview.
 4. Full SSG body plus explanatory copy.

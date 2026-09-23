@@ -14,6 +14,7 @@ import {
   isValid,
 } from "./utils";
 import { MAX_LEVEL, POWER_PER_LEVEL } from "./game";
+import { gameToday } from "./regions";
 
 export type DateSymbols = {
   name: string;
@@ -43,7 +44,7 @@ export interface GraphSeries {
 export function buildDateSymbols(
   symbols: SymbolData[],
   type: SymbolType,
-  now: Dayjs = dayjs()
+  now: Dayjs = gameToday()
 ): DateSymbols[] {
   const maxLevel = MAX_LEVEL[type];
   return symbols
@@ -78,7 +79,7 @@ export function buildGraphSeries(
   dateSymbols: DateSymbols[],
   currentPower: number,
   graphDynamic: boolean,
-  now: Dayjs = dayjs()
+  now: Dayjs = gameToday()
 ): GraphSeries {
   let power = currentPower;
   const maxPowerByDate: Record<string, number> = {};
@@ -177,7 +178,7 @@ export function dateToPower(
   currentPower: number,
   graphSymbols: GraphSymbols[],
   graphDynamic: boolean,
-  now: Dayjs = dayjs()
+  now: Dayjs = gameToday()
 ): string {
   const rounded = Math.ceil(targetPower / 10) * 10;
   if (rounded <= currentPower) return "";

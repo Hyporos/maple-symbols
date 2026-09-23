@@ -25,7 +25,7 @@ import {
 import { clampNumberInput } from "../../lib/inputs";
 import { MAX_POWER_PER_SYMBOL } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
-import { dayjs } from "../../lib/dayjs";
+import { gameToday } from "../../lib/regions";
 import RadioButton from "../ui/RadioButton";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
@@ -73,7 +73,7 @@ const CustomTooltip = ({
     >
       <p className={isMobile ? "text-sm" : ""}>{`${
         graphDynamic
-          ? dayjs()
+          ? gameToday()
               .add(label as number, "day")
               .format("YYYY-MM-DD")
           : label
@@ -95,7 +95,7 @@ const CustomTooltip = ({
 
             const occurrences = symbolEntries.length - 1;
 
-            const isSecondEntry = label === (graphDynamic ? 0 : dayjs().format("YYYY-MM-DD"));
+            const isSecondEntry = label === (graphDynamic ? 0 : gameToday().format("YYYY-MM-DD"));
 
             const upgradeReady = symbol.experience >= symbol.symbolsRequired[symbol.level];
 
@@ -222,7 +222,7 @@ const Graph = () => {
 
   // Format the X axis (change from days to date)
   const formatXAxis = (tick: number) => {
-    return dayjs().add(tick, "day").format("YYYY-MM-DD");
+    return gameToday().add(tick, "day").format("YYYY-MM-DD");
   };
 
   /* ―――――――――――――――――――― Render Logic ――――――――――――――――――― */
