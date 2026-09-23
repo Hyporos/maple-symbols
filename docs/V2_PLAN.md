@@ -8,7 +8,9 @@ Working notes for the rewrite. Decisions here were made by Brian on 2026-09-16; 
 - **Branch**: a long-lived `v2` branch off `development`, created once the dependency upgrades are in; `development`/`main` stay releasable for 1.x fixes. Merge when 2.0 is ready.
 - **Known issues** (`docs/KNOWN_ISSUES.md`): folded into 2.0. Current behaviour is pinned by tests marked with the `KI-` id; each fix is a deliberate test change plus a move to **Resolved**.
 - **Preparations chosen**: characterization tests (done), extract logic seams into `src/lib` (done), dependency upgrades first and separately (done 2026-09-16 on `development`: tooling minors, React 19, Tailwind 4 with before/after screenshots identical; then Vite 8, Node 26.8.2, jsdom 30 and an `engines` field). Not chosen: a persistence migration up front (part of the 2.0 data-model work), tagging 1.4.0 first, `noUncheckedIndexedAccess` (apply on the v2 code as it is written).
-- **Grand Sacred symbols** (Tallahart, Geardrak): in 2.0 (Brian, 2026-09-16), in calculator, handbook and copy in the same release (SEO-11, SEO A-2). How they fit the data model is still open; what must be sourced first is listed in GAME §4.
+- **Grand Sacred symbols** (Tallahart, Geardock): in 2.0 (Brian, 2026-09-16), in calculator, handbook and copy in the same release (SEO-11, SEO A-2). How they fit the data model is still open; what must be sourced first is listed in GAME §4.
+- **Game data** (Brian, 2026-09-22): the corrected v.271 rates and the Thursday weekly ship **with 2.0**, not as a 1.x patch, so the live site keeps the old rates until then. The weekly stays **one credit of 240 at the weekly reset** rather than three separate clears. Symbol 8 is called **Arcus** (was Hotel Arcus; its daily quest keeps the Hotel Arcus name). All three are user-visible and need 2.0 changelog lines.
+- **Damage ratio tables** (Brian, 2026-09-22): follow the official Korean and Japanese guide pages.
 
 ## Progress on `v2`
 

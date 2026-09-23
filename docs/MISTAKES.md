@@ -105,3 +105,10 @@ Format: `### M-NNN · YYYY-MM-DD · area` then **What**, **Root cause**, **Rule*
 - **Root cause**: Took a date-sensitive fact from research agents without checking how old their sources were. The Monday values came from a 2023 MSEA patch note and game-guide pages written before the change, and I repeated them as current. GMS usually follows KMS, so a GMS change was itself a hint that KMS had changed first.
 - **Rule**: A game fact that can change by patch gets a source dated after the most recent relevant patch, or is recorded as unverified. When GMS changes something, check KMS first: it almost always got there earlier.
 - **Where**: `src/lib/utils.ts` (`WEEKLY_RESET_DAY`), GAME §3 and §7, `docs/data-check/resets.csv`.
+
+### M-013 · 2026-09-22 · research
+
+- **What**: `docs/data-check/grand-sacred.csv` and GAME §4 gave Geardock's cost to max as 24,181,300,000. The per-level values on the same line add up to 20,181,300,000, which is what Brian saw in game. The provenance row even claimed the figures were "re-derived … and agree".
+- **Root cause**: A total was written down (by a research agent, repeated by me) without adding up the numbers beside it, and then described as checked.
+- **Rule**: Recompute any total, sum or derived figure from its parts before writing it down; never record "verified" for a number nobody recomputed.
+- **Where**: `docs/data-check/grand-sacred.csv`, GAME §4.

@@ -1,10 +1,11 @@
 arcane_power_vs_requirement,damage_dealt_%,damage_taken_%,correct? (y / the right value),notes
-0% - 9%,10,280,,"Outer bounds corroborated 2026-09-22: community sources agree damage dealt runs 10% to 150% and damage taken 280% down to 0 (1 damage) at 150% of the requirement. The bands in between still need checking in game."
-10% - 29%,30,240,
-30% - 49%,60,180,
-50% - 69%,70,160,
-70% - 99%,80,140,
-100% - 109%,100,100,
-110% - 129%,110,80,
-130% - 149%,130,40,
-150% +,150,0,
+0% - 9%,10,280,y (official KMS and JMS guides, 2026-09-22),"Every band matches both official pages. 0 % damage taken means 1 damage (community sources; the official pages give no footnote)."
+10% - 29%,30,240,y (official KMS and JMS guides, 2026-09-22),
+30% - 49%,60,180,y (official KMS and JMS guides, 2026-09-22),
+50% - 69%,70,160,y (official KMS and JMS guides, 2026-09-22),
+70% - 99%,80,140,y (official KMS and JMS guides, 2026-09-22),
+100% - 109%,100,100,y (official KMS and JMS guides, 2026-09-22),
+110% - 129%,110,80,y (official KMS and JMS guides, 2026-09-22),
+130% - 149%,130,40,y (official KMS and JMS guides, 2026-09-22),
+150% +,150,0,y (official KMS and JMS guides, 2026-09-22),
+sources,,,,"https://maplestory.nexon.com/Guide/N23GameInformation/Articles/396 ; https://maplestory.nexon.co.jp/gameguide/growth/force/"

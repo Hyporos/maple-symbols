@@ -82,13 +82,13 @@ describe("RatioTable", () => {
     expect(cells(rows[8])).toEqual(["150% +", "150%", "0%"]);
   });
 
-  it("sacred: sixteen difference bands from < -100 to 50+", () => {
+  it("sacred: sixteen difference bands from ≤ -95 to 50+", () => {
     useAppStore.setState({ mode: "sacred" });
     render(<RatioTable />);
     expect(screen.getByText("Grandis")).toBeInTheDocument();
     const rows = dataRows();
     expect(rows).toHaveLength(16);
-    expect(cells(rows[0])).toEqual(["< -100", "5%", "200%"]);
+    expect(cells(rows[0])).toEqual(["≤ -95", "5%", "200%"]);
     expect(cells(rows[10])).toEqual(["0", "100%", "100%"]);
     expect(cells(rows[15])).toEqual(["50 +", "125%", "100%"]);
   });

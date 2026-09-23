@@ -6,7 +6,7 @@ id,gms_name,zh_Hant_name,confidence,source
 5,Morass,祕法符文：魔菈斯,client string,mxd.dvg.cn item database
 6,Esfera,祕法符文：艾斯佩拉,client string,mxd.dvg.cn item database
 7,Cernium,真實符文：賽爾尼溫,client string,mxd.dvg.cn item database
-8,Hotel Arcus,真實符文：阿爾克斯,client string (region 飯店阿爾克斯),mxd.dvg.cn item database
+8,Arcus,真實符文：阿爾克斯,client string (region 飯店阿爾克斯),mxd.dvg.cn item database
 9,Odium,真實符文：奧迪溫,client string,mxd.dvg.cn item database
 10,Shangri-La,真實符文：桃源境,client string,mxd.dvg.cn item database
 11,Arteria,真實符文：阿爾特利亞,client string,mxd.dvg.cn item database

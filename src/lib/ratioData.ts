@@ -15,7 +15,7 @@ export const arcaneRatioData = [
 ];
 
 export const sacredRatioData = [
-  { sacredPower: "< -100", damageDealt: 5, damageTaken: 200 },
+  { sacredPower: "≤ -95", damageDealt: 5, damageTaken: 200 },
   { sacredPower: -90, damageDealt: 10, damageTaken: 200 },
   { sacredPower: -80, damageDealt: 20, damageTaken: 200 },
   { sacredPower: -70, damageDealt: 30, damageTaken: 200 },

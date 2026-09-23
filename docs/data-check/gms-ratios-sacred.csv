@@ -1,17 +1,18 @@
-sacred_power_difference,damage_dealt_%,damage_taken_%,correct? (y / the right value)
-< -100,5,200,
--90,10,200,
--80,20,200,
--70,30,200,
--60,40,200,
--50,50,150,
--40,60,150,
--30,70,150,
--20,80,150,
--10,90,150,
-0,100,100,
-10,105,100,
-20,110,100,
-30,115,100,
-40,120,100,
-50 +,125,100,
+sacred_power_difference,damage_dealt_%,damage_taken_%,correct? (y / the right value),notes
+≤ -95,5,200,y (official KMS and JMS guides, 2026-09-22),"Was labelled < -100; both official pages say -95 and below (-95 이하 / -95以下). KMS adds: dealt rises by (gap / 2) % above 0, up to +25 %, so the positive rows are points on a line, not bands."
+-90,10,200,y (official KMS and JMS guides, 2026-09-22)
+-80,20,200,y (official KMS and JMS guides, 2026-09-22)
+-70,30,200,y (official KMS and JMS guides, 2026-09-22)
+-60,40,200,y (official KMS and JMS guides, 2026-09-22)
+-50,50,150,y (official KMS and JMS guides, 2026-09-22)
+-40,60,150,y (official KMS and JMS guides, 2026-09-22)
+-30,70,150,y (official KMS and JMS guides, 2026-09-22)
+-20,80,150,y (official KMS and JMS guides, 2026-09-22)
+-10,90,150,y (official KMS and JMS guides, 2026-09-22)
+0,100,100,y (official KMS and JMS guides, 2026-09-22)
+10,105,100,y (official KMS and JMS guides, 2026-09-22)
+20,110,100,y (official KMS and JMS guides, 2026-09-22)
+30,115,100,y (official KMS and JMS guides, 2026-09-22)
+40,120,100,y (official KMS and JMS guides, 2026-09-22)
+50 +,125,100,y (official KMS and JMS guides, 2026-09-22)
+sources,,,,"https://maplestory.nexon.com/Guide/N23GameInformation/Articles/396 ; https://maplestory.nexon.co.jp/gameguide/growth/force/"

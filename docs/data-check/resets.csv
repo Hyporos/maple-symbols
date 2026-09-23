@@ -1,5 +1,5 @@
 server,daily quest reset (UTC),weekly quest reset (day + UTC time),source,confirmed? (y / the right value),notes
-GMS,00:00,Thursday 00:00 UTC,Brian, confirmed in game 2026-09-22 (GMS v.264 moved it off Monday),y,"Applied: WEEKLY_RESET_DAY in src/lib/utils.ts. The daily reset hour is still only inferred from patch-note language about daily counters."
+GMS,00:00,Thursday 00:00 UTC,Brian, confirmed in game 2026-09-22 (GMS v.264 moved it off Monday),y,"Applied: WEEKLY_RESET_DAY in src/lib/utils.ts. Daily reset hour confirmed by Brian on 2026-09-22: 8 pm EDT, which is 00:00 UTC (7 pm while North America is on standard time)."
 KMS,00:00 KST (15:00 UTC previous day),Thursday 00:00 KST (Wednesday 15:00 UTC),"Assemble update, 2025-06-19: weekly content reset unified on Thursday, including the Arcane weeklies (orangemushroom.net/2025/06/07)",,"Was Monday until the change"
 JMS,00:00 JST (15:00 UTC previous day),Thursday 00:00 JST (Wednesday 15:00 UTC),"ver4.38 ASSEMBLE notice, first Thursday reset 2025-12-11; lists all six Arcane River weeklies (maplestory.nexon.co.jp)",,"Was Monday until the change"
 TMS,unconfirmed (server runs UTC+8),Thursday (time unconfirmed),"beanfun 系統改善 notice, eventAdId=14773: weekly content moved from Monday to Thursday, lists all six Arcane River weeklies",,"Notice is undated"

@@ -46,12 +46,12 @@ Pageviews, referrers, entry pages, countries, devices and Core Web Vitals come f
 
 The one funnel that matters: land, enter a level, toggle a quest, see an answer. A big gap between the first and second step is a first-run UX problem, not a traffic problem.
 
-| Event           | Data                                                            | The decision it informs                                                                                             |
-| --------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `symbol_input`  | `field`: `level` \| `experience`; `mode`                        | Fires once per session per field. The activation rate. If most visitors never type, the empty state is the problem. |
-| `quest_toggle`  | `quest`: `daily` \| `weekly` \| `extra`; `state`: `on` \| `off` | Whether the extra-quest multiplier is understood and used, or whether it needs explaining.                          |
-| `mode_switch`   | `to`: `arcane` \| `sacred`                                      | The arcane/sacred split, which decides whose bugs and content get priority.                                         |
-| `symbol_select` | `symbol` (name), `mode`                                         | Which regions people are actually grinding. Drives which symbol gets attention when game data changes.              |
+| Event           | Data                                                            | The decision it informs                                                                                                                                                                                             |
+| --------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `symbol_input`  | `field`: `level` \| `experience`; `mode`                        | Fires once per session per field. The activation rate. If most visitors never type, the empty state is the problem.                                                                                                 |
+| `quest_toggle`  | `quest`: `daily` \| `weekly` \| `extra`; `state`: `on` \| `off` | Whether the extra-quest multiplier is understood and used, or whether it needs explaining.                                                                                                                          |
+| `mode_switch`   | `to`: `arcane` \| `sacred`                                      | The arcane/sacred split, which decides whose bugs and content get priority.                                                                                                                                         |
+| `symbol_select` | `symbol` (name), `mode`                                         | Which regions people are actually grinding. Drives which symbol gets attention when game data changes. Symbol 8 was `Hotel Arcus` until 2.0 and is `Arcus` from then on: count both when reading across the change. |
 
 ### Feature usage — what to invest in, and what to cut
 

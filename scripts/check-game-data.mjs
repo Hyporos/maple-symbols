@@ -22,12 +22,10 @@ const WEEKLY_SYMBOLS = Number(gameTs.match(/WEEKLY_SYMBOLS = (\d+)/)?.[1]);
 /** Our arcane extra-quest multiplier, likewise. */
 const EXTRA_ARCANE = Number(gameTs.match(/EXTRA_MULTIPLIER[^=]*= \{ arcane: ([\d.]+)/)?.[1]);
 
-/** Wiki page titles differ from our display names in one place: Hotel Arcus is "Arcus" there. */
-const WIKI_TITLE = { "Hotel Arcus": "Arcus" };
+/** The wiki titles each symbol's page "<family>: <our display name>". */
 const pageFor = (symbol) => {
   const family = symbol.type === "arcane" ? "Arcane Symbol" : "Sacred Symbol";
-  const name = WIKI_TITLE[symbol.name] ?? symbol.name;
-  return `${family}: ${name}`.replace(/ /g, "_");
+  return `${family}: ${symbol.name}`.replace(/ /g, "_");
 };
 
 const WIKI = "https://maplestorywiki.net/api.php";

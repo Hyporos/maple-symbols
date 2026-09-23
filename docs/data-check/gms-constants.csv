@@ -1,13 +1,16 @@
 rule,arcane,sacred,correct? (y / the right value),notes
 Max level,20,11,,
-Weekly quest symbols per reset,120,n/a,,
-Extra quest daily multiplier,2,1.5,,
-Catalyst keeps this share of total EXP,0.8,0.6,,
-Catalyst minimum level,2,2,,
-Catalyst world restriction,Interactive only,Interactive only,,
+Weekly quest symbols per reset,240 (80 per clear x 3),n/a,y,Brian 2026-09-22; credited in one go at the Thursday reset (Brian's choice)
+Extra quest daily multiplier,2,1.5,y,"Brian 2026-09-22 (arcane: 20 to 40). No sacred region has an extra quest, so 1.5 never applies"
+Catalyst keeps this share of total EXP,0.8,0.6,y,Brian 2026-09-22
+Catalyst minimum level,2,2,y,Brian 2026-09-22
+Catalyst world restriction,Interactive only,Interactive only,y,Brian 2026-09-22
 Power per symbol level,10,10,,
 Base power at level 1 (on top of level x 10),20,0,,
 Max power per symbol,220,110,,
-Main stat per symbol level,100,200,,
-Demon Avenger HP per level,2100,4200,,
-Xenon All Stat per level,48,96,,
+Main stat per symbol level,100,200,y,Brian 2026-09-22
+Main stat at level 1,300,500,,Not shown by the site (the panel shows the gain per level-up)
+Demon Avenger HP per level,2100,4200,y,Brian 2026-09-22
+Demon Avenger HP at level 1,6300,10500,y,"Brian 2026-09-22. 21 HP per point of main stat, so not a separate per-symbol bonus. Not shown by the site"
+Xenon All Stat per level,48,96,y,Brian 2026-09-22
+Xenon All Stat at level 1,144,240,y,"Brian 2026-09-22. 0.48 per point of main stat. Not shown by the site"
