@@ -20,6 +20,7 @@ Working files for re-confirming the game data (GAME §0: everything shipped toda
 | `gms-ratios-arcane.csv`, `gms-ratios-sacred.csv` | Damage dealt and taken per power band                                                             | In game; the wikis                                           |
 | `resets.csv`                                     | Daily and weekly quest reset times, in UTC, per server (settles KI-013)                           | In game; official notices                                    |
 | `grand-sacred.csv`                               | Tallahart and Geardock, for 2.0                                                                   | Pre-filled from maplestorywiki.net, needs confirming in game |
+| `kms-mesos-arcane.csv`                           | KMS arcane meso costs after its 30 % cut (1.2.419), derived and cross-checked                     | A KMS in-game screenshot                                     |
 | `server-differences.csv`                         | Whether KMS, JMS, TMS, CMS and MSEA differ from GMS at all                                        | Regional wikis and patch notes                               |
 
 ## Order
