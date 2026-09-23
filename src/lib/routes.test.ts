@@ -203,6 +203,10 @@ describe("sitemaps", () => {
   });
 });
 
+// Any path except a missing .md or .txt file: those 404 rather than fall back to a page,
+// so an agent asking for a Markdown copy that does not exist is not handed HTML.
+const ANY_PAGE = "((?!.*\\.(?:md|txt)$).*)";
+
 describe("vercel.json serves every edition", () => {
   const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
 
@@ -213,11 +217,11 @@ describe("vercel.json serves every edition", () => {
   it("sends an unknown path inside an edition to that edition's calculator, before the root fallback", () => {
     const rewrites: { source: string; destination: string }[] = vercel.rewrites;
     for (const edition of EDITIONS.filter((e) => e.prefix)) {
-      const i = rewrites.findIndex((r) => r.source === `${edition.prefix}/(.*)`);
+      const i = rewrites.findIndex((r) => r.source === `${edition.prefix}/${ANY_PAGE}`);
       expect(i).toBeGreaterThanOrEqual(0);
       // A clean path: with cleanUrls, Vercel will not rewrite to a .html destination.
       expect(rewrites[i].destination).toBe(edition.prefix);
-      expect(i).toBeLessThan(rewrites.findIndex((r) => r.source === "/(.*)"));
+      expect(i).toBeLessThan(rewrites.findIndex((r) => r.source === `/${ANY_PAGE}`));
     }
   });
 });

@@ -22,27 +22,27 @@
   ],
   "rewrites": [
     {
-      "source": "/msea/(.*)",
+      "source": "/msea/((?!.*\\.(?:md|txt)$).*)",
       "destination": "/msea"
     },
     {
-      "source": "/kms/(.*)",
+      "source": "/kms/((?!.*\\.(?:md|txt)$).*)",
       "destination": "/kms"
     },
     {
-      "source": "/jms/(.*)",
+      "source": "/jms/((?!.*\\.(?:md|txt)$).*)",
       "destination": "/jms"
     },
     {
-      "source": "/tms/(.*)",
+      "source": "/tms/((?!.*\\.(?:md|txt)$).*)",
       "destination": "/tms"
     },
     {
-      "source": "/cms/(.*)",
+      "source": "/cms/((?!.*\\.(?:md|txt)$).*)",
       "destination": "/cms"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!.*\\.(?:md|txt)$).*)",
       "destination": "/"
     }
   ],

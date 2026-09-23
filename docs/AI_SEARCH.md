@@ -30,6 +30,7 @@ Files written (production build): `/llms.txt`, `/llms-full.txt`, `/index.md`, `/
 - **AI-4 The HTML page is the canonical; the Markdown is a copy.** Copies are served `noindex` (so search results show the page, not the file) and each page links its copy with `rel="alternate" type="text/markdown"`. `llms.txt` itself stays indexable.
 - **AI-5 Every AI crawler is allowed, and named.** Training, search and user-triggered fetchers alike (Brian, 2026-09-23: visibility beats withholding for a free tool). `robots.txt` lists them in one `Allow: /` group so the intent is on record; the catch-all `User-agent: *` already allows everything.
 - **AI-6 Only English editions get copies until the translations are published.** A translated edition gets its copies (in its own language) when its catalogue moves to `PUBLISHED_LANGUAGES`; see the backlog.
+- **AI-8 A Markdown or text file that does not exist is a 404**, never the calculator (the SEO-3 fallback skips `.md` and `.txt`), so an agent can tell a missing copy from a real one. Found on a preview on 2026-09-23: `/kms.md` returned the calculator's HTML labelled `text/markdown`.
 - **AI-7 Say who made it and when.** Every copy names its source page, server and generation date; `llms.txt` names the editions. Credit the GitHub handle, never a person's name (the site never shows one).
 
 ## 3. Crawlers (from each operator's own docs, checked 2026-09-23)
