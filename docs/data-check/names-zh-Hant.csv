@@ -13,5 +13,5 @@ id,gms_name,zh_Hant_name,zh_Hant_daily_quest,confidence,source
 12,Carcion,真實符文：卡爾西溫,[每日任務] 卡爾西溫重建支援,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
 G1,Tallahart,豪華真實符文：塔拉哈特,[每日任務] 調查塔拉哈特古代神的力量,official (V280 notice) and client string,mxd.dvg.cn item database; daily: client string (mxd.dvg.cn questsinfo)
 G2,Geardock,豪華真實符文：基爾德拉,,client string (also in press coverage; not in an official notice yet),mxd.dvg.cn item database
-,Arcane Force,祕法之力,,official,beanfun patch notes
-,Sacred Power,真實之力,,official,beanfun patch notes
+,Arcane Force,神秘力量,,official (祕法之力 corrected 2026-09-23: no notice says it),"beanfun eventadid=8615 (2022-06-22): 裝備時變更為增加神秘力量40; 13015, 17647"
+,Sacred Power,真實力量,,official (older notices say 真實之力),"beanfun eventadid=17647 (2026-06-24): 真實力量增加 10; 14768 (2025-12-03): 真實力量達成20; 真實之力 in 9427, 9922, 13015"

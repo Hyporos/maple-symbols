@@ -203,6 +203,42 @@ export const TERMS: Readonly<
     demonAvenger: "デーモンアヴェンジャー", // [1]
     xenon: "ゼノン", // [1]
   },
+  // TMS Traditional Chinese (checked 2026-09-23). Sources, official beanfun notices at
+  // https://maplestory-event.beanfun.com/eventad/eventad?eventadid=<id>:
+  //   17655 V280 系統改善 (2026-06-24): "每日任務獎勵獲得的祕法符文數量增加",
+  //     "真實符文及豪華真實符文成長等級達到11級時" (it spells both 祕法符文 and 秘法符文).
+  //   8615 系統改動與改善事項 (2022-06-22): "配發的祕法符文能力值上調。裝備時變更為增加神秘力量40".
+  //   17647 幻影降臨之夜 (2026-06-24): "神秘力量增加 10 … 真實力量增加 10"; 14768 加速成長
+  //     (2025-12-03): "真實力量達成20". Older notices say 真實之力 (9427, 9922, 13015).
+  //   9922 系統改善 (2024-01-10): "使用真實觸媒，可以將真實符文移動到世界內的其他角色".
+  //   9914 伊甸提斯克探險 (2024-01-10): "選擇符文交換券（arc 200 / aut 40）",
+  //     "選擇真實符文交換券可獲得的道具為"; 8172 浪漫風水師菈菈 (2022-01-12): "選擇祕法符文交換券X30".
+  //   10780 Maple19 回憶島 (2024-09-11): "一般伺服器：卡勒馬珍貴附加方塊30個交換券 RB伺服器：…".
+  //   10784 (The Day After): "惡魔復仇者", "傑諾" in its class lists.
+  // Chinese has no plural or article, so those forms repeat the bare word.
+  "zh-Hant": {
+    arcane: "祕法", // UNCONFIRMED as a label on its own (from 祕法符文)
+    sacred: "真實", // UNCONFIRMED as a label on its own (from 真實符文)
+    sacredSymbol: "真實符文",
+    arcaneSymbols: "祕法符文",
+    sacredSymbols: "真實符文",
+    aArcaneSymbol: "祕法符文",
+    aSacredSymbol: "真實符文",
+    arcanePower: "神秘力量",
+    sacredPower: "真實力量",
+    // UNCONFIRMED: no official notice found; 祕法觸媒 is what every player source says
+    // (forum.gamer.com.tw, YouTube guides), and it matches the official 真實觸媒.
+    arcaneCatalyst: "祕法觸媒",
+    sacredCatalyst: "真實觸媒",
+    symbolSelector: "選擇符文交換券",
+    arcaneSelector: "選擇祕法符文交換券",
+    sacredSelector: "選擇真實符文交換券",
+    // The regular world type as opposed to Reboot (RB伺服器). UNCONFIRMED as the Catalyst's own
+    // restriction label: 9922 only says 真實觸媒 is "不在Rb世界販售".
+    regularServer: "一般伺服器",
+    demonAvenger: "惡魔復仇者",
+    xenon: "傑諾",
+  },
 };
 
 /** The terms of a name set; throws for one whose table does not exist yet. */

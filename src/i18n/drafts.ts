@@ -14,6 +14,7 @@
 import type { Messages } from "./index";
 import { ko } from "./ko";
 import { ja } from "./ja";
+import { zhHant } from "./zh-Hant";
 
 /** The languages of the four translated editions (KMS, JMS, TMS, CMS). */
 export const DRAFT_LANGUAGES = ["ko", "ja", "zh-Hant", "zh-Hans"] as const;
@@ -23,4 +24,5 @@ export type DraftLanguage = (typeof DRAFT_LANGUAGES)[number];
 export const DRAFT_CATALOGUES: Partial<Record<DraftLanguage, Messages>> = {
   ko,
   ja,
+  "zh-Hant": zhHant,
 };
