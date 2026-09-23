@@ -1,9 +1,15 @@
 name: Game data check
 
 # The site shipped GMS v.271's doubled symbol rates two weeks late because nothing
-# watched for it (KI-014). This compares our numbers with the MapleStory Wiki every
-# Monday and opens an issue when they disagree. It never edits the data itself:
-# a patch can describe another region or a temporary event bonus, so a person decides.
+# watched for it (KI-014). Every Monday this compares our numbers with the MapleStory
+# Wiki and reads the patch notes of GMS and of the regions that patch before it
+# (scripts/check-game-data.mjs; the sources are listed at its top and in GAME §6).
+#
+# It writes to GitHub only when something changed: it opens an issue (label
+# `game-data`) the first time the report is not clean, comments only when the report
+# differs from the last one posted, and closes the issue once everything matches
+# again. It never edits the data: a patch can describe another region or a temporary
+# event bonus, so a person decides.
 #
 # NOTE: GitHub only runs scheduled workflows from the default branch, so the Monday run
 # starts once this file reaches `main`. Until then use `pnpm check:data` or Run workflow.
@@ -27,7 +33,7 @@ jobs:
         with:
           node-version: 26
 
-      - name: Compare our symbol data with the wiki
+      - name: Compare our symbol data with the wiki and the patch notes
         id: check
         run: |
           set +e
@@ -35,48 +41,69 @@ jobs:
           echo "status=$?" >> "$GITHUB_OUTPUT"
           cat report.txt
 
-      - name: Open or update an issue when something moved
-        if: steps.check.outputs.status != '0'
+      - name: Open, update or close the game-data issue
         uses: actions/github-script@v7
+        env:
+          STATUS: ${{ steps.check.outputs.status }}
         with:
           script: |
             const fs = require("fs");
-            const report = fs.readFileSync("report.txt", "utf8");
-            const title = "Game data check: the symbol numbers moved";
+            const status = Number(process.env.STATUS);
+            const report = fs.readFileSync("report.txt", "utf8").trim();
+            const { owner, repo } = context.repo;
+            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: "open", labels: "game-data",
+            });
+            const issue = open.data[0];
+
+            // Clean report: close a still-open issue, otherwise stay silent.
+            if (status === 0) {
+              if (issue) {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: issue.number,
+                  body: `Everything matches again. Closing. ([run](${run}))`,
+                });
+                await github.rest.issues.update({
+                  owner, repo, issue_number: issue.number, state: "closed", state_reason: "completed",
+                });
+              }
+              return;
+            }
+
+            const headline = {
+              1: "our numbers no longer match the game",
+              2: "a source could not be read",
+              3: "a patch note mentions symbols",
+            }[status] ?? `the check exited with ${status}`;
+            const block = "```\n" + report + "\n```";
             const body = [
-              "The weekly check found game data that no longer matches ours.",
+              `The weekly game-data check: ${headline}.`,
               "",
-              "```",
-              report.trim(),
-              "```",
+              block,
               "",
               "Before changing anything, confirm the patch notes: the wiki may describe another",
               "region, a temporary event bonus, or a change GMS has not received yet.",
               "Then follow the checklist in `docs/GAME.md` §6 and record the check in §7.",
               "",
-              `[This run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              `[This run](${run})`,
             ].join("\n");
 
-            const existing = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: "open",
-              labels: "game-data",
-            });
-
-            if (existing.data.length) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.data[0].number,
-                body,
-              });
-            } else {
+            if (!issue) {
               await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-                labels: ["game-data"],
+                owner, repo, title: `Game data check: ${headline}`, body, labels: ["game-data"],
               });
+              return;
             }
+
+            // Post only when the report differs from the last one on the issue.
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number: issue.number, per_page: 100,
+            });
+            const last = comments.length ? comments[comments.length - 1].body : issue.body;
+            if (last && last.includes(block)) {
+              core.info("Same report as last time; nothing posted.");
+              return;
+            }
+            await github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body });

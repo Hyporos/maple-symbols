@@ -16,15 +16,15 @@ Auto-loaded every session (via `CLAUDE.md`). Only what most tasks need lives her
 
 ## Commands
 
-| Command                                        | What it does                                                                                                                                        |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                                     | Vite dev server (no type-check in dev)                                                                                                              |
-| `pnpm build`                                   | `tsc` type-gate (src incl. tests) then Vite build to `dist/`                                                                                        |
-| `pnpm lint`, `pnpm typecheck`                  | ESLint over `src/` (Prettier violations are errors, any warning fails); `tsc --noEmit`                                                              |
-| `pnpm test [filter]`                           | Vitest single run; `pnpm test utils` filters (never `pnpm test -- utils`: pnpm passes the `--` through). Also `test:watch`, `test:coverage`         |
-| `pnpm check:data`                              | Compares the symbol data with the MapleStory Wiki and the regions that patch before GMS (GAME §6); the weekly workflow opens an issue when it fails |
-| `/release X.Y.Z`                               | Whole release: version, changelog entry (newest entry goes **last**), sitemap, README badge, PR `development → main`, tag, back-merge               |
-| `/sync-docs`, `/log-mistake`, `/new-component` | Reconcile docs with code; log a mistake; scaffold a component in the house style with a test. Full list: `docs/COMMANDS.md`                         |
+| Command                                        | What it does                                                                                                                                       |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                                     | Vite dev server (no type-check in dev)                                                                                                             |
+| `pnpm build`                                   | `tsc` type-gate (src incl. tests) then Vite build to `dist/`                                                                                       |
+| `pnpm lint`, `pnpm typecheck`                  | ESLint over `src/` (Prettier violations are errors, any warning fails); `tsc --noEmit`                                                             |
+| `pnpm test [filter]`                           | Vitest single run; `pnpm test utils` filters (never `pnpm test -- utils`: pnpm passes the `--` through). Also `test:watch`, `test:coverage`        |
+| `pnpm check:data`                              | Compares every number that has moved before with the wiki and Nexon's patch notes (GAME §6); the weekly workflow opens, updates or closes an issue |
+| `/release X.Y.Z`                               | Whole release: version, changelog entry (newest entry goes **last**), sitemap, README badge, PR `development → main`, tag, back-merge              |
+| `/sync-docs`, `/log-mistake`, `/new-component` | Reconcile docs with code; log a mistake; scaffold a component in the house style with a test. Full list: `docs/COMMANDS.md`                        |
 
 Package manager is **pnpm** (never npm/yarn). Node 26 locally and in CI (`engines`: ^22.22 || ^24.15 || >=26). Pre-commit (simple-git-hooks) runs lint-staged (ESLint, related Vitest tests, Prettier on staged files) and then `scripts/docs-drift.mjs`. CI (`.github/workflows/ci.yml`) runs lint, typecheck, test, build on pushes and PRs to `main`/`development`.
 
