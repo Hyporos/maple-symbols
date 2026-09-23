@@ -7,7 +7,26 @@ The plan of record for serving every MapleStory server (GMS, MSEA, KMS, JMS, TMS
 - **Full regional data for all six servers.** Each server shows its own numbers, and every regional number carries a status (confirmed, sourced or unverified). A number nobody has published is hidden or marked, never guessed (D-6 decides which). This overturns the 2026-09-16 "interface only" decision in I18N §0.
 - **All six editions launch together** in one release, not a pilot followed by one per release.
 - **The weekly data check keeps reporting unreadable sources** as a GitHub issue (GAME §6).
-- Still open: D-2 to D-20 in §9. Nothing in §3–§8 is built yet.
+- **Every other design decision**, made the same day (the §9 numbers):
+  - D-2 **Edition URL plus an in-page "Server" switch**: each server has one address; the switch changes the numbers without changing the URL.
+  - D-3 **Server codes in the address**: `/` (GMS), `/msea/`, `/kms/`, `/jms/`, `/tms/`, `/cms/`. The hreflang values still carry the languages (§2).
+  - D-4 **All four pages in every edition, fully translated**, changelog and credits included: a KMS reader sees the changelog in Korean. This overturns I18N-7 (changelog history stays English) and means the changelog history is translated too.
+  - D-5 **Head tags first, then full prerendered HTML** with React's own `prerender`; the custom router stays.
+  - D-6 **An unpublished number is hidden** and the page says it is not published yet for that server.
+  - D-7 **One save per server**; existing saves become the GMS save.
+  - D-8 **The server's reset clock**, with a local-time hint (fixes KI-013).
+  - D-9 **A suggestion banner** from the browser's language or time zone; never a redirect.
+  - D-10 **System fonts** for Korean, Japanese and Chinese.
+  - D-11 **Local meso units** (억/万, 億/万, 億/萬, 亿/万) in the calculator and prose, full digits in the Handbook tables.
+  - D-12 **Machine draft plus a native player's review** for interface text; game names and terms only from the official clients.
+  - D-14 **China: best effort on Vercel**, reachability measured after launch.
+  - D-15 **No languages beyond the six servers' own** (no Spanish, Portuguese, French or German).
+  - D-16 **Open API character import: later**, as its own decision.
+  - D-17 **New analytics events** (server switch, suggestion banner); a same-domain Umami proxy only if China's data comes back empty.
+  - D-18 **Grand Sacred gets its own `grand` type in the data**; where it sits in the interface is settled with the 2.0 visual design.
+  - D-19 **MSEA uses its own client's terms** (Authentic Symbol, Authentic Force, Road to Extinction, Chew Chew Island, Lacheln, Moras, Hotel Arcs, Talahart, Geardrock).
+  - D-20 **Verification by meta tags** in the prebuilt head (Naver, Daum, Baidu) **and DNS** (Google, Bing), each recorded in SEO §5.
+- Nothing in §3–§8 is built yet.
 
 ## 1. What this overturns
 
@@ -25,14 +44,14 @@ Facts: GMS NA and EU gateways both reset at UTC; GMS has no Spanish/Portuguese/F
 - **Name set** = official client vocabulary: en-gms, en-msea, ko, ja, zh-Hant, zh-Hans.
 - **Edition** = one indexable URL prefix (language + default region):
 
-| Edition | Prefix    | Language | Region | hreflang                     |
-| ------- | --------- | -------- | ------ | ---------------------------- |
-| gms     | /         | en       | gms    | en, x-default                |
-| msea    | /msea/    | en       | msea   | en-SG, en-MY, en-PH, en-TH   |
-| kms     | /ko/      | ko       | kms    | ko                           |
-| jms     | /ja/      | ja       | jms    | ja                           |
-| tms     | /zh-hant/ | zh-Hant  | tms    | zh-Hant, zh-TW, zh-HK, zh-MO |
-| cms     | /zh-hans/ | zh-Hans  | cms    | zh-Hans, zh-CN               |
+| Edition | Prefix | Language | Region | hreflang                     |
+| ------- | ------ | -------- | ------ | ---------------------------- |
+| gms     | /      | en       | gms    | en, x-default                |
+| msea    | /msea/ | en       | msea   | en-SG, en-MY, en-PH, en-TH   |
+| kms     | /kms/  | ko       | kms    | ko                           |
+| jms     | /jms/  | ja       | jms    | ja                           |
+| tms     | /tms/  | zh-Hant  | tms    | zh-Hant, zh-TW, zh-HK, zh-MO |
+| cms     | /cms/  | zh-Hans  | cms    | zh-Hans, zh-CN               |
 
 Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an in-page "Server" override is client state only and never changes the URL.
 
@@ -42,7 +61,7 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 - `REGION_PROFILES`: reset UTC offset (0 / 540 / 540 / 480 / 480 / 480; no zone uses DST), weekly day 4, weekly structure (KMS 1 × 240, others 3 × 80), Catalyst rule, class gains (KMS Xenon 66 / 132), default edition, name set, watcher sources.
 - `createInitialSymbols(region)`. Move DEMON_AVENGER_HP / XENON_ALL_STAT / WEEKLY_SYMBOLS into data, and update the watcher's regexes in the same commit. ExpTable and CostTable read through `gameDataFor(region)`.
 - Never generate unpublished tables. The KMS arcane table is the exception: it is derived from a rule confirmed three ways (`docs/data-check/kms-mesos-arcane.csv`).
-- Grand Sacred: `SymbolType` gains "grand"; Sacred EXP table; max 11; power +10; no main stat (a bonus line instead); no Catalyst; the Selector question is open.
+- Grand Sacred: `SymbolType` gains "grand"; Sacred EXP table; max 11; power +10; no main stat (a bonus line instead); no Catalyst; the Sacred Symbol Selector covers Tallahart (Brian, in game, 2026-09-22) but not Geardock.
 - Persistence: STORAGE_VERSION 4, `{ saves: { [region]: SavedSymbol[] }, regionOverride? }`; existing saves migrate to gms; `setRegion`; `skipHydration` plus rehydrate on mount for SSR.
 - Reset clock (fixes KI-013): `gameNow(region)` = UTC + fixed offset. Days count game days, the weekly lands on the game Thursday, completion dates are game dates, with a local-time hint. The `dayjs()` calls in Overview, Graph, calculator.ts, overview.ts and graph.ts take the game clock. Test instants on both sides of each offset.
 
@@ -102,7 +121,8 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
   MSEA English then gets "Authentic" with no second catalogue.
 
 - **Names:** `GAME_NAMES` (`src/i18n/gameNames.ts`) filled from the `docs/data-check/names-*` sheets, keyed by name set, plus en-msea.
-- **SEO copy:** written per region, not translated. The changelog stays English, with one line in the reader's language.
+- **SEO copy:** written per region, not translated.
+- **Changelog and credits:** translated in full in every edition (D-4), including the history, so each new entry is written once and translated before release.
 - **Credits:** add the regional sources.
 - **Workflow:** a translator sheet per locale (key, English, context, maximum display width, screenshot, locked glossary). Machine draft plus a native player's review for UI copy only; names and terms only from official sources.
 - **Formatting:**
@@ -144,23 +164,6 @@ Self-canonical per edition; reciprocal hreflang in the page and the sitemap; an 
 8. Search-engine registrations and the watcher per region.
 9. Optional: Open API import, event bonuses, "coming to GMS", extra GMS languages.
 
-## 9. Decisions still open (recommendation first)
+## 9. Decisions
 
-- D-2 Edition model: edition URL + in-page server override / fixed pairs / full language × region matrix.
-- D-3 Prefixes: language tags /ko/ /ja/ /zh-hant/ /zh-hans/ + /msea/ / server codes /kms/… / country codes /kr/….
-- D-4 Pages per edition: / and /handbook localised, changelog and credits English only / all four / all four with noindex.
-- D-5 Prerender: head-only now, React 19 SSG next / a framework (Vike, React Router 7, Astro) / head-only for good.
-- D-6 Unverified regional numbers: hide with "not published yet" / show GMS labelled / labelled estimate.
-- D-7 Saves: one slot per region / shared / per region with "copy from GMS".
-- D-8 Reset clock: game days in the region's zone with a local hint / local calendar / both.
-- D-9 Detection: suggestion banner / nothing / geo redirect (breaks crawling).
-- D-10 CJK fonts: system stacks / glyph subsets / webfont.
-- D-11 Mesos: East Asian units in the calculator and prose, full digits in tables / everywhere / never.
-- D-12 Translators: machine draft + native review / volunteers / paid.
-- D-14 China: best effort on Vercel and measure / HK mirror / no Baidu effort.
-- D-15 Other GMS languages (pt-BR, es, fr, de): after Umami shows demand / now / never.
-- D-16 Open API import: later, as its own decision / now / never.
-- D-17 Analytics: the new events, plus a Umami proxy only if CN data is missing.
-- D-18 Grand Sacred in the UI: a `grand` type in the data either way; tab vs inside Sacred is a 2.0 design call.
-- D-19 MSEA vocabulary: the MSEA client's terms / GMS terms.
-- D-20 Search-engine verification: meta tags in the prerendered head for Naver and Baidu, DNS for Google and Bing.
+All made on 2026-09-22; the answers are in §0. New open questions go here.

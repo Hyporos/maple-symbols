@@ -45,7 +45,7 @@ After each upgrade: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`; lo
 ## Open questions for 2.0 (ask before designing)
 
 - Event symbol sources (GAME §2). Two kinds, and they want different shapes: a **rate bonus** ("+5 symbols per regional daily while the event runs") and a **lump** (a pile of Selector coupons, or a Hyper Burning symbol). Tools already previews a lump through the Symbol Selector, but neither feeds the completion dates. Options: keep ignoring both and say so in the copy; add a per-day bonus field; let the Symbol Selector count carry into the date maths; or all three.
-- Grand Sacred symbols: a third family with no main stat, its own meso tables, no Catalyst, and Selector eligibility for Tallahart only since v.271 (contested, GAME §4) — how it fits `SymbolData` and the next-level panel.
+- Grand Sacred symbols: a third family with no main stat, its own meso tables, no Catalyst, and Sacred Symbol Selector eligibility for Tallahart only (since v.271, confirmed in game; GAME §4) — how it fits `SymbolData` and the next-level panel.
 - Keeping the game data current (GAME §6): every region gets the same patch on its own date, and the site was two weeks stale on the v.271 rate change before anyone noticed.
 
 - Data model: keep `SymbolData` with NaN sentinels, or move to `level: number | null`? Persistence by id is done (KI-001), so either choice now only touches `src/lib/persistence.ts` and the components, not players' saves.

@@ -10,7 +10,7 @@ export const pages = {
   handbook: {
     title: "Symbol Handbook | Maple Symbols",
     description:
-      "Complete Arcane and Sacred Symbol reference: experience tables, meso upgrade costs, and daily/weekly quest ratios for every MapleStory region.",
+      "Complete Arcane and Sacred Symbol reference for MapleStory (GMS): experience tables, meso upgrade costs, and damage ratios.",
     nav: "Handbook",
   },
   changelog: {

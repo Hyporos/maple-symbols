@@ -25,4 +25,4 @@ Working files for re-confirming the game data (GAME §0 and §7 say what is conf
 
 ## Status (2026-09-22)
 
-Done: every GMS sheet (Brian confirmed the rates, resets, spot checks and Grand Sacred basics in game; the tables are sourced and match the formula), the ratio sheets, and a first pass over every region. Still open: the Grand Sacred Selector conflict (`grand-sacred.csv`), and the regional cells marked unverified in `server-differences.csv` (CMS costs, TMS/CMS Geardock count, MSEA Talahart count), each of which one dated in-game screenshot would settle.
+Done: every GMS sheet (Brian confirmed the rates, resets, spot checks and Grand Sacred basics in game; the tables are sourced and match the formula), the ratio sheets, and a first pass over every region. Still open: the regional cells marked unverified in `server-differences.csv` (CMS costs, TMS/CMS Geardock count, MSEA Talahart count), each of which one dated in-game screenshot would settle.
