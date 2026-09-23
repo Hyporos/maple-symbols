@@ -93,6 +93,13 @@ function routes(): Plugin[] {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [...routes(), react()],
+  // Vercel preview builds serve the draft translations for review; production does not
+  // (SERVES_DRAFTS in src/lib/routes.ts). A constant, so production drops the drafts.
+  define: {
+    __SERVES_DRAFTS__: JSON.stringify(
+      process.env.VERCEL_ENV === "preview" || process.env.SERVE_DRAFTS === "1"
+    ),
+  },
   build: {
     // Vite 8 bundles with rolldown; vendor splitting uses its codeSplitting groups
     // (the old rollup `manualChunks` object form is not supported).

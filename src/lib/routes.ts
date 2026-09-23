@@ -16,6 +16,11 @@
 // ---------------------------------------------------------------------------
 
 import { pages } from "../i18n/en/pages";
+import { pages as jaPages } from "../i18n/ja/pages";
+import { pages as koPages } from "../i18n/ko/pages";
+import { pages as zhHansPages } from "../i18n/zh-Hans/pages";
+import { pages as zhHantPages } from "../i18n/zh-Hant/pages";
+import type { Messages } from "../i18n";
 import { fillTerms, termsFor, type NameSet, type PageValues, type TermValues } from "../i18n/terms";
 import type { Region } from "./regions";
 
@@ -31,13 +36,41 @@ export const SITE_NAME = "Maple Symbols";
  */
 export const DEFAULT_LOCALE = "en";
 
+/** The languages whose catalogue is published: production serves these. */
+export const PUBLISHED_LANGUAGES = ["en"] as const;
+
 /**
- * The languages that have a complete interface catalogue in src/i18n. `LOCALES` in
- * src/i18n/index.ts is this list, so a language counts here only once its catalogue
- * exists. An edition in another language falls back to English and is kept out of
- * search (noindex, no hreflang, no sitemap) until its catalogue lands.
+ * The languages whose catalogue is written but still a draft (src/i18n/drafts.ts): a machine
+ * draft awaiting a native player's review (REGIONS D-12). Publishing one moves it to
+ * PUBLISHED_LANGUAGES.
  */
-export const CATALOGUE_LANGUAGES = ["en"] as const;
+export const DRAFT_LANGUAGES = ["ko", "ja", "zh-Hant", "zh-Hans"] as const;
+export type DraftLanguage = (typeof DRAFT_LANGUAGES)[number];
+
+declare const __SERVES_DRAFTS__: boolean | undefined;
+const buildEnv = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+  ?.env;
+
+/**
+ * Whether this build serves the drafts too. Vercel preview builds do (`VERCEL_ENV=preview`),
+ * so a native player can review a translation on a preview link; production never does
+ * (Brian, 2026-09-23). `SERVE_DRAFTS=1` does the same for a local build. vite.config.ts turns
+ * the answer into the constant `__SERVES_DRAFTS__`, so a production bundle drops the drafts;
+ * outside a Vite build (the config itself, tests) it is read from the environment.
+ */
+export const SERVES_DRAFTS: boolean =
+  typeof __SERVES_DRAFTS__ === "boolean"
+    ? __SERVES_DRAFTS__
+    : buildEnv?.VERCEL_ENV === "preview" || buildEnv?.SERVE_DRAFTS === "1";
+
+/**
+ * The languages this build serves: the published ones, plus the drafts on a preview.
+ * `LOCALES` in src/i18n/index.ts is this list. An edition in any other language falls back
+ * to English and is kept out of search (noindex, no hreflang, no sitemap).
+ */
+export const CATALOGUE_LANGUAGES: readonly string[] = SERVES_DRAFTS
+  ? [...PUBLISHED_LANGUAGES, ...DRAFT_LANGUAGES]
+  : PUBLISHED_LANGUAGES;
 
 // ---------------------------------------------------------------------------
 // Editions: one indexable site per server (docs/REGIONS.md §2, D-2 to D-4)
@@ -140,7 +173,6 @@ export const servedLocale = (edition: Edition): string =>
 export const nameSetFor = (edition: Edition): NameSet =>
   servedLocale(edition) === edition.language ? edition.nameSet : DEFAULT_EDITION.nameSet;
 
-/** What a page's copy fills its term placeholders with: its name set's terms and its server. */
 /** The values that come with an edition's pages rather than its name set (src/i18n/terms.ts). */
 export const pageValuesFor = (edition: Edition): PageValues => ({
   pageServer: edition.name,
@@ -183,15 +215,22 @@ export const ogLocaleFor = (locale: string): string => {
   if (value === undefined) throw new Error(`routes.ts: no og:locale mapping for "${locale}"`);
   return value;
 };
+type PageCopy = Messages["pages"];
+
 /**
- * An edition's page copy, terms filled. English for every edition until a second catalogue
- * lands; then this reads the edition's served language (I18N-4). Memoised per edition.
+ * Each served language's page copy, term placeholders still in it. The drafts are here only
+ * in a build that serves them (`SERVES_DRAFTS`), so a production bundle leaves them out.
  */
-const pageCopy = new Map<Edition, typeof pages>();
-const pagesFor = (edition: Edition): typeof pages => {
+const PAGE_COPY: Readonly<Record<string, PageCopy>> = SERVES_DRAFTS
+  ? { en: pages, ko: koPages, ja: jaPages, "zh-Hant": zhHantPages, "zh-Hans": zhHansPages }
+  : { en: pages };
+
+/** An edition's page copy in its served language, terms filled. Memoised per edition. */
+const pageCopy = new Map<Edition, PageCopy>();
+const pagesFor = (edition: Edition): PageCopy => {
   let copy = pageCopy.get(edition);
   if (copy === undefined) {
-    copy = fillTerms(pages, termValuesFor(edition));
+    copy = fillTerms(PAGE_COPY[servedLocale(edition)] ?? pages, termValuesFor(edition));
     pageCopy.set(edition, copy);
   }
   return copy;
@@ -259,9 +298,14 @@ export const ROUTES: readonly Route[] = [
 /** The paths the Extras page shows as tabs, in tab order. */
 export const EXTRAS_TABS: readonly RoutePath[] = ["/changelog", "/credits"];
 
-/** Header links, in order. */
+/**
+ * Header links, in order. `label` is the GMS English one; the Header shows the page's own
+ * (`pages[page].nav` in the page's catalogue), so a translated edition's links are too.
+ */
 export const NAV = ROUTES.flatMap((r) =>
-  r.nav ? [{ path: r.path, label: r.nav.label, activeFor: r.nav.activeFor ?? [] }] : []
+  r.nav
+    ? [{ path: r.path, page: r.page, label: r.nav.label, activeFor: r.nav.activeFor ?? [] }]
+    : []
 );
 
 /** The site path of a page in an edition: "/" and "/handbook" for GMS, "/kms" and "/kms/handbook". */

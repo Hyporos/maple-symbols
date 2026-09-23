@@ -116,6 +116,13 @@ describe("formatDate", () => {
     expect(formatDate("2024-03-01")).toBe("Mar 1, 2024");
   });
 
+  it("writes the day each language's own way", () => {
+    expect(formatDate("2023-07-25", "ko")).toBe("2023년 7월 25일");
+    expect(formatDate("2023-07-25", "ja")).toBe("2023年7月25日");
+    expect(formatDate("2023-07-25", "zh-Hans")).toBe("2023年7月25日");
+    expect(formatDate("not a day", "ko")).toBe("not a day");
+  });
+
   it("reads the ISO day as a local calendar day, so it cannot shift in any time zone", () => {
     // new Date("2023-01-01") is UTC midnight: Dec 31, 2022 anywhere in the Americas.
     // The day boundaries are where that trap would show.

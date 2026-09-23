@@ -17,7 +17,12 @@ import { useMessages } from "../i18n";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Header = () => {
-  const m = useMessages().shell;
+  const messages = useMessages();
+  const m = messages.shell;
+  const navLabel = (page: (typeof NAV)[number]) => {
+    const copy = messages.pages[page.page];
+    return "nav" in copy ? copy.nav : page.label;
+  };
   const { isMobile, isTablet } = useBreakpoint();
   const { navigate } = useRouter();
   const { edition, path: pathname } = useEdition();
@@ -81,7 +86,7 @@ const Header = () => {
                         isActive(page) && "text-white"
                       )}
                     >
-                      {page.label}
+                      {navLabel(page)}
                     </a>
                   ))}
                 </nav>
@@ -116,7 +121,7 @@ const Header = () => {
                       isActive(page) && "text-white"
                     )}
                   >
-                    {page.label}
+                    {navLabel(page)}
                   </a>
                 ))}
               </nav>
@@ -141,7 +146,7 @@ const Header = () => {
                     setMenuOpen(false);
                   }}
                 >
-                  {page.label}
+                  {navLabel(page)}
                 </a>
               ))}
             </div>

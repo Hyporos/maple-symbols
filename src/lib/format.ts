@@ -12,7 +12,6 @@
 // ---------------------------------------------------------------------------
 
 import { DEFAULT_LOCALE } from "./routes";
-import { dayjs } from "./dayjs";
 
 // Intl constructors are expensive and these run once per table row, so the
 // resolved formatters are memoised per locale.
@@ -112,19 +111,36 @@ export const plural = (
   locale: string = DEFAULT_LOCALE
 ): string => (pluralRule(locale).select(count) === "one" ? one : other);
 
+const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+const dateFormats = new Map<string, Intl.DateTimeFormat>();
+
 /**
- * A human-readable date from an ISO `YYYY-MM-DD` day: "2023-07-25" → "Jul 25, 2023" in `en`,
- * the form the changelog shows. dayjs parses a date-only ISO string as *local* midnight
- * (unlike `new Date("2023-07-25")`, which is UTC midnight and shows the previous day west
- * of Greenwich), so the day never shifts with the visitor's time zone.
- * dayjs falls back to its built-in English locale until locale data is loaded;
- * this is the one place that has to change when it is (docs/I18N.md B-5).
+ * A human-readable date from an ISO `YYYY-MM-DD` day, the form the changelog shows:
+ * "2023-07-25" → "Jul 25, 2023" in `en`, "2023년 7월 25일" in `ko`, "2023年7月25日" in `ja`
+ * and Chinese. The day is built and formatted in UTC, so it never shifts with the visitor's
+ * time zone (`new Date("2023-07-25")` alone is UTC midnight, the previous day west of
+ * Greenwich, if formatted in local time). Not an ISO day: returned unchanged.
  * Machine-readable dates (`YYYY-MM-DD` in `<time dateTime>`, graph ticks, the
  * sitemap) are locale-neutral and stay on plain `dayjs().format()`; a completion date
  * goes through `formatDay`.
  */
-export const formatDate = (date: string, _locale: string = DEFAULT_LOCALE): string =>
-  dayjs(date).format("MMM D, YYYY");
+export const formatDate = (date: string, locale: string = DEFAULT_LOCALE): string => {
+  const match = ISO_DAY.exec(date);
+  if (!match) return date;
+  let format = dateFormats.get(locale);
+  if (!format) {
+    format = new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+    dateFormats.set(locale, format);
+  }
+  const [, year, month, day] = match.map(Number);
+  return format.format(new Date(Date.UTC(year, month - 1, day)));
+};
 
 const dayFormats = new Map<string, Intl.DateTimeFormat | null>();
 
@@ -145,8 +161,6 @@ const dayFormat = (locale: string): Intl.DateTimeFormat | null => {
   dayFormats.set(locale, format);
   return format;
 };
-
-const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 /**
  * A completion or attainment day as the reader writes it. English (GMS, MSEA) keeps the

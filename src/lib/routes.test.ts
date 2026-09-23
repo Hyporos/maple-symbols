@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   alternatesFor,
   applyToIndexHtml,
@@ -128,6 +128,26 @@ describe("each edition's built HTML", () => {
     const map = JSON.parse(html.match(/const pageMap = (\{.*\});/)![1]);
     expect(Object.keys(map)).toEqual(["/kms", "/kms/handbook", "/kms/changelog", "/kms/credits"]);
     expect(map["/kms"].url).toBe("https://maplesymbols.com/kms");
+  });
+});
+
+describe("draft translations (src/i18n/drafts.ts)", () => {
+  it("are served only by a build that serves drafts: a Vercel preview, never production", async () => {
+    // This run is neither, so only the published languages are served.
+    expect(isIndexable(kms)).toBe(false);
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.resetModules();
+    try {
+      const preview = await import("./routes");
+      expect(preview.SERVES_DRAFTS).toBe(true);
+      expect(preview.CATALOGUE_LANGUAGES).toEqual(["en", "ko", "ja", "zh-Hant", "zh-Hans"]);
+      const kmsOnPreview = preview.EDITIONS.find((e) => e.region === "kms")!;
+      expect(preview.servedLocale(kmsOnPreview)).toBe("ko");
+      expect(preview.pageMetaFor("/", kmsOnPreview).title).toMatch(/^메이플 심볼 계산기/);
+    } finally {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    }
   });
 });
 

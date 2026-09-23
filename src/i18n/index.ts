@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------
 // index.ts — Which languages exist, and the hook components read copy through.
 //
-// `LOCALES` lists the languages that have a complete catalogue; `Locale` is
-// derived from it, and `CATALOGUES` must hold one entry per locale, so adding a
-// language is: write the catalogue, add it here, and typecheck tells you every
-// key it is missing. Which one a page gets follows its URL's edition
-// (docs/REGIONS.md): `useLocale` is the one place that decides. The catalogue a
+// `Locale` is every language with a catalogue, published or draft; typecheck holds
+// each to the English keys. `LOCALES` is the ones this build serves (CATALOGUE_LANGUAGES
+// in src/lib/routes.ts): the published ones, plus the drafts on a Vercel preview. Which
+// one a page gets follows its URL's edition (docs/REGIONS.md): `useLocale` is the one
+// place that decides. The catalogue a
 // component reads has its game terms already filled for the page's name set
 // (src/i18n/terms.ts, `nameSetFor` in src/lib/routes.ts).
 // ---------------------------------------------------------------------------
@@ -14,6 +14,8 @@ import { useRouter } from "../contexts/RouterContext";
 import {
   CATALOGUE_LANGUAGES,
   DEFAULT_EDITION,
+  SERVES_DRAFTS,
+  type DraftLanguage,
   DEFAULT_LOCALE,
   editionFor,
   nameSetFor,
@@ -21,18 +23,26 @@ import {
   servedLocale,
   type Edition,
 } from "../lib/routes";
+import { DRAFT_CATALOGUES } from "./drafts";
 import { en } from "./en";
 import { DEFAULT_NAME_SET, fillTerms, termsFor, type NameSet, type PageValues } from "./terms";
 import type { Catalogue } from "./types";
 
 export type Messages = Catalogue<typeof en>;
 
-/** The languages with a complete catalogue: CATALOGUE_LANGUAGES in routes.ts, so the build and the app agree. */
-export const LOCALES = CATALOGUE_LANGUAGES;
-export type Locale = (typeof LOCALES)[number];
+/** Every language that has a catalogue, published or draft. */
+export type Locale = "en" | DraftLanguage;
 
-/** Each language's catalogue as written, term placeholders still in it: read it through `messagesFor`. */
-export const CATALOGUES: Readonly<Record<Locale, Messages>> = { en };
+/** The languages this build serves: CATALOGUE_LANGUAGES in routes.ts, so the build and the app agree. */
+export const LOCALES = CATALOGUE_LANGUAGES as readonly Locale[];
+
+/**
+ * Each served language's catalogue as written, term placeholders still in it: read it
+ * through `messagesFor`. The drafts join only in a build that serves them.
+ */
+export const CATALOGUES: Readonly<Partial<Record<Locale, Messages>>> = SERVES_DRAFTS
+  ? { en, ...DRAFT_CATALOGUES }
+  : { en };
 
 export const isLocale = (tag: string): tag is Locale =>
   (LOCALES as readonly string[]).includes(tag);
@@ -53,7 +63,7 @@ export function messagesFor(
   const key = `${language}|${nameSet}|${page.pageServer}|${page.pageGame}`;
   let messages = filled.get(key);
   if (messages === undefined) {
-    messages = fillTerms(CATALOGUES[language], { ...termsFor(nameSet), ...page });
+    messages = fillTerms(CATALOGUES[language] ?? en, { ...termsFor(nameSet), ...page });
     filled.set(key, messages);
   }
   return messages;

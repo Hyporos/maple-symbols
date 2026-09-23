@@ -4,7 +4,7 @@ import { cn } from "../../lib/utils";
 import { FaGithub, FaChevronRight } from "react-icons/fa6";
 import { changelogEntries, type ChangelogEntry } from "../../lib/changelog";
 import { formatDate } from "../../lib/format";
-import { interpolate, useMessages } from "../../i18n";
+import { interpolate, useLocale, useMessages } from "../../i18n";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * The Changelog component allows the user to view all previous Maple Symbols update details.
@@ -14,6 +14,7 @@ import { interpolate, useMessages } from "../../i18n";
 const Changelog = () => {
   /* ―――――――――――――――――――― Declarations ――――――――――――――――――― */
   const messages = useMessages();
+  const locale = useLocale();
   const m = messages.extras;
   const { isMobile } = useBreakpoint();
 
@@ -86,7 +87,7 @@ const Changelog = () => {
                     dateTime={entry.date}
                     className={cn("text-xs md:text-sm", open && "hidden")}
                   >
-                    {formatDate(entry.date)}
+                    {formatDate(entry.date, locale)}
                   </time>
                   <a
                     href={entry.link}
