@@ -11,8 +11,8 @@
 // A term is a game word the client names (symbol types, Force/Power, Catalyst,
 // Selector, server types, class names), never a word that only changes with the
 // language: each catalogue writes its own "mesos". Values come only from the
-// client or official patch notes (D-12); anything not yet seen there is marked
-// UNCONFIRMED where it is defined. How to add a term: docs/I18N.md §10.
+// client or official patch notes (D-12); a value no official source states says so where
+// it is defined. How to add a term: docs/I18N.md §10.
 //
 // JSX-free and free of runtime imports from src/lib/routes.ts: routes.ts and the
 // routes plugin in vite.config.ts read it at build time.
@@ -236,8 +236,10 @@ export const TERMS: Readonly<
   //   10784 (The Day After): "惡魔復仇者", "傑諾" in its class lists.
   // Chinese has no plural or article, so those forms repeat the bare word.
   "zh-Hant": {
-    arcane: "祕法", // UNCONFIRMED as a label on its own (from 祕法符文)
-    sacred: "真實", // UNCONFIRMED as a label on its own (from 真實符文)
+    // Official text uses the type words inside 祕法符文 / 真實符文, not alone; kept as the
+    // natural Chinese short forms (Brian, 2026-09-23: fine unless a player reports them).
+    arcane: "祕法",
+    sacred: "真實",
     sacredSymbol: "真實符文",
     arcaneSymbols: "祕法符文",
     sacredSymbols: "真實符文",
@@ -245,15 +247,16 @@ export const TERMS: Readonly<
     aSacredSymbol: "真實符文",
     arcanePower: "神秘力量",
     sacredPower: "真實力量",
-    // UNCONFIRMED: no official notice found; 祕法觸媒 is what every player source says
-    // (forum.gamer.com.tw, YouTube guides), and it matches the official 真實觸媒.
+    // maplestory.beanfun.com bulletin 61423 (2021-09-15): "上封印之鎖的祕法符文，異常的可以被
+    // < 祕法觸媒 > 轉換的問題".
     arcaneCatalyst: "祕法觸媒",
     sacredCatalyst: "真實觸媒",
     symbolSelector: "選擇符文交換券",
     arcaneSelector: "選擇祕法符文交換券",
     sacredSelector: "選擇真實符文交換券",
-    // The regular world type as opposed to Reboot (RB伺服器). UNCONFIRMED as the Catalyst's own
-    // restriction label: 9922 only says 真實觸媒 is "不在Rb世界販售".
+    // The regular world type (bulletins, e.g. 2026-09-09: "回到一般伺服器後"), now the opposite of
+    // the seasonal 挑戰者伺服器: the Reboot world became the regular 米特拉 (2024-25), so the
+    // Catalyst's world tag is not shown on TMS (catalystRegularWorldOnly, regions.json).
     regularServer: "一般伺服器",
     demonAvenger: "惡魔復仇者",
     xenon: "傑諾",
@@ -285,13 +288,18 @@ export const TERMS: Readonly<
     aSacredSymbol: "原初徽章", // [A]
     arcanePower: "神秘之力", // [A]
     sacredPower: "原初之力", // [A]
-    arcaneCatalyst: "神秘催化剂", // UNCONFIRMED (built from [B]'s 原初催化剂; no official page names it)
+    // No official page names it; the fan client database (mxd.dvg.cn item 2535000) and player guides
+    // all say 神秘催化剂, matching [B]'s 原初催化剂. Kept until a player reports otherwise (Brian,
+    // 2026-09-23).
+    arcaneCatalyst: "神秘催化剂",
     sacredCatalyst: "原初催化剂", // [B]
     // mxd.web.sdo.com notice 379768 (2025-10-01): "1个选择徽章交换券(1000/200)".
     symbolSelector: "选择徽章交换券",
     arcaneSelector: "选择型神秘徽章交换券", // [C]
     sacredSelector: "选择型原初徽章交换券", // [C]
-    regularServer: "普通世界", // [D] (the world type; whether CMS limits the Catalyst to it is not sourced)
+    // [D]: the regular world type, opposite the seasonal 挑战者世界. CMS has no Reboot-type world,
+    // so the Catalyst's world tag is not shown there (catalystRegularWorldOnly, regions.json).
+    regularServer: "普通世界",
     demonAvenger: "恶魔复仇者", // [E]
     xenon: "尖兵", // [E]
     // mxd.web.sdo.com/wiki ArticleID 388900 (2026-05-27): "在神秘河（神秘之力）与格兰蒂斯（原初之力）地区".

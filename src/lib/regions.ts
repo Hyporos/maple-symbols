@@ -52,9 +52,9 @@ export interface RegionProfile {
   weekly: { perClear: number; clears: number };
   /**
    * Whether the Catalysts work only on the server's regular (non-Reboot) worlds. True where a
-   * Reboot-type world exists and the Catalyst is not sold there (GMS; TMS, notice 9922);
-   * false where every world is regular (MSEA, CMS; KMS and JMS since their Reboot worlds
-   * became regular in 2024). Decides the Tools tooltip's "[… Only]" tag.
+   * Reboot-type world exists and the Catalyst is not sold there (GMS's Heroic worlds); false
+   * where every world is regular (MSEA, CMS; KMS, JMS and TMS, whose Reboot worlds became
+   * regular in 2024–25). Decides the Tools tooltip's "[… Only]" tag.
    */
   catalystRegularWorldOnly: boolean;
   /**

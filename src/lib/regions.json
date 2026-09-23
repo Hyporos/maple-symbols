@@ -176,7 +176,7 @@
       "perClear": 80,
       "clears": 3
     },
-    "catalystRegularWorldOnly": true,
+    "catalystRegularWorldOnly": false,
     "classGains": {
       "demonAvengerHp": {
         "arcane": 2100,
