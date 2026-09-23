@@ -110,30 +110,35 @@ export const TERMS: Readonly<
     arcaneRegion: "Arcane River",
     sacredRegion: "Grandis",
   },
-  // MSEA English. Source: maplesea.com patch notes v251 (2026-06-03) and v252 Jupiter
-  // (2026-07-20), which name "Authentic Symbol", "Authentic Force", "Arcane Force" and
-  // "Authentic Catalyst". Plurals and articles are English forms of those. Every value
-  // marked UNCONFIRMED is the GMS word or a form built from a confirmed one, awaiting an
-  // MSEA client screenshot or patch note (docs/REGIONS.md §8, phase 5).
+  // MSEA English, every term from maplesea.com patch notes (all 825 notices searched,
+  // 2026-09-23; https://www.maplesea.com/updates/view/<slug>/):
+  //   v251_Content (2026-06-03) "The quantity of Arcane Symbols obtainable…"; v252_Jupiter
+  //   "Authentic Symbol", "Authentic Force", "Arcane Force"; awake_patch_notes_v199 (2020-11-10)
+  //   "When an Arcane Symbol reaches the maximum level"; v205_patch_notes (2021-05-26) the
+  //   button "Authentic" in the Equipment Inventory; v227_Patch_Notes (2023-11-14) "When using
+  //   Arcane/Authentic Symbol Selector"; v253_FRIEREN (2026-09-07) "Symbol Selector Coupon";
+  //   v176_ark_patch_notes (2018-05-12) "A new item, the Arcane Catalyst has been added";
+  //   v214_patch_notes (2022-05-24) "Demon Avenger and Xenon characters…"; v246_Challengers
+  //   (2025-11-11) "can only be claimed in Normal Worlds"; v253_Content (2026-08-18) "certain
+  //   Arcane River and Grandis area quests". MSEA never says "Regular Server".
   "en-msea": {
-    arcane: "Arcane", // UNCONFIRMED as a label on its own (from "Arcane Force")
-    sacred: "Authentic", // UNCONFIRMED as a label on its own (from "Authentic Symbol")
+    arcane: "Arcane",
+    sacred: "Authentic",
     sacredSymbol: "Authentic Symbol",
-    arcaneSymbols: "Arcane Symbols", // UNCONFIRMED (GMS wording; MSEA keeps "Arcane Force")
+    arcaneSymbols: "Arcane Symbols",
     sacredSymbols: "Authentic Symbols",
-    aArcaneSymbol: "an Arcane Symbol", // UNCONFIRMED, as arcaneSymbols
+    aArcaneSymbol: "an Arcane Symbol",
     aSacredSymbol: "an Authentic Symbol",
     arcanePower: "Arcane Force",
     sacredPower: "Authentic Force",
-    arcaneCatalyst: "Arcane Catalyst", // UNCONFIRMED (GMS wording)
+    arcaneCatalyst: "Arcane Catalyst",
     sacredCatalyst: "Authentic Catalyst",
-    symbolSelector: "Symbol Selector", // UNCONFIRMED (GMS wording)
-    arcaneSelector: "Arcane Symbol Selector", // UNCONFIRMED (GMS wording)
-    sacredSelector: "Authentic Symbol Selector", // UNCONFIRMED (built from "Authentic Symbol")
-    regularServer: "Regular Server", // UNCONFIRMED (GMS wording)
-    demonAvenger: "Demon Avenger", // UNCONFIRMED (GMS wording)
-    xenon: "Xenon", // UNCONFIRMED (GMS wording)
-    // maplesea.com v253 Content Updates (2026-08-18): "certain Arcane River and Grandis area quests".
+    symbolSelector: "Symbol Selector",
+    arcaneSelector: "Arcane Symbol Selector",
+    sacredSelector: "Authentic Symbol Selector",
+    regularServer: "Normal World",
+    demonAvenger: "Demon Avenger",
+    xenon: "Xenon",
     arcaneRegion: "Arcane River",
     sacredRegion: "Grandis",
   },
@@ -282,7 +287,8 @@ export const TERMS: Readonly<
     sacredPower: "原初之力", // [A]
     arcaneCatalyst: "神秘催化剂", // UNCONFIRMED (built from [B]'s 原初催化剂; no official page names it)
     sacredCatalyst: "原初催化剂", // [B]
-    symbolSelector: "选择型徽章交换券", // UNCONFIRMED (built from [C]'s two names)
+    // mxd.web.sdo.com notice 379768 (2025-10-01): "1个选择徽章交换券(1000/200)".
+    symbolSelector: "选择徽章交换券",
     arcaneSelector: "选择型神秘徽章交换券", // [C]
     sacredSelector: "选择型原初徽章交换券", // [C]
     regularServer: "普通世界", // [D] (the world type; whether CMS limits the Catalyst to it is not sourced)

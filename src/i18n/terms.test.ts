@@ -80,7 +80,7 @@ describe("the terms table (docs/I18N.md §10)", () => {
     );
     expect(m.tools.sacredCatalyst).toBe("Authentic Catalyst");
     expect(m.tools.sacredCatalystTooltip).toBe(
-      "<b>[Regular Server Only]</b> Transfer an Authentic Symbol once within the same world"
+      "<b>[Normal World Only]</b> Transfer an Authentic Symbol once within the same world"
     );
   });
 
