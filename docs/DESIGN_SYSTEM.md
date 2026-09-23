@@ -256,12 +256,13 @@ export default Thing;
 7. Colocated `Thing.test.tsx` from `docs/TESTING.md`; then `pnpm lint && pnpm test`.
 8. Run `/new-component` to have this scaffolded for you.
 
-## 12. The /next kit (redesign in progress)
+## 12. The /next kit and page layouts
 
-`src/next/ui/` is the redesign's reusable primitive kit (V2_PLAN); Tasks 3-6 build the new pages on
-top of it, importing from `src/next/ui/index.ts`. Props only, no store access (feature components in
-`src/next/` read the store directly, same as `src/components/`). Class recipes below are the ones a
-consumer won't see from the props alone; read each file for the rest.
+`src/next/ui/` is the redesign's reusable primitive kit (V2_PLAN); the pages in `src/next/pages/`
+and `src/next/shell/` build on top of it, importing from `src/next/ui/index.ts`. Props only, no
+store access (feature components in `src/next/` read the store directly, same as
+`src/components/`). Class recipes below are the ones a consumer won't see from the props alone;
+read each file for the rest.
 
 - **Card**: the redesign's surface. `rounded-xl border border-white/6 bg-linear-to-t from-card to-card-grad p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.04),0_8px_24px_rgb(0_0_0/0.25)] md:p-5`; an optional `label` renders as an `uppercase text-[11px] tracking-[0.08em] text-tertiary` caption and names the card when `as="section"`.
 - **SegmentedSwitch**: a `role="radiogroup"` pill strip, `inline-flex gap-0.5 rounded-lg bg-dark p-1`; each option `rounded-md px-3 py-1.5 text-sm`, checked `bg-secondary text-primary`. Arrow keys move and select, wrapping; only the checked option is in the tab order.
@@ -274,3 +275,9 @@ consumer won't see from the props alone; read each file for the rest.
 - **Tabs**: a `role="tablist"` strip, `flex border-b border-white/8`; the selected tab gets an inset accent underline (`shadow-[inset_0_-2px_0_var(--color-accent)]`). Panel ids follow `${idPrefix}-panel-${value}`, matching each tab's `aria-controls`.
 - **BottomTabBar**: the phone shell's fixed section switcher, `fixed inset-x-0 bottom-0` with icon-over-label tabs, selected `text-accent`. Same tablist/arrow-key behaviour as Tabs.
 - **DataTable**: a plain `<table>` with a visually-hidden caption naming it; a `current` row gets `bg-dark text-primary` and `aria-current="true"`.
+
+**Page layouts** (`src/next/shell/`, `src/next/pages/`): `NextShell` is the /next frame — a `sticky top-0 z-30` wrapper around `NextHeader` and `SuggestionBanner` (so the banner docks `top-full` under the header, DESIGN_SYSTEM §6), `<main id="main" className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-24 md:px-8 md:pb-16">` for the page, a floating `FeedbackButton` (`fixed right-4 bottom-20 z-30`, `md:bottom-6`; opens a `ComingSoonNote` since reporting a wrong number is a later 2.0 feature), and `NextFooter` (a plain `border-t border-white/6` strip, not the gradient panel). `NextHeader` is `border-b border-white/6 bg-linear-to-t from-card to-card-grad`, `h-16`; on phones the nav, `NextServerMenu` and `AccessibilityButton` collapse into a `☰` menu while `CharacterChip` stays in the bar.
+
+`CalculatorPage`: from 768 px, `grid gap-6 min-[768px]:grid-cols-[minmax(320px,400px)_1fr]` — `SymbolPicker` + `CalculatorCard` in the left column (`min-[1150px]:sticky min-[1150px]:top-24`), `OverviewCard` + `GraphCard` stacked in the right (`min-w-0` so the chart can shrink). On phones all three card groups stay mounted (each a `role="tabpanel"` toggled by `hidden`, not conditionally rendered) behind a `BottomTabBar` (Edit/Overview/Graph, `pb-24` on `<main>` clearing it).
+
+`HandbookPage` / `ExtrasPage`: a single `Card` (`mx-auto mt-8 max-w-[860px]`) with a `Tabs` strip and one `role="tabpanel"`; Handbook's tab is local state, Extras' follows the URL (`/changelog`, `/credits`) via `nextHref`/`navigate` so switching tabs also navigates.

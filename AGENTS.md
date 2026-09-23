@@ -46,7 +46,7 @@ src/
   components/  Header, ServerMenu (site version + "Numbers from"), SuggestionBanner (D-9), Footer, Selector (symbol picker + Arcane/Sacred toggle), SEO (head tags), Tooltip, CreditText
     Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
     Handbook/, Extras/  TabLayout pages (ExpTable, CostTable, RatioTable; Changelog, Credits) · ui/ RadioButton, SlideButton, TabLayout
-  next/      the 2.0 redesign at /next (ARCHITECTURE §2): a deletable UI copy sharing lib/state/i18n/hooks; routing.ts (NEXT_UI), NextApp.tsx, shell/, pages/
+  next/      the 2.0 redesign at /next (ARCHITECTURE §2): a deletable UI copy sharing lib/state/i18n/hooks; routing.ts (NEXT_UI), NextApp.tsx, ui/ (kit), shell/, pages/, calculator/, handbook/, extras/
   i18n/      en/*.ts (English catalogue = every language's contract, incl. next.ts for /next-only copy) · index.ts (useMessages, interpolate) ·
              Message.tsx (renders <b>…</b>) · terms.ts (game terms per name set) · gameNames.ts (official names, GMS fallback)
   test/      setup.ts (mocks), helpers.ts (store/viewport/time/head), docs + seo meta-tests
