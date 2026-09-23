@@ -24,7 +24,7 @@ import {
 } from "../../lib/graph";
 import { clampNumberInput } from "../../lib/inputs";
 import { formatDay } from "../../lib/format";
-import { MAX_POWER_PER_SYMBOL } from "../../lib/game";
+import { inFamily, MAX_POWER_PER_SYMBOL } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
 import { gameToday, type Region } from "../../lib/regions";
 import RadioButton from "../ui/RadioButton";
@@ -144,9 +144,11 @@ const Graph = () => {
   const [targetPower, setTargetPower] = useState(NaN);
   const [graphDynamic, setGraphDynamic] = useState(true);
 
-  const enabledSymbols = symbols.filter(
-    (symbol) => symbol.level > 0 && symbol.type === mode
-  ).length;
+  // The Sacred family's max includes Grand Sacred (inFamily), matching usePower's total, so
+  // this sums each enabled symbol's own max rather than multiplying by one shared max.
+  const maxFamilyPower = symbols
+    .filter((symbol) => symbol.level > 0 && inFamily(symbol.type, mode))
+    .reduce((sum, symbol) => sum + MAX_POWER_PER_SYMBOL[symbol.type], 0);
 
   /* ―――――――――――――――――――― Functions ―――――――――――――――――――――― */
 
@@ -243,7 +245,7 @@ const Graph = () => {
           <div className="flex items-center justify-between gap-3 rounded-lg bg-dark px-8 py-4 md:flex-col md:justify-center">
             <p className="text-sm md:text-base">{m.power[mode]}</p>
             <p className="text-sm text-accent md:text-base">
-              {currentPower} / {enabledSymbols * MAX_POWER_PER_SYMBOL[mode]}
+              {currentPower} / {maxFamilyPower}
             </p>
           </div>
 

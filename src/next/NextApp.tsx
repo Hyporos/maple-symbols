@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { BreakpointProvider } from "../contexts/BreakpointContext";
+import { useAppStore } from "../state/store";
 import { useNextRoute } from "./routing";
 import NextShell from "./shell/NextShell";
 import CalculatorPage from "./pages/CalculatorPage";
@@ -19,6 +20,18 @@ const NextApp = () => {
     meta.content = "noindex";
     document.head.appendChild(meta);
     return () => meta.remove();
+  }, []);
+
+  // The current UI (src/components) has no Grand tab and never filters Calculator/Tools's
+  // selection by mode, so leaving a Grand symbol selected when the player navigates back to "/"
+  // would show Tallahart/Geardock there. Folding back to Sacred on unmount keeps that fix inside
+  // src/next: deleting this folder removes it along with everything else /next added.
+  useEffect(() => {
+    return () => {
+      const { symbols, selectedId, setMode } = useAppStore.getState();
+      const symbol = symbols.find((s) => s.id === selectedId);
+      if (symbol?.type === "grand") setMode("sacred");
+    };
   }, []);
 
   return (

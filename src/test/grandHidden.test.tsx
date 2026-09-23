@@ -66,12 +66,13 @@ describe("Grand Sacred stays out of the interface", () => {
     });
   }
 
-  it("adds Grand power to the Sacred total (spec §1, Brian 2026-09-23)", () => {
+  it("adds Grand power to the Sacred total and its max (spec §1, Brian 2026-09-23)", () => {
     seedSymbol(7, { level: 5, experience: 0, daily: true });
     render(<Graph />);
-    // Sacred (id 7, level 5) 50 + Grand (id 13, level 5) 50 + Grand (id 14, level 8) 80 = 180;
-    // the denominator only counts the one enabled Sacred symbol the current UI lists.
-    expect(screen.getByText("180 / 110")).toBeInTheDocument();
+    // Numerator: Sacred (id 7, level 5) 50 + Grand (id 13, level 5) 50 + Grand (id 14, level 8) 80
+    // = 180. Denominator: the same three enabled symbols' own max (110 each) = 330, so the max
+    // grows with Grand Sacred exactly as the total does (Calculator/Graph.tsx maxFamilyPower).
+    expect(screen.getByText("180 / 330")).toBeInTheDocument();
   });
 
   for (const mode of ["arcane", "sacred"] as const) {
