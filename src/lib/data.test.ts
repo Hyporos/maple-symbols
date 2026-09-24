@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { createInitialSymbols } from "./data";
-import { isMode, selectorWorksOn } from "./game";
+import { selectorWorksOn } from "./game";
 import symbolsJson from "./symbols.json";
 
 describe("createInitialSymbols", () => {
@@ -71,8 +71,8 @@ describe("createInitialSymbols", () => {
     expect(symbols.filter((s) => !selectorWorksOn(s)).map((s) => s.name)).toEqual(["Geardock"]);
   });
 
-  it("has an image for every symbol the interface lists (Grand Sacred has none yet, GAME §4)", () => {
-    for (const s of symbols.filter((s) => isMode(s.type))) {
+  it("has an image for every symbol but Grand Sacred (none yet, GAME §4)", () => {
+    for (const s of symbols.filter((s) => s.type !== "grand")) {
       expect(existsSync(`public${s.img}`), s.img).toBe(true);
     }
   });

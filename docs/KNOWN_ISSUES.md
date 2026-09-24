@@ -6,6 +6,10 @@ Severity: **H** = wrong output or data loss for users, **M** = wrong in an edge 
 
 ## Open
 
+### KI-017 · L · open (found 2026-09-23, predates the /next work) · In `pnpm dev`, `index.html`'s inline head script throws `Cannot read properties of undefined (reading 'title')` on any unknown path under an edition (`/kms/unknownpage`, `/kms/next`): its `pageMap[path] || pageMap["/"]` lookup comes back `undefined` there, so `page.title` throws before the app renders its own head. The page still renders (React sets the title and meta afterwards), but the head script's early title/meta write is skipped and the console shows the error. Not yet checked on a built page.
+
+### KI-018 · L · open (found 2026-09-23) · The /next pages have no `<h1>`: each card is an `<h2>`/`<section>`, and NextHeader's logo is a link. SEO's heading rules want one `<h1>` per page, so which element it is (the page title, the calculator card, the logo) is decided when /next is adopted (ARCHITECTURE §9, "Adopting /next"); /next is `noindex` until then, so nothing is lost today.
+
 ## Resolved
 
 ### KI-016 · resolved on `v2` (2026-09-23) · The Damage Ratio tab's continent names are the terms `{arcaneRegion}` / `{sacredRegion}` (`handbook.regionName`), filled per edition from official wording: Arcane River / Grandis (GMS, MSEA v253), 아케인리버 / 그란디스 (KMS 1.2.416), アーケインリバー / グランディス (JMS ver4.43), 奧術之河 / 格蘭蒂斯 (TMS CROWN), 神秘河 / 格兰蒂斯 (CMS guide wiki 388900). (Was: English literals in `RatioTable.tsx`, so every translated edition would have shown them in English.)
