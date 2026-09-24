@@ -107,7 +107,7 @@ describe("OverviewCard", () => {
     expect(screen.queryByText("Cernium")).not.toBeInTheDocument();
   });
 
-  it("shows each symbol by its icon alone below 1150 px, still named for screen readers", () => {
+  it("shows each symbol by its icon alone on tablets, still named for screen readers", () => {
     setViewport("tablet");
     render(
       <BreakpointProvider>
@@ -116,5 +116,16 @@ describe("OverviewCard", () => {
     );
     const select = screen.getByRole("button", { name: "Chu Chu Island" });
     expect(within(select).getByText("Chu Chu Island")).toHaveClass("sr-only");
+  });
+
+  it("shows icon and name on phones, where the card has the whole width", () => {
+    setViewport("mobile");
+    render(
+      <BreakpointProvider>
+        <OverviewCard />
+      </BreakpointProvider>
+    );
+    const select = screen.getByRole("button", { name: "Chu Chu Island" });
+    expect(within(select).getByText("Chu Chu Island")).not.toHaveClass("sr-only");
   });
 });

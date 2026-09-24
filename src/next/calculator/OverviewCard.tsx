@@ -34,7 +34,10 @@ const OverviewCard = () => {
   const selectedId = useAppStore((s) => s.selectedId);
   const selectSymbol = useAppStore((s) => s.selectSymbol);
 
-  const { isTablet } = useBreakpoint();
+  const { isMobile, isTablet } = useBreakpoint();
+  // Icon-only names on tablets only (768–1149 px, the narrow results column); phones have the
+  // card to themselves and show icon plus name (Brian, 2026-09-23).
+  const compactNames = isTablet && !isMobile;
 
   const [targetLevel, setTargetLevel] = useState(NaN);
 
@@ -124,8 +127,7 @@ const OverviewCard = () => {
               width={24}
               className={cn(Number.isNaN(symbol.level) && "grayscale")}
             />
-            {/* Compact below 1150 px (the tablet column and phones): the icon alone, still named. */}
-            <p className={cn("text-primary", isTablet && "sr-only")}>{names.name}</p>
+            <p className={cn("text-primary", compactNames && "sr-only")}>{names.name}</p>
           </button>
           <ProgressBar
             value={invested}
