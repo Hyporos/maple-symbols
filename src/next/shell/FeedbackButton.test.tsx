@@ -16,7 +16,7 @@ describe("FeedbackButton", () => {
   it("floats bottom-right and opens the coming-soon note", () => {
     render(<FeedbackButton placement="floating" />, { wrapper });
     const button = screen.getByRole("button", { name: "Feedback" });
-    expect(button).toHaveClass("fixed", "right-4", "bottom-6");
+    expect(button).toHaveClass("fixed", "right-[min(1rem,calc((100%-1136px)/4-22px))]", "bottom-6");
     expect(button).toHaveAttribute("aria-haspopup", "dialog");
     fireEvent.click(button);
     expect(screen.getByRole("dialog", { name: "Feedback" })).toHaveTextContent(

@@ -25,6 +25,11 @@ const FeedbackButton = ({ placement }: FeedbackButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const floating = placement === "floating";
 
+  // Floating, it sits in the gutter right of the cards: (viewport − 1136 px of content) / 2 wide,
+  // where the viewport excludes a classic scrollbar but the 1256 px media query does not. Centring
+  // the 44 px button in that gutter, capped at 1rem from the edge, keeps it clear of the cards down
+  // to 1256 px even with a 15 px scrollbar (a fixed element's % is of the viewport it sits in).
+
   return (
     <>
       <button
@@ -34,7 +39,7 @@ const FeedbackButton = ({ placement }: FeedbackButtonProps) => {
         onClick={() => setOpen(true)}
         className={cn(
           floating
-            ? "fixed right-4 bottom-6 z-30 flex size-11 items-center justify-center gap-2 rounded-full border border-accent/40 bg-secondary text-sm text-primary shadow-[0_6px_18px_rgb(0_0_0/0.4)] hover:bg-hover min-[1440px]:size-auto min-[1440px]:px-4 min-[1440px]:py-2.5"
+            ? "fixed right-[min(1rem,calc((100%-1136px)/4-22px))] bottom-6 z-30 flex size-11 items-center justify-center gap-2 rounded-full border border-accent/40 bg-secondary text-sm text-primary shadow-[0_6px_18px_rgb(0_0_0/0.4)] hover:bg-hover min-[1440px]:size-auto min-[1440px]:px-4 min-[1440px]:py-2.5"
             : "flex min-h-9 items-center gap-2 rounded-lg bg-light px-3 py-2 text-sm text-secondary transition-colors hover:text-primary motion-reduce:transition-none"
         )}
       >
