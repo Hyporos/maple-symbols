@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Card, DataTable, NumberField, ProgressBar } from "../ui";
+import { Card, DataTable, NumberField, ProgressBar, StatBox } from "../ui";
 import { collapsedRowLabels, targetPanelLabels } from "../../lib/overview";
 import { clampNumberInput } from "../../lib/inputs";
 import { maxLevelFor } from "../../lib/game";
 import { gameToday } from "../../lib/regions";
-import { calculateDaysRemaining, cn, getDailySymbols, isMaxLevel } from "../../lib/utils";
+import { calculateDaysRemaining, cn, getDailySymbols, isMaxLevel, isValid } from "../../lib/utils";
 import { formatDay } from "../../lib/format";
 import { useAppStore } from "../../state/store";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
@@ -12,6 +12,9 @@ import { useLocale, useMessages, useNameSet, interpolate } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 import { allMaxedOn } from "./allMaxedOn";
+
+// The target level of a symbol whose level is not entered yet, as the picker captions it.
+const UNSET_TARGET = "–";
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * OverviewCard is the /next per-symbol target table: a row per symbol of the current
@@ -105,6 +108,8 @@ const OverviewCard = () => {
     return {
       key: String(symbol.id),
       current: symbol.id === selectedId,
+      // Dimmed like the current UI's unset rows, but still selectable, to go and set it.
+      muted: !isValid(symbol.level),
       cells: [
         <div key="symbol" className="flex flex-col gap-1.5">
           <button
@@ -120,7 +125,7 @@ const OverviewCard = () => {
               className={cn(Number.isNaN(symbol.level) && "grayscale")}
             />
             {/* Compact below 1150 px (the tablet column and phones): the icon alone, still named. */}
-            <span className={cn(isTablet && "sr-only")}>{names.name}</span>
+            <p className={cn("text-primary", isTablet && "sr-only")}>{names.name}</p>
           </button>
           <ProgressBar
             value={invested}
@@ -128,12 +133,15 @@ const OverviewCard = () => {
             label={interpolate(mn.toMax, { symbol: names.name, percent }, locale)}
           />
         </div>,
-        <span
-          key="target"
-          className={cn(Number.isNaN(symbol.level) ? "grayscale filter" : "text-accent")}
-        >
-          {row.target}
-        </span>,
+        isValid(symbol.level) ? (
+          <p key="target" className="text-accent">
+            {row.target}
+          </p>
+        ) : (
+          <p key="target" className="text-tertiary">
+            {UNSET_TARGET}
+          </p>
+        ),
         <div key="completion">
           <p>{row.completion}</p>
           <p className="text-xs text-tertiary">{row.days}</p>
@@ -147,18 +155,27 @@ const OverviewCard = () => {
     <Card label={mn.label} as="section">
       <DataTable caption={mn.label} columns={columns} rows={rows} />
 
-      <div className="mt-4 flex flex-col items-center gap-3 rounded-lg bg-dark px-4 py-3 md:flex-row md:justify-between">
-        <p className="text-sm">{m.targetLevel}</p>
-        <NumberField
-          value={targetLevel}
-          onChange={(raw) => setTargetLevel(clampNumberInput(raw, maxLevel))}
-          placeholder={m.levelPlaceholder}
-          label={m.targetLevel}
-          className="w-20"
-        />
-        <p className="text-sm text-tertiary">{panel.completion}</p>
-        <p className="text-sm text-tertiary">{panel.days}</p>
-        <p className="text-sm text-tertiary">{panel.remaining}</p>
+      {/* TARGET LEVEL: the results appear once a target is entered. */}
+      <div className="mt-4 border-t border-white/6 pt-4">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-primary">{m.targetLevel}</p>
+          <NumberField
+            value={targetLevel}
+            onChange={(raw) => setTargetLevel(clampNumberInput(raw, maxLevel))}
+            placeholder={m.levelPlaceholder}
+            label={m.targetLevel}
+            className="w-20"
+          />
+        </div>
+        {isValid(targetLevel) ? (
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <StatBox caption={m.completionDate}>{panel.completion}</StatBox>
+            <StatBox caption={m.daysRemaining}>{panel.days}</StatBox>
+            <StatBox caption={m.symbolsRemaining}>{panel.remaining}</StatBox>
+          </div>
+        ) : (
+          <p className="mt-2 text-sm text-tertiary">{m.enterTargetLevel}</p>
+        )}
       </div>
 
       <p className="mt-3 text-center text-sm text-tertiary">

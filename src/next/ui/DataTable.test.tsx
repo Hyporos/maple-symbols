@@ -26,4 +26,14 @@ describe("DataTable", () => {
     expect(table).toHaveClass("w-full");
     expect(table.parentElement).toHaveClass("overflow-x-auto");
   });
+  it("dims a muted row", () => {
+    render(
+      <DataTable
+        columns={columns}
+        rows={[{ key: "1", cells: ["1", "100"], muted: true }]}
+        caption="Exp table"
+      />
+    );
+    expect(screen.getByText("100").closest("tr")).toHaveClass("opacity-40");
+  });
 });

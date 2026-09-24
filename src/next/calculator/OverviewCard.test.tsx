@@ -61,7 +61,34 @@ describe("OverviewCard", () => {
   it("greys out and blanks the row for an unset symbol", () => {
     render(<OverviewCard />);
     const row = screen.getByRole("row", { name: /Vanishing Journey/ });
-    expect(row).toHaveTextContent("0"); // target column for an unset symbol
+    // The picker's "–", not a "0" target, and the whole row dimmed (but still selectable).
+    expect(within(row).getAllByRole("cell")[1]).toHaveTextContent(/^–$/);
+    expect(row).toHaveClass("opacity-40");
+    expect(within(row).getByRole("button", { name: "Vanishing Journey" })).toBeEnabled();
+  });
+
+  it("names each symbol in plain text, not an accent span that reads as a link", () => {
+    render(<OverviewCard />);
+    const name = within(screen.getByRole("button", { name: "Chu Chu Island" })).getByText(
+      "Chu Chu Island"
+    );
+    expect(name.tagName).toBe("P");
+    expect(name).toHaveClass("text-primary");
+  });
+
+  it("puts the target label and field on one line, and shows the results only once a target is entered", () => {
+    vi.setSystemTime(WED);
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
+    render(<OverviewCard />);
+    const input = screen.getByRole("spinbutton", { name: "Target Level" });
+    expect(input.parentElement).toHaveClass("flex", "items-center");
+    expect(screen.getByText("Enter a target level")).toBeInTheDocument();
+    expect(screen.queryByText("Days Remaining")).not.toBeInTheDocument();
+
+    fireEvent.change(input, { target: { value: "6" } });
+    expect(screen.queryByText("Enter a target level")).not.toBeInTheDocument();
+    expect(screen.getByText("Days Remaining").parentElement).toHaveTextContent("2 days");
+    expect(screen.getAllByText("Symbols Remaining")).toHaveLength(2); // column header + box
   });
 
   it("says Complete once every symbol of the family is already maxed", () => {

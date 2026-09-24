@@ -25,7 +25,6 @@ import {
 } from "../../lib/graph";
 import { clampNumberInput } from "../../lib/inputs";
 import { formatDay } from "../../lib/format";
-import { inFamily, MAX_POWER_PER_SYMBOL } from "../../lib/game";
 import { usePower } from "../../hooks/usePower";
 import { dayjs } from "../../lib/dayjs";
 import { gameToday, type Region } from "../../lib/regions";
@@ -35,6 +34,7 @@ import type { Mode, SymbolData } from "../../lib/types";
 import { interpolate, useLocale, useNameSet, useMessages } from "../../i18n";
 import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
+import { familyMaxPower } from "./familyMaxPower";
 
 interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
   currentPower: number;
@@ -148,9 +148,8 @@ const GraphCard = () => {
   // (Graph.tsx) and usePower: the Grand tab reads as Sacred everywhere here.
   const family: Mode = mode === "grand" ? "sacred" : mode;
 
-  const maxFamilyPower = symbols
-    .filter((symbol) => symbol.level > 0 && inFamily(symbol.type, family))
-    .reduce((sum, symbol) => sum + MAX_POWER_PER_SYMBOL[symbol.type], 0);
+  // The whole family at max, set or not: the same maximum the picker shows.
+  const maxFamilyPower = familyMaxPower(symbols, family);
 
   const currentPower = usePower(symbols, family);
 
@@ -230,16 +229,16 @@ const GraphCard = () => {
   return (
     <Card label={mn.label} as="section">
       <div className="flex flex-col gap-3 md:flex-row">
-        <StatBox caption={mn.now}>
+        <StatBox caption={m.power[family]}>
           {currentPower} / {maxFamilyPower}
         </StatBox>
-        <StatBox caption={mn.target} className="flex-1">
+        <StatBox caption={m.targetPowerFull[family]} className="flex-1">
           <div className="flex items-center gap-2">
             <NumberField
               value={targetPower}
               onChange={(raw) => setTargetPower(clampNumberInput(raw, maxPower))}
-              placeholder={m.targetPlaceholder}
-              label={mn.target}
+              placeholder=""
+              label={m.targetPowerFull[family]}
               disabled={graphSymbols.length === 1}
               className="w-20"
             />

@@ -2,7 +2,7 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { usePower } from "../../hooks/usePower";
 import { track } from "../../lib/analytics";
 import { formatNumber } from "../../lib/format";
-import { inFamily, MAX_POWER_PER_SYMBOL, maxLevelFor } from "../../lib/game";
+import { maxLevelFor } from "../../lib/game";
 import type { SymbolType } from "../../lib/types";
 import { cn, isMaxLevel, isValid } from "../../lib/utils";
 import { interpolate, useLocale, useMessages, useNameSet } from "../../i18n";
@@ -10,6 +10,7 @@ import { symbolNames } from "../../i18n/gameNames";
 import Message from "../../i18n/Message";
 import { useAppStore } from "../../state/store";
 import { Card, ProgressRing, SegmentedSwitch } from "../ui";
+import { familyMaxPower } from "./familyMaxPower";
 
 // The caption under a chip whose level is not entered yet.
 const UNSET_CAPTION = "–";
@@ -38,9 +39,7 @@ const SymbolPicker = () => {
   // Grand Sacred's power counts toward Sacred Power, so the Grand tab shows the Sacred total.
   const powerFamily = mode === "grand" ? "sacred" : mode;
   const power = usePower(symbols, powerFamily);
-  const maxPower = symbols
-    .filter((symbol) => inFamily(symbol.type, powerFamily))
-    .reduce((sum, symbol) => sum + MAX_POWER_PER_SYMBOL[symbol.type], 0);
+  const maxPower = familyMaxPower(symbols, powerFamily);
 
   const shown = symbols.filter((symbol) => symbol.type === mode);
 

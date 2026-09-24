@@ -3,14 +3,16 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import GraphCard from "./GraphCard";
 import { seedSymbol, WED } from "../../test/helpers";
 
-const targetInput = () => screen.getByRole("spinbutton", { name: "Target" });
+const targetInput = () => screen.getByRole("spinbutton", { name: "Target Arcane Power" });
 
 describe("GraphCard", () => {
   it("shows the current and target power and the spacing switch", () => {
     seedSymbol(1, { level: 5, experience: 0, daily: true });
     render(<GraphCard />);
-    expect(screen.getByText("Now")).toBeInTheDocument();
-    expect(targetInput()).toBeInTheDocument();
+    // Captions name the power (no "Target" twice: the field has no placeholder of its own).
+    expect(screen.getByText("Arcane Power")).toBeInTheDocument();
+    expect(screen.getByText("Target Arcane Power")).toBeInTheDocument();
+    expect(targetInput().getAttribute("placeholder") ?? "").toBe("");
     expect(screen.getByRole("radiogroup", { name: "X-axis spacing" })).toBeInTheDocument();
   });
 
@@ -37,7 +39,9 @@ describe("GraphCard", () => {
     seedSymbol(7, { level: 5, experience: 0, daily: true }, false); // Cernium
     seedSymbol(13, { level: 5, experience: 0 }); // selects Tallahart, mode → grand
     render(<GraphCard />);
-    expect(screen.getByText("100 / 220")).toBeInTheDocument(); // (5*10) + (5*10) of 110+110
+    expect(screen.getByText("Sacred Power")).toBeInTheDocument();
+    // (5*10) + (5*10) of the whole Sacred family at max: 6 Sacred + 2 Grand, 110 each.
+    expect(screen.getByText("100 / 880")).toBeInTheDocument();
   });
 
   it("offers Dynamic (default) and Linear x-axis modes", () => {
@@ -46,7 +50,13 @@ describe("GraphCard", () => {
     const group = screen.getByRole("radiogroup", { name: "X-axis spacing" });
     expect(screen.getByRole("radio", { name: "Dynamic" })).toHaveAttribute("aria-checked", "true");
     fireEvent.click(screen.getByRole("radio", { name: "Linear" }));
-    expect(screen.getByText("70 / 220")).toBeInTheDocument(); // still renders after the switch
+    expect(screen.getByText("70 / 1320")).toBeInTheDocument(); // still renders after the switch
     expect(group).toBeInTheDocument();
+  });
+
+  it("reads the same maximum as the picker: the whole family, set or not", () => {
+    seedSymbol(1, { level: 5, experience: 0, daily: true }); // one set symbol of six
+    render(<GraphCard />);
+    expect(screen.getByText("70 / 1320")).toBeInTheDocument(); // 6 × 220
   });
 });
