@@ -12,7 +12,8 @@ interface NumberFieldProps {
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * NumberField is a number input for level/experience entry. NaN renders as blank, and the mouse
-// * wheel blurs it so scrolling the page never changes the value.
+// * wheel blurs it so scrolling the page never changes the value. Keyboard focus shows the global
+// * accent ring (src/global.css); an outline utility here would hide it.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const NumberField = ({
@@ -37,7 +38,7 @@ const NumberField = ({
       onWheel={handleWheel}
       disabled={disabled}
       className={cn(
-        "w-full rounded-lg bg-secondary px-3 py-2 text-center text-sm text-secondary outline-hidden transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary motion-reduce:transition-none",
+        "w-full rounded-lg bg-secondary px-3 py-2 text-center text-sm text-secondary transition-colors hover:bg-hover hover:text-primary focus:bg-hover focus:text-primary motion-reduce:transition-none",
         className
       )}
     />

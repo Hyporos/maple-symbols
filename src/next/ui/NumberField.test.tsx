@@ -25,4 +25,8 @@ describe("NumberField", () => {
     fireEvent.wheel(input);
     expect(input).not.toHaveFocus();
   });
+  it("leaves the global keyboard focus ring alone (no outline utility overriding it)", () => {
+    render(<NumberField value={5} onChange={() => {}} placeholder="1" label="Level" />);
+    expect(screen.getByRole("spinbutton", { name: "Level" }).className).not.toMatch(/outline-/);
+  });
 });

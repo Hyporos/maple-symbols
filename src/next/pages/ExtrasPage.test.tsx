@@ -43,5 +43,8 @@ describe("ExtrasPage", () => {
       changelogEntries[0].version
     );
     expect(screen.getByRole("heading", { level: 3 })).not.toHaveTextContent(newest.version);
+    // Keyboard focus shows the accent ring, not nothing.
+    expect(screen.getByRole("combobox")).toHaveClass("focus-visible:outline-accent");
+    expect(screen.getByRole("combobox")).not.toHaveClass("outline-hidden");
   });
 });

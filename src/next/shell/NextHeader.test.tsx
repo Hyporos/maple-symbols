@@ -85,4 +85,16 @@ describe("NextHeader", () => {
       "/msea/next/handbook"
     );
   });
+
+  it("says whether the phone menu is open and which element it controls", () => {
+    setViewport("mobile");
+    renderHeader();
+    const toggle = screen.getByRole("button", { name: "Open navigation menu" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(toggle);
+    const open = screen.getByRole("button", { name: "Close navigation menu" });
+    expect(open).toHaveAttribute("aria-expanded", "true");
+    const menu = document.getElementById(open.getAttribute("aria-controls")!);
+    expect(menu).toContainElement(screen.getAllByRole("navigation").at(-1)!);
+  });
 });

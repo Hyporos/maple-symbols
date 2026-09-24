@@ -12,7 +12,8 @@ interface TabsProps<T extends string> {
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * Tabs renders a tablist whose panels the caller owns; panel ids follow `${idPrefix}-panel-${value}`
-// * so a `Tabs` and its panel markup stay linked without the caller re-deriving the id scheme.
+// * so a `Tabs` and its panel markup stay linked without the caller re-deriving the id scheme. The
+// * caller renders the selected tab's panel only, which is the one the selected tab controls.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const Tabs = <T extends string>({ label, tabs, value, onChange, idPrefix }: TabsProps<T>) => {
@@ -37,7 +38,8 @@ const Tabs = <T extends string>({ label, tabs, value, onChange, idPrefix }: Tabs
             role="tab"
             id={`${idPrefix}-tab-${tab.value}`}
             aria-selected={selected}
-            aria-controls={`${idPrefix}-panel-${tab.value}`}
+            // Only the selected tab's panel is rendered, so only it names one.
+            aria-controls={selected ? `${idPrefix}-panel-${tab.value}` : undefined}
             tabIndex={selected ? 0 : -1}
             className={cn(
               "flex-1 py-3 text-sm transition-colors motion-reduce:transition-none",

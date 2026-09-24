@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from "react";
+import { useId, useState, type MouseEvent } from "react";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import { cn } from "../../lib/utils";
 import { useRouter } from "../../contexts/RouterContext";
@@ -24,6 +24,7 @@ const NextHeader = () => {
   const { navigate } = useRouter();
   const { edition, path } = useNextRoute();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuId = useId();
 
   const home = nextHref("/", edition);
 
@@ -93,6 +94,8 @@ const NextHeader = () => {
             <button
               type="button"
               aria-label={menuOpen ? m.closeMenu : m.openMenu}
+              aria-expanded={menuOpen}
+              aria-controls={menuId}
               onClick={() => setMenuOpen((v) => !v)}
               className="flex items-center justify-center rounded-lg p-2 text-secondary transition-colors hover:text-primary motion-reduce:transition-none"
             >
@@ -103,7 +106,7 @@ const NextHeader = () => {
       </div>
 
       {isMobile && menuOpen && (
-        <div className="border-t border-white/6 px-4 pb-4">
+        <div id={menuId} className="border-t border-white/6 px-4 pb-4">
           <nav className="flex flex-col gap-1 pt-3">
             {NAV.map((page) =>
               navLink(

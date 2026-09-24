@@ -25,4 +25,10 @@ describe("Tabs", () => {
     fireEvent.keyDown(screen.getByRole("tab", { name: "Exp" }), { key: "ArrowRight" });
     expect(onChange).toHaveBeenCalledWith("cost");
   });
+  it("points aria-controls only from the selected tab, whose panel is the one rendered", () => {
+    render(
+      <Tabs label="Tables" tabs={[...tabs]} value="exp" onChange={() => {}} idPrefix="handbook" />
+    );
+    expect(screen.getByRole("tab", { name: "Cost" })).not.toHaveAttribute("aria-controls");
+  });
 });

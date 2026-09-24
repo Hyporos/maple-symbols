@@ -144,4 +144,13 @@ describe("HandbookPage", () => {
     fireEvent.click(within(tabs).getByRole("tab", { name: "Experience Table" }));
     expect(heading()).toHaveTextContent(/^Sacred Symbols$/);
   });
+
+  it("points every aria-controls at a panel that is in the page", async () => {
+    renderAt("/next/handbook");
+    const tabs = await screen.findByRole("tablist", { name: "Handbook" });
+    for (const tab of within(tabs).getAllByRole("tab")) {
+      const controls = tab.getAttribute("aria-controls");
+      if (controls) expect(document.getElementById(controls)).toHaveAttribute("role", "tabpanel");
+    }
+  });
 });

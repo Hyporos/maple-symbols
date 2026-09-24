@@ -86,7 +86,7 @@ const ChangelogPanel = () => {
           aria-label={m.changelogTab}
           value={selected}
           onChange={(event) => setSelected(event.target.value as ChangelogVersion)}
-          className="mb-5 w-full rounded-lg bg-dark px-3 py-2 text-sm text-primary outline-hidden"
+          className="mb-5 w-full rounded-lg bg-dark px-3 py-2 text-sm text-primary focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-solid"
         >
           {newestFirst.map((e) => (
             <option key={e.version} value={e.version}>
