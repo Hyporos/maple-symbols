@@ -34,18 +34,24 @@ describe("NextShell", () => {
     expect(document.title).toBe(pageMetaFor("/handbook", DEFAULT_EDITION).title);
   });
 
-  it("docks the suggestion banner under the header instead of the page's own bottom", () => {
+  it("puts the /next suggestion banner in the page's flow between the header and the page", () => {
     // A Korean browser on the GMS edition of /next triggers the suggestion banner (REGIONS D-9).
     mockBrowser({ languages: ["ko-KR", "ko"] });
-    renderShellAt("/next");
+    renderShellAt("/next/handbook");
     const header = screen.getByRole("banner");
     const suggestion = screen.getByRole("complementary");
-    // Sharing the header's own wrapper (not NextShell's outer flex column) gives the banner a
-    // containing block sized to the header, so its `top-full` docks it right under the header
-    // instead of at the page's own bottom (it rendered at top:740 before this fix).
-    expect(suggestion.parentElement).toBe(header.parentElement);
-    expect(suggestion.parentElement?.className).toMatch(/sticky/);
+    // Its own row, after the sticky header's wrapper and before <main>: absolutely positioned
+    // under the header it hid the top of the first card on phones.
+    expect(suggestion.previousElementSibling).toBe(header.parentElement);
+    expect(suggestion.nextElementSibling).toBe(screen.getByRole("main"));
+    expect(suggestion.className).not.toMatch(/absolute/);
+    // The /next copy: the link stays on this /next page in the suggested edition.
+    expect(screen.getByRole("link", { name: "KMS 버전으로 이동" })).toHaveAttribute(
+      "href",
+      "/kms/next/handbook"
+    );
   });
+
   it("pads the foot of the page for a phone bottom tab bar, and only then", () => {
     const pad = "pb-[calc(57px+env(safe-area-inset-bottom))]";
     const root = () => screen.getByRole("main").parentElement!;
