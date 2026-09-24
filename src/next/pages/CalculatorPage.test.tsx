@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
 import { renderNextAt as renderAt } from "../testing";
 import { useAppStore } from "../../state/store";
-import { seedSymbol, setViewport } from "../../test/helpers";
+import { seedSymbol, setViewport, WED } from "../../test/helpers";
 
 const panel = (section: "edit" | "overview" | "graph") =>
   document.getElementById(`calc-panel-${section}`);
@@ -92,5 +92,30 @@ describe("CalculatorPage (/next)", () => {
         expect(Number(px)).toBeLessThanOrEqual(360);
       }
     }
+  });
+
+  it("moves the Overview's done-by date as the Calculator's level and experience change (spec §4)", async () => {
+    vi.setSystemTime(WED);
+    seedSymbol(1, { level: 5, experience: 0, daily: true });
+    setViewport("desktop");
+    renderAt("/next");
+    const overview = await screen.findByRole("region", { name: "Overview" });
+    const row = () => within(overview).getByRole("row", { name: /Vanishing Journey/ });
+    expect(row()).toHaveTextContent("2027-01-25"); // the OverviewCard.test case: 131 days
+
+    const calculator = screen.getByRole("region", { name: "Calculator" });
+    fireEvent.change(within(calculator).getByRole("spinbutton", { name: "Level" }), {
+      target: { value: "19" },
+    });
+    // 372 symbols to max at 20 a day: 19 days.
+    expect(row()).toHaveTextContent("2026-10-05");
+    expect(row()).toHaveTextContent("372");
+
+    fireEvent.change(within(calculator).getByRole("spinbutton", { name: "Experience" }), {
+      target: { value: "100" },
+    });
+    // 272 left: 14 days.
+    expect(row()).toHaveTextContent("2026-09-30");
+    expect(row()).toHaveTextContent("272");
   });
 });

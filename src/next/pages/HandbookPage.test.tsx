@@ -153,4 +153,15 @@ describe("HandbookPage", () => {
       if (controls) expect(document.getElementById(controls)).toHaveAttribute("role", "tabpanel");
     }
   });
+
+  it("speaks the edition's own terms on another edition's /next page", async () => {
+    renderAt("/msea/next/handbook");
+    await screen.findByRole("tablist", { name: "Handbook" });
+    fireEvent.click(screen.getByRole("radio", { name: "Authentic" }));
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(/^Authentic Symbols$/);
+    fireEvent.click(screen.getByRole("radio", { name: "Grand" }));
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
+      /^Grand Authentic Symbols$/
+    );
+  });
 });
