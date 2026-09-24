@@ -24,7 +24,7 @@ import {
   type GraphSymbols,
 } from "../../lib/graph";
 import { clampNumberInput } from "../../lib/inputs";
-import { formatDay } from "../../lib/format";
+import { formatDay, formatNumber } from "../../lib/format";
 import { usePower } from "../../hooks/usePower";
 import { dayjs } from "../../lib/dayjs";
 import { gameToday, type Region } from "../../lib/regions";
@@ -230,7 +230,7 @@ const GraphCard = () => {
     <Card label={mn.label} as="section">
       <div className="flex flex-col gap-3 md:flex-row">
         <StatBox caption={m.power[family]}>
-          {currentPower} / {maxFamilyPower}
+          {formatNumber(currentPower, locale)} / {formatNumber(maxFamilyPower, locale)}
         </StatBox>
         <StatBox caption={m.targetPowerFull[family]} className="flex-1">
           <div className="flex items-center gap-2">

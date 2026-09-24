@@ -50,13 +50,13 @@ describe("GraphCard", () => {
     const group = screen.getByRole("radiogroup", { name: "X-axis spacing" });
     expect(screen.getByRole("radio", { name: "Dynamic" })).toHaveAttribute("aria-checked", "true");
     fireEvent.click(screen.getByRole("radio", { name: "Linear" }));
-    expect(screen.getByText("70 / 1320")).toBeInTheDocument(); // still renders after the switch
+    expect(screen.getByText("70 / 1,320")).toBeInTheDocument(); // still renders after the switch
     expect(group).toBeInTheDocument();
   });
 
   it("reads the same maximum as the picker: the whole family, set or not", () => {
     seedSymbol(1, { level: 5, experience: 0, daily: true }); // one set symbol of six
     render(<GraphCard />);
-    expect(screen.getByText("70 / 1320")).toBeInTheDocument(); // 6 × 220
+    expect(screen.getByText("70 / 1,320")).toBeInTheDocument(); // 6 × 220, grouped like the picker
   });
 });
