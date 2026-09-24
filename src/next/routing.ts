@@ -16,6 +16,8 @@ import {
   type RoutePath,
 } from "../lib/routes";
 
+// App.tsx repeats this condition inline (with the __SERVES_DRAFTS__ constant) around its lazy
+// NextApp import, so the bundler can drop the chunk; widening one means widening the other.
 export const NEXT_UI: boolean = import.meta.env.DEV || SERVES_DRAFTS;
 
 /** Whether the page inside an edition is under /next, and the page path beneath it. */

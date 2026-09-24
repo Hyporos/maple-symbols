@@ -48,8 +48,6 @@ export const next = {
   },
   graph: {
     label: "시간에 따른 포스 변화",
-    now: "현재",
-    target: "목표",
     reachedBy: "<b>{date}</b>에 도달 예정",
   },
   handbook: { label: "핸드북", grandSymbolsHeading: "{grand} {sacredSymbols}" },

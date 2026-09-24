@@ -50,8 +50,6 @@ export const next = {
   },
   graph: {
     label: "フォースの推移",
-    now: "現在",
-    target: "目標",
     reachedBy: "<b>{date}</b>に到達予定",
   },
   handbook: { label: "早見表", grandSymbolsHeading: "{grand}{sacredSymbols}" },

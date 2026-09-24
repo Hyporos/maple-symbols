@@ -44,4 +44,21 @@ describe("NextServerMenu", () => {
     expect(useAppStore.getState().region).toBe("kms");
     expect(window.location.pathname).toBe("/next"); // still the same page
   });
+
+  it("says it opens a dialog and whether it is open", () => {
+    setViewport("desktop");
+    window.history.replaceState(null, "", "/next");
+    render(
+      <RouterProvider>
+        <BreakpointProvider>
+          <NextServerMenu />
+        </BreakpointProvider>
+      </RouterProvider>
+    );
+    const opener = screen.getByRole("button", { name: "Choose your server" });
+    expect(opener).toHaveAttribute("aria-haspopup", "dialog");
+    expect(opener).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(opener);
+    expect(opener).toHaveAttribute("aria-expanded", "true");
+  });
 });

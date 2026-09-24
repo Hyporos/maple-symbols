@@ -46,8 +46,6 @@ export const next = {
   },
   graph: {
     label: "数值成长趋势",
-    now: "当前",
-    target: "目标",
     reachedBy: "预计于 <b>{date}</b> 达成",
   },
   handbook: { label: "手册", grandSymbolsHeading: "{grand}{sacredSymbols}" },

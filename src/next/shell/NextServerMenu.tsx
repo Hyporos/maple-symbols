@@ -34,6 +34,8 @@ const NextServerMenu = () => {
         ref={buttonRef}
         type="button"
         aria-label={m.serverMenu}
+        aria-haspopup="dialog"
+        aria-expanded={open}
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 rounded-lg bg-light px-3 py-2 text-sm text-secondary transition-colors hover:text-primary motion-reduce:transition-none"
       >

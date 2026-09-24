@@ -48,8 +48,6 @@ export const next: Messages["next"] = {
   },
   graph: {
     label: "力量成長趨勢",
-    now: "目前",
-    target: "目標",
     reachedBy: "預計於 <b>{date}</b> 達成",
   },
   handbook: { label: "手冊", grandSymbolsHeading: "{grand}{sacredSymbols}" },

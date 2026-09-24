@@ -48,8 +48,6 @@ export const next = {
   },
   graph: {
     label: "Power over time",
-    now: "Now",
-    target: "Target",
     reachedBy: "by <b>{date}</b>",
   },
   handbook: {
