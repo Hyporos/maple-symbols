@@ -5,6 +5,9 @@ import { BreakpointProvider } from "../../contexts/BreakpointContext";
 import { useAppStore } from "../../state/store";
 import { seedSymbol, setViewport } from "../../test/helpers";
 
+// The symbol chips (the family switch's radios are not buttons with aria-pressed).
+const chips = () => screen.getAllByRole("button").filter((b) => b.hasAttribute("aria-pressed"));
+
 const renderPicker = () =>
   render(
     <BreakpointProvider>
@@ -17,13 +20,13 @@ describe("SymbolPicker", () => {
     seedSymbol(1, { level: 12 });
     renderPicker();
     expect(screen.getByRole("radiogroup", { name: "Symbol family" })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /level/ })).toHaveLength(6);
+    expect(chips()).toHaveLength(6);
     expect(
       screen.getByRole("img", { name: "Vanishing Journey, level 12 of 20" })
     ).toBeInTheDocument();
     expect(screen.getByText(/Arcane Power/)).toHaveTextContent("Arcane Power: 140 / 1,320");
     fireEvent.click(screen.getByRole("radio", { name: "Grand" }));
-    expect(screen.getAllByRole("button", { name: /level/ })).toHaveLength(2);
+    expect(chips()).toHaveLength(2);
     expect(useAppStore.getState().selectedId).toBe(13);
   });
 
@@ -34,7 +37,7 @@ describe("SymbolPicker", () => {
     // Six Sacred and two Grand symbols at 110 each: 880.
     expect(screen.getByText(/Sacred Power/)).toHaveTextContent("Sacred Power: 50 / 880");
     fireEvent.click(screen.getByRole("radio", { name: "Sacred" }));
-    expect(screen.getAllByRole("button", { name: /level/ })).toHaveLength(6);
+    expect(chips()).toHaveLength(6);
     expect(screen.getByText(/Sacred Power/)).toHaveTextContent("Sacred Power: 50 / 880");
   });
 
@@ -67,10 +70,10 @@ describe("SymbolPicker", () => {
 
   it("shows an unset symbol with an empty ring and a dash", () => {
     renderPicker();
-    expect(screen.getByRole("img", { name: /Esfera, level 0 of 20/ })).toHaveAttribute(
-      "data-fraction",
-      "0"
-    );
+    expect(screen.getByRole("img", { name: "Esfera" })).toHaveAttribute("data-fraction", "0");
+    // Named by the symbol and described as not set, never "level 0 of 20".
+    expect(screen.getByRole("button", { name: "Esfera" })).toHaveAccessibleDescription("Not set");
+    expect(screen.queryByRole("button", { name: /level 0/ })).not.toBeInTheDocument();
     expect(screen.getAllByText("–")).toHaveLength(6);
     expect(screen.queryByText(/NaN/)).not.toBeInTheDocument();
   });
@@ -93,7 +96,7 @@ describe("SymbolPicker", () => {
     fireEvent.keyDown(arcane, { key: "ArrowRight" });
     expect(useAppStore.getState().mode).toBe("sacred");
     expect(screen.getByRole("radio", { name: "Sacred" })).toHaveFocus();
-    for (const chip of screen.getAllByRole("button", { name: /level/ })) {
+    for (const chip of chips()) {
       expect(chip.querySelector("button, input, a, [tabindex]")).toBeNull();
     }
   });

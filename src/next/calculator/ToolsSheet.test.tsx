@@ -140,4 +140,17 @@ describe("ToolsSheet, when the selection changes under it", () => {
     fireEvent.click(screen.getByRole("button", { name: /Chu Chu Island/ }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+
+  it("starts the next symbol's Selector with no count carried over", () => {
+    seedSymbol(2, { level: 5, experience: 0 }, false);
+    seedSymbol(1, { level: 5, experience: 0 });
+    renderPickerAndCard();
+    openTool(/Symbol Selector/);
+    fireEvent.change(screen.getByRole("spinbutton", { name: "Count" }), {
+      target: { value: "30" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Chu Chu Island/ })); // closes the sheet
+    openTool(/Symbol Selector/);
+    expect(screen.getByRole("spinbutton", { name: "Count" })).toHaveValue(null);
+  });
 });

@@ -1,7 +1,9 @@
 import { useState, type MouseEvent } from "react";
+import { FaArrowRight } from "react-icons/fa6";
 import { FiCheck, FiLock, FiUnlock } from "react-icons/fi";
 import { MdOutlineInfo } from "react-icons/md";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../components/Tooltip";
+import { useLocalResetTime } from "../../hooks/useLocalResetTime";
 import { track } from "../../lib/analytics";
 import { formatMesos, formatNumber } from "../../lib/format";
 import {
@@ -63,6 +65,9 @@ const CalculatorCard = () => {
     applyOverflow,
   } = useSymbolEditor();
 
+  // The server's daily reset on the visitor's clock, for the day-count tooltip (REGIONS D-8).
+  const resetTime = useLocalResetTime(region, locale);
+
   const [openTool, setOpenTool] = useState<Tool | null>(null);
   const [toolAnchor, setToolAnchor] = useState<HTMLElement | null>(null);
 
@@ -113,11 +118,16 @@ const CalculatorCard = () => {
 
   /* ―――――――――――――――――――― Output ――――――――――――――――――――――――― */
 
+  // A day count is shown (and explained by the info tooltip) only when one can be computed.
+  const countingDays =
+    !readyForUpgrade &&
+    isValid(symbol.experience) &&
+    (symbol.daily || !!symbol.weekly) &&
+    Number.isFinite(daysToNextLevel);
+
   const nextLevelWhen = readyForUpgrade ? (
     m.readyNow
-  ) : !isValid(symbol.experience) ||
-    (!symbol.daily && !symbol.weekly) ||
-    !Number.isFinite(daysToNextLevel) ? (
+  ) : !countingDays ? (
     m.notSet
   ) : (
     <Message text={m.inDays} count={daysToNextLevel} />
@@ -126,9 +136,17 @@ const CalculatorCard = () => {
   return (
     <Card as="section" label={m.calculatorLabel}>
       {/* TITLE */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <img src={symbol.img} alt="" width={32} height={32} />
         <h2 className="text-base font-semibold text-primary">{names.name}</h2>
+        {/* The current UI's "Level 12 → Level 13" glance. */}
+        {levelSet && !atMax && (
+          <p className="ml-auto flex items-center gap-2 text-sm text-secondary">
+            <Message text={c.level} values={{ level: symbol.level }} />
+            <FaArrowRight size={12} className="text-tertiary" />
+            <Message text={c.level} values={{ level: symbol.level + 1 }} />
+          </p>
+        )}
       </div>
 
       {/* LEVEL AND EXPERIENCE */}
@@ -239,7 +257,31 @@ const CalculatorCard = () => {
       <div className="mt-4">
         {levelSet && !atMax && (
           <div className="grid grid-cols-2 gap-2">
-            <StatBox caption={m.nextLevel}>{nextLevelWhen}</StatBox>
+            <StatBox caption={m.nextLevel}>
+              <span className="inline-flex items-center gap-1.5 text-primary">
+                {nextLevelWhen}
+                {countingDays && (
+                  <Tooltip placement="top">
+                    <TooltipTrigger aria-label={m.nextLevel} className="grid place-items-center">
+                      <MdOutlineInfo size={16} className="fill-accent" />
+                    </TooltipTrigger>
+                    <TooltipContent className="tooltip">
+                      <p>
+                        <Message text={c.completionAssumption} />
+                      </p>
+                      {resetTime && (
+                        <p className="pt-1.5">
+                          <Message
+                            text={c.resetHint}
+                            values={{ server: editionOf(region).name, time: resetTime }}
+                          />
+                        </p>
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </span>
+            </StatBox>
             <StatBox caption={m.cost}>
               {isPublished(region, mesosKind(type)) ? (
                 formatMesos(symbol.mesosRequired[symbol.level], locale)
@@ -339,7 +381,9 @@ const CalculatorCard = () => {
         </div>
       )}
 
+      {/* Keyed on the selection: a new symbol or family starts the sheet over (no carried count). */}
       <ToolsSheet
+        key={selection}
         tool={openTool ?? "selector"}
         open={openTool !== null && toolAllowed[openTool]}
         onClose={() => setOpenTool(null)}

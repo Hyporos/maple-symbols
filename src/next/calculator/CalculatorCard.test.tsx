@@ -132,6 +132,30 @@ describe("CalculatorCard", () => {
     expect(screen.getByText("+100")).toBeInTheDocument();
   });
 
+  it("explains the day count in a tooltip a keyboard can reach, as the current Calculator does", async () => {
+    seedSymbol(1, { level: 12, experience: 40, daily: true });
+    renderCard();
+    const info = screen.getByRole("button", { name: "Next level" });
+    expect(info.tagName).toBe("BUTTON"); // a plain trigger around the icon (gotcha 4)
+    fireEvent.focus(info);
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(
+      "The completion date assumes that you have completed both your daily and weekly quests"
+    );
+  });
+
+  it("has no day-count tooltip when there is no day count to explain", () => {
+    seedSymbol(1, { level: 1, experience: 5, daily: false, weekly: false });
+    renderCard();
+    expect(screen.queryByRole("button", { name: "Next level" })).not.toBeInTheDocument();
+  });
+
+  it("glances at the level change in the title row", () => {
+    seedSymbol(1, { level: 12, experience: 40 });
+    renderCard();
+    const title = screen.getByRole("heading", { level: 2, name: "Vanishing Journey" });
+    expect(title.parentElement).toHaveTextContent(/Level 12.*Level 13/);
+  });
+
   it("says ready now once the experience covers the next level, and not set without quests", () => {
     seedSymbol(1, { level: 1, experience: 12 });
     const { unmount } = renderCard();

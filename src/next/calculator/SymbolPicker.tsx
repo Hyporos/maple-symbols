@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { usePower } from "../../hooks/usePower";
 import { track } from "../../lib/analytics";
@@ -35,6 +36,7 @@ const SymbolPicker = () => {
   const selectSymbol = useAppStore((s) => s.selectSymbol);
 
   const { isMobile } = useBreakpoint();
+  const idPrefix = useId();
 
   // Grand Sacred's power counts toward Sacred Power, so the Grand tab shows the Sacred total.
   const powerFamily = mode === "grand" ? "sacred" : mode;
@@ -67,21 +69,20 @@ const SymbolPicker = () => {
         {shown.map((symbol) => {
           const selected = symbol.id === selectedId;
           const max = maxLevelFor(symbol.type);
-          const label = interpolate(
-            m.symbolLevel,
-            {
-              symbol: symbolNames(symbol, nameSet).name,
-              level: isValid(symbol.level) ? symbol.level : 0,
-              max,
-            },
-            locale
-          );
+          const name = symbolNames(symbol, nameSet).name;
+          const set = isValid(symbol.level);
+          // An unset chip is named by its symbol and described as "Not set", never "level 0".
+          const label = set
+            ? interpolate(m.symbolLevel, { symbol: name, level: symbol.level, max }, locale)
+            : name;
+          const statusId = `${idPrefix}-status-${symbol.id}`;
           return (
             <button
               key={symbol.id}
               type="button"
               aria-pressed={selected}
               aria-label={label}
+              aria-describedby={set ? undefined : statusId}
               className={cn(
                 "flex min-w-0 flex-col items-center gap-1 rounded-xl p-1 transition-colors motion-reduce:transition-none",
                 selected
@@ -99,7 +100,7 @@ const SymbolPicker = () => {
                   alt=""
                   width={isMobile ? 24 : 30}
                   height={isMobile ? 24 : 30}
-                  className={cn(!isValid(symbol.level) && "grayscale")}
+                  className={cn(!set && "grayscale")}
                 />
               </ProgressRing>
               <p
@@ -110,10 +111,15 @@ const SymbolPicker = () => {
               >
                 {isMaxLevel(symbol.level, symbol.type)
                   ? m.maxShort
-                  : isValid(symbol.level)
+                  : set
                     ? formatNumber(symbol.level, locale)
                     : UNSET_CAPTION}
               </p>
+              {!set && (
+                <span id={statusId} className="sr-only">
+                  {m.notSet}
+                </span>
+              )}
             </button>
           );
         })}
