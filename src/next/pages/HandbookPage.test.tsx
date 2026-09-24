@@ -125,4 +125,23 @@ describe("HandbookPage", () => {
         .map((c) => c.textContent)
     ).toEqual(["0", "100%", "100%"]);
   });
+
+  it("heads the Exp and Cost tabs with the Grand copy when Grand is selected", async () => {
+    renderAt("/next/handbook");
+    const tabs = await screen.findByRole("tablist", { name: "Handbook" });
+    const heading = () => screen.getByRole("heading", { level: 2 });
+    expect(heading()).toHaveTextContent("Arcane Symbols");
+
+    fireEvent.click(screen.getByRole("radio", { name: "Grand" }));
+    expect(heading()).toHaveTextContent(/^Grand Sacred Symbols$/);
+    fireEvent.click(within(tabs).getByRole("tab", { name: "Meso Cost Table" }));
+    expect(heading()).toHaveTextContent(/^Grand Sacred Symbols$/);
+    // The ratio bands are the region's, so that heading stays the region.
+    fireEvent.click(within(tabs).getByRole("tab", { name: "Damage Ratio Table" }));
+    expect(heading()).toHaveTextContent(/^Grandis$/);
+
+    fireEvent.click(screen.getByRole("radio", { name: "Sacred" }));
+    fireEvent.click(within(tabs).getByRole("tab", { name: "Experience Table" }));
+    expect(heading()).toHaveTextContent(/^Sacred Symbols$/);
+  });
 });

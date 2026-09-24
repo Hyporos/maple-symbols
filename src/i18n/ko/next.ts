@@ -52,6 +52,6 @@ export const next = {
     target: "목표",
     reachedBy: "<b>{date}</b>에 도달 예정",
   },
-  handbook: { label: "핸드북" },
+  handbook: { label: "핸드북", grandSymbolsHeading: "{grand} {sacredSymbols}" },
   extras: { label: "기타" },
 } as const;

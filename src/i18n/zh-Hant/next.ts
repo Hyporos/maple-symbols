@@ -52,6 +52,6 @@ export const next: Messages["next"] = {
     target: "目標",
     reachedBy: "預計於 <b>{date}</b> 達成",
   },
-  handbook: { label: "手冊" },
+  handbook: { label: "手冊", grandSymbolsHeading: "{grand}{sacredSymbols}" },
   extras: { label: "其他" },
 };

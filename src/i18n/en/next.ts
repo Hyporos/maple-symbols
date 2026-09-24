@@ -52,6 +52,10 @@ export const next = {
     target: "Target",
     reachedBy: "by <b>{date}</b>",
   },
-  handbook: { label: "Handbook" },
+  handbook: {
+    label: "Handbook",
+    // The Exp and Cost headings with Grand selected (Grand Sacred reads the Sacred tables).
+    grandSymbolsHeading: "{grand} {sacredSymbols}",
+  },
   extras: { label: "Extras" },
 } as const;

@@ -54,6 +54,6 @@ export const next = {
     target: "目標",
     reachedBy: "<b>{date}</b>に到達予定",
   },
-  handbook: { label: "早見表" },
+  handbook: { label: "早見表", grandSymbolsHeading: "{grand}{sacredSymbols}" },
   extras: { label: "その他" },
 } as const;

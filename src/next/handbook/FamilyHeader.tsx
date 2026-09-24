@@ -8,6 +8,11 @@ import { SegmentedSwitch } from "../ui";
 interface FamilyHeaderProps {
   /** The panel's own heading, e.g. `handbook.symbolsHeading[family]` or `regionName[family]`. */
   heading: string;
+  /**
+   * The heading with Grand selected, where it differs (`next.handbook.grandSymbolsHeading`):
+   * the Exp and Cost panels name the Grand symbols; Ratio keeps its region, Grandis.
+   */
+  grandHeading?: string;
   /** The "?" tooltip's content, e.g. `<Message text={handbook.expTooltip} />`. */
   tooltip: ReactNode;
   /** Extra content after the tooltip icon (RatioPanel's power-column tooltip). */
@@ -19,7 +24,7 @@ interface FamilyHeaderProps {
 // * tooltip, and the Arcane/Sacred/Grand SegmentedSwitch bound to the store's mode.
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-const FamilyHeader = ({ heading, tooltip, children }: FamilyHeaderProps) => {
+const FamilyHeader = ({ heading, grandHeading, tooltip, children }: FamilyHeaderProps) => {
   const messages = useMessages();
   const mode = useAppStore((s) => s.mode);
   const setMode = useAppStore((s) => s.setMode);
@@ -33,7 +38,9 @@ const FamilyHeader = ({ heading, tooltip, children }: FamilyHeaderProps) => {
   return (
     <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-2.5">
-        <h2 className="text-lg font-semibold text-primary">{heading}</h2>
+        <h2 className="text-lg font-semibold text-primary">
+          {mode === "grand" && grandHeading ? grandHeading : heading}
+        </h2>
         <Tooltip placement="right">
           <TooltipTrigger>
             <HiOutlineQuestionMarkCircle

@@ -59,6 +59,7 @@ const ExpPanel = () => {
     <div>
       <FamilyHeader
         heading={handbook.symbolsHeading[family]}
+        grandHeading={messages.next.handbook.grandSymbolsHeading}
         tooltip={<Message text={handbook.expTooltip} />}
       />
 
