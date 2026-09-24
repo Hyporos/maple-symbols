@@ -21,8 +21,16 @@ import Handbook from "./components/Handbook/Handbook";
 import Extras from "./components/Extras/Extras";
 
 // The /next redesign (docs/superpowers/specs/2026-09-23-visual-redesign-design.md), a deletable
-// copy of the UI beside this one, gated behind NEXT_UI (dev and draft-serving builds only).
-const NextApp = lazy(() => import("./next/NextApp"));
+// copy of the UI beside this one, gated behind NEXT_UI (dev and draft-serving builds only). The
+// lazy import sits behind the build constant too: the bundler splits chunks before it can fold an
+// imported NEXT_UI, but `false || false` written here folds first, so a production build emits no
+// NextApp chunk. Dev and tests are DEV and never read the constant (Vitest does not define it),
+// so tests still switch /next off by mocking NEXT_UI.
+declare const __SERVES_DRAFTS__: boolean;
+const NextApp =
+  (import.meta.env.DEV || __SERVES_DRAFTS__) && NEXT_UI
+    ? lazy(() => import("./next/NextApp"))
+    : null;
 
 function PageContent() {
   const { path: pathname } = useRouter();
@@ -85,7 +93,7 @@ function App() {
   }, []);
 
   const { path } = useRouter();
-  if (NEXT_UI && splitNext(splitPath(path).rest).next) {
+  if (NextApp && splitNext(splitPath(path).rest).next) {
     return (
       <Suspense fallback={null}>
         <NextApp />
