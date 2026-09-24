@@ -13,7 +13,8 @@ type Section = "edit" | "overview" | "graph";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * CalculatorPage is the /next redesign's calculator page (spec §3). From 768 px: two columns, the
 // * picker and calculator (sticky from 1150 px) beside the overview and graph. On phones: one card
-// * set per screen behind a bottom tab bar, all three kept in the page with the others hidden.
+// * set per screen behind a bottom tab bar, all three kept in the page with the others hidden
+// * (NextShell pads the page's foot for the bar; NextApp tells it this page has one).
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const CalculatorPage = () => {
@@ -24,7 +25,7 @@ const CalculatorPage = () => {
 
   if (!isMobile) {
     return (
-      <div className="grid gap-6 pt-8 min-[768px]:grid-cols-[minmax(320px,400px)_1fr]">
+      <div className="grid gap-6 pt-8 min-[768px]:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] min-[1150px]:grid-cols-[400px_1fr]">
         <div className="flex flex-col gap-6 min-[1150px]:sticky min-[1150px]:top-24 min-[1150px]:self-start">
           <SymbolPicker />
           <CalculatorCard />
@@ -46,7 +47,7 @@ const CalculatorPage = () => {
   });
 
   return (
-    <div className="pt-4 pb-24">
+    <div className="pt-4">
       <div {...panelProps("edit")}>
         <div className="flex flex-col gap-4">
           <SymbolPicker />

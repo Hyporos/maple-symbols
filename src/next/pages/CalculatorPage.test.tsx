@@ -30,6 +30,12 @@ describe("CalculatorPage (/next)", () => {
     renderAt("/next");
     expect(await screen.findByRole("region", { name: "Overview" })).toBeInTheDocument();
     expect(screen.queryByRole("tablist", { name: "Calculator sections" })).not.toBeInTheDocument();
+    // 5:7 below 1150 px, so the results column is not squeezed beside a 400 px edit column.
+    const grid = screen.getByRole("region", { name: "Symbols" }).parentElement!.parentElement!;
+    expect(grid).toHaveClass(
+      "min-[768px]:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]",
+      "min-[1150px]:grid-cols-[400px_1fr]"
+    );
   });
 
   it("on phones switches Edit, Overview and Graph with the bottom tabs, keeping all three in the page", async () => {

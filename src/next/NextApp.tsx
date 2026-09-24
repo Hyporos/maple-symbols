@@ -37,7 +37,7 @@ const NextApp = () => {
   return (
     <BreakpointProvider>
       <div data-testid="next-app">
-        <NextShell>
+        <NextShell bottomBar={path === "/"}>
           {path === "/handbook" ? (
             <HandbookPage />
           ) : path === "/changelog" || path === "/credits" ? (

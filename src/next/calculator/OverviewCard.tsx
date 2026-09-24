@@ -119,7 +119,8 @@ const OverviewCard = () => {
               width={24}
               className={cn(Number.isNaN(symbol.level) && "grayscale")}
             />
-            <span>{names.name}</span>
+            {/* Compact below 1150 px (the tablet column and phones): the icon alone, still named. */}
+            <span className={cn(isTablet && "sr-only")}>{names.name}</span>
           </button>
           <ProgressBar
             value={invested}

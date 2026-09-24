@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import OverviewCard from "./OverviewCard";
-import { seedSymbol, WED } from "../../test/helpers";
+import { BreakpointProvider } from "../../contexts/BreakpointContext";
+import { seedSymbol, setViewport, WED } from "../../test/helpers";
 import { useAppStore } from "../../state/store";
 
 describe("OverviewCard", () => {
@@ -77,5 +78,16 @@ describe("OverviewCard", () => {
     expect(screen.getByRole("row", { name: /Tallahart/ })).toBeInTheDocument();
     expect(screen.getByRole("row", { name: /Geardock/ })).toBeInTheDocument();
     expect(screen.queryByText("Cernium")).not.toBeInTheDocument();
+  });
+
+  it("shows each symbol by its icon alone below 1150 px, still named for screen readers", () => {
+    setViewport("tablet");
+    render(
+      <BreakpointProvider>
+        <OverviewCard />
+      </BreakpointProvider>
+    );
+    const select = screen.getByRole("button", { name: "Chu Chu Island" });
+    expect(within(select).getByText("Chu Chu Island")).toHaveClass("sr-only");
   });
 });
