@@ -9,18 +9,21 @@ import { nextHref, useNextRoute } from "../routing";
 import CharacterChip from "./CharacterChip";
 import AccessibilityButton from "./AccessibilityButton";
 import NextServerMenu from "./NextServerMenu";
+import FeedbackButton from "./FeedbackButton";
+import { useFeedbackInHeader } from "./useFeedbackInHeader";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * NextHeader is the /next redesign's header (spec §3): the logo, the page nav, and the
 // * character/server/accessibility places. Links stay inside /next in the current edition
 // * (`nextHref`); on phones the server menu and "Aa" move into the ☰ menu and the character
-// * chip stays put.
+// * chip stays put. Below 1256 px the Feedback button is a chip here too (useFeedbackInHeader).
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const NextHeader = () => {
   const messages = useMessages();
   const m = messages.shell;
   const { isMobile } = useBreakpoint();
+  const feedbackInHeader = useFeedbackInHeader();
   const { navigate } = useRouter();
   const { edition, path } = useNextRoute();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -88,6 +91,7 @@ const NextHeader = () => {
             <>
               <NextServerMenu />
               <AccessibilityButton />
+              {feedbackInHeader && <FeedbackButton placement="chip" />}
             </>
           )}
           {isMobile && (
@@ -121,6 +125,7 @@ const NextHeader = () => {
           <div className="flex items-center gap-3 pt-3">
             <NextServerMenu />
             <AccessibilityButton />
+            <FeedbackButton placement="chip" />
           </div>
         </div>
       )}

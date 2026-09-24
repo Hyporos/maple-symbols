@@ -97,4 +97,30 @@ describe("NextHeader", () => {
     const menu = document.getElementById(open.getAttribute("aria-controls")!);
     expect(menu).toContainElement(screen.getAllByRole("navigation").at(-1)!);
   });
+
+  it("holds the Feedback chip beside the server menu and Aa below the floating width", () => {
+    setViewport("desktop"); // wide: it floats from NextShell instead
+    const { unmount } = renderHeader();
+    expect(screen.queryByRole("button", { name: "Feedback" })).not.toBeInTheDocument();
+    unmount();
+
+    setViewport("tablet");
+    renderHeader();
+    const feedback = screen.getByRole("button", { name: "Feedback" });
+    expect(feedback).toHaveAttribute("aria-haspopup", "dialog");
+    expect(feedback.parentElement).toContainElement(
+      screen.getByRole("button", { name: "Text and contrast" })
+    );
+  });
+
+  it("puts the Feedback chip in the phone menu with the server menu and Aa", () => {
+    setViewport("mobile");
+    renderHeader();
+    expect(screen.queryByRole("button", { name: "Feedback" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Open navigation menu" }));
+    const feedback = screen.getByRole("button", { name: "Feedback" });
+    expect(feedback.parentElement).toContainElement(
+      screen.getByRole("button", { name: "Text and contrast" })
+    );
+  });
 });

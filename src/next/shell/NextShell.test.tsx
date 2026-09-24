@@ -71,4 +71,17 @@ describe("NextShell", () => {
       "pb-[calc(57px+env(safe-area-inset-bottom))]"
     );
   });
+
+  it("floats the Feedback button only on a wide desktop, and holds it in the header below", () => {
+    setViewport("desktop");
+    const { unmount } = renderShellAt("/next");
+    expect(screen.getByRole("button", { name: "Feedback" })).toHaveClass("fixed");
+    unmount();
+
+    setViewport("tablet");
+    renderShellAt("/next");
+    const feedback = screen.getByRole("button", { name: "Feedback" }); // exactly one
+    expect(feedback).not.toHaveClass("fixed");
+    expect(screen.getByRole("banner")).toContainElement(feedback);
+  });
 });

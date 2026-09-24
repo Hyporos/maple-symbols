@@ -7,6 +7,7 @@ import NextHeader from "./NextHeader";
 import NextFooter from "./NextFooter";
 import FeedbackButton from "./FeedbackButton";
 import NextSuggestionBanner from "./NextSuggestionBanner";
+import { useFeedbackInHeader } from "./useFeedbackInHeader";
 
 interface NextShellProps {
   children: ReactNode;
@@ -17,13 +18,14 @@ interface NextShellProps {
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 // * NextShell is the /next redesign's page frame: the sticky header, the server suggestion banner
 // * (in the page's flow under the header, so it pushes the page down rather than covering the
-// * first card, and scrolls away with it), the page itself, the floating feedback button, and
-// * the footer (spec §3).
+// * first card, and scrolls away with it), the page itself, the feedback button where it floats
+// * (from 1256 px; NextHeader holds it below that), and the footer (spec §3).
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 const NextShell = ({ children, bottomBar = false }: NextShellProps) => {
   const { path, edition } = useNextRoute();
   const { isMobile } = useBreakpoint();
+  const feedbackInHeader = useFeedbackInHeader();
 
   useEffect(() => {
     document.title = pageMetaFor(path, edition).title;
@@ -45,7 +47,8 @@ const NextShell = ({ children, bottomBar = false }: NextShellProps) => {
       <main id="main" className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-16 md:px-8">
         {children}
       </main>
-      <FeedbackButton />
+      {/* Below the floating width it is a header chip instead (NextHeader). */}
+      {!feedbackInHeader && <FeedbackButton placement="floating" />}
       <NextFooter />
     </div>
   );
