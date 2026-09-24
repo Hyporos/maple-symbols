@@ -47,8 +47,7 @@ src/
     Calculator/  Calculator (inputs + next level), Tools (Selector/Catalyst previews), Overview (targets), Graph
     Handbook/, Extras/  TabLayout pages (ExpTable, CostTable, RatioTable; Changelog, Credits) · ui/ RadioButton, SlideButton, TabLayout
   next/      the 2.0 redesign at /next (ARCHITECTURE §2): a deletable UI copy sharing lib/state/i18n/hooks; routing.ts (NEXT_UI), NextApp.tsx, ui/ (kit), shell/, pages/, calculator/, handbook/, extras/
-  i18n/      en/*.ts (English catalogue = every language's contract, incl. next.ts for /next-only copy) · index.ts (useMessages, interpolate) ·
-             Message.tsx (renders <b>…</b>) · terms.ts (game terms per name set) · gameNames.ts (official names, GMS fallback)
+  i18n/      en/*.ts (English catalogue = every language's contract, incl. next.ts for /next) · index.ts (useMessages, interpolate) · Message.tsx (renders <b>…</b>) · terms.ts (game terms per name set) · gameNames.ts (official names, GMS fallback)
   test/      setup.ts (mocks), helpers.ts (store/viewport/time/head), docs + seo meta-tests
 docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-staleness.mjs (session banner)
 ```
@@ -75,13 +74,9 @@ docs/ (see below) · scripts/ docs-drift.mjs (pre-commit reminder), doc-stalenes
 ## Domain cheat sheet
 
 - 14 symbols: **arcane ids 1–6 (max level 20)**, **sacred ids 7–12 (max level 11)**, **grand ids 13–14** (Tallahart, Geardock: Sacred table, max 11; no weekly, extra, Catalyst or main stat, `null` in `game.ts`). The store can select Grand but only `/next` shows it; the current UI folds it to Sacred via `useMode()`, and `inFamily` counts Grand toward Sacred Power (GAME §4, ARCHITECTURE §3). Selection is by `id` (`selectedId`, `lastSelected` per family). JSON order only affects display order (gotcha 1).
-- `symbolsRequired[L]` = symbols needed to go from level L to L+1 (`[0]` is 0). Totals: arcane 2679, sacred 4565. `mesosRequired[L]` likewise = cost of the L→L+1 upgrade.
-- Power: arcane `level*10 + 20` (max 220/symbol), sacred `level*10` (max 110). Every level-up is +10 in the Graph.
-- Daily rate: `dailySymbols × (extra ? (arcane 2 : sacred 1.5) : 1)`, 0 when the daily toggle is off. Weekly quests exist only on arcane and add **240 per weekly reset**. Day counts start **tomorrow** on the server's game clock (`gameToday()`: 00:00 UTC for GMS, not the visitor's calendar) and the weekly lands on each counted **Thursday** (the reset day in every region since 2025–26; GAME §3), so a weekly-only answer is the distance to next Thursday. Extra exists only on Vanishing Journey and Chu Chu.
-- Days/dates: `calculateDaysRemaining(needed, daily, hasWeekly)` returns 0 (nothing needed), `Infinity` (no progress possible), or `NaN` (bad input); completion = today + days (`YYYY-MM-DD`). Overview shows 0 as "Complete" / "Ready for upgrade"; Infinity, NaN, or no quest enabled as "Indefinite" / "? days" (keyed on `daily`/`weekly`/`experience`, not on the number).
-- `NaN` means **unset** for `level`/`experience` (`isValid`); inputs render `""` for NaN. Number inputs (`clampNumberInput`) treat blank and negative as unset and floor everything else with a minimum of 1, so "0", "00", "0.5" and "-0" all give level 1.
-- `locked` (default) caps experience at the next-level requirement; unlocked caps at the full-table total and the check icon converts overflow into levels. Catalyst keeps 80% (arcane) / 60% (sacred) of cumulative exp and needs level ≥ 2; +100/+200 main stat per level.
-- What each number means, where it came from and how far to trust it (GMS only; each number's status, confirmed or sourced, in GAME §0 and §7): `docs/GAME.md`. Constants live in `src/lib/game.ts`, tables in `symbols.json` and `ratioData.ts`.
+- `symbolsRequired[L]` / `mesosRequired[L]` = symbols / mesos for the L→L+1 upgrade (`[0]` is 0). Totals: arcane 2679, sacred 4565. Power: arcane `level*10 + 20` (max 220/symbol), sacred and grand `level*10` (max 110); every level-up is +10 in the Graph.
+- Days/dates: daily rate `dailySymbols × (extra ? (arcane 2 : sacred 1.5) : 1)`, 0 with the daily off; the arcane weekly adds **240 per weekly reset**. Days start **tomorrow** on the server's game clock (`gameToday()`) and credit the weekly each counted **Thursday** (GAME §2–3). `calculateDaysRemaining` gives 0 / `Infinity` / `NaN`, and `NaN` means **unset** for `level`/`experience` (`isValid`): what each card shows and how inputs clamp is ARCHITECTURE §4.
+- The experience cap (`locked`), Catalyst (80% / 60%, level ≥ 2) and main stat (+100 / +200): GAME §2 and ARCHITECTURE §4. What each number means, where it came from and how far to trust it (GMS only; confirmed or sourced in GAME §0 and §7): `docs/GAME.md`. Constants in `src/lib/game.ts`, tables in `symbols.json` and `ratioData.ts`.
 
 ## Gotchas (the ones that bite)
 

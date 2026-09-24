@@ -92,6 +92,12 @@ Who computes what:
 | Graph per-level dates and power series         | `buildDateSymbols` / `buildGraphSeries` / ticks / `dateToPower` (`lib/graph.ts`), threading `DayCountState`       | no      |
 | current power                                  | `usePower` (`src/hooks/usePower.ts`)                                                                              | no      |
 
+**Numbers the cards show, and unset input** (moved here from AGENTS.md's cheat sheet):
+
+- `calculateDaysRemaining(needed, daily, hasWeekly)` returns 0 (nothing needed), `Infinity` (no progress possible), or `NaN` (bad input); the completion date is today + days (`YYYY-MM-DD`). Overview shows 0 as "Complete" / "Ready for upgrade"; `Infinity`, `NaN`, or no quest enabled as "Indefinite" / "? days" (keyed on `daily`/`weekly`/`experience`, not on the number).
+- `NaN` means **unset** for `level`/`experience` (`isValid`); inputs render `""` for `NaN`. Number inputs (`clampNumberInput`, `src/lib/inputs.ts`) treat blank and negative as unset and floor everything else with a minimum of 1, so "0", "00", "0.5" and "-0" all give level 1.
+- `locked` (the default) caps experience at the next-level requirement; unlocked caps it at the full-table total, and the check icon converts the overflow into levels (`getOverflow`).
+
 Tools' selector-count clamp and its Apply handler (`selectorCount < remainingToMax ? selectorExp : 0`) derive the remaining count locally; nothing reads a cached value. Note the two Handbook tables have different sources: `ExpTable` reads `symbols.json` directly, `CostTable` reads the persisted `symbol.mesosRequired`.
 
 ## 5. Effects that write to the store or the document
